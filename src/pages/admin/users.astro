@@ -24,7 +24,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
       </div>
 
-      <div id="users-container" class="mt-6 space-y-3">
+      <!-- Search input -->
+      <div class="relative mt-4">
+        <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="{t('admin.search')}"
+          class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 py-2.5 pl-10 pr-4 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+        />
+      </div>
+
+      <div id="users-container" class="mt-4 space-y-3">
         <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
           <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
         </div>
@@ -43,15 +56,30 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   function initUsers(): void {
     const container = document.getElementById('users-container')!;
     const roleFilter = document.getElementById('role-filter') as HTMLSelectElement;
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
     let allUsers: AdminUser[] = [];
+    let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
     function renderUsers(): void {
       const filter = roleFilter.value;
-      const filtered = filter === 'all' ? allUsers : allUsers.filter((u) => u.role === filter);
+      const query = searchInput.value.trim().toLowerCase();
+
+      let filtered = filter === 'all' ? allUsers : allUsers.filter((u) => u.role === filter);
+
+      if (query) {
+        filtered = filtered.filter(
+          (u) =>
+            u.name.toLowerCase().includes(query) ||
+            u.email.toLowerCase().includes(query),
+        );
+      }
 
       if (filtered.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.users, 'Sin usuarios');
+        const message = query
+          ? `Sin resultados para "${searchInput.value.trim()}"`
+          : 'Sin usuarios';
+        container.innerHTML = renderEmptyState(ICONS.users, message);
         return;
       }
 
@@ -66,5 +94,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     });
 
     roleFilter.addEventListener('change', renderUsers);
+
+    searchInput.addEventListener('input', () => {
+      if (searchTimeout) clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(renderUsers, 200);
+    });
   }
 </script>

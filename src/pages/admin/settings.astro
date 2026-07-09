@@ -24,7 +24,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div>
                 <p id="profile-name" class="text-base font-medium text-zinc-200">-</p>
                 <p id="profile-email" class="text-sm text-zinc-500">-</p>
-                <p id="profile-role" class="mt-1 text-xs text-zinc-600">-</p>
+                <p id="profile-role" class="mt-1 inline-block rounded-full bg-purple-500/10 px-2.5 py-0.5 text-xs font-medium text-purple-400 border border-purple-500/20">-</p>
               </div>
             </div>
           </div>
@@ -37,7 +37,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
           <div class="mt-4 space-y-3">
             <button id="btn-logout" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-3 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all hover:bg-zinc-800">
-              {t('dashboard.logout')}
+              {t('admin.settings.logout')}
             </button>
           </div>
         </div>
@@ -47,7 +47,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
-  import { requireAuth, signOutUser, loadUserProfile } from '@/lib/admin/adminUtils';
+  import { requireAuth, signOutUser, loadUserProfile, showToast } from '@/lib/admin/adminUtils';
 
   requireAuth(async (user) => {
     await loadProfile(user);
@@ -73,10 +73,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const btnLogout = document.getElementById('btn-logout');
     if (btnLogout) {
       btnLogout.addEventListener('click', async () => {
+        const confirmed = confirm('¿Estás seguro de cerrar sesión?');
+        if (!confirmed) return;
+
         try {
           await signOutUser();
         } catch (err) {
           console.error('Error signing out:', err);
+          showToast({ message: 'Error al cerrar sesión', type: 'error' });
         }
       });
     }

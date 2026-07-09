@@ -22,22 +22,32 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
-  import { requireAuth, subscribeToUsersByRole, renderTrainerCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
+  import { requireAuth, subscribeToUsersByRole, renderTrainerCard, renderEmptyState, renderLoadingState, ICONS, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
 
   requireAuth(() => {
     initTrainers();
   });
 
-  function initTrainers(): void {
+  async function initTrainers(): Promise<void> {
     const container = document.getElementById('trainers-container')!;
 
-    subscribeToUsersByRole('trainer', (trainers) => {
+    container.innerHTML = renderLoadingState();
+
+    subscribeToUsersByRole('trainer', async (trainers) => {
       if (trainers.length === 0) {
         container.innerHTML = renderEmptyState(ICONS.trainers, 'Sin entrenadores registrados');
         return;
       }
 
-      container.innerHTML = trainers.map((trainer) => renderTrainerCard(trainer)).join('');
+      // Obtener conteo real de clientes para cada trainer
+      const trainersWithCounts = await Promise.all(
+        trainers.map(async (trainer) => {
+          const clientCount = await getTrainerClientCount(trainer.uid);
+          return { ...trainer, clientCount } as AdminUser & { clientCount: number };
+        }),
+      );
+
+      container.innerHTML = trainersWithCounts.map((trainer) => renderTrainerCard(trainer)).join('');
     });
   }
 </script>

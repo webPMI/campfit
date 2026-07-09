@@ -1,46 +1,172 @@
-# Astro Starter Kit: Basics
+# CampFit 🏋️
 
-```sh
-npm create astro@latest -- --template basics
+> **Plataforma fitness todo-en-uno.** Entrenamiento personalizado, nutrición inteligente y seguimiento en tiempo real con tu entrenador.
+
+---
+
+## 🚀 Stack Tecnológico
+
+| Tecnología | Versión | Uso |
+|------------|---------|-----|
+| **Astro** | 7.x | Framework web (SSR con `@astrojs/node` standalone) |
+| **Tailwind CSS** | 4.x | Estilos utilitarios con `@tailwindcss/vite` |
+| **Firebase** | 11.x | Autenticación + Firestore (base de datos en tiempo real) |
+| **Nanostores** | 1.x | Estado global reactivo (auth store) |
+| **TypeScript** | 5.x | Tipado estricto en todo el proyecto |
+| **Vitest** | 4.x | Tests unitarios |
+| **Playwright** | 1.x | Tests end-to-end |
+
+**Arquitectura:** Vanilla JS (sin React, sin librerías de UI). Componentes HTML renderizados desde JavaScript puro con streams en tiempo real de Firestore.
+
+---
+
+## 📁 Estructura del Proyecto
+
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
+campfit-astro/
+├── public/                  # Archivos estáticos
+├── src/
+│   ├── i18n/                # Internacionalización (es/en)
+│   │   ├── client.ts        # Traducciones para el cliente JS
+│   │   └── translations.ts  # Traducciones completas (SSR)
+│   ├── layouts/             # Layouts por rol
+│   │   ├── BaseLayout.astro
+│   │   ├── AdminLayout.astro
+│   │   ├── ClientLayout.astro
+│   │   └── TrainerLayout.astro
+│   ├── lib/                 # Utilidades compartidas
+│   │   ├── admin/           # Utilidades específicas del panel admin
+│   │   │   └── adminUtils.ts
+│   │   ├── firebase.ts      # Configuración de Firebase
+│   │   ├── routeGuards.ts   # Guardias de ruta por rol
+│   │   └── validators.ts    # Validación de formularios
+│   ├── pages/               # Páginas (rutas)
+│   │   ├── index.astro      # Landing page
+│   │   ├── login.astro      # Inicio de sesión
+│   │   ├── register.astro   # Registro
+│   │   ├── recover.astro    # Recuperar contraseña
+│   │   ├── dashboard.astro  # Dashboard post-login
+│   │   ├── admin/           # Panel de administración
+│   │   ├── client/          # Panel de cliente
+│   │   ├── trainer/         # Panel de entrenador
+│   │   └── api/             # Endpoints API
+│   ├── services/            # Servicios (Firebase)
+│   │   ├── authService.ts   # Autenticación
+│   │   └── adminService.ts  # Administración
+│   ├── stores/              # Stores reactivos
+│   │   └── authStore.ts     # Estado de autenticación (Nanostores)
+│   └── types/               # Tipos TypeScript
+│       └── index.ts
+├── tests/                   # Tests
+├── astro.config.mjs         # Configuración de Astro
+├── tsconfig.json            # Configuración de TypeScript
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+---
 
-## 🧞 Commands
+## ✨ Funcionalidades
 
-All commands are run from the root of the project, from a terminal:
+### 🔐 Autenticación
+- Login con email/contraseña
+- Registro de nuevos usuarios
+- Login con Google (popup)
+- Recuperación de contraseña
+- Persistencia de sesión (IndexedDB)
+- Roles: `client`, `trainer`, `admin`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### 👤 Cliente
+- Dashboard personal con progreso semanal
+- Rutinas de entrenamiento asignadas por el trainer
+- Plan nutricional con seguimiento de comidas
+- Registro de progreso (peso, medidas)
+- Chat directo con el entrenador
+- Perfil médico
 
-## 👀 Want to learn more?
+### 🏋️ Entrenador
+- Gestión de clientes asignados
+- Creación y asignación de rutinas
+- Creación y asignación de planes nutricionales
+- Comunicación con clientes vía chat
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### ⚙️ Administración
+- Dashboard con estadísticas en tiempo real
+- Gestión de usuarios (cambiar roles, eliminar)
+- Vista de entrenadores y clientes
+- Configuración del sistema
+
+### 🌐 Internacionalización
+- Español e inglés
+- Persistencia del idioma en localStorage
+- Cambio de idioma vía query param `?lang=es|en`
+
+---
+
+## 🛠️ Comandos
+
+| Comando | Acción |
+|---------|--------|
+| `npm install` | Instalar dependencias |
+| `npm run dev` | Iniciar servidor de desarrollo (`localhost:4321`) |
+| `npm run build` | Compilar para producción (`dist/`) |
+| `npm run preview` | Vista previa de la build |
+| `npm test` | Ejecutar tests unitarios (Vitest) |
+| `npm run test:e2e` | Ejecutar tests E2E (Playwright) |
+| `npm run astro check` | Verificar tipos TypeScript |
+
+---
+
+## 🔧 Configuración Inicial
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/webPMI/campfit.git
+cd campfit-astro
+```
+
+### 2. Instalar dependencias
+```bash
+npm install
+```
+
+### 3. Configurar variables de entorno
+Copia `.env.example` a `.env` y completa las credenciales de Firebase:
+
+```bash
+cp .env.example .env
+```
+
+### 4. Iniciar desarrollo
+```bash
+npm run dev
+```
+
+---
+
+## 🔥 Firebase
+
+El proyecto usa Firebase para:
+- **Authentication**: Email/contraseña + Google provider
+- **Firestore**: Colección `users` con perfiles por rol
+
+### Colecciones en Firestore
+- `users` — Perfiles de usuario con rol y datos personales
+- `workouts` — Rutinas de entrenamiento
+- `diets` — Planes nutricionales
+- `messages` — Mensajes del chat
+- `progress_logs` — Registros de progreso
+- `exercises_library` — Biblioteca de ejercicios
+- `diet_templates` — Plantillas de dietas
+
+### Reglas de seguridad
+Las reglas de Firestore están diseñadas para:
+- Solo usuarios autenticados pueden leer/escribir
+- Los admins tienen acceso completo
+- Los trainers solo ven/modifican sus clientes
+- Los clientes solo ven sus propios datos
+
+---
+
+## 📄 Licencia
+
+Proyecto privado — CampFit © 2026

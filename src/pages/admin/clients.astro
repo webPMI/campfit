@@ -22,22 +22,35 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
-  import { requireAuth, subscribeToUsersByRole, renderClientCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
+  import { requireAuth, subscribeToUsersByRole, renderClientCard, renderEmptyState, renderLoadingState, ICONS, getUserName, type AdminUser } from '@/lib/admin/adminUtils';
 
   requireAuth(() => {
     initClients();
   });
 
-  function initClients(): void {
+  async function initClients(): Promise<void> {
     const container = document.getElementById('clients-container')!;
 
-    subscribeToUsersByRole('client', (clients) => {
+    container.innerHTML = renderLoadingState();
+
+    subscribeToUsersByRole('client', async (clients) => {
       if (clients.length === 0) {
         container.innerHTML = renderEmptyState(ICONS.clients, 'Sin clientes registrados');
         return;
       }
 
-      container.innerHTML = clients.map((client) => renderClientCard(client)).join('');
+      // Resolver nombres de trainers asignados
+      const clientsWithTrainerNames = await Promise.all(
+        clients.map(async (client) => {
+          if (client.assignedTrainerId) {
+            const trainerName = await getUserName(client.assignedTrainerId);
+            return { ...client, assignedTrainerId: trainerName };
+          }
+          return client;
+        }),
+      );
+
+      container.innerHTML = clientsWithTrainerNames.map((client) => renderClientCard(client)).join('');
     });
   }
 </script>

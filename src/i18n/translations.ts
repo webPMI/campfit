@@ -155,7 +155,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'client.support.faq.medical.answer': 'El perfil médico ayuda a tu entrenador a conocer tu estado de salud y adaptar los planes de entrenamiento y nutrición a tus necesidades.',
 
     // Trainer
-
     'trainer.dashboard': 'Panel Trainer',
     'trainer.clients': 'Mis Clientes',
     'trainer.clients.desc': 'Gestiona tus clientes asignados',
@@ -193,6 +192,21 @@ export const translations: Record<Language, Record<string, string>> = {
     'admin.loading': 'Cargando...',
     'admin.all': 'Todos',
     'admin.no.users': 'Sin usuarios registrados',
+    'admin.search': 'Buscar usuarios...',
+    'admin.search.no.results': 'Sin resultados para',
+    'admin.alert.active': 'Alerta activa',
+    'admin.role.changed': 'Rol actualizado correctamente',
+    'admin.user.deleted': 'Usuario eliminado correctamente',
+    'admin.error.load': 'Error al cargar datos',
+    'admin.error.role': 'Error al cambiar el rol',
+    'admin.error.delete': 'Error al eliminar el usuario',
+    'admin.trainer.assigned': 'Con trainer',
+    'admin.trainer.unassigned': 'Sin trainer',
+    'admin.trainer.clients': 'Clientes asignados',
+    'admin.settings.logout': 'Cerrar Sesión',
+    'admin.settings.logout.confirm': '¿Estás seguro de cerrar sesión?',
+    'admin.recent.empty': 'Sin usuarios registrados',
+    'admin.stats.loading': 'Cargando estadísticas...',
   },
   en: {
     // Global
@@ -348,7 +362,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'client.support.faq.medical.answer': 'The medical profile helps your trainer understand your health status and adapt training and nutrition plans to your needs.',
 
     // Trainer
-
     'trainer.dashboard': 'Trainer Dashboard',
     'trainer.clients': 'My Clients',
     'trainer.clients.desc': 'Manage your assigned clients',
@@ -386,6 +399,21 @@ export const translations: Record<Language, Record<string, string>> = {
     'admin.loading': 'Loading...',
     'admin.all': 'All',
     'admin.no.users': 'No registered users',
+    'admin.search': 'Search users...',
+    'admin.search.no.results': 'No results for',
+    'admin.alert.active': 'Active alert',
+    'admin.role.changed': 'Role updated successfully',
+    'admin.user.deleted': 'User deleted successfully',
+    'admin.error.load': 'Error loading data',
+    'admin.error.role': 'Error changing role',
+    'admin.error.delete': 'Error deleting user',
+    'admin.trainer.assigned': 'With trainer',
+    'admin.trainer.unassigned': 'No trainer',
+    'admin.trainer.clients': 'Assigned clients',
+    'admin.settings.logout': 'Sign Out',
+    'admin.settings.logout.confirm': 'Are you sure you want to sign out?',
+    'admin.recent.empty': 'No registered users',
+    'admin.stats.loading': 'Loading statistics...',
   },
 };
 
