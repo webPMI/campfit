@@ -158,12 +158,26 @@ El proyecto usa Firebase para:
 - `exercises_library` — Biblioteca de ejercicios
 - `diet_templates` — Plantillas de dietas
 
-### Reglas de seguridad
-Las reglas de Firestore están diseñadas para:
-- Solo usuarios autenticados pueden leer/escribir
-- Los admins tienen acceso completo
-- Los trainers solo ven/modifican sus clientes
-- Los clientes solo ven sus propios datos
+### Reglas de seguridad (Firestore)
+
+Las reglas de seguridad desplegadas actualmente en Firebase siguen estos principios:
+
+| Colección | Lectura | Escritura |
+|-----------|---------|-----------|
+| `users` | Propio usuario o admin | Propio usuario (excepto `role`) o admin |
+| `workouts` | Cliente asignado o admin | Solo admin |
+| `diets` | Cliente asignado o admin | Solo admin |
+| `progress` | Propio usuario o admin | Propio usuario o admin |
+| `chat_rooms` | Solo participantes | Solo participantes (crear/actualizar) |
+| `chat_rooms/{id}/messages` | Solo participantes del chat | Solo participantes (crear) |
+
+**Reglas clave:**
+- El email `servicioweb.pmi@gmail.com` tiene rol de bootstrap admin automático
+- Los usuarios pueden actualizar su perfil pero **no pueden cambiarse el rol a sí mismos**
+- Los mensajes del chat no se pueden editar ni eliminar una vez enviados
+- Las rutinas y dietas con `clientId == ''` son plantillas visibles para todos los autenticados
+
+> 📄 Ver `firebase_rules.md` en `nuevo_proyecto/` para las reglas completas.
 
 ---
 
