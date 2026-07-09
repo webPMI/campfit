@@ -1,0 +1,192 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+    </div>
+  </div>
+
+  <div id="progressContent" class="hidden">
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="animate-fade-in space-y-6">
+        <!-- Header -->
+        <div>
+          <h2 class="text-xl font-bold">{t('dashboard.progress')}</h2>
+          <p class="mt-1 text-sm text-zinc-500">{t('dashboard.progress.desc')}</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 border-b border-zinc-800/60 pb-2">
+          <button id="tabWeight" class="tab-btn active rounded-lg px-4 py-2 text-sm font-medium text-emerald-400 bg-emerald-500/10 transition-all">Peso</button>
+          <button id="tabPhotos" class="tab-btn rounded-lg px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-300 transition-all">Fotos</button>
+        </div>
+
+        <!-- Weight Tab -->
+        <div id="weightTab" class="space-y-4">
+          <!-- Register Weight -->
+          <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold text-zinc-300 mb-4">Registrar peso</h3>
+            <div class="flex gap-3">
+              <input
+                id="weightInput"
+                type="number"
+                step="0.1"
+                placeholder="75.5"
+                class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
+              />
+              <span class="flex items-center text-sm text-zinc-500">{t('client.stats.kg')}</span>
+              <button
+                id="saveWeightBtn"
+                class="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+
+          <!-- Weight History -->
+          <div class="rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold text-zinc-300 mb-4">Historial</h3>
+            <div id="weightHistory" class="space-y-2">
+              <p class="text-sm text-zinc-600">Sin registros de peso aún.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photos Tab (hidden by default) -->
+        <div id="photosTab" class="hidden space-y-4">
+          <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800/60 bg-zinc-900/40 p-12 text-center">
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
+              <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-zinc-400">Próximamente</h3>
+            <p class="mt-2 text-sm text-zinc-600">La subida de fotos de progreso estará disponible pronto.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</ClientLayout>
+
+<script>
+  import { authService } from '@/services/authService';
+  import { setUser } from '@/stores/authStore';
+  import { db } from '@/lib/firebase';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { subscribeToProgress, registerWeight } from '@/lib/client/progressService';
+  import { t } from '@/i18n/client';
+
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const loadingText = document.getElementById('loadingText')!;
+  const progressContent = document.getElementById('progressContent')!;
+  const tabWeight = document.getElementById('tabWeight')!;
+  const tabPhotos = document.getElementById('tabPhotos')!;
+  const weightTab = document.getElementById('weightTab')!;
+  const photosTab = document.getElementById('photosTab')!;
+  const weightInput = document.getElementById('weightInput') as HTMLInputElement;
+  const saveWeightBtn = document.getElementById('saveWeightBtn')!;
+  const weightHistory = document.getElementById('weightHistory')!;
+
+  loadingText.textContent = t('dashboard.loading');
+
+  // Tab switching
+  function switchTab(tab: 'weight' | 'photos') {
+    [tabWeight, tabPhotos].forEach(btn => {
+      btn.classList.remove('text-emerald-400', 'bg-emerald-500/10');
+      btn.classList.add('text-zinc-500');
+    });
+    if (tab === 'weight') {
+      tabWeight.classList.add('text-emerald-400', 'bg-emerald-500/10');
+      tabWeight.classList.remove('text-zinc-500');
+      weightTab.classList.remove('hidden');
+      photosTab.classList.add('hidden');
+    } else {
+      tabPhotos.classList.add('text-emerald-400', 'bg-emerald-500/10');
+      tabPhotos.classList.remove('text-zinc-500');
+      weightTab.classList.add('hidden');
+      photosTab.classList.remove('hidden');
+    }
+  }
+
+  tabWeight.addEventListener('click', () => switchTab('weight'));
+  tabPhotos.addEventListener('click', () => switchTab('photos'));
+
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
+    }
+
+    // Verificar rol de cliente
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Actualizar authStore
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    loadingScreen.classList.add('hidden');
+    progressContent.classList.remove('hidden');
+
+    // Subscribe to weight logs
+    subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
+      if (logs.length > 0) {
+        weightHistory.innerHTML = '';
+        logs.forEach((log) => {
+          const w = log.value?.weight;
+          if (w) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between rounded-lg bg-zinc-800/30 px-4 py-3';
+            const date = log.date?.toDate?.()?.toLocaleDateString() || 'Fecha';
+            div.innerHTML = `
+              <span class="text-sm text-zinc-400">${date}</span>
+              <span class="text-sm font-semibold text-zinc-200">${w} ${t('client.stats.kg')}</span>
+            `;
+            weightHistory.appendChild(div);
+          }
+        });
+      } else {
+        weightHistory.innerHTML = '<p class="text-sm text-zinc-600">Sin registros de peso aún.</p>';
+      }
+    });
+
+    // Save weight
+    saveWeightBtn.addEventListener('click', async () => {
+      const val = parseFloat(weightInput.value);
+      if (!val || val <= 0) return;
+      try {
+        await registerWeight(firebaseUser.uid, val);
+        weightInput.value = '';
+      } catch (err) {
+        console.error('Error saving weight:', err);
+      }
+    });
+  });
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-swap', () => {
+    unsubscribe();
+  });
+</script>

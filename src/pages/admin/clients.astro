@@ -1,0 +1,43 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <h1 class="text-2xl font-bold">{t('admin.clients')}</h1>
+      <p class="mt-1 text-sm text-zinc-500">{t('admin.clients.desc')}</p>
+
+      <div id="clients-container" class="mt-6 space-y-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
+          <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireAuth, subscribeToUsersByRole, renderClientCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
+
+  requireAuth(() => {
+    initClients();
+  });
+
+  function initClients(): void {
+    const container = document.getElementById('clients-container')!;
+
+    subscribeToUsersByRole('client', (clients) => {
+      if (clients.length === 0) {
+        container.innerHTML = renderEmptyState(ICONS.clients, 'Sin clientes registrados');
+        return;
+      }
+
+      container.innerHTML = clients.map((client) => renderClientCard(client)).join('');
+    });
+  }
+</script>

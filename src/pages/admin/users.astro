@@ -1,0 +1,70 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{t('admin.users')}</h1>
+          <p class="mt-1 text-sm text-zinc-500">{t('admin.users.desc')}</p>
+        </div>
+        <div class="flex gap-2">
+          <select id="role-filter" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-2 text-xs text-zinc-300 backdrop-blur-sm">
+            <option value="all">{t('admin.all')}</option>
+            <option value="admin">Admin</option>
+            <option value="trainer">Trainer</option>
+            <option value="client">Client</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="users-container" class="mt-6 space-y-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
+          <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireAuth, subscribeToUsers, renderUserCardExtended, renderEmptyState, initGlobalActions, ICONS, type AdminUser } from '@/lib/admin/adminUtils';
+
+  requireAuth(() => {
+    initUsers();
+  });
+
+  function initUsers(): void {
+    const container = document.getElementById('users-container')!;
+    const roleFilter = document.getElementById('role-filter') as HTMLSelectElement;
+
+    let allUsers: AdminUser[] = [];
+
+    function renderUsers(): void {
+      const filter = roleFilter.value;
+      const filtered = filter === 'all' ? allUsers : allUsers.filter((u) => u.role === filter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = renderEmptyState(ICONS.users, 'Sin usuarios');
+        return;
+      }
+
+      container.innerHTML = filtered.map((user) => renderUserCardExtended(user, true)).join('');
+
+      initGlobalActions();
+    }
+
+    subscribeToUsers((users) => {
+      allUsers = users;
+      renderUsers();
+    });
+
+    roleFilter.addEventListener('change', renderUsers);
+  }
+</script>

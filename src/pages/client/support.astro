@@ -1,0 +1,198 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <!-- Loading -->
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+    </div>
+  </div>
+
+  <!-- Support Content -->
+  <div id="supportContent" class="hidden">
+    <!-- Header -->
+    <header class="border-b border-zinc-800/60 bg-zinc-900/50 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20">
+            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <h1 class="text-lg font-bold text-emerald-400">{t('client.support.title')}</h1>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="animate-fade-in space-y-6">
+        <!-- Description -->
+        <div>
+          <h2 class="text-xl font-bold text-zinc-100">{t('client.support.title')}</h2>
+          <p class="mt-1 text-sm text-zinc-500">{t('client.support.desc')}</p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div>
+          <h3 class="mb-4 text-sm font-semibold text-zinc-400 uppercase tracking-wider">{t('client.support.faq')}</h3>
+          <div class="space-y-3" id="faqContainer">
+            <!-- FAQ items will be rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Support Chat Option -->
+        <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
+          <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
+              <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="text-sm font-semibold text-zinc-200">{t('client.support.chat')}</h4>
+              <p class="mt-1 text-xs text-zinc-500">{t('client.support.chat.desc')}</p>
+            </div>
+            <a
+              href={`/client/chat?lang=${lang}`}
+              class="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+            >
+              {t('client.support.chat')}
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</ClientLayout>
+
+<script>
+  import { authService } from '@/services/authService';
+  import { setUser } from '@/stores/authStore';
+  import { db } from '@/lib/firebase';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { t } from '@/i18n/client';
+
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const loadingText = document.getElementById('loadingText')!;
+  const supportContent = document.getElementById('supportContent')!;
+  const faqContainer = document.getElementById('faqContainer')!;
+
+  loadingText.textContent = t('dashboard.loading');
+
+  // FAQ data
+  const faqItems = [
+    {
+      question: t('client.support.faq.workouts'),
+      answer: t('client.support.faq.workouts.answer'),
+    },
+    {
+      question: t('client.support.faq.diets'),
+      answer: t('client.support.faq.diets.answer'),
+    },
+    {
+      question: t('client.support.faq.progress'),
+      answer: t('client.support.faq.progress.answer'),
+    },
+    {
+      question: t('client.support.faq.chat'),
+      answer: t('client.support.faq.chat.answer'),
+    },
+    {
+      question: t('client.support.faq.medical'),
+      answer: t('client.support.faq.medical.answer'),
+    },
+  ];
+
+  function renderFaqs() {
+    faqContainer.innerHTML = '';
+    faqItems.forEach((item, index) => {
+      const faqEl = document.createElement('div');
+      faqEl.className = 'faq-item rounded-xl border border-zinc-800/40 bg-zinc-900/40 backdrop-blur-sm overflow-hidden transition-all duration-200';
+
+      faqEl.innerHTML = `
+        <button
+          class="faq-question flex w-full items-center justify-between px-5 py-4 text-left transition-all hover:bg-zinc-800/30"
+          data-index="${index}"
+        >
+          <span class="text-sm font-medium text-zinc-200 pr-4">${item.question}</span>
+          <svg class="faq-chevron h-5 w-5 shrink-0 text-zinc-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="px-5 pb-4 pt-0">
+            <p class="text-sm text-zinc-400 leading-relaxed">${item.answer}</p>
+          </div>
+        </div>
+      `;
+
+      faqContainer.appendChild(faqEl);
+
+      // Add click handler
+      const questionBtn = faqEl.querySelector('.faq-question') as HTMLButtonElement;
+      questionBtn.addEventListener('click', () => {
+        const answer = faqEl.querySelector('.faq-answer') as HTMLDivElement;
+        const chevron = faqEl.querySelector('.faq-chevron') as SVGElement;
+        const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+
+        // Close all other FAQs
+        document.querySelectorAll('.faq-answer').forEach((el) => {
+          (el as HTMLDivElement).style.maxHeight = '0px';
+        });
+        document.querySelectorAll('.faq-chevron').forEach((el) => {
+          (el as SVGElement).classList.remove('rotate-180');
+        });
+
+        if (!isOpen) {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+          chevron.classList.add('rotate-180');
+        }
+      });
+    });
+  }
+
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
+    }
+
+    // Verificar rol de cliente
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Actualizar authStore
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    loadingScreen.classList.add('hidden');
+    supportContent.classList.remove('hidden');
+
+    // Render FAQ items
+    renderFaqs();
+  });
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-swap', () => {
+    unsubscribe();
+  });
+</script>

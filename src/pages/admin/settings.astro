@@ -1,0 +1,84 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <h1 class="text-2xl font-bold">{t('admin.settings')}</h1>
+      <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.desc')}</p>
+
+      <div class="mt-8 space-y-6">
+        <!-- Profile Section -->
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-zinc-200">{t('admin.settings.profile')}</h2>
+          <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.profile.desc')}</p>
+
+          <div id="profile-info" class="mt-4 space-y-4">
+            <div class="flex items-center gap-4">
+              <div id="profile-avatar" class="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-2xl font-bold text-emerald-400">?</div>
+              <div>
+                <p id="profile-name" class="text-base font-medium text-zinc-200">-</p>
+                <p id="profile-email" class="text-sm text-zinc-500">-</p>
+                <p id="profile-role" class="mt-1 text-xs text-zinc-600">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="rounded-xl border border-red-900/30 bg-red-500/5 p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-red-400">{t('admin.settings.danger')}</h2>
+          <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.danger.desc')}</p>
+
+          <div class="mt-4 space-y-3">
+            <button id="btn-logout" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-3 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all hover:bg-zinc-800">
+              {t('dashboard.logout')}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireAuth, signOutUser, loadUserProfile } from '@/lib/admin/adminUtils';
+
+  requireAuth(async (user) => {
+    await loadProfile(user);
+  });
+
+  async function loadProfile(user: import('firebase/auth').User): Promise<void> {
+    const nameEl = document.getElementById('profile-name')!;
+    const emailEl = document.getElementById('profile-email')!;
+    const roleEl = document.getElementById('profile-role')!;
+    const avatarEl = document.getElementById('profile-avatar')!;
+
+    nameEl.textContent = user.displayName || 'Admin';
+    emailEl.textContent = user.email || '';
+    avatarEl.textContent = (user.displayName || 'A').charAt(0).toUpperCase();
+
+    const profile = await loadUserProfile(user.uid);
+    if (profile) {
+      roleEl.textContent = 'Rol: ' + profile.role;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+      btnLogout.addEventListener('click', async () => {
+        try {
+          await signOutUser();
+        } catch (err) {
+          console.error('Error signing out:', err);
+        }
+      });
+    }
+  });
+</script>
