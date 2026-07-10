@@ -1,0 +1,189 @@
+# 🌐 Flujos de Navegación - CampFit 2.0
+
+## Estructura de Rutas por Monolito
+
+Cada grupo de rutas pertenece a un monolito independiente en `packages/`:
+
+```
+/                              # Landing / Redirección según auth
+│
+├── [packages/auth/]           # 🔐 Monolito de Autenticación
+│   ├── auth/login             # Inicio de sesión
+│   ├── auth/register          # Registro de nuevo usuario
+│   └── auth/recover           # Recuperación de contraseña
+│
+├── [packages/client/]         # 👤 Monolito del Cliente
+│   ├── client/dashboard       # Resumen diario del cliente
+│   ├── client/medical-profile # Perfil médico (onboarding obligatorio)
+│   ├── client/workouts        # Visualizador de rutinas
+│   ├── client/diets           # Visualizador de dietas
+│   ├── client/progress        # Progreso (peso + fotos)
+│   ├── client/chat            # Chat 1:1 con entrenador
+│   └── client/support         # Chatbot de soporte
+│
+└── [packages/admin/]          # ⚙️ Monolito del Administrador
+    ├── admin/panel            # Dashboard de administración
+    ├── admin/users            # Gestión de usuarios
+    ├── admin/workouts/index   # Listado de rutinas
+    ├── admin/workouts/editor  # Editor de rutinas
+    ├── admin/diets/index      # Listado de dietas
+    ├── admin/diets/editor     # Editor de dietas
+    ├── admin/chat/inbox       # Bandeja de entrada de chats
+    └── admin/progress/view    # Visor de progreso de alumnos
+```
+
+---
+
+## Flujo de Autenticación
+
+```
+                    ┌─────────────┐
+                    │  Visitante  │
+                    └──────┬──────┘
+                           │
+                    ┌──────▼──────┐
+                    │  /auth/*    │
+                    │ Login/Reg   │
+                    └──────┬──────┘
+                           │
+                    ┌──────▼──────┐
+                    │  ¿Auth OK?  │
+                    └──┬──────┬───┘
+                  No   │      │  Sí
+              ┌────────┘      └──────────┐
+              │                           │
+     ┌────────▼────────┐       ┌─────────▼──────────┐
+     │ Redirigir a     │       │  Obtener rol desde  │
+     │ /auth/login     │       │  Firestore (users)  │
+     └─────────────────┘       └─────────┬───────────┘
+                                          │
+                              ┌───────────▼───────────┐
+                              │   Evaluar rol del     │
+                              │   usuario             │
+                              └───┬───────┬───────┬───┘
+                                  │       │       │
+                          admin   │  client│       │ trainer
+                          ┌───────┘       │       └────────┐
+                          │               │                │
+                   ┌──────▼──────┐  ┌─────▼──────┐  ┌─────▼──────┐
+                   │  /admin/*   │  │ ¿Tiene     │  │  /admin/*  │
+                   │             │  │ perfil     │  │  (futuro)  │
+                   │             │  │ médico?    │  │            │
+                   └─────────────┘  └──┬──────┬──┘  └────────────┘
+                                     No│      │Sí
+                              ┌────────┘      └──────────┐
+                              │                           │
+                       ┌──────▼──────┐           ┌───────▼──────┐
+                       │  /client/   │           │  /client/    │
+                       │  medical-   │           │  dashboard   │
+                       │  profile    │           │              │
+                       └─────────────┘           └──────────────┘
+```
+
+---
+
+## Flujo del Cliente
+
+```
+                    ┌─────────────────┐
+                    │  /client/       │
+                    │  dashboard      │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              │              │              │
+     ┌────────▼───┐  ┌──────▼──────┐  ┌────▼──────┐
+     │ "Entrenar  │  │ "Próxima    │  │ Estadíst. │
+     │  hoy"      │  │  comida"    │  │ rápidas   │
+     └────────┬───┘  └──────┬──────┘  └────┬──────┘
+              │             │              │
+     ┌────────▼───┐  ┌──────▼──────┐       │
+     │ /client/   │  │ /client/    │       │
+     │ workouts   │  │ diets       │       │
+     └────────┬───┘  └──────┬──────┘       │
+              │             │              │
+              └──────┬──────┘              │
+                     │                     │
+            ┌────────▼────────┐            │
+            │  Navegación     │            │
+            │  Inferior       │            │
+            │  (Bottom Nav)   │            │
+            └──┬────┬────┬───┘            │
+               │    │    │                │
+      ┌────────┘    │    └────────┐       │
+      │             │             │       │
+┌─────▼─────┐ ┌─────▼─────┐ ┌────▼──────┐│
+│ /client/  │ │ /client/  │ │ /client/  ││
+│ workouts  │ │ progress  │ │ chat      ││
+└───────────┘ └───────────┘ └───────────┘│
+                                          │
+                              ┌───────────▼───────────┐
+                              │  /client/support       │
+                              │  (Chatbot FAQ)         │
+                              └───────────────────────┘
+```
+
+### Bottom Navigation (Cliente)
+
+| Icono | Ruta | Label |
+|-------|------|-------|
+| 🏠 | `/client/dashboard` | Inicio |
+| 💪 | `/client/workouts` | Rutinas |
+| 🥗 | `/client/diets` | Dietas |
+| 📈 | `/client/progress` | Progreso |
+| 💬 | `/client/chat` | Chat |
+
+---
+
+## Flujo del Administrador
+
+```
+                    ┌─────────────────┐
+                    │  /admin/panel   │
+                    │  Dashboard      │
+                    └────────┬────────┘
+                             │
+        ┌────────────────────┼────────────────────┐
+        │                    │                    │
+┌───────▼────────┐  ┌───────▼────────┐  ┌───────▼────────┐
+│  /admin/users  │  │  /admin/       │  │  /admin/chat/  │
+│  Gestión       │  │  workouts/     │  │  inbox         │
+│  usuarios      │  │  index         │  │  Bandeja       │
+└───────┬────────┘  └───────┬────────┘  └───────┬────────┘
+        │                   │                    │
+        │           ┌───────▼────────┐           │
+        │           │  /admin/       │           │
+        │           │  workouts/     │           │
+        │           │  editor        │           │
+        │           └────────────────┘           │
+        │                                        │
+┌───────▼────────┐  ┌───────▼────────┐           │
+│  /admin/diets/ │  │  /admin/       │           │
+│  index         │  │  diets/        │           │
+└───────┬────────┘  │  editor        │           │
+        │           └────────────────┘           │
+        │                                        │
+        └────────────────┬───────────────────────┘
+                         │
+                 ┌───────▼────────┐
+                 │  /admin/       │
+                 │  progress/view │
+                 │  Visor progreso│
+                 └────────────────┘
+```
+
+### Sidebar Navigation (Admin)
+
+| Icono | Ruta | Label |
+|-------|------|-------|
+| 📊 | `/admin/panel` | Dashboard |
+| 👥 | `/admin/users` | Usuarios |
+| 💪 | `/admin/workouts/index` | Rutinas |
+| 🥗 | `/admin/diets/index` | Dietas |
+| 💬 | `/admin/chat/inbox` | Chat |
+| 📈 | `/admin/progress/view` | Progreso |
+
+---
+
+> **📌 Guardias de ruta:** Ver `08_modulo_autenticacion.md` para la implementación de guards (AuthGuard, RoleGuard).
+> **📌 Manejo de estados (loading/empty/error/success):** Ver `14_agent_instructions.md` para el patrón de 4 estados en componentes.
