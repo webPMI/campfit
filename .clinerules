@@ -94,18 +94,18 @@ campfit-astro/
 
 ## Documentation Order
 Before implementing, read:
-1. docs/nuevo_proyecto/00_indice.md
-2. docs/nuevo_proyecto/01_vision_objetivos.md
-3. docs/nuevo_proyecto/02_requisitos_funcionales.md
-4. docs/nuevo_proyecto/03_arquitectura_tecnica.md
-5. docs/nuevo_proyecto/04_modelo_datos_firestore.md
-6. docs/nuevo_proyecto/05_reglas_seguridad.md
-7. docs/nuevo_proyecto/06_design_system.md
-8. docs/nuevo_proyecto/07_flujos_navegacion.md
-9. docs/nuevo_proyecto/13_setup_guide.md
-10. docs/nuevo_proyecto/14_agent_instructions.md
-11. docs/nuevo_proyecto/15_api_contracts.md
-12. docs/nuevo_proyecto/16_implementacion_incremental.md
+1. nuevo_proyecto/00_indice.md
+2. nuevo_proyecto/01_vision_objetivos.md
+3. nuevo_proyecto/02_requisitos_funcionales.md
+4. nuevo_proyecto/03_arquitectura_tecnica.md
+5. nuevo_proyecto/04_modelo_datos_firestore.md
+6. nuevo_proyecto/05_reglas_seguridad.md
+7. nuevo_proyecto/06_design_system.md
+8. nuevo_proyecto/07_flujos_navegacion.md
+9. nuevo_proyecto/13_setup_guide.md
+10. nuevo_proyecto/14_agent_instructions.md
+11. nuevo_proyecto/15_api_contracts.md
+12. nuevo_proyecto/16_implementacion_incremental.md
 13. [Specific module doc]
 
 ## MCP Servers Available

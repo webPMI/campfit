@@ -54,14 +54,14 @@ Dos agentes trabajando en paralelo **NUNCA** deben modificar el mismo archivo si
    ```bash
    # ¿Existe lock en este monolito?
    ls packages/{monolito}/.agent-lock 2>/dev/null && echo "LOCKED" || echo "FREE"
-   
-   # ¿Existe lock en docs/nuevo_proyecto/?
-   ls docs/nuevo_proyecto/.agent-lock 2>/dev/null && echo "LOCKED" || echo "FREE"
+
+   # ¿Existe lock en nuevo_proyecto/?
+   ls nuevo_proyecto/.agent-lock 2>/dev/null && echo "LOCKED" || echo "FREE"
    ```
 
-3. **Lock de documentación** - Los archivos en `docs/nuevo_proyecto/` tienen su propio lock:
+3. **Lock de documentación** - Los archivos en `nuevo_proyecto/` tienen su propio lock:
    ```
-   docs/nuevo_proyecto/.agent-lock
+   nuevo_proyecto/.agent-lock
    ```
    - Cualquier agente que necesite MODIFICAR documentación debe tomar este lock
    - Si el lock existe, esperar o abortar (nunca sobrescribir)
@@ -70,25 +70,25 @@ Dos agentes trabajando en paralelo **NUNCA** deben modificar el mismo archivo si
 4. **Liberar locks al terminar** - Al finalizar el feature, eliminar el lock:
    ```bash
    rm packages/{monolito}/.agent-lock
-   rm docs/nuevo_proyecto/.agent-lock  # si se tomó
+   rm nuevo_proyecto/.agent-lock  # si se tomó
    ```
 
 ### Mapa de Archivos por Agente
 
 | Agente | Monolito | Archivos que MODIFICA | Archivos que SOLO LEE |
 |--------|----------|----------------------|----------------------|
-| **A** | `shared` | `packages/shared/**` | `docs/nuevo_proyecto/*` |
-| **B** | `auth` | `packages/auth/**`, `docs/08_modulo_autenticacion.md` | `docs/nuevo_proyecto/*` |
-| **C** | `client` | `packages/client/**`, `docs/09_modulo_cliente.md` | `docs/nuevo_proyecto/*` |
-| **D** | `admin` | `packages/admin/**`, `docs/10_modulo_administracion.md` | `docs/nuevo_proyecto/*` |
-| **E** | `workers/` | `workers/**`, `docs/11_integraciones_operaciones.md` | `docs/nuevo_proyecto/*` |
+| **A** | `shared` | `packages/shared/**` | `nuevo_proyecto/*` |
+| **B** | `auth` | `packages/auth/**`, `nuevo_proyecto/08_modulo_autenticacion.md` | `nuevo_proyecto/*` |
+| **C** | `client` | `packages/client/**`, `nuevo_proyecto/09_modulo_cliente.md` | `nuevo_proyecto/*` |
+| **D** | `admin` | `packages/admin/**`, `nuevo_proyecto/10_modulo_administracion.md` | `nuevo_proyecto/*` |
+| **E** | `workers/` | `workers/**`, `nuevo_proyecto/11_integraciones_operaciones.md` | `nuevo_proyecto/*` |
 
 **Regla:** Si dos agentes tienen el mismo archivo en "Archivos que MODIFICA", NUNCA ejecutarlos en paralelo.
 
 ### Lock Jerárquico
 
 ```
-docs/nuevo_proyecto/.agent-lock  ← Lock GLOBAL de documentación
+nuevo_proyecto/.agent-lock  ← Lock GLOBAL de documentación
 packages/shared/.agent-lock       ← Lock de shared
 packages/auth/.agent-lock         ← Lock de auth
 packages/client/.agent-lock       ← Lock de client
@@ -97,7 +97,7 @@ packages/admin/.agent-lock        ← Lock de admin
 
 **Flujo correcto:**
 1. Agente C (client) necesita modificar `09_modulo_cliente.md`
-2. Verifica: `ls docs/nuevo_proyecto/.agent-lock` → no existe → FREE
+2. Verifica: `ls nuevo_proyecto/.agent-lock` → no existe → FREE
 3. Verifica: `ls packages/client/.agent-lock` → no existe → FREE
 4. Crea ambos locks
 5. Trabaja en client y su documentación
@@ -123,14 +123,14 @@ packages/admin/.agent-lock        ← Lock de admin
 Lee SOLO estos documentos en este orden:
 
 ```
-1. docs/nuevo_proyecto/00_indice.md        → 30s - Visión general
-2. docs/nuevo_proyecto/02_requisitos_funcionales.md → 2min - Qué construir
-3. docs/nuevo_proyecto/03_arquitectura_tecnica.md   → 2min - Cómo está organizado
-4. docs/nuevo_proyecto/04_modelo_datos_firestore.md → 3min - Estructura de datos
-5. docs/nuevo_proyecto/06_design_system.md → 2min - Componentes UI
-6. docs/nuevo_proyecto/07_flujos_navegacion.md → 2min - Rutas
-7. docs/nuevo_proyecto/13_setup_guide.md   → 3min - Configuración inicial
-8. docs/nuevo_proyecto/15_api_contracts.md → 2min - APIs
+1. nuevo_proyecto/00_indice.md        → 30s - Visión general
+2. nuevo_proyecto/02_requisitos_funcionales.md → 2min - Qué construir
+3. nuevo_proyecto/03_arquitectura_tecnica.md   → 2min - Cómo está organizado
+4. nuevo_proyecto/04_modelo_datos_firestore.md → 3min - Estructura de datos
+5. nuevo_proyecto/06_design_system.md → 2min - Componentes UI
+6. nuevo_proyecto/07_flujos_navegacion.md → 2min - Rutas
+7. nuevo_proyecto/13_setup_guide.md   → 3min - Configuración inicial
+8. nuevo_proyecto/15_api_contracts.md → 2min - APIs
 9. [Módulo específico a implementar]       → 3min
 ```
 
