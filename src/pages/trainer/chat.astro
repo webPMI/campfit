@@ -103,11 +103,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     initChat(user.uid);
   });
 
+  let unsubClients: (() => void) | null = null;
+  let unsubConversations: (() => void) | null = null;
   let allClients: TrainerClient[] = [];
   let conversations: { clientId: string; lastMessage: TrainerMessage | null; unread: number }[] = [];
   let selectedClient: TrainerClient | null = null;
   let currentUnsub: (() => void) | null = null;
   let trainerId: string = '';
+
+  // Cleanup subscriptions on page unload
+  window.addEventListener('beforeunload', () => {
+    unsubClients?.();
+    unsubConversations?.();
+    currentUnsub?.();
+  });
 
   async function initChat(uid: string): Promise<void> {
     trainerId = uid;
@@ -121,13 +130,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const chatSearch = document.getElementById('chat-search') as HTMLInputElement;
 
     // Subscribe to clients
-    subscribeToClients(trainerId, (clients) => {
+    unsubClients = subscribeToClients(trainerId, (clients) => {
       allClients = clients;
       renderConversations();
     });
 
     // Subscribe to all messages for the trainer
-    subscribeToConversations(trainerId, (messages) => {
+    unsubConversations = subscribeToConversations(trainerId, (messages) => {
       // Group by client
       const clientMap = new Map<string, TrainerMessage[]>();
       messages.forEach((m) => {

@@ -205,6 +205,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { auth } from '@/lib/firebase';
 
   // === State ===
+  let unsubUsers: (() => void) | null = null;
+  let unsubTrainers: (() => void) | null = null;
   let allUsers: AdminUser[] = [];
   let allTrainers: { uid: string; name: string }[] = [];
   let editingUserId: string | null = null;
@@ -212,6 +214,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   requireAdmin(() => {
     initUsers();
+  });
+
+  // Cleanup subscriptions on page unload
+  window.addEventListener('beforeunload', () => {
+    unsubUsers?.();
+    unsubTrainers?.();
   });
 
   // === Init ===
@@ -267,12 +275,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     }
 
     // Load trainers for assignment dropdown
-    subscribeToUsersByRole('trainer', (trainers) => {
+    unsubTrainers = subscribeToUsersByRole('trainer', (trainers) => {
       allTrainers = trainers.map((t) => ({ uid: t.uid, name: t.name }));
       updateTrainerSelect();
     });
 
-    subscribeToUsers((users) => {
+    unsubUsers = subscribeToUsers((users) => {
       allUsers = users;
       renderUsers();
     });

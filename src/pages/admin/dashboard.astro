@@ -127,8 +127,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { requireAdmin } from '@/lib/shared/authGuard';
   import { subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
 
+  let unsubUsers: (() => void) | null = null;
+  let unsubWorkouts: (() => void) | null = null;
+  let unsubDiets: (() => void) | null = null;
+  let unsubRecentUsers: (() => void) | null = null;
+
   requireAdmin(() => {
     initDashboard();
+  });
+
+  // Cleanup subscriptions on page unload
+  window.addEventListener('beforeunload', () => {
+    unsubUsers?.();
+    unsubWorkouts?.();
+    unsubDiets?.();
+    unsubRecentUsers?.();
   });
 
   function initDashboard(): void {
@@ -148,7 +161,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       lastUpdateEl.textContent = `Actualizado: ${now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
     }
 
-    subscribeToUsers((users) => {
+    unsubUsers = subscribeToUsers((users) => {
       const totalUsers = users.length;
       const totalTrainers = users.filter((u) => u.role === 'trainer').length;
       const totalClients = users.filter((u) => u.role === 'client').length;
@@ -195,15 +208,15 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       updateTimestamp();
     });
 
-    subscribeToCollectionCount('workouts', (count) => {
+    unsubWorkouts = subscribeToCollectionCount('workouts', (count) => {
       statTotalWorkouts.textContent = String(count);
     });
 
-    subscribeToCollectionCount('diets', (count) => {
+    unsubDiets = subscribeToCollectionCount('diets', (count) => {
       statTotalDiets.textContent = String(count);
     });
 
-    subscribeToRecentUsers(5, (users) => {
+    unsubRecentUsers = subscribeToRecentUsers(5, (users) => {
       if (users.length === 0) {
         recentContainer.innerHTML = renderEmptyState(ICONS.users, 'Sin usuarios registrados');
         return;
