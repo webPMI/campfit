@@ -59,8 +59,8 @@ export interface TrainerWorkout {
   difficulty: string;
   description: string;
   exercises: Exercise[];
-  createdAt?: any;
-  updatedAt?: any;
+  createdAt?: { toDate: () => Date } | null;
+  updatedAt?: { toDate: () => Date } | null;
 }
 
 export interface Exercise {
@@ -84,8 +84,8 @@ export interface TrainerDiet {
   somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph';
   totalCalories: number;
   meals: Meal[];
-  createdAt?: any;
-  updatedAt?: any;
+  createdAt?: { toDate: () => Date } | null;
+  updatedAt?: { toDate: () => Date } | null;
 }
 
 export interface Meal {
@@ -107,7 +107,7 @@ export interface TrainerMessage {
   type: 'text' | 'alert';
   participants: string[];
   isRead: boolean;
-  createdAt?: any;
+  createdAt?: { toDate: () => Date } | null;
 }
 
 // ============================================================
@@ -442,9 +442,20 @@ export async function markAsRead(messageId: string): Promise<void> {
 // Servicios de datos - Progreso
 // ============================================================
 
+export interface ProgressLog {
+  id: string;
+  clientId: string;
+  date: { toDate: () => Date } | null;
+  weight?: number;
+  calories?: number;
+  rpe?: number;
+  notes?: string;
+  createdAt?: { toDate: () => Date } | null;
+}
+
 export function subscribeToClientProgress(
   clientId: string,
-  callback: (logs: any[]) => void,
+  callback: (logs: ProgressLog[]) => void,
 ): Unsubscribe {
   const q = query(
     collection(db, 'progress_logs'),
@@ -455,7 +466,19 @@ export function subscribeToClientProgress(
   return onSnapshot(
     q,
     (snapshot) => {
-      const logs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const logs: ProgressLog[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          clientId: data.clientId || '',
+          date: data.date || null,
+          weight: data.weight,
+          calories: data.calories,
+          rpe: data.rpe,
+          notes: data.notes,
+          createdAt: data.createdAt,
+        } as ProgressLog;
+      });
       callback(logs);
     },
     (error) => {
