@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+    <!-- Código 500 -->
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="h-40 w-40 rounded-full bg-red-500/10 blur-3xl"></div>
+      </div>
+      <h1 class="relative text-8xl font-black text-zinc-800 select-none">500</h1>
+    </div>
+
+    <!-- Contenido -->
+    <div class="mt-4 animate-fade-in">
+      <h2 class="text-2xl font-bold text-zinc-100">Error del servidor</h2>
+      <p class="mt-2 text-sm text-zinc-500 max-w-md">
+        Algo salió mal en nuestro lado. Estamos trabajando para solucionarlo.
+        Por favor, intenta de nuevo en unos minutos.
+      </p>
+    </div>
+
+    <!-- Acciones -->
+    <div class="mt-8 flex gap-3 animate-fade-in-delay">
+      <a
+        href="/"
+        class="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+      >
+        Volver al inicio
+      </a>
+      <button
+        onclick="location.reload()"
+        class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-6 py-3 text-sm font-medium text-zinc-300 transition-all hover:border-zinc-600 hover:bg-zinc-800 hover:text-white active:scale-[0.98]"
+      >
+        Reintentar
+      </button>
+    </div>
+
+    <!-- Ilustración decorativa -->
+    <div class="mt-12 opacity-20">
+      <svg class="mx-auto h-24 w-24 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+      </svg>
+    </div>
+  </div>
+</BaseLayout>

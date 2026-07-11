@@ -1,0 +1,437 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+    </div>
+  </div>
+
+  <div id="dietsContent" class="hidden">
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="animate-fade-in space-y-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-bold">{t('client.nav.diets')}</h2>
+            <p class="mt-1 text-sm text-zinc-500">Sigue tu plan de alimentación personalizado</p>
+          </div>
+          <!-- Historial button -->
+          <button id="btn-history" class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-3 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all hidden">
+            <svg class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            Historial
+          </button>
+        </div>
+
+        <!-- Diet Adherence Bar -->
+        <div id="adherence-bar" class="hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Progreso del día</p>
+            <p id="adherence-text" class="text-xs text-emerald-400 font-medium">0%</p>
+          </div>
+          <div class="h-2 overflow-hidden rounded-full bg-zinc-800">
+            <div id="adherence-fill" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Diet Card -->
+        <div id="dietCard" class="hidden card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 id="dietName" class="text-lg font-bold text-zinc-100"></h3>
+              <div class="flex items-center gap-2 mt-1">
+                <span id="dietType" class="inline-block rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400"></span>
+                <span id="dietSomatotype" class="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 hidden"></span>
+              </div>
+            </div>
+            <p id="dietCalories" class="text-sm text-zinc-500"></p>
+          </div>
+
+          <div class="space-y-3" id="mealsList">
+            <!-- Meals rendered by JS -->
+          </div>
+
+          <!-- Totals -->
+          <div id="mealTotals" class="mt-6 rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4">
+            <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Totales del día</p>
+            <div class="mt-2 flex flex-wrap gap-4 text-sm">
+              <span class="text-zinc-300">Cal: <strong id="totalCal" class="text-emerald-400">0</strong></span>
+              <span class="text-zinc-300">P: <strong id="totalProtein" class="text-emerald-400">0</strong>g</span>
+              <span class="text-zinc-300">C: <strong id="totalCarbs" class="text-emerald-400">0</strong>g</span>
+              <span class="text-zinc-300">G: <strong id="totalFat" class="text-emerald-400">0</strong>g</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- History View -->
+        <div id="historyView" class="hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Historial de dietas</h3>
+            <button id="btn-back-current" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">
+              <svg class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+              </svg>
+              Dieta actual
+            </button>
+          </div>
+          <div id="historyList" class="space-y-2"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800/60 bg-zinc-900/40 p-12 text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
+            <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+            </svg>
+          </div>
+          <h3 class="mt-4 text-lg font-semibold text-zinc-400">{t('client.no.diet')}</h3>
+          <p class="mt-2 text-sm text-zinc-600">Tu entrenador asignará un plan nutricional personalizado.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="diet-toast" class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-6 py-3 text-sm font-medium backdrop-blur-xl shadow-2xl hidden"></div>
+</ClientLayout>
+
+<script>
+  import { authService } from '@/services/authService';
+  import { setUser } from '@/stores/authStore';
+  import { db } from '@/lib/firebase';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { subscribeToDiets, subscribeToDietHistory, subscribeToTodayMeals, registerMealComplete } from '@/lib/client/dietService';
+  import { t } from '@/i18n/client';
+
+  // ─── DOM refs ────────────────────────────────────────────────────────────────
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const loadingText = document.getElementById('loadingText')!;
+  const dietsContent = document.getElementById('dietsContent')!;
+  const dietCard = document.getElementById('dietCard')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const dietName = document.getElementById('dietName')!;
+  const dietType = document.getElementById('dietType')!;
+  const dietSomatotype = document.getElementById('dietSomatotype')!;
+  const dietCalories = document.getElementById('dietCalories')!;
+  const mealsList = document.getElementById('mealsList')!;
+  const totalCal = document.getElementById('totalCal')!;
+  const totalProtein = document.getElementById('totalProtein')!;
+  const totalCarbs = document.getElementById('totalCarbs')!;
+  const totalFat = document.getElementById('totalFat')!;
+  const adherenceBar = document.getElementById('adherence-bar')!;
+  const adherenceFill = document.getElementById('adherence-fill')!;
+  const adherenceText = document.getElementById('adherence-text')!;
+  const btnHistory = document.getElementById('btn-history')!;
+  const historyView = document.getElementById('historyView')!;
+  const historyList = document.getElementById('historyList')!;
+  const btnBackCurrent = document.getElementById('btn-back-current')!;
+  const toast = document.getElementById('diet-toast')!;
+
+  // ─── State ───────────────────────────────────────────────────────────────────
+  let currentDietId: string | null = null;
+  let currentMealsCount = 0;
+  let unsubDiets: (() => void) | null = null;
+  let unsubHistory: (() => void) | null = null;
+  let unsubTodayMeals: (() => void) | null = null;
+  let allDiets: any[] = [];
+
+  // ─── Toast helper ────────────────────────────────────────────────────────────
+  function showToast(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+    const colors = {
+      success: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+      error: 'border-red-500/30 bg-red-500/10 text-red-400',
+      info: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+    };
+    toast.className = `fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-6 py-3 text-sm font-medium backdrop-blur-xl shadow-2xl animate-slide-up ${colors[type]}`;
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+
+    setTimeout(() => {
+      toast.classList.add('animate-fade-out');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('animate-fade-out');
+      }, 300);
+    }, 2500);
+  }
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  loadingText.textContent = t('dashboard.loading');
+
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    loadingScreen.classList.add('hidden');
+    dietsContent.classList.remove('hidden');
+
+    const clientId = firebaseUser.uid;
+
+    // Suscribirse a la dieta actual (última)
+    unsubDiets = subscribeToDiets(clientId, (diets) => {
+      allDiets = diets;
+      if (diets.length > 0 && diets[0]) {
+        renderCurrentDiet(diets[0]);
+        btnHistory.classList.remove('hidden');
+      } else {
+        dietCard.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        btnHistory.classList.add('hidden');
+      }
+    });
+
+    // Suscribirse a comidas completadas hoy para adherencia
+    unsubTodayMeals = subscribeToTodayMeals(clientId, (completedIds) => {
+      updateAdherence(completedIds);
+    });
+
+    // History toggle
+    btnHistory.addEventListener('click', () => {
+      showHistory(clientId);
+    });
+
+    btnBackCurrent.addEventListener('click', () => {
+      historyView.classList.add('hidden');
+      dietCard.classList.remove('hidden');
+      btnHistory.classList.remove('hidden');
+      if (unsubHistory) {
+        unsubHistory();
+        unsubHistory = null;
+      }
+    });
+  });
+
+  // ─── Render current diet ─────────────────────────────────────────────────────
+  function renderCurrentDiet(d: any): void {
+    currentDietId = d.id;
+    currentMealsCount = d.meals?.length || 0;
+
+    dietName.textContent = d.name;
+    dietType.textContent = d.type === 'advanced' ? 'Avanzada' : 'Normal';
+
+    if (d.somatotype) {
+      dietSomatotype.classList.remove('hidden');
+      const somaLabels: Record<string, string> = {
+        ectomorph: 'Ectomorfo',
+        mesomorph: 'Mesomorfo',
+        endomorph: 'Endomorfo',
+      };
+      dietSomatotype.textContent = somaLabels[d.somatotype] || d.somatotype;
+    } else {
+      dietSomatotype.classList.add('hidden');
+    }
+
+    dietCalories.textContent = `${d.totalCalories} kcal`;
+
+    let sumCal = 0, sumP = 0, sumC = 0, sumF = 0;
+
+    mealsList.innerHTML = '';
+    if (d.meals && d.meals.length > 0) {
+      d.meals.forEach((meal: any) => {
+        sumCal += meal.calories || 0;
+        sumP += meal.protein || 0;
+        sumC += meal.carbs || 0;
+        sumF += meal.fat || 0;
+
+        const div = document.createElement('div');
+        div.className = 'rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all';
+        div.id = `meal-${meal.id}`;
+        div.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-medium text-zinc-200 capitalize">${getMealLabel(meal.name)}</h4>
+                <span class="text-[10px] text-zinc-600">#${meal.order || ''}</span>
+              </div>
+              ${meal.description ? `<p class="mt-1 text-xs text-zinc-600">${escapeHtml(meal.description)}</p>` : ''}
+              <div class="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
+                <span>Cal: ${meal.calories || 0}</span>
+                <span>P: ${meal.protein || 0}g</span>
+                <span>C: ${meal.carbs || 0}g</span>
+                <span>G: ${meal.fat || 0}g</span>
+              </div>
+            </div>
+            <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-3 rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-2.5 py-1.5 text-xs text-zinc-500 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </button>
+          </div>
+        `;
+        mealsList.appendChild(div);
+      });
+    }
+
+    totalCal.textContent = `${sumCal}`;
+    totalProtein.textContent = `${sumP}`;
+    totalCarbs.textContent = `${sumC}`;
+    totalFat.textContent = `${sumF}`;
+
+    dietCard.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+
+    // Attach click handlers for meal complete buttons
+    mealsList.querySelectorAll('.btn-complete').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const mealId = btn.getAttribute('data-meal-id');
+        const mealName = btn.getAttribute('data-meal-name');
+        if (!mealId || !currentDietId) return;
+
+        // Deshabilitar botón temporalmente
+        btn.setAttribute('disabled', 'true');
+        btn.classList.add('opacity-50');
+
+        const result = await registerMealComplete(
+          '', // clientId se obtiene del auth
+          currentDietId,
+          mealId,
+          mealName || '',
+        );
+
+        if (result) {
+          showToast('Comida marcada como completada ✅', 'success');
+          // Marcar visualmente
+          const row = btn.closest('[class*="rounded-xl"]');
+          if (row) {
+            row.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
+          }
+          btn.innerHTML = `
+            <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          `;
+          btn.classList.remove('opacity-50');
+        } else {
+          showToast('Error al marcar la comida', 'error');
+          btn.removeAttribute('disabled');
+          btn.classList.remove('opacity-50');
+        }
+      });
+    });
+  }
+
+  // ─── Adherence ───────────────────────────────────────────────────────────────
+  function updateAdherence(completedIds: string[]): void {
+    if (currentMealsCount === 0) {
+      adherenceBar.classList.add('hidden');
+      return;
+    }
+
+    adherenceBar.classList.remove('hidden');
+    const pct = Math.round((completedIds.length / currentMealsCount) * 100);
+    adherenceFill.style.width = `${pct}%`;
+    adherenceText.textContent = `${pct}% (${completedIds.length}/${currentMealsCount})`;
+
+    // Marcar visualmente las comidas completadas
+    completedIds.forEach((mealId) => {
+      const mealRow = document.getElementById(`meal-${mealId}`);
+      if (mealRow) {
+        mealRow.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
+        const btn = mealRow.querySelector('.btn-complete') as HTMLButtonElement;
+        if (btn) {
+          btn.innerHTML = `
+            <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          `;
+          btn.setAttribute('disabled', 'true');
+          btn.classList.add('opacity-50');
+        }
+      }
+    });
+  }
+
+  // ─── History ─────────────────────────────────────────────────────────────────
+  function showHistory(clientId: string): void {
+    dietCard.classList.add('hidden');
+    btnHistory.classList.add('hidden');
+    historyView.classList.remove('hidden');
+
+    if (unsubHistory) unsubHistory();
+
+    unsubHistory = subscribeToDietHistory(clientId, (diets) => {
+      if (diets.length === 0) {
+        historyList.innerHTML = '<p class="text-xs text-zinc-600 py-4 text-center">No hay dietas en el historial</p>';
+        return;
+      }
+
+      historyList.innerHTML = diets.map((d, i) => {
+        const isCurrent = i === 0;
+        const dateStr = d.createdAt?.toDate
+          ? d.createdAt.toDate().toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })
+          : 'Fecha desconocida';
+        return `
+          <div class="rounded-xl border ${isCurrent ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-zinc-800/40 bg-zinc-900/40'} p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-zinc-200">${escapeHtml(d.name)}</p>
+                <p class="text-xs text-zinc-500 mt-0.5">
+                  ${d.meals?.length || 0} comidas · ${d.totalCalories || 0} kcal
+                  ${isCurrent ? '<span class="text-emerald-400 ml-2">● Actual</span>' : ''}
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-zinc-500">${dateStr}</p>
+                <p class="text-[10px] text-zinc-600 mt-0.5">${d.type === 'advanced' ? 'Avanzada' : 'Normal'}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  }
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  function getMealLabel(name: string): string {
+    const labels: Record<string, string> = {
+      breakfast: 'Desayuno',
+      lunch: 'Almuerzo',
+      snack: 'Snack',
+      dinner: 'Cena',
+      other: 'Otro',
+    };
+    return labels[name] || name;
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-swap', () => {
+    unsubscribe();
+    unsubDiets?.();
+    unsubHistory?.();
+    unsubTodayMeals?.();
+  });
+</script>

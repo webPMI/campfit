@@ -1,0 +1,213 @@
+ ---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{t('admin.dashboard')}</h1>
+          <p class="mt-1 text-sm text-zinc-500">{t('admin.dashboard.desc')}</p>
+        </div>
+        <div id="last-update" class="text-xs text-zinc-600">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Grid - Row 1 -->
+      <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">{t('admin.users')}</h3>
+          <p id="stat-total-users" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Total usuarios</p>
+        </div>
+
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+            <svg class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">{t('admin.trainers')}</h3>
+          <p id="stat-total-trainers" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Entrenadores</p>
+        </div>
+
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">{t('admin.clients')}</h3>
+          <p id="stat-total-clients" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Clientes</p>
+        </div>
+
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-red-500/10">
+            <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">Bloqueados</h3>
+          <p id="stat-total-blocked" class="mt-1 text-2xl font-bold text-red-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Usuarios bloqueados</p>
+        </div>
+      </div>
+
+      <!-- Second row -->
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+            <svg class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">{t('admin.workouts')}</h3>
+          <p id="stat-total-workouts" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Rutinas creadas</p>
+        </div>
+
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/10">
+            <svg class="h-5 w-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">{t('admin.diets')}</h3>
+          <p id="stat-total-diets" class="mt-1 text-2xl font-bold text-orange-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Dietas creadas</p>
+        </div>
+
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-rose-500/10">
+            <svg class="h-5 w-5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-200">Alertas</h3>
+          <p id="stat-total-alerts" class="mt-1 text-2xl font-bold text-rose-400">-</p>
+          <p class="mt-1 text-xs text-zinc-500">Alertas activas</p>
+        </div>
+      </div>
+
+      <!-- Alertas Recientes -->
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold text-zinc-200">Alertas Recientes</h2>
+        <div id="recent-alerts" class="mt-4 space-y-3">
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 text-center backdrop-blur-sm">
+            <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usuarios Recientes -->
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold text-zinc-200">{t('admin.recent.users')}</h2>
+        <div id="recent-users" class="mt-4 space-y-3">
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 text-center backdrop-blur-sm">
+            <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireAdmin, subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
+
+  requireAdmin(() => {
+    initDashboard();
+  });
+
+  function initDashboard(): void {
+    const statTotalUsers = document.getElementById('stat-total-users')!;
+    const statTotalTrainers = document.getElementById('stat-total-trainers')!;
+    const statTotalClients = document.getElementById('stat-total-clients')!;
+    const statTotalBlocked = document.getElementById('stat-total-blocked')!;
+    const statTotalAlerts = document.getElementById('stat-total-alerts')!;
+    const statTotalWorkouts = document.getElementById('stat-total-workouts')!;
+    const statTotalDiets = document.getElementById('stat-total-diets')!;
+    const recentContainer = document.getElementById('recent-users')!;
+    const alertsContainer = document.getElementById('recent-alerts')!;
+    const lastUpdateEl = document.getElementById('last-update')!;
+
+    function updateTimestamp(): void {
+      const now = new Date();
+      lastUpdateEl.textContent = `Actualizado: ${now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    subscribeToUsers((users) => {
+      const totalUsers = users.length;
+      const totalTrainers = users.filter((u) => u.role === 'trainer').length;
+      const totalClients = users.filter((u) => u.role === 'client').length;
+      const totalBlocked = users.filter((u) => u.isBlocked).length;
+      const usersWithAlerts = users.filter((u) => u.hasActiveAlert);
+
+      statTotalUsers.textContent = String(totalUsers);
+      statTotalTrainers.textContent = String(totalTrainers);
+      statTotalClients.textContent = String(totalClients);
+      statTotalBlocked.textContent = String(totalBlocked);
+      statTotalAlerts.textContent = String(usersWithAlerts.length);
+
+      // Renderizar alertas
+      if (usersWithAlerts.length === 0) {
+        alertsContainer.innerHTML = `
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10">
+                <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
+              <p class="text-sm text-zinc-500">No hay alertas activas</p>
+            </div>
+          </div>`;
+      } else {
+        alertsContainer.innerHTML = usersWithAlerts.slice(0, 5).map((user) => `
+          <div class="rounded-xl border border-red-900/30 bg-red-500/5 p-4 backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/10">
+                <svg class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-zinc-200">${user.name}</p>
+                <p class="text-xs text-zinc-500">Alerta activa</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      updateTimestamp();
+    });
+
+    subscribeToCollectionCount('workouts', (count) => {
+      statTotalWorkouts.textContent = String(count);
+    });
+
+    subscribeToCollectionCount('diets', (count) => {
+      statTotalDiets.textContent = String(count);
+    });
+
+    subscribeToRecentUsers(5, (users) => {
+      if (users.length === 0) {
+        recentContainer.innerHTML = renderEmptyState(ICONS.users, 'Sin usuarios registrados');
+        return;
+      }
+      recentContainer.innerHTML = users.map((user) => renderUserCard(user)).join('');
+    });
+  }
+</script>

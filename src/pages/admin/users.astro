@@ -1,0 +1,596 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-5xl px-4 py-8">
+    <div class="animate-fade-in">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{t('admin.users')}</h1>
+          <p class="mt-1 text-sm text-zinc-500">{t('admin.users.desc')}</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Stats summary -->
+          <div id="stats-summary" class="hidden sm:flex items-center gap-3 text-xs text-zinc-500">
+            <span id="stat-total" class="text-zinc-400 font-medium">0</span>
+            <span class="text-zinc-600">·</span>
+            <span id="stat-blocked" class="text-red-400/70">0 bloqueados</span>
+          </div>
+          <select id="role-filter" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-2 text-xs text-zinc-300 backdrop-blur-sm">
+            <option value="all">{t('admin.all')}</option>
+            <option value="admin">Admin</option>
+            <option value="trainer">Trainer</option>
+            <option value="client">Client</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Search input -->
+      <div class="relative mt-4">
+        <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="{t('admin.search')}"
+          class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 py-2.5 pl-10 pr-4 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+        />
+      </div>
+
+      <!-- Users list -->
+      <div id="users-container" class="mt-4 space-y-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
+          <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== USER EDIT MODAL ==================== -->
+  <div id="user-modal-overlay" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm">
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div id="modal-avatar" class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-medium text-emerald-400">?</div>
+            <div>
+              <h3 id="modal-title" class="text-lg font-semibold text-zinc-200">Editar Usuario</h3>
+              <p id="modal-role-badge" class="text-xs text-zinc-500">—</p>
+            </div>
+          </div>
+          <button onclick="window.__closeUserModal()" class="rounded-lg p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="modal-body" class="mt-6 space-y-4">
+          <!-- Name -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1.5">Nombre</label>
+            <input id="modal-name" type="text" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20" />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1.5">Email</label>
+            <input id="modal-email" type="email" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20" />
+          </div>
+
+          <!-- Role -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-400 mb-1.5">Rol</label>
+            <select id="modal-role" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20">
+              <option value="admin">Admin</option>
+              <option value="trainer">Trainer</option>
+              <option value="client">Client</option>
+            </select>
+          </div>
+
+          <!-- Trainer Assignment -->
+          <div id="modal-trainer-field" class="hidden">
+            <label class="block text-xs font-medium text-zinc-400 mb-1.5">Trainer Asignado</label>
+            <select id="modal-trainer" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20">
+              <option value="">Sin trainer</option>
+            </select>
+          </div>
+
+          <!-- Block/Unblock toggle -->
+          <div id="modal-block-field" class="flex items-center justify-between rounded-xl border border-zinc-800/40 bg-zinc-800/30 p-3">
+            <div>
+              <p class="text-sm font-medium text-zinc-300">Usuario bloqueado</p>
+              <p id="modal-block-info" class="text-xs text-zinc-500">No podrá acceder al sistema</p>
+            </div>
+            <button id="modal-block-btn" onclick="window.__toggleBlockUser()" class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all">
+              Bloquear
+            </button>
+          </div>
+
+          <!-- Info: created at, last update -->
+          <div id="modal-info" class="flex justify-between text-xs text-zinc-600 pt-1">
+            <span id="modal-created-at">—</span>
+            <span id="modal-updated-at">—</span>
+          </div>
+
+          <!-- Primary actions -->
+          <div class="flex flex-col gap-2 pt-2">
+            <div class="flex gap-2">
+              <button id="modal-save-btn" onclick="window.__saveUserEdit()" class="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-500 active:scale-[0.98]">
+                Guardar Cambios
+              </button>
+              <button onclick="window.__closeUserModal()" class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-all hover:bg-zinc-800">
+                Cancelar
+              </button>
+            </div>
+
+            <!-- Secondary actions -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button id="modal-view-medical-btn" onclick="window.__viewMedicalProfile()" class="rounded-xl border border-blue-700/30 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400 transition-all hover:bg-blue-500/20 hidden">
+                <svg class="h-3.5 w-3.5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+                Perfil Médico
+              </button>
+              <button id="modal-reset-pwd-btn" onclick="window.__resetUserPassword()" class="rounded-xl border border-amber-700/30 bg-amber-500/10 px-4 py-2 text-xs font-medium text-amber-400 transition-all hover:bg-amber-500/20">
+                <svg class="h-3.5 w-3.5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                </svg>
+                Reset Password
+              </button>
+              <button id="modal-delete-btn" onclick="window.__deleteCurrentUser()" class="rounded-xl border border-red-900/30 bg-red-500/10 px-4 py-2 text-xs font-medium text-red-400 transition-all hover:bg-red-500/20">
+                <svg class="h-3.5 w-3.5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                </svg>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MEDICAL PROFILE MODAL ==================== -->
+  <div id="medical-modal-overlay" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-sm">
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-zinc-200">Perfil Médico</h3>
+          <button onclick="window.__closeMedicalModal()" class="rounded-lg p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div id="medical-modal-body" class="mt-4 space-y-3 text-sm text-zinc-300">
+          <p class="text-zinc-500">Cargando perfil médico...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import {
+    requireAdmin,
+    subscribeToUsers,
+    subscribeToUsersByRole,
+    renderUserCardExtended,
+    renderEmptyState,
+    renderLoadingState,
+    initGlobalActions,
+    updateUserRole,
+    deleteUser,
+    toggleUserBlock,
+    assignTrainer,
+    showToast,
+    escapeHtml,
+    getUserName,
+    formatDate,
+    getRoleBadge,
+    type AdminUser,
+  } from '@/lib/admin/adminUtils';
+  import { collection, doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+  import { db } from '@/lib/firebase';
+  import { sendPasswordResetEmail } from 'firebase/auth';
+  import { auth } from '@/lib/firebase';
+
+  // === State ===
+  let allUsers: AdminUser[] = [];
+  let allTrainers: { uid: string; name: string }[] = [];
+  let editingUserId: string | null = null;
+  let medicalProfileData: Record<string, unknown> | null = null;
+
+  requireAdmin(() => {
+    initUsers();
+  });
+
+  // === Init ===
+  function initUsers(): void {
+    const container = document.getElementById('users-container')!;
+    const roleFilter = document.getElementById('role-filter') as HTMLSelectElement;
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+
+    let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    function renderUsers(): void {
+      const filter = roleFilter.value;
+      const query = searchInput.value.trim().toLowerCase();
+
+      let filtered = filter === 'all' ? allUsers : allUsers.filter((u) => u.role === filter);
+
+      if (query) {
+        filtered = filtered.filter(
+          (u) =>
+            u.name.toLowerCase().includes(query) ||
+            u.email.toLowerCase().includes(query),
+        );
+      }
+
+      // Update stats
+      const totalEl = document.getElementById('stat-total');
+      const blockedEl = document.getElementById('stat-blocked');
+      if (totalEl) totalEl.textContent = String(filtered.length);
+      if (blockedEl) {
+        const blockedCount = filtered.filter((u) => u.isBlocked).length;
+        blockedEl.textContent = blockedCount > 0 ? `${blockedCount} bloqueados` : '0 bloqueados';
+      }
+
+      if (filtered.length === 0) {
+        const message = query
+          ? `Sin resultados para "${searchInput.value.trim()}"`
+          : 'Sin usuarios';
+        container.innerHTML = renderEmptyState(ICONS.users, message);
+        return;
+      }
+
+      container.innerHTML = filtered.map((user) => renderUserCardExtended(user, true)).join('');
+
+      initGlobalActions();
+      // Override edit button to open modal
+      document.querySelectorAll('[data-edit-user]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const uid = (btn as HTMLElement).dataset.uid;
+          if (uid) openUserModal(uid);
+        });
+      });
+    }
+
+    // Load trainers for assignment dropdown
+    subscribeToUsersByRole('trainer', (trainers) => {
+      allTrainers = trainers.map((t) => ({ uid: t.uid, name: t.name }));
+      updateTrainerSelect();
+    });
+
+    subscribeToUsers((users) => {
+      allUsers = users;
+      renderUsers();
+    });
+
+    roleFilter.addEventListener('change', renderUsers);
+
+    searchInput.addEventListener('input', () => {
+      if (searchTimeout) clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(renderUsers, 200);
+    });
+  }
+
+  // === ICONS (local ref for the script) ===
+  const ICONS = {
+    users: '<path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />',
+  };
+
+  // === Modal Functions ===
+  function openUserModal(uid: string): void {
+    const user = allUsers.find((u) => u.uid === uid);
+    if (!user) return;
+
+    editingUserId = uid;
+
+    // Set avatar
+    const avatar = document.getElementById('modal-avatar')!;
+    avatar.textContent = (user.name || '?').charAt(0).toUpperCase();
+
+    // Set title
+    document.getElementById('modal-title')!.textContent = user.name || 'Sin nombre';
+
+    // Set role badge
+    const badge = getRoleBadge(user.role);
+    document.getElementById('modal-role-badge')!.innerHTML = `<span class="rounded-full px-2 py-0.5 text-xs font-medium ${badge.class}">${badge.label}</span>`;
+
+    // Set form fields
+    (document.getElementById('modal-name') as HTMLInputElement).value = user.name;
+    (document.getElementById('modal-email') as HTMLInputElement).value = user.email;
+    (document.getElementById('modal-role') as HTMLSelectElement).value = user.role;
+
+    // Show/hide trainer field based on role
+    const trainerField = document.getElementById('modal-trainer-field')!;
+    if (user.role === 'client' || user.role === 'admin') {
+      trainerField.classList.remove('hidden');
+      const trainerSelect = document.getElementById('modal-trainer') as HTMLSelectElement;
+      trainerSelect.value = user.assignedTrainerId || '';
+    } else {
+      trainerField.classList.add('hidden');
+    }
+
+    // Show medical profile button only for clients
+    const medicalBtn = document.getElementById('modal-view-medical-btn')!;
+    medicalBtn.classList.toggle('hidden', user.role !== 'client');
+
+    // Block/Unblock button
+    const blockBtn = document.getElementById('modal-block-btn')!;
+    const blockInfo = document.getElementById('modal-block-info')!;
+    if (user.isBlocked) {
+      blockBtn.textContent = 'Desbloquear';
+      blockBtn.className = 'rounded-lg px-3 py-1.5 text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all';
+      blockInfo.textContent = `Bloqueado el ${user.blockedAt ? formatDate(user.blockedAt) : '—'}`;
+    } else {
+      blockBtn.textContent = 'Bloquear';
+      blockBtn.className = 'rounded-lg px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all';
+      blockInfo.textContent = 'No podrá acceder al sistema';
+    }
+
+    // Info dates
+    document.getElementById('modal-created-at')!.textContent = `Creado: ${formatDate(user.createdAt)}`;
+    document.getElementById('modal-updated-at')!.textContent = `Actualizado: ${formatDate(user.updatedAt)}`;
+
+    // Update trainer list
+    updateTrainerSelect();
+
+    document.getElementById('user-modal-overlay')!.classList.remove('hidden');
+  }
+
+  function updateTrainerSelect(): void {
+    const select = document.getElementById('modal-trainer') as HTMLSelectElement;
+    if (!select) return;
+    const currentValue = select.value;
+    select.innerHTML = '<option value="">Sin trainer</option>';
+    allTrainers.forEach((trainer) => {
+      const opt = document.createElement('option');
+      opt.value = trainer.uid;
+      opt.textContent = trainer.name;
+      select.appendChild(opt);
+    });
+    select.value = currentValue;
+  }
+
+  // Expose modal functions globally
+  (window as any).__closeUserModal = function (): void {
+    editingUserId = null;
+    medicalProfileData = null;
+    document.getElementById('user-modal-overlay')!.classList.add('hidden');
+  };
+
+  (window as any).__closeMedicalModal = function (): void {
+    document.getElementById('medical-modal-overlay')!.classList.add('hidden');
+  };
+
+  (window as any).__saveUserEdit = async function (): Promise<void> {
+    if (!editingUserId) return;
+
+    const name = (document.getElementById('modal-name') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('modal-email') as HTMLInputElement).value.trim();
+    const role = (document.getElementById('modal-role') as HTMLSelectElement).value as 'admin' | 'trainer' | 'client';
+    const assignedTrainerId = (document.getElementById('modal-trainer') as HTMLSelectElement).value || null;
+
+    if (!name) {
+      showToast({ message: 'El nombre es obligatorio', type: 'error' });
+      return;
+    }
+
+    const saveBtn = document.getElementById('modal-save-btn')!;
+    saveBtn.textContent = 'Guardando...';
+    (saveBtn as HTMLButtonElement).disabled = true;
+
+    try {
+      const updateData: Record<string, unknown> = {
+        name,
+        email,
+        role,
+        updatedAt: serverTimestamp(),
+      };
+
+      // Include trainer assignment for clients and admins
+      if (role === 'client' || role === 'admin') {
+        updateData.assignedTrainerId = assignedTrainerId || null;
+      } else {
+        updateData.assignedTrainerId = null;
+      }
+
+      await updateDoc(doc(db, 'users', editingUserId), updateData);
+      showToast({ message: 'Usuario actualizado correctamente', type: 'success' });
+      (window as any).__closeUserModal();
+    } catch (error) {
+      console.error('[Admin] Error saving user:', error);
+      showToast({ message: 'Error al guardar los cambios', type: 'error' });
+    } finally {
+      saveBtn.textContent = 'Guardar Cambios';
+      (saveBtn as HTMLButtonElement).disabled = false;
+    }
+  };
+
+  (window as any).__toggleBlockUser = async function (): Promise<void> {
+    if (!editingUserId) return;
+    const user = allUsers.find((u) => u.uid === editingUserId);
+    if (!user) return;
+
+    const newBlockedState = !user.isBlocked;
+    const action = newBlockedState ? 'bloquear' : 'desbloquear';
+    const confirmed = confirm(`¿Estás seguro de ${action} a ${user.name}?`);
+    if (!confirmed) return;
+
+    try {
+      await toggleUserBlock(editingUserId, newBlockedState);
+      showToast({
+        message: `Usuario ${newBlockedState ? 'bloqueado' : 'desbloqueado'} correctamente`,
+        type: 'success',
+      });
+      // Update local state
+      user.isBlocked = newBlockedState;
+      if (newBlockedState) {
+        user.blockedAt = { toDate: () => new Date() };
+      } else {
+        user.blockedAt = null;
+      }
+      // Refresh modal
+      openUserModal(editingUserId);
+    } catch (error) {
+      console.error('[Admin] Error toggling block:', error);
+      showToast({ message: `Error al ${action} al usuario`, type: 'error' });
+    }
+  };
+
+  (window as any).__viewMedicalProfile = async function (): Promise<void> {
+    if (!editingUserId) return;
+
+    const body = document.getElementById('medical-modal-body')!;
+    body.innerHTML = '<p class="text-zinc-500">Cargando perfil médico...</p>';
+    document.getElementById('medical-modal-overlay')!.classList.remove('hidden');
+
+    try {
+      const docSnap = await getDoc(doc(db, 'users', editingUserId));
+      if (!docSnap.exists()) {
+        body.innerHTML = '<p class="text-red-400">Usuario no encontrado</p>';
+        return;
+      }
+
+      const data = docSnap.data();
+      const mp = data.medicalProfile;
+
+      if (!mp) {
+        body.innerHTML = `
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-800/30 p-6 text-center">
+            <p class="text-zinc-500">Este cliente no ha completado su perfil médico</p>
+          </div>
+        `;
+        return;
+      }
+
+      body.innerHTML = `
+        <div class="space-y-3">
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-800/30 p-4">
+            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Información General</h4>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              ${mp.birthDate ? `<div><span class="text-zinc-500">Edad:</span> <span class="text-zinc-200">${calculateAge(mp.birthDate)} años</span></div>` : ''}
+              ${mp.height ? `<div><span class="text-zinc-500">Altura:</span> <span class="text-zinc-200">${mp.height} cm</span></div>` : ''}
+              ${mp.initialWeight ? `<div><span class="text-zinc-500">Peso inicial:</span> <span class="text-zinc-200">${mp.initialWeight} kg</span></div>` : ''}
+              ${mp.experience ? `<div><span class="text-zinc-500">Experiencia:</span> <span class="text-zinc-200 capitalize">${mp.experience}</span></div>` : ''}
+              ${mp.goals?.length ? `<div class="col-span-2"><span class="text-zinc-500">Objetivos:</span> <span class="text-zinc-200">${mp.goals.join(', ')}</span></div>` : ''}
+            </div>
+          </div>
+
+          ${mp.allergies?.length ? `
+            <div class="rounded-xl border border-amber-900/30 bg-amber-500/5 p-4">
+              <h4 class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2">Alergias</h4>
+              <div class="flex flex-wrap gap-1.5">
+                ${mp.allergies.map((a: string) => `<span class="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs text-amber-300 border border-amber-500/20">${escapeHtml(a)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${mp.injuries?.length ? `
+            <div class="rounded-xl border border-red-900/30 bg-red-500/5 p-4">
+              <h4 class="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2">Lesiones</h4>
+              <div class="flex flex-wrap gap-1.5">
+                ${mp.injuries.map((i: string) => `<span class="rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs text-red-300 border border-red-500/20">${escapeHtml(i)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${mp.conditions?.length ? `
+            <div class="rounded-xl border border-orange-900/30 bg-orange-500/5 p-4">
+              <h4 class="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-2">Condiciones Médicas</h4>
+              <div class="flex flex-wrap gap-1.5">
+                ${mp.conditions.map((c: string) => `<span class="rounded-full bg-orange-500/10 px-2.5 py-0.5 text-xs text-orange-300 border border-orange-500/20">${escapeHtml(c)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${!mp.allergies?.length && !mp.injuries?.length && !mp.conditions?.length ? `
+            <div class="rounded-xl border border-emerald-900/30 bg-emerald-500/5 p-4 text-center">
+              <p class="text-sm text-emerald-400">No hay alertas médicas registradas</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    } catch (error) {
+      console.error('[Admin] Error loading medical profile:', error);
+      body.innerHTML = '<p class="text-red-400">Error al cargar el perfil médico</p>';
+    }
+  };
+
+  (window as any).__resetUserPassword = async function (): Promise<void> {
+    if (!editingUserId) return;
+
+    const user = allUsers.find((u) => u.uid === editingUserId);
+    if (!user || !user.email) {
+      showToast({ message: 'Este usuario no tiene email registrado', type: 'error' });
+      return;
+    }
+
+    const confirmed = confirm(`¿Enviar email de recuperación a ${user.email}?`);
+    if (!confirmed) return;
+
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      showToast({ message: `Email de recuperación enviado a ${user.email}`, type: 'success' });
+    } catch (error) {
+      console.error('[Admin] Error sending password reset:', error);
+      showToast({ message: 'Error al enviar el email de recuperación', type: 'error' });
+    }
+  };
+
+  (window as any).__deleteCurrentUser = async function (): Promise<void> {
+    if (!editingUserId) return;
+    const user = allUsers.find((u) => u.uid === editingUserId);
+    if (!user) return;
+
+    if (!confirm(`¿Estás seguro de eliminar a ${user.name}? Esta acción no se puede deshacer.`)) return;
+
+    try {
+      await deleteUser(editingUserId);
+      showToast({ message: 'Usuario eliminado correctamente', type: 'success' });
+      (window as any).__closeUserModal();
+    } catch (error) {
+      console.error('[Admin] Error deleting user:', error);
+      showToast({ message: 'Error al eliminar el usuario', type: 'error' });
+    }
+  };
+
+  // Role dropdown change handler - show/hide trainer field
+  document.getElementById('modal-role')?.addEventListener('change', function (this: HTMLSelectElement) {
+    const trainerField = document.getElementById('modal-trainer-field')!;
+    const medicalBtn = document.getElementById('modal-view-medical-btn')!;
+    if (this.value === 'client') {
+      trainerField.classList.remove('hidden');
+      medicalBtn.classList.remove('hidden');
+    } else if (this.value === 'admin') {
+      trainerField.classList.remove('hidden');
+      medicalBtn.classList.add('hidden');
+    } else {
+      trainerField.classList.add('hidden');
+      medicalBtn.classList.add('hidden');
+    }
+  });
+
+  function calculateAge(birthDate: any): number {
+    if (!birthDate) return 0;
+    try {
+      const date = birthDate.toDate ? birthDate.toDate() : new Date(birthDate);
+      const diff = Date.now() - date.getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    } catch {
+      return 0;
+    }
+  }
+</script>

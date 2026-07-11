@@ -1,0 +1,364 @@
+---
+import TrainerLayout from '@/layouts/TrainerLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<TrainerLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{t('trainer.clients')}</h1>
+          <p class="mt-1 text-sm text-zinc-500">
+            <span id="client-count" class="text-emerald-400 font-medium">0</span> {t('admin.clients.total')}
+          </p>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="mt-6">
+        <div class="relative">
+          <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+          <input id="client-search" type="text" placeholder="Buscar clientes por nombre..." class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/60 pl-10 pr-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 backdrop-blur-sm focus:outline-none focus:border-emerald-500/50" />
+        </div>
+      </div>
+
+      <!-- Client Detail View -->
+      <div id="client-detail" class="hidden mt-8"></div>
+
+      <!-- Clients List -->
+      <div id="clients-container" class="mt-6 space-y-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 text-center backdrop-blur-sm">
+          <div class="flex items-center justify-center gap-3">
+            <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</TrainerLayout>
+
+<script>
+  import {
+    requireAuth,
+    subscribeToClients,
+    subscribeToWorkoutsByClient,
+    subscribeToDietsByClient,
+    subscribeToClientProgress,
+    getClientProfile,
+    ICONS,
+    renderEmptyState,
+    renderClientCard,
+    renderWorkoutCard,
+    renderDietCard,
+    escapeHtml,
+    getUserInitial,
+    formatDate,
+  } from '@/lib/trainer/trainerUtils';
+  import type { TrainerClient } from '@/lib/trainer/trainerUtils';
+
+  let unsubClients: (() => void) | null = null;
+  let unsubDetailWorkouts: (() => void) | null = null;
+  let unsubDetailDiets: (() => void) | null = null;
+  let unsubDetailProgress: (() => void) | null = null;
+  let allClients: TrainerClient[] = [];
+
+  requireAuth(async (user) => {
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
+    initClients(user.uid, lang);
+  });
+
+  // Cleanup on unload
+  window.addEventListener('beforeunload', () => {
+    unsubClients?.();
+    cleanupDetailSubscriptions();
+  });
+
+  function cleanupDetailSubscriptions(): void {
+    unsubDetailWorkouts?.();
+    unsubDetailDiets?.();
+    unsubDetailProgress?.();
+    unsubDetailWorkouts = null;
+    unsubDetailDiets = null;
+    unsubDetailProgress = null;
+  }
+
+  async function initClients(trainerId: string, lang: string): Promise<void> {
+    const clientsContainer = document.getElementById('clients-container')!;
+    const clientDetail = document.getElementById('client-detail')!;
+    const clientCount = document.getElementById('client-count')!;
+    const searchInput = document.getElementById('client-search') as HTMLInputElement;
+
+    function renderFilteredClients(clients: TrainerClient[], search: string): void {
+      const filtered = search
+        ? clients.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+        : clients;
+
+      if (filtered.length === 0) {
+        clientsContainer.innerHTML = renderEmptyState(
+          ICONS.users,
+          search ? `Sin resultados para "${search}"` : 'No tienes clientes asignados',
+        );
+        return;
+      }
+
+      clientsContainer.innerHTML = filtered
+        .map(
+          (c) =>
+            `<div class="cursor-pointer" onclick="window.__showClientDetail('${c.uid}')">
+              ${renderClientCard(c)}
+            </div>`,
+        )
+        .join('');
+    }
+
+    // Subscribe to clients
+    unsubClients = subscribeToClients(trainerId, (clients) => {
+      allClients = clients;
+      clientCount.textContent = String(clients.length);
+      renderFilteredClients(clients, searchInput.value);
+    });
+
+    // Search handler
+    searchInput.addEventListener('input', () => {
+      renderFilteredClients(allClients, searchInput.value);
+    });
+
+    // Global function to show client detail
+    (window as any).__showClientDetail = async (clientId: string) => {
+      // Cleanup previous detail subscriptions
+      cleanupDetailSubscriptions();
+
+      clientDetail.classList.remove('hidden');
+      clientDetail.innerHTML = `
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/60 p-5 backdrop-blur-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-zinc-200">${escapeHtml('Detalle del Cliente')}</h2>
+            <button onclick="window.__hideClientDetail()" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">Cerrar</button>
+          </div>
+
+          <!-- Profile Header -->
+          <div id="client-profile-info" class="mb-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800/50 text-lg font-medium text-zinc-500 animate-pulse">?</div>
+              <div class="flex-1">
+                <div class="h-4 w-32 rounded bg-zinc-800/50 animate-pulse"></div>
+                <div class="mt-1.5 h-3 w-48 rounded bg-zinc-800/30 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="mb-6 flex flex-wrap gap-2">
+            <a href="/trainer/chat?lang=${lang}" class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+              </svg>
+              Ir al Chat
+            </a>
+            <a href="/trainer/workouts?lang=${lang}&clientId=${clientId}" class="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-400 hover:bg-blue-500/20 transition-all">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Nueva Rutina
+            </a>
+            <a href="/trainer/diets?lang=${lang}&clientId=${clientId}" class="inline-flex items-center gap-1.5 rounded-lg border border-orange-500/20 bg-orange-500/10 px-3 py-1.5 text-xs font-medium text-orange-400 hover:bg-orange-500/20 transition-all">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Nueva Dieta
+            </a>
+          </div>
+
+          <div class="space-y-6">
+            <!-- Medical Profile -->
+            <div>
+              <h3 class="text-sm font-semibold text-zinc-300 mb-2">Perfil Médico</h3>
+              <div id="detail-medical" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                  <svg class="h-4 w-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <p class="text-xs text-zinc-500">Cargando...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Workouts -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-semibold text-zinc-300">Rutinas</h3>
+                <a href="/trainer/workouts?lang=${lang}&clientId=${clientId}" class="text-xs text-emerald-400 hover:text-emerald-300">Crear rutina</a>
+              </div>
+              <div id="detail-workouts" class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <svg class="h-4 w-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <p class="text-xs text-zinc-500">Cargando...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Diets -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-semibold text-zinc-300">Dietas</h3>
+                <a href="/trainer/diets?lang=${lang}&clientId=${clientId}" class="text-xs text-emerald-400 hover:text-emerald-300">Crear dieta</a>
+              </div>
+              <div id="detail-diets" class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <svg class="h-4 w-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <p class="text-xs text-zinc-500">Cargando...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div>
+              <h3 class="text-sm font-semibold text-zinc-300 mb-2">Progreso Reciente</h3>
+              <div id="detail-progress" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                  <svg class="h-4 w-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <p class="text-xs text-zinc-500">Cargando...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      try {
+        // Load profile
+        const profile = await getClientProfile(clientId);
+        const profileInfo = document.getElementById('client-profile-info')!;
+        if (profile) {
+          const hasAlert = profile.hasActiveAlert;
+          profileInfo.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-lg font-medium text-emerald-400">
+                ${getUserInitial(profile.name)}
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-medium text-zinc-200">${escapeHtml(profile.name)}</p>
+                  ${hasAlert ? '<span class="h-2 w-2 rounded-full bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
+                </div>
+                <p class="text-xs text-zinc-500">${escapeHtml(profile.email)}</p>
+              </div>
+            </div>
+          `;
+        }
+
+        // Load medical profile
+        const medicalEl = document.getElementById('detail-medical')!;
+        if (profile?.medicalProfile) {
+          const mp = profile.medicalProfile;
+          medicalEl.innerHTML = `
+            <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
+              <div>
+                <p class="text-zinc-500 mb-0.5">Alergias</p>
+                <p class="text-zinc-200">${mp.allergies?.length ? mp.allergies.join(', ') : '<span class="text-zinc-600">Ninguna</span>'}</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 mb-0.5">Lesiones</p>
+                <p class="text-zinc-200">${mp.injuries?.length ? mp.injuries.join(', ') : '<span class="text-zinc-600">Ninguna</span>'}</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 mb-0.5">Condiciones</p>
+                <p class="text-zinc-200">${mp.conditions?.length ? mp.conditions.join(', ') : '<span class="text-zinc-600">Ninguna</span>'}</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 mb-0.5">Objetivos</p>
+                <p class="text-zinc-200">${mp.goals?.length ? mp.goals.join(', ') : '<span class="text-zinc-600">No especificados</span>'}</p>
+              </div>
+              <div>
+                <p class="text-zinc-500 mb-0.5">Experiencia</p>
+                <p class="text-zinc-200">${mp.experience ? mp.experience.charAt(0).toUpperCase() + mp.experience.slice(1) : '<span class="text-zinc-600">No especificada</span>'}</p>
+              </div>
+            </div>
+          `;
+        } else {
+          medicalEl.innerHTML = '<p class="text-xs text-zinc-600">Perfil médico no completado</p>';
+        }
+      } catch (error) {
+        console.error('[TrainerClients] Error loading profile:', error);
+        const profileInfo = document.getElementById('client-profile-info')!;
+        profileInfo.innerHTML = '<p class="text-xs text-red-400">Error al cargar perfil</p>';
+      }
+
+      // Load workouts
+      unsubDetailWorkouts = subscribeToWorkoutsByClient(clientId, (workouts) => {
+        const el = document.getElementById('detail-workouts')!;
+        if (workouts.length === 0) {
+          el.innerHTML = '<p class="text-xs text-zinc-600">Sin rutinas asignadas</p>';
+        } else {
+          el.innerHTML = workouts.map((w) => renderWorkoutCard(w)).join('');
+        }
+      });
+
+      // Load diets
+      unsubDetailDiets = subscribeToDietsByClient(clientId, (diets) => {
+        const el = document.getElementById('detail-diets')!;
+        if (diets.length === 0) {
+          el.innerHTML = '<p class="text-xs text-zinc-600">Sin dietas asignadas</p>';
+        } else {
+          el.innerHTML = diets.map((d) => renderDietCard(d)).join('');
+        }
+      });
+
+      // Load progress
+      unsubDetailProgress = subscribeToClientProgress(clientId, (logs) => {
+        const el = document.getElementById('detail-progress')!;
+        if (logs.length === 0) {
+          el.innerHTML = '<p class="text-xs text-zinc-600">Sin registros de progreso</p>';
+        } else {
+          el.innerHTML = logs.slice(0, 5).map((log: any) => {
+            const date = log.date?.toDate ? formatDate(log.date) : log.date || '-';
+            let value: string;
+            switch (log.type) {
+              case 'weight':
+                value = `${log.value?.weight || '-'} kg`;
+                break;
+              case 'workout':
+                value = log.value?.completed ? '✅ Completado' : '⏳ Pendiente';
+                break;
+              case 'meal':
+                value = log.value?.completed ? '✅ Completada' : '⏳ Pendiente';
+                break;
+              default:
+                value = log.value ? JSON.stringify(log.value) : '-';
+            }
+            return `<div class="flex items-center justify-between py-1.5 border-b border-zinc-800/40 last:border-0">
+              <span class="text-xs text-zinc-500">${date}</span>
+              <span class="text-xs text-zinc-200">${value}</span>
+            </div>`;
+          }).join('');
+        }
+      });
+    };
+
+    (window as any).__hideClientDetail = () => {
+      cleanupDetailSubscriptions();
+      clientDetail.classList.add('hidden');
+      clientDetail.innerHTML = '';
+    };
+  }
+</script>

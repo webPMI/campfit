@@ -1,0 +1,122 @@
+# CampFit 2.0 - Cline Rules
+
+## Stack
+- Framework: Astro 5 (SSR + islands)
+- UI: Astro components + Alpine.js / vanilla JS (sin React)
+- Styles: Tailwind CSS 4 (dark mode default)
+- State: Nanostores
+- Database: Cloud Firestore (NoSQL)
+- Storage: Cloudflare R2
+- Mobile: Capacitor 6
+- Testing: Vitest (unitarios) + Playwright (E2E) — **centralizados en tests/**
+- CI/CD: GitHub Actions
+
+## Project Structure
+```
+campfit-astro/
+├── src/               # 📁 Código fuente (sin tests)
+│   ├── components/    # Componentes .astro
+│   ├── layouts/       # Layouts .astro
+│   ├── pages/         # Páginas y API routes
+│   │   ├── login.astro
+│   │   ├── register.astro
+│   │   ├── recover.astro
+│   │   ├── dashboard.astro
+│   │   ├── index.astro
+│   │   └── admin/
+
+│   │       ├── dashboard.astro   # Panel admin con estadísticas reales
+│   │       ├── users.astro       # Lista de usuarios con roles
+│   │       ├── trainers.astro    # Lista de entrenadores
+│   │       ├── clients.astro     # Lista de clientes
+│   │       └── settings.astro    # Configuración del sistema
+│   ├── lib/           # Utilidades y helpers
+│   │   ├── firebase.ts
+│   │   ├── validators.ts      # Validación de formularios (pure functions)
+│   │   ├── routeGuards.ts     # Protección de rutas por rol
+│   │   └── client/            # Servicios del lado cliente
+│   ├── services/      # Servicios (Firebase, etc.)
+│   │   ├── authService.ts     # Auth centralizado (login, register, Google, recover)
+│   │   └── adminService.ts    # Admin: CRUD usuarios, estadísticas
+│   ├── stores/        # Nanostores
+│   │   └── authStore.ts       # $user, $authLoading, $authError, $isAuthenticated, etc.
+
+│   ├── types/         # Tipos globales
+│   │   └── index.ts           # User, MedicalProfile, LoginForm, RegisterForm, AuthError
+│   └── i18n/          # Internacionalización
+│       ├── translations.ts    # ES/EN traducciones
+│       └── client.ts          # Cliente i18n con persistencia localStorage
+├── tests/             # 📁 TESTS CENTRALIZADOS
+│   ├── setup/         # Setup global (mocks Firebase)
+│   ├── mocks/         # Factories de datos mock
+│   ├── unit/          # Tests unitarios (Vitest)
+│   │   ├── services/
+│   │   ├── stores/
+│   │   └── utils/
+│   ├── integration/   # Tests de integración (Vitest + Firebase Emulator)
+│   └── e2e/           # Tests E2E (Playwright)
+├── vitest.config.ts   # ⚙️ Apunta a tests/
+├── playwright.config.ts # ⚙️ Apunta a tests/e2e/
+└── package.json
+```
+
+### Reglas de Testing
+- **Tests centralizados** - Todo en `tests/`, nada en `src/__tests__/`
+- **Un archivo de test por módulo** - Misma estructura que `src/`
+- **Sin React** - No usar React Testing Library, jsdom solo si es estrictamente necesario
+
+
+## 🥇 GOLDEN RULES (NUNCA VIOLAR)
+
+### ❌ NUNCA HACER ESTO
+1. **No usar `any`** - Siempre tipar explícitamente. Si no sabes el tipo, crea una interface.
+2. **No lógica de negocio en UI** - Los componentes SOLO renderizan. Services hacen lógica.
+3. **No hardcodear URLs/keys** - Todo por `import.meta.env` o variables de entorno.
+4. **No ignorar estados** - Toda página/componente maneja: loading, empty, error, success.
+5. **No Firebase Client SDK para ops sensibles** - Usar API Routes (Astro endpoints) con Admin SDK.
+6. **No mutar stores directamente** - Siempre usar funciones setter exportadas.
+7. **No console.log en producción** - Usar sistema de logging.
+8. **No try/catch genéricos** - Siempre tipar el error y mostrar mensaje al usuario.
+9. **No archivos > 300 líneas** - Refactorizar en componentes más pequeños.
+10. **No commits sin formato** - Seguir conventional commits.
+
+### ✅ SIEMPRE HACER ESTO
+1. **Tipar todo** - Props, returns, variables, eventos. Sin excepciones.
+2. **4 estados por página** - loading skeleton → empty state → error toast → success data.
+3. **Tests unitarios** - Para servicios y stores. Mínimo 1 test por función pública.
+4. **JSDoc en funciones públicas** - @param y @returns.
+5. **Componentes atómicos** - Un componente = una responsabilidad.
+6. **Error boundaries** - Wrap cada feature con ErrorBoundary.
+7. **Logging estructurado** - Usar logger.info/warn/error con contexto.
+8. **Validación de props** - Props requeridas marcadas, opcionales con defaults.
+9. **Cleanup de suscripciones** - onSnapshot unsubscribe en useEffect return.
+10. **Manejo de concurrencia** - AbortController para fetch, race conditions en stores.
+
+## Documentation Order
+Before implementing, read:
+1. nuevo_proyecto/00_indice.md
+2. nuevo_proyecto/01_vision_objetivos.md
+3. nuevo_proyecto/02_requisitos_funcionales.md
+4. nuevo_proyecto/03_arquitectura_tecnica.md
+5. nuevo_proyecto/04_modelo_datos_firestore.md
+6. nuevo_proyecto/05_reglas_seguridad.md
+7. nuevo_proyecto/06_design_system.md
+8. nuevo_proyecto/07_flujos_navegacion.md
+9. nuevo_proyecto/13_setup_guide.md
+10. nuevo_proyecto/14_agent_instructions.md
+11. nuevo_proyecto/15_api_contracts.md
+12. nuevo_proyecto/16_implementacion_incremental.md
+13. [Specific module doc]
+
+## MCP Servers Available
+- @firebase-mcp - Firebase Auth, Firestore operations
+- @github-mcp - GitHub repository management
+- @filesystem-mcp - File system operations
+
+---
+
+> 📌 **Convenciones de código, Git workflow, testing y comandos:** Ver `12_guia_desarrollo_testing.md`
+> 📌 **Logger, Debug Store, Error Boundary:** Ver `12_guia_desarrollo_testing.md` (sección Debugging)
+> 📌 **Integraciones (Firebase, R2, Capacitor, Workers, CI/CD, Sentry, PostHog):** Ver `11_integraciones_operaciones.md`
+> 📌 **Instrucciones para agentes IA:** Ver `14_agent_instructions.md`
+> 📌 **Protocolo de documentación:** Ver `18_protocolo_documentacion.md`

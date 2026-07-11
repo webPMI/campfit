@@ -1,0 +1,477 @@
+---
+import TrainerLayout from '@/layouts/TrainerLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<TrainerLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{t('trainer.diets')}</h1>
+          <p class="mt-1 text-sm text-zinc-500">
+            <span id="diet-count" class="text-orange-400 font-medium">0</span> {t('admin.diets.total')}
+          </p>
+        </div>
+        <button id="btn-create-diet" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all active:scale-95">
+          <svg class="h-4 w-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          {t('trainer.diets.new')}
+        </button>
+      </div>
+
+      <!-- Diet Editor -->
+      <div id="diet-editor" class="hidden mt-8"></div>
+
+      <!-- Filter by client -->
+      <div class="mt-6">
+        <select id="client-filter" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/60 px-4 py-2.5 text-sm text-zinc-300 backdrop-blur-sm focus:outline-none focus:border-emerald-500/50">
+          <option value="">{t('trainer.filter.all')}</option>
+        </select>
+      </div>
+
+      <!-- Diets List -->
+      <div id="diets-container" class="mt-6 space-y-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 text-center backdrop-blur-sm">
+          <div class="flex items-center justify-center gap-3">
+            <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</TrainerLayout>
+
+<script>
+  import {
+    requireAuth,
+    subscribeToClients,
+    subscribeToDietsByTrainer,
+    createDiet,
+    updateDiet,
+    deleteDiet,
+    ICONS,
+    renderEmptyState,
+    escapeHtml,
+  } from '@/lib/trainer/trainerUtils';
+  import type { TrainerClient, TrainerDiet, Meal } from '@/lib/trainer/trainerUtils';
+
+  let unsubClients: (() => void) | null = null;
+  let unsubDiets: (() => void) | null = null;
+  let allClients: TrainerClient[] = [];
+  let allDiets: TrainerDiet[] = [];
+
+  requireAuth(async (user) => {
+    initDiets(user.uid);
+  });
+
+  window.addEventListener('beforeunload', () => {
+    unsubClients?.();
+    unsubDiets?.();
+  });
+
+  const TYPE_LABELS: Record<string, string> = {
+    normal: 'Normal',
+    advanced: 'Avanzada',
+  };
+
+  async function initDiets(trainerId: string): Promise<void> {
+    const container = document.getElementById('diets-container')!;
+    const editor = document.getElementById('diet-editor')!;
+    const btnCreate = document.getElementById('btn-create-diet')!;
+    const clientFilter = document.getElementById('client-filter') as HTMLSelectElement;
+    const dietCount = document.getElementById('diet-count')!;
+
+    unsubClients = subscribeToClients(trainerId, (clients) => {
+      allClients = clients;
+      clientFilter.innerHTML = `<option value="">${escapeHtml('Todos los clientes')}</option>` +
+        clients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
+
+      const urlClientId = new URLSearchParams(window.location.search).get('clientId');
+      if (urlClientId) clientFilter.value = urlClientId;
+    });
+
+    unsubDiets = subscribeToDietsByTrainer(trainerId, (diets) => {
+      allDiets = diets;
+      dietCount.textContent = String(diets.length);
+      applyFilters();
+    });
+
+    clientFilter.addEventListener('change', () => applyFilters());
+
+    btnCreate.addEventListener('click', () => {
+      const urlClientId = clientFilter.value || '';
+      showEditor(null, trainerId, urlClientId);
+    });
+
+    (window as any).__editDiet = (id: string) => {
+      const diet = allDiets.find((d) => d.id === id);
+      if (diet) showEditor(diet, trainerId);
+    };
+
+    (window as any).__deleteDietConfirm = async (id: string) => {
+      showDeleteConfirm(id);
+    };
+  }
+
+  function showDeleteConfirm(id: string): void {
+    const existing = document.getElementById('confirm-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'confirm-modal';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm';
+    modal.innerHTML = `
+      <div class="mx-4 w-full max-w-sm rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mx-auto">
+          <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+        </div>
+        <h3 class="text-center text-lg font-semibold text-zinc-200">Eliminar dieta</h3>
+        <p class="mt-2 text-center text-sm text-zinc-500">¿Estás seguro? Esta acción no se puede deshacer.</p>
+        <div class="mt-6 flex gap-3">
+          <button id="btn-cancel-delete" class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-2.5 text-sm font-medium text-zinc-300 hover:bg-zinc-700/80 transition-all">Cancelar</button>
+          <button id="btn-confirm-delete" class="flex-1 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all">Eliminar</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('btn-cancel-delete')!.addEventListener('click', () => modal.remove());
+    document.getElementById('btn-confirm-delete')!.addEventListener('click', async () => {
+      modal.remove();
+      await deleteDiet(id);
+    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+  }
+
+  function applyFilters(): void {
+    const container = document.getElementById('diets-container')!;
+    const clientFilter = document.getElementById('client-filter') as HTMLSelectElement;
+    const clientId = clientFilter.value;
+
+    let filtered = allDiets;
+    if (clientId) filtered = filtered.filter((d) => d.clientId === clientId);
+
+    if (filtered.length === 0) {
+      container.innerHTML = renderEmptyState(
+        ICONS.diets,
+        clientId ? 'Este cliente no tiene dietas' : 'No has creado dietas aún',
+      );
+      return;
+    }
+
+    container.innerHTML = filtered
+      .map((d) => {
+        const clientName = allClients.find((c) => c.uid === d.clientId)?.name || 'Sin cliente';
+        const typeLabel = TYPE_LABELS[d.type] || d.type;
+        return `
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-zinc-200">${escapeHtml(d.name)}</p>
+                <p class="text-xs text-zinc-500 mt-0.5">
+                  <span class="text-emerald-400">${escapeHtml(clientName)}</span>
+                  <span class="text-zinc-600 mx-1">·</span>
+                  ${d.meals?.length || 0} comidas
+                  <span class="text-zinc-600 mx-1">·</span>
+                  ${typeLabel}
+                </p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0 ml-4">
+                <span class="rounded-full bg-orange-500/10 px-2.5 py-0.5 text-xs font-medium text-orange-400 border border-orange-500/20">${d.totalCalories || 0}</span>
+                <button onclick="window.__editDiet('${d.id}')" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">
+                  <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                </button>
+                <button onclick="window.__deleteDietConfirm('${d.id}')" class="rounded-lg border border-red-900/30 bg-red-500/10 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
+                  <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  function showEditor(diet: TrainerDiet | null, trainerId: string, preselectedClientId?: string): void {
+    const editor = document.getElementById('diet-editor')!;
+    const isEditing = !!diet;
+    editor.classList.remove('hidden');
+    editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const d = diet || {
+      id: '',
+      clientId: preselectedClientId || '',
+      trainerId,
+      name: '',
+      type: 'normal',
+      totalCalories: 0,
+      meals: [] as Meal[],
+    };
+
+    const clientOptions = allClients
+      .map((c) => `<option value="${c.uid}" ${c.uid === d.clientId ? 'selected' : ''}>${escapeHtml(c.name)}</option>`)
+      .join('');
+
+    editor.innerHTML = `
+      <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/60 p-5 backdrop-blur-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-zinc-200">${isEditing ? 'Editar Dieta' : 'Nueva Dieta'}</h2>
+          <button onclick="window.__closeEditor()" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">Cancelar</button>
+        </div>
+
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">Nombre de la dieta</label>
+              <input id="diet-name" type="text" value="${escapeHtml(d.name)}" placeholder="Ej: Dieta Volumen" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+              <p id="diet-name-error" class="mt-1 hidden text-xs text-red-400">El nombre es obligatorio</p>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">Cliente</label>
+              <select id="diet-client" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+                <option value="">Seleccionar cliente</option>
+                ${clientOptions}
+              </select>
+              <p id="diet-client-error" class="mt-1 hidden text-xs text-red-400">Debes seleccionar un cliente</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">Tipo</label>
+              <select id="diet-type" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+                <option value="normal" ${d.type === 'normal' ? 'selected' : ''}>Normal</option>
+                <option value="advanced" ${d.type === 'advanced' ? 'selected' : ''}>Avanzada</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">Somatotipo</label>
+              <select id="diet-somatotype" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+                <option value="">No especificado</option>
+                <option value="ectomorph" ${d.somatotype === 'ectomorph' ? 'selected' : ''}>Ectomorfo</option>
+                <option value="mesomorph" ${d.somatotype === 'mesomorph' ? 'selected' : ''}>Mesomorfo</option>
+                <option value="endomorph" ${d.somatotype === 'endomorph' ? 'selected' : ''}>Endomorfo</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 mb-1">Calorías Totales <span id="cal-auto-badge" class="text-emerald-500/70 text-[10px]">(auto)</span></label>
+              <input id="diet-calories" type="number" value="${d.totalCalories || ''}" placeholder="Calculado automáticamente" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+            </div>
+          </div>
+
+          <!-- Meals -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs text-zinc-500">Comidas <span id="meal-count-badge" class="text-zinc-600">(${d.meals.length})</span></label>
+              <button id="btn-add-meal" class="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
+                <svg class="h-3.5 w-3.5 inline-block mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Agregar comida
+              </button>
+            </div>
+            <div id="meals-list" class="space-y-2">
+              ${d.meals.length === 0
+                ? '<p class="text-xs text-zinc-600 py-2">No hay comidas agregadas</p>'
+                : d.meals.map((meal, i) => renderMealRow(meal, i)).join('')
+              }
+            </div>
+          </div>
+
+          <button id="btn-save-diet" class="w-full rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="save-btn-text">${isEditing ? 'Guardar Cambios' : 'Crear Dieta'}</span>
+            <span id="save-btn-spinner" class="hidden">
+              <svg class="h-4 w-4 animate-spin inline-block" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Guardando...
+            </span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    const mealsList = document.getElementById('meals-list')!;
+    const mealCountBadge = document.getElementById('meal-count-badge')!;
+
+    function updateMealCount(): void {
+      const count = mealsList.querySelectorAll('[data-meal-row]').length;
+      mealCountBadge.textContent = `(${count})`;
+    }
+
+    document.getElementById('btn-add-meal')!.addEventListener('click', () => {
+      const newMeal: Meal = {
+        id: `meal-${Date.now()}`,
+        name: 'other',
+        description: '',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        order: (d.meals.length || 0) + 1,
+      };
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = renderMealRow(newMeal, (d.meals.length || 0));
+      const firstChild = mealsList.firstChild;
+      if (firstChild && mealsList.children.length === 1 && mealsList.querySelector('p.text-zinc-600')) {
+        mealsList.innerHTML = '';
+      }
+      mealsList.appendChild(wrapper.firstElementChild || wrapper);
+      updateMealCount();
+    });
+
+    mealsList.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-remove-meal]')) {
+        const row = target.closest('[data-meal-row]');
+        if (row) {
+          row.remove();
+          updateMealCount();
+        }
+      }
+    });
+
+    // Calcular calorías totales automáticamente desde las comidas
+    function calculateTotalCalories(): void {
+      const mealElements = mealsList.querySelectorAll('[data-meal-row]');
+      let total = 0;
+      mealElements.forEach((el) => {
+        const inputs = el.querySelectorAll('input');
+        const cal = parseInt((inputs[2] as HTMLInputElement).value) || 0;
+        total += cal;
+      });
+      const calInput = document.getElementById('diet-calories') as HTMLInputElement;
+      calInput.value = String(total);
+    }
+
+    // Escuchar cambios en inputs de calorías de comidas para auto-calcular
+    mealsList.addEventListener('input', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT') {
+        calculateTotalCalories();
+      }
+    });
+
+    document.getElementById('btn-save-diet')!.addEventListener('click', async () => {
+      const name = (document.getElementById('diet-name') as HTMLInputElement).value.trim();
+      const clientId = (document.getElementById('diet-client') as HTMLSelectElement).value;
+      const type = (document.getElementById('diet-type') as HTMLSelectElement).value as 'normal' | 'advanced';
+      const somatotype = (document.getElementById('diet-somatotype') as HTMLSelectElement).value as TrainerDiet['somatotype'] || undefined;
+
+      // Calcular calorías totales desde las comidas
+      const mealElements = mealsList.querySelectorAll('[data-meal-row]');
+      let totalCalories = 0;
+      mealElements.forEach((el) => {
+        const inputs = el.querySelectorAll('input');
+        totalCalories += parseInt((inputs[2] as HTMLInputElement).value) || 0;
+      });
+
+      const nameError = document.getElementById('diet-name-error')!;
+      const clientError = document.getElementById('diet-client-error')!;
+      const btnSave = document.getElementById('btn-save-diet') as HTMLButtonElement;
+      const btnText = document.getElementById('save-btn-text')!;
+      const btnSpinner = document.getElementById('save-btn-spinner')!;
+
+      let hasError = false;
+      if (!name) { nameError.classList.remove('hidden'); hasError = true; } else { nameError.classList.add('hidden'); }
+      if (!clientId) { clientError.classList.remove('hidden'); hasError = true; } else { clientError.classList.add('hidden'); }
+      if (hasError) return;
+
+      btnSave.disabled = true;
+      btnText.classList.add('hidden');
+      btnSpinner.classList.remove('hidden');
+
+      const meals: Meal[] = Array.from(mealElements).map((el, idx) => {
+        const inputs = el.querySelectorAll('input');
+        return {
+          id: `meal-${Date.now()}-${idx}`,
+          name: (inputs[0] as HTMLInputElement).value as Meal['name'],
+          description: (inputs[1] as HTMLInputElement).value,
+          calories: parseInt((inputs[2] as HTMLInputElement).value) || 0,
+          protein: parseInt((inputs[3] as HTMLInputElement).value) || 0,
+          carbs: parseInt((inputs[4] as HTMLInputElement).value) || 0,
+          fat: parseInt((inputs[5] as HTMLInputElement).value) || 0,
+          order: idx + 1,
+        };
+      }).filter((m) => m.name.trim() !== '');
+
+      try {
+        if (isEditing && diet) {
+          await updateDiet(diet.id, { name, clientId, trainerId, type, somatotype, totalCalories, meals });
+        } else {
+          await createDiet({ clientId, trainerId, name, type, somatotype, totalCalories, meals });
+        }
+        editor.classList.add('hidden');
+        editor.innerHTML = '';
+      } catch (error) {
+        console.error('[TrainerDiets] Error saving:', error);
+      } finally {
+        btnSave.disabled = false;
+        btnText.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+      }
+    });
+
+    (window as any).__closeEditor = () => {
+      editor.classList.add('hidden');
+      editor.innerHTML = '';
+    };
+  }
+
+  function renderMealRow(meal: Meal, index: number): string {
+    return `
+      <div data-meal-row class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-3 backdrop-blur-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs text-zinc-600 font-medium w-5">#${index + 1}</span>
+          <select class="flex-1 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500/50">
+            <option value="breakfast" ${meal.name === 'breakfast' ? 'selected' : ''}>Desayuno</option>
+            <option value="lunch" ${meal.name === 'lunch' ? 'selected' : ''}>Almuerzo</option>
+            <option value="snack" ${meal.name === 'snack' ? 'selected' : ''}>Snack</option>
+            <option value="dinner" ${meal.name === 'dinner' ? 'selected' : ''}>Cena</option>
+            <option value="other" ${meal.name === 'other' ? 'selected' : ''}>Otro</option>
+          </select>
+          <button data-remove-meal class="rounded-lg border border-red-900/30 bg-red-500/10 px-2 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" value="${escapeHtml(meal.description)}" placeholder="Descripción" class="flex-1 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2.5 py-1.5 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">Cal</label>
+            <input type="number" value="${meal.calories || ''}" placeholder="0" class="w-14 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" title="Calorías" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">P</label>
+            <input type="number" value="${meal.protein || ''}" placeholder="0" class="w-12 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" title="Proteínas" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">C</label>
+            <input type="number" value="${meal.carbs || ''}" placeholder="0" class="w-12 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" title="Carbohidratos" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">G</label>
+            <input type="number" value="${meal.fat || ''}" placeholder="0" class="w-12 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" title="Grasas" />
+          </div>
+        </div>
+      </div>
+    `;
+  }
+</script>

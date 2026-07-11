@@ -1,0 +1,374 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <!-- Loading -->
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+    </div>
+  </div>
+
+  <!-- Settings Content -->
+  <div id="settingsContent" class="hidden">
+    <main class="mx-auto max-w-4xl px-4 py-8">
+      <div class="animate-fade-in">
+        <h1 class="text-2xl font-bold">{t('admin.settings')}</h1>
+        <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.desc')}</p>
+
+        <div class="mt-8 space-y-6">
+          <!-- Profile Section -->
+          <div id="profile-section" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
+            <div id="profile-loading" class="flex items-center justify-center py-8">
+              <div class="flex items-center gap-3">
+                <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- My Trainer Info (only shown for clients) -->
+          <div id="trainer-info-section" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm hidden">
+            <h2 class="text-lg font-semibold text-zinc-200">Mi Entrenador</h2>
+            <div id="trainer-info-content" class="mt-3 text-sm text-zinc-400">
+              <p>Cargando...</p>
+            </div>
+          </div>
+
+          <!-- Edit Profile Form -->
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
+            <h2 class="text-lg font-semibold text-zinc-200">{t('admin.settings.profile')}</h2>
+            <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.profile.desc')}</p>
+
+            <form id="profile-form" class="mt-4 space-y-4">
+              <div>
+                <label for="edit-name" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('auth.name')}</label>
+                <input
+                  id="edit-name"
+                  type="text"
+                  class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                />
+              </div>
+              <div>
+                <label for="edit-email" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('auth.email')}</label>
+                <input
+                  id="edit-email"
+                  type="email"
+                  class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                />
+              </div>
+              <button
+                id="save-profile-btn"
+                type="submit"
+                class="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
+              >
+                {t('client.medical.save')}
+              </button>
+            </form>
+          </div>
+
+          <!-- Change Password -->
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
+            <h2 class="text-lg font-semibold text-zinc-200">Cambiar Contraseña</h2>
+            <p class="mt-1 text-sm text-zinc-500">Actualiza tu contraseña de acceso</p>
+
+            <form id="password-form" class="mt-4 space-y-4">
+              <div>
+                <label for="new-password" class="block text-xs font-medium text-zinc-400 mb-1.5">Nueva Contraseña</label>
+                <input
+                  id="new-password"
+                  type="password"
+                  placeholder="••••••••"
+                  minlength="6"
+                  class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                />
+              </div>
+              <div>
+                <label for="confirm-password" class="block text-xs font-medium text-zinc-400 mb-1.5">Confirmar Contraseña</label>
+                <input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="••••••••"
+                  minlength="6"
+                  class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                />
+              </div>
+              <button
+                id="save-password-btn"
+                type="submit"
+                class="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
+              >
+                Cambiar Contraseña
+              </button>
+            </form>
+          </div>
+
+          <!-- Email Verification -->
+          <div id="email-verification-section" class="hidden rounded-xl border border-amber-900/30 bg-amber-500/5 p-6 backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10">
+                <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-semibold text-amber-400">Email no verificado</h3>
+                <p class="mt-0.5 text-xs text-amber-500/80">Verifica tu email para acceder a todas las funciones</p>
+              </div>
+              <button id="btn-verify-email" class="shrink-0 rounded-xl bg-amber-600 px-4 py-2 text-xs font-medium text-white transition-all hover:bg-amber-500 active:scale-[0.98]">
+                Reenviar verificación
+              </button>
+            </div>
+          </div>
+
+          <!-- Preferences -->
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
+            <h2 class="text-lg font-semibold text-zinc-200">Preferencias</h2>
+            <p class="mt-1 text-sm text-zinc-500">Personaliza tu experiencia</p>
+
+            <div class="mt-4 space-y-4">
+              <!-- Theme Toggle -->
+              <div class="flex items-center justify-between rounded-xl bg-zinc-800/30 px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <svg class="h-5 w-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                  </svg>
+                  <div>
+                    <p class="text-sm font-medium text-zinc-200">Modo oscuro</p>
+                    <p class="text-xs text-zinc-500">Alternar entre tema claro y oscuro</p>
+                  </div>
+                </div>
+                <button
+                  id="btn-theme-toggle"
+                  class="relative inline-flex h-6 w-11 items-center rounded-full bg-zinc-700 transition-colors duration-200 focus:outline-none"
+                  role="switch"
+                  aria-checked="true"
+                >
+                  <span class="inline-block h-4 w-4 translate-x-1 transform rounded-full bg-white transition-transform duration-200"></span>
+                </button>
+              </div>
+
+              <!-- Language -->
+              <div class="flex items-center justify-between rounded-xl bg-zinc-800/30 px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <svg class="h-5 w-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                  </svg>
+                  <div>
+                    <p class="text-sm font-medium text-zinc-200">Idioma</p>
+                    <p class="text-xs text-zinc-500">Selecciona tu idioma preferido</p>
+                  </div>
+                </div>
+                <select
+                  id="select-language"
+                  class="rounded-lg border border-zinc-700/50 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 outline-none transition-all focus:border-emerald-500/50"
+                >
+                  <option value="es">Español</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danger Zone -->
+          <div class="rounded-xl border border-red-900/30 bg-red-500/5 p-6 backdrop-blur-sm">
+            <h2 class="text-lg font-semibold text-red-400">{t('admin.settings.danger')}</h2>
+            <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.danger.desc')}</p>
+            <div class="mt-4 space-y-3">
+              <button id="btn-logout" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-3 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all hover:bg-zinc-800">
+                {t('admin.settings.logout')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</ClientLayout>
+
+<script>
+  import { authService } from '@/services/authService';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { db } from '@/lib/firebase';
+  import { loadProfile, updateProfile, changePassword, renderProfileView, renderProfileLoadingState, showToast } from '@/lib/shared/profileService';
+  import { getStoredLanguage, setStoredLanguage } from '@/i18n/client';
+
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const settingsContent = document.getElementById('settingsContent')!;
+
+  let currentUid: string | null = null;
+
+  authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
+    }
+
+    currentUid = firebaseUser.uid;
+    loadingScreen.classList.add('hidden');
+    settingsContent.classList.remove('hidden');
+    await initSettings(firebaseUser);
+  });
+
+  async function initSettings(user: import('firebase/auth').User): Promise<void> {
+    const profileSection = document.getElementById('profile-section')!;
+    const nameInput = document.getElementById('edit-name') as HTMLInputElement;
+    const emailInput = document.getElementById('edit-email') as HTMLInputElement;
+
+    // Load profile
+    profileSection.innerHTML = renderProfileLoadingState();
+    const profile = await loadProfile(user.uid);
+
+    if (profile) {
+      profileSection.innerHTML = `
+        <h2 class="text-lg font-semibold text-zinc-200 mb-4">Mi Perfil</h2>
+        ${renderProfileView(profile)}
+      `;
+      nameInput.value = profile.name;
+      emailInput.value = profile.email;
+
+      // Show trainer info for clients
+      if (profile.assignedTrainerName) {
+        const trainerSection = document.getElementById('trainer-info-section')!;
+        trainerSection.classList.remove('hidden');
+        document.getElementById('trainer-info-content')!.innerHTML = `
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-zinc-800/30 border border-zinc-700/40">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-sm font-medium text-blue-400">
+              ${profile.assignedTrainerName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-zinc-200">${profile.assignedTrainerName}</p>
+              <p class="text-xs text-zinc-500">Tu entrenador asignado</p>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      profileSection.innerHTML = '<p class="text-sm text-zinc-500">Error al cargar el perfil</p>';
+    }
+
+    // Profile form
+    document.getElementById('profile-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      if (!name) { showToast('El nombre es obligatorio', 'error'); return; }
+
+      const btn = document.getElementById('save-profile-btn')!;
+      btn.textContent = 'Guardando...';
+      (btn as HTMLButtonElement).disabled = true;
+
+      const result = await updateProfile(user.uid, { name, email });
+      showToast(result.message, result.success ? 'success' : 'error');
+
+      if (result.success) {
+        const refreshed = await loadProfile(user.uid);
+        if (refreshed) {
+          const container = profileSection.querySelector('.flex.items-center.gap-5');
+          if (container) container.outerHTML = renderProfileView(refreshed);
+        }
+      }
+      btn.textContent = 'Guardar Cambios';
+      (btn as HTMLButtonElement).disabled = false;
+    });
+
+    // Password form
+    document.getElementById('password-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newPwd = (document.getElementById('new-password') as HTMLInputElement).value;
+      const confirmPwd = (document.getElementById('confirm-password') as HTMLInputElement).value;
+
+      if (!newPwd || newPwd.length < 6) { showToast('Mínimo 6 caracteres', 'error'); return; }
+      if (newPwd !== confirmPwd) { showToast('Las contraseñas no coinciden', 'error'); return; }
+
+      const btn = document.getElementById('save-password-btn')!;
+      btn.textContent = 'Cambiando...';
+      (btn as HTMLButtonElement).disabled = true;
+
+      const result = await changePassword(user, newPwd);
+      showToast(result.message, result.success ? 'success' : 'error');
+      if (result.success) {
+        (document.getElementById('new-password') as HTMLInputElement).value = '';
+        (document.getElementById('confirm-password') as HTMLInputElement).value = '';
+      }
+      btn.textContent = 'Cambiar Contraseña';
+      (btn as HTMLButtonElement).disabled = false;
+    });
+
+    // ─── Email Verification ──────────────────────────────────────────────
+    const emailVerifSection = document.getElementById('email-verification-section')!;
+    if (!user.emailVerified) {
+      emailVerifSection.classList.remove('hidden');
+      document.getElementById('btn-verify-email')?.addEventListener('click', async () => {
+        try {
+          const { sendEmailVerification } = await import('firebase/auth');
+          await sendEmailVerification(user);
+          showToast('Email de verificación enviado. Revisa tu bandeja de entrada.', 'success');
+        } catch (err) {
+          showToast('Error al enviar verificación. Intenta de nuevo.', 'error');
+        }
+      });
+    }
+
+    // ─── Theme Toggle ────────────────────────────────────────────────────
+    const themeToggle = document.getElementById('btn-theme-toggle')!;
+    const storedTheme = localStorage.getItem('campfit_theme') || 'dark';
+    applyTheme(storedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      localStorage.setItem('campfit_theme', next);
+    });
+
+    // ─── Language Selector ───────────────────────────────────────────────
+    const langSelect = document.getElementById('select-language') as HTMLSelectElement;
+    langSelect.value = getStoredLanguage();
+    langSelect.addEventListener('change', () => {
+      const newLang = langSelect.value as 'es' | 'en';
+      setStoredLanguage(newLang);
+      showToast(`Idioma cambiado a ${newLang === 'es' ? 'Español' : 'English'}`, 'success');
+      // Recargar para aplicar cambios de traducción
+      setTimeout(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', newLang);
+        window.location.href = url.toString();
+      }, 1000);
+    });
+  }
+
+  function applyTheme(theme: string): void {
+    const toggle = document.getElementById('btn-theme-toggle')!;
+    const thumb = toggle.querySelector('span')!;
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      toggle.classList.remove('bg-emerald-600');
+      toggle.classList.add('bg-zinc-700');
+      thumb.classList.remove('translate-x-6');
+      thumb.classList.add('translate-x-1');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      toggle.classList.remove('bg-zinc-700');
+      toggle.classList.add('bg-emerald-600');
+      thumb.classList.remove('translate-x-1');
+      thumb.classList.add('translate-x-6');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btn-logout')?.addEventListener('click', async () => {
+      if (!confirm('¿Estás seguro de cerrar sesión?')) return;
+      try { await authService.logoutUser(); window.location.href = '/login'; } catch { showToast('Error al cerrar sesión', 'error'); }
+    });
+  });
+</script>

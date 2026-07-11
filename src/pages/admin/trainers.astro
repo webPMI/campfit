@@ -1,0 +1,53 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <h1 class="text-2xl font-bold">{t('admin.trainers')}</h1>
+      <p class="mt-1 text-sm text-zinc-500">{t('admin.trainers.desc')}</p>
+
+      <div id="trainers-container" class="mt-6 space-y-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
+          <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireAdmin, subscribeToUsersByRole, renderTrainerCard, renderEmptyState, renderLoadingState, ICONS, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
+
+  requireAdmin(() => {
+    initTrainers();
+  });
+
+  async function initTrainers(): Promise<void> {
+    const container = document.getElementById('trainers-container')!;
+
+    container.innerHTML = renderLoadingState();
+
+    subscribeToUsersByRole('trainer', async (trainers) => {
+      if (trainers.length === 0) {
+        container.innerHTML = renderEmptyState(ICONS.trainers, 'Sin entrenadores registrados');
+        return;
+      }
+
+      // Obtener conteo real de clientes para cada trainer
+      const trainersWithCounts = await Promise.all(
+        trainers.map(async (trainer) => {
+          const clientCount = await getTrainerClientCount(trainer.uid);
+          return { ...trainer, clientCount } as AdminUser & { clientCount: number };
+        }),
+      );
+
+      container.innerHTML = trainersWithCounts.map((trainer) => renderTrainerCard(trainer)).join('');
+    });
+  }
+</script>

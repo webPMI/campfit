@@ -1,0 +1,365 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <!-- Loading Screen with Skeleton -->
+  <div id="loadingScreen" class="min-h-screen">
+    <!-- Header skeleton -->
+    <header class="border-b border-zinc-800/60 bg-zinc-900/50 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 animate-pulse rounded-xl bg-zinc-800"></div>
+          <div class="h-5 w-24 animate-pulse rounded bg-zinc-800"></div>
+        </div>
+        <div class="h-9 w-24 animate-pulse rounded-xl bg-zinc-800"></div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="animate-fade-in space-y-6">
+        <!-- Greeting skeleton -->
+        <div>
+          <div class="h-7 w-48 animate-pulse rounded bg-zinc-800"></div>
+          <div class="mt-2 h-4 w-36 animate-pulse rounded bg-zinc-800/60"></div>
+        </div>
+
+        <!-- Stat cards skeleton -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="animate-pulse rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-5">
+            <div class="flex items-center justify-between">
+              <div class="space-y-2">
+                <div class="h-4 w-28 rounded bg-zinc-800"></div>
+                <div class="h-7 w-16 rounded bg-zinc-800"></div>
+              </div>
+              <div class="h-12 w-12 rounded-xl bg-zinc-800"></div>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-zinc-800"></div>
+            <div class="mt-2 h-3 w-32 rounded bg-zinc-800/60"></div>
+          </div>
+          <div class="animate-pulse rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-5">
+            <div class="flex items-center justify-between">
+              <div class="space-y-2">
+                <div class="h-4 w-24 rounded bg-zinc-800"></div>
+                <div class="h-7 w-16 rounded bg-zinc-800"></div>
+              </div>
+              <div class="h-12 w-12 rounded-xl bg-zinc-800"></div>
+            </div>
+            <div class="mt-4 h-2 rounded-full bg-zinc-800"></div>
+            <div class="mt-2 h-3 w-28 rounded bg-zinc-800/60"></div>
+          </div>
+        </div>
+
+        <!-- Quick actions skeleton -->
+        <div>
+          <div class="mb-3 h-4 w-32 animate-pulse rounded bg-zinc-800"></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+              <div class="flex flex-col items-center gap-2">
+                <div class="h-12 w-12 rounded-xl bg-zinc-800"></div>
+                <div class="h-4 w-20 rounded bg-zinc-800"></div>
+                <div class="h-3 w-28 rounded bg-zinc-800/60"></div>
+              </div>
+            </div>
+            <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+              <div class="flex flex-col items-center gap-2">
+                <div class="h-12 w-12 rounded-xl bg-zinc-800"></div>
+                <div class="h-4 w-16 rounded bg-zinc-800"></div>
+                <div class="h-3 w-24 rounded bg-zinc-800/60"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats skeleton -->
+        <div>
+          <div class="mb-3 h-4 w-24 animate-pulse rounded bg-zinc-800"></div>
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4">
+              <div class="h-3 w-12 rounded bg-zinc-800"></div>
+              <div class="mt-2 h-5 w-16 rounded bg-zinc-800"></div>
+            </div>
+            <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4">
+              <div class="h-3 w-12 rounded bg-zinc-800"></div>
+              <div class="mt-2 h-5 w-16 rounded bg-zinc-800"></div>
+            </div>
+            <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4">
+              <div class="h-3 w-12 rounded bg-zinc-800"></div>
+              <div class="mt-2 h-5 w-16 rounded bg-zinc-800"></div>
+            </div>
+            <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4">
+              <div class="h-3 w-12 rounded bg-zinc-800"></div>
+              <div class="mt-2 h-5 w-16 rounded bg-zinc-800"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div id="dashboardContent" class="hidden">
+    <!-- Header -->
+    <header class="border-b border-zinc-800/60 bg-zinc-900/50 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20">
+            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <h1 class="text-lg font-bold text-emerald-400">{t('app.name')}</h1>
+        </div>
+        <button
+          id="logoutBtn"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2 text-sm font-medium text-zinc-300 transition-all hover:border-zinc-600 hover:bg-zinc-800 hover:text-white active:scale-[0.98]"
+        >
+          {t('dashboard.logout')}
+        </button>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="animate-fade-in space-y-6">
+        <!-- Greeting -->
+        <div>
+          <h2 class="text-xl font-bold" id="greeting">{t('client.greeting')}...</h2>
+          <p class="mt-1 text-sm text-zinc-500">{t('app.tagline')}</p>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Workout Progress -->
+          <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-5 backdrop-blur-xl">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-zinc-400">{t('client.workout.progress')}</p>
+                <p class="mt-3 text-2xl font-bold text-emerald-400" id="workoutProgress">--%</p>
+              </div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10">
+                <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 h-2 overflow-hidden rounded-full bg-zinc-800">
+              <div id="workoutBar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <p class="mt-2 text-xs text-zinc-600">{t('client.workout.progress.desc')}</p>
+          </div>
+
+          <!-- Diet Adherence -->
+          <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-5 backdrop-blur-xl">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-zinc-400">{t('client.diet.adherence')}</p>
+                <p class="mt-3 text-2xl font-bold text-emerald-400" id="dietAdherence">--%</p>
+              </div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10">
+                <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 h-2 overflow-hidden rounded-full bg-zinc-800">
+              <div id="dietBar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <p class="mt-2 text-xs text-zinc-600">{t('client.diet.adherence.desc')}</p>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-zinc-400 uppercase tracking-wider">Acciones rápidas</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href={`/client/workouts?lang=${lang}`}
+              class="group flex flex-col items-center gap-2 rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm transition-all hover:border-emerald-500/30 hover:bg-zinc-900/60"
+            >
+              <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 transition-all group-hover:bg-emerald-500/20">
+                <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-zinc-300">{t('client.quick.workout')}</span>
+              <span class="text-xs text-zinc-600">{t('client.quick.workout.desc')}</span>
+            </a>
+
+            <a
+              href={`/client/diets?lang=${lang}`}
+              class="group flex flex-col items-center gap-2 rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm transition-all hover:border-emerald-500/30 hover:bg-zinc-900/60"
+            >
+              <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 transition-all group-hover:bg-emerald-500/20">
+                <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-zinc-300">{t('client.quick.meal')}</span>
+              <span class="text-xs text-zinc-600">{t('client.quick.meal.desc')}</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-zinc-400 uppercase tracking-wider">Estadísticas</h3>
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+              <p class="text-xs text-zinc-500">{t('client.stats.weight')}</p>
+              <p class="mt-1 text-lg font-bold text-zinc-100" id="lastWeight">-- <span class="text-sm font-normal text-zinc-500">{t('client.stats.kg')}</span></p>
+            </div>
+            <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+              <p class="text-xs text-zinc-500">{t('client.stats.calories')}</p>
+              <p class="mt-1 text-lg font-bold text-zinc-100" id="todayCalories">-- <span class="text-sm font-normal text-zinc-500">{t('client.stats.kcal')}</span></p>
+            </div>
+            <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+              <p class="text-xs text-zinc-500">{t('client.stats.rpe')}</p>
+              <p class="mt-1 text-lg font-bold text-zinc-100" id="avgRpe">--</p>
+            </div>
+            <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+              <p class="text-xs text-zinc-500">{t('client.stats.days')}</p>
+              <p class="mt-1 text-lg font-bold text-zinc-100" id="activeDays">--</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</ClientLayout>
+
+<script>
+  import { authService } from '@/services/authService';
+  import { setUser, setAuthLoading } from '@/stores/authStore';
+  import { db } from '@/lib/firebase';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { subscribeToWorkouts } from '@/lib/client/workoutService';
+  import { subscribeToDiets, subscribeToTodayMeals } from '@/lib/client/dietService';
+  import { subscribeToProgress } from '@/lib/client/progressService';
+  import { t } from '@/i18n/client';
+
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const dashboardContent = document.getElementById('dashboardContent')!;
+  const greeting = document.getElementById('greeting')!;
+  const logoutBtn = document.getElementById('logoutBtn')!;
+
+  const workoutProgress = document.getElementById('workoutProgress')!;
+  const workoutBar = document.getElementById('workoutBar')!;
+  const dietAdherence = document.getElementById('dietAdherence')!;
+  const dietBar = document.getElementById('dietBar')!;
+  const lastWeight = document.getElementById('lastWeight')!;
+  const todayCalories = document.getElementById('todayCalories')!;
+  const avgRpe = document.getElementById('avgRpe')!;
+  const activeDays = document.getElementById('activeDays')!;
+
+  // Suscribirse a cambios de autenticación
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
+    }
+
+    // Cargar perfil del usuario
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+
+    // Verificar rol de cliente
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Actualizar authStore
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    const userName = userData?.name || firebaseUser.displayName || firebaseUser.email || 'Usuario';
+    greeting.textContent = `${t('client.greeting')}, ${userName}! 👋`;
+
+    loadingScreen.classList.add('hidden');
+    dashboardContent.classList.remove('hidden');
+
+  // ─── State para adherencia real de dietas ──────────────────────────────────
+  let currentMealsCount = 0;
+  let unsubTodayMeals: (() => void) | null = null;
+
+  // Suscribirse a streams en tiempo real
+  subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+    if (workouts.length > 0 && workouts[0]) {
+      const workout = workouts[0];
+      const completed = workout.exercises?.filter((ex: any) => ex.completed)?.length || 0;
+      const total = workout.exercises?.length || 0;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+      workoutProgress.textContent = `${pct}%`;
+      workoutBar.style.width = `${pct}%`;
+    } else {
+      workoutProgress.textContent = t('client.no.workout');
+      workoutBar.style.width = '0%';
+    }
+  });
+
+  // Suscribirse a la dieta actual para obtener el total de comidas
+  subscribeToDiets(firebaseUser.uid, (diets) => {
+    if (diets.length > 0 && diets[0]) {
+      const diet = diets[0];
+      currentMealsCount = diet.meals?.length || 0;
+      todayCalories.textContent = `${diet.totalCalories || '--'} ${t('client.stats.kcal')}`;
+
+      // Si no hay suscripción a comidas de hoy, crearla
+      if (!unsubTodayMeals) {
+        unsubTodayMeals = subscribeToTodayMeals(firebaseUser.uid, (completedIds) => {
+          const pct = currentMealsCount > 0
+            ? Math.round((completedIds.length / currentMealsCount) * 100)
+            : 0;
+          dietAdherence.textContent = `${pct}%`;
+          dietBar.style.width = `${pct}%`;
+        });
+      }
+    } else {
+      dietAdherence.textContent = t('client.no.diet');
+      dietBar.style.width = '0%';
+      todayCalories.textContent = `-- ${t('client.stats.kcal')}`;
+    }
+  });
+
+  subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
+    if (logs.length > 0 && logs[0]) {
+      const latest = logs[0];
+      const w = latest.value?.weight;
+      lastWeight.textContent = w ? `${w} ${t('client.stats.kg')}` : t('client.no.weight');
+    } else {
+      lastWeight.textContent = t('client.no.weight');
+    }
+  }, 1);
+
+  // Stats simuladas (se actualizarán con datos reales después)
+  avgRpe.textContent = '--';
+  activeDays.textContent = '--';
+  });
+
+  logoutBtn.addEventListener('click', async () => {
+    setAuthLoading(true);
+    try {
+      await authService.logoutUser();
+      window.location.href = '/login';
+    } catch {
+      setAuthLoading(false);
+    }
+  });
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-swap', () => {
+    unsubscribe();
+  });
+</script>
