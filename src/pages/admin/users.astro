@@ -180,8 +180,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
+  import { requireAdmin } from '@/lib/shared/authGuard';
   import {
-    requireAdmin,
     subscribeToUsers,
     subscribeToUsersByRole,
     renderUserCardExtended,

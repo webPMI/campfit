@@ -22,7 +22,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
-  import { requireAdmin, subscribeToUsersByRole, renderTrainerCard, renderEmptyState, renderLoadingState, ICONS, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
+  import { requireAdmin } from '@/lib/shared/authGuard';
+  import { subscribeToUsersByRole, renderTrainerCard, renderEmptyState, renderLoadingState, ICONS, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
 
   requireAdmin(() => {
     initTrainers();

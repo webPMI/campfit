@@ -51,8 +51,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </TrainerLayout>
 
 <script>
+  import { requireAuth } from '@/lib/shared/authGuard';
   import {
-    requireAuth,
     subscribeToClients,
     subscribeToDietsByTrainer,
     createDiet,

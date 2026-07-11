@@ -124,7 +124,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
-  import { requireAdmin, subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
+  import { requireAdmin } from '@/lib/shared/authGuard';
+  import { subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
 
   requireAdmin(() => {
     initDashboard();

@@ -1,9 +1,23 @@
 ---
 import TrainerLayout from '@/layouts/TrainerLayout.astro';
-import { translations, type Language } from '@/i18n/translations';
+import { getT } from '@/lib/shared/i18n';
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
-const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const t = getT(Astro.url.searchParams.get('lang'));
+
+// Translations needed by client-side JS
+const clientTranslations = {
+  'admin.settings.profile': t('admin.settings.profile'),
+  'admin.settings.profile.error': t('admin.settings.profile.error'),
+  'admin.settings.profile.saving': t('admin.settings.profile.saving'),
+  'admin.settings.profile.save': t('admin.settings.profile.save'),
+  'admin.settings.profile.name.required': t('admin.settings.profile.name.required'),
+  'admin.settings.password.saving': t('admin.settings.password.saving'),
+  'admin.settings.password.btn': t('admin.settings.password.btn'),
+  'admin.settings.password.minlength': t('admin.settings.password.minlength'),
+  'admin.settings.password.mismatch': t('admin.settings.password.mismatch'),
+  'admin.settings.logout.confirm': t('admin.settings.logout.confirm'),
+  'admin.settings.logout.error': t('admin.settings.logout.error'),
+};
 ---
 
 <TrainerLayout>
@@ -60,12 +74,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
         <!-- Change Password -->
         <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
-          <h2 class="text-lg font-semibold text-zinc-200">Cambiar Contraseña</h2>
-          <p class="mt-1 text-sm text-zinc-500">Actualiza tu contraseña de acceso</p>
+          <h2 class="text-lg font-semibold text-zinc-200">{t('admin.settings.password')}</h2>
+          <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.password.desc')}</p>
 
           <form id="password-form" class="mt-4 space-y-4">
             <div>
-              <label for="new-password" class="block text-xs font-medium text-zinc-400 mb-1.5">Nueva Contraseña</label>
+              <label for="new-password" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('admin.settings.password.new')}</label>
               <input
                 id="new-password"
                 type="password"
@@ -75,7 +89,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               />
             </div>
             <div>
-              <label for="confirm-password" class="block text-xs font-medium text-zinc-400 mb-1.5">Confirmar Contraseña</label>
+              <label for="confirm-password" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('admin.settings.password.confirm')}</label>
               <input
                 id="confirm-password"
                 type="password"
@@ -89,7 +103,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               type="submit"
               class="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
             >
-              Cambiar Contraseña
+              {t('admin.settings.password.btn')}
             </button>
           </form>
         </div>
@@ -110,9 +124,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 </TrainerLayout>
 
+<script is:inline set:html={`window.__TRAINER_SETTINGS_TRANSLATIONS__ = ${JSON.stringify(clientTranslations)};`}></script>
+
 <script>
-  import { requireAuth, signOutUser, showToast } from '@/lib/trainer/trainerUtils';
+  import { requireAuth, signOutUser } from '@/lib/shared/authGuard';
+  import { showToast } from '@/lib/shared/ui';
   import { loadProfile, updateProfile, changePassword, renderProfileView, renderProfileLoadingState } from '@/lib/shared/profileService';
+  import { logger } from '@/lib/shared/logger';
+
+  const tr = (key: string): string =>
+    (window as any).__TRAINER_SETTINGS_TRANSLATIONS__?.[key] || key;
 
   requireAuth(async (user) => {
     await initSettings(user);
@@ -128,23 +149,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     if (profile) {
       profileSection.innerHTML = `
-        <h2 class="text-lg font-semibold text-zinc-200 mb-4">Mi Perfil</h2>
+        <h2 class="text-lg font-semibold text-zinc-200 mb-4">${tr('admin.settings.profile')}</h2>
         ${renderProfileView(profile)}
       `;
       nameInput.value = profile.name;
       emailInput.value = profile.email;
     } else {
-      profileSection.innerHTML = '<p class="text-sm text-zinc-500">Error al cargar el perfil</p>';
+      profileSection.innerHTML = `<p class="text-sm text-zinc-500">${tr('admin.settings.profile.error')}</p>`;
     }
 
     document.getElementById('profile-form')!.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = nameInput.value.trim();
       const email = emailInput.value.trim();
-      if (!name) { showToast({ message: 'El nombre es obligatorio', type: 'error' }); return; }
+      if (!name) { showToast({ message: tr('admin.settings.profile.name.required'), type: 'error' }); return; }
 
       const btn = document.getElementById('save-profile-btn')!;
-      btn.textContent = 'Guardando...';
+      btn.textContent = tr('admin.settings.profile.saving');
       (btn as HTMLButtonElement).disabled = true;
 
       const result = await updateProfile(user.uid, { name, email });
@@ -157,7 +178,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           if (container) container.outerHTML = renderProfileView(refreshed);
         }
       }
-      btn.textContent = 'Guardar Cambios';
+      btn.textContent = tr('admin.settings.profile.save');
       (btn as HTMLButtonElement).disabled = false;
     });
 
@@ -166,11 +187,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const newPwd = (document.getElementById('new-password') as HTMLInputElement).value;
       const confirmPwd = (document.getElementById('confirm-password') as HTMLInputElement).value;
 
-      if (!newPwd || newPwd.length < 6) { showToast({ message: 'Mínimo 6 caracteres', type: 'error' }); return; }
-      if (newPwd !== confirmPwd) { showToast({ message: 'Las contraseñas no coinciden', type: 'error' }); return; }
+      if (!newPwd || newPwd.length < 6) { showToast({ message: tr('admin.settings.password.minlength'), type: 'error' }); return; }
+      if (newPwd !== confirmPwd) { showToast({ message: tr('admin.settings.password.mismatch'), type: 'error' }); return; }
 
       const btn = document.getElementById('save-password-btn')!;
-      btn.textContent = 'Cambiando...';
+      btn.textContent = tr('admin.settings.password.saving');
       (btn as HTMLButtonElement).disabled = true;
 
       const result = await changePassword(user, newPwd);
@@ -179,15 +200,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         (document.getElementById('new-password') as HTMLInputElement).value = '';
         (document.getElementById('confirm-password') as HTMLInputElement).value = '';
       }
-      btn.textContent = 'Cambiar Contraseña';
+      btn.textContent = tr('admin.settings.password.btn');
       (btn as HTMLButtonElement).disabled = false;
     });
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-logout')?.addEventListener('click', async () => {
-      if (!confirm('¿Estás seguro de cerrar sesión?')) return;
-      try { await signOutUser(); } catch { showToast({ message: 'Error al cerrar sesión', type: 'error' }); }
+      if (!confirm(tr('admin.settings.logout.confirm'))) return;
+      try {
+        await signOutUser();
+      } catch (err) {
+        logger.error('TrainerSettings', 'Error signing out', err);
+        showToast({ message: tr('admin.settings.logout.error'), type: 'error' });
+      }
     });
   });
 </script>

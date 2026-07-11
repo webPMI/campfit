@@ -14,7 +14,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
-import { escapeHtml, showToast as uiShowToast } from '@/lib/shared/ui';
+import { escapeHtml, getUserInitial, getRoleBadge } from '@/lib/shared/ui';
 
 // ============================================================
 // Tipos
@@ -179,34 +179,6 @@ export async function changePassword(
   }
 }
 
-/**
- * Obtiene la inicial del nombre para el avatar.
- * @param name - Nombre del usuario
- * @returns Inicial en mayúscula
- * @deprecated Usar getUserInitial de '@/lib/shared/ui'
- */
-export function getProfileInitial(name: string): string {
-  return (name || '?').charAt(0).toUpperCase();
-}
-
-/**
- * Obtiene la clase de color del badge según el rol.
- * @param role - Rol del usuario
- * @returns Clases CSS
- * @deprecated Usar getRoleBadge de '@/lib/shared/ui'
- */
-export function getRoleBadgeClass(role: string): { label: string; class: string } {
-  switch (role) {
-    case 'admin':
-      return { label: 'Admin', class: 'bg-purple-500/10 text-purple-400 border border-purple-500/20' };
-    case 'trainer':
-      return { label: 'Trainer', class: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' };
-    case 'client':
-      return { label: 'Client', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' };
-    default:
-      return { label: role, class: 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20' };
-  }
-}
 
 /**
  * Renderiza la vista de perfil como HTML.
@@ -214,8 +186,8 @@ export function getRoleBadgeClass(role: string): { label: string; class: string 
  * @returns HTML de la sección de perfil
  */
 export function renderProfileView(profile: ProfileData): string {
-  const badge = getRoleBadgeClass(profile.role);
-  const initial = getProfileInitial(profile.name);
+  const badge = getRoleBadge(profile.role);
+  const initial = getUserInitial(profile.name);
   const hasTrainer = !!profile.assignedTrainerName;
 
   return `
@@ -338,19 +310,6 @@ export function renderMedicalProfile(mp: MedicalProfileData): string {
   }
 
   return `<div class="space-y-3">${sections.join('')}</div>`;
-}
-
-/**
- * Renderiza el toast de notificación.
- * @deprecated Usar showToast de '@/lib/shared/ui'
- */
-export function showToast(
-  message: string,
-  type: 'success' | 'error' | 'info',
-  id: string = 'profile-toast',
-  duration: number = 3000,
-): void {
-  uiShowToast({ message, type, duration });
 }
 
 /**
