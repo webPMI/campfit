@@ -21,9 +21,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 </AdminLayout>
 
+<script is:inline set:html={`window.__ADMIN_CLIENTS_TRANSLATIONS__ = ${JSON.stringify({
+  'admin.no.clients': t('admin.no.clients'),
+})};`}></script>
+
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
   import { subscribeToUsersByRole, renderClientCard, renderEmptyState, renderLoadingState, ICONS, getUserName, type AdminUser } from '@/lib/admin/adminUtils';
+
+  const tr = (key: string): string =>
+    (window as any).__ADMIN_CLIENTS_TRANSLATIONS__?.[key] || key;
 
   requireAdmin(() => {
     initClients();
@@ -36,7 +43,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     subscribeToUsersByRole('client', async (clients) => {
       if (clients.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.clients, 'Sin clientes registrados');
+        container.innerHTML = renderEmptyState(ICONS.clients, tr('admin.no.clients'));
         return;
       }
 

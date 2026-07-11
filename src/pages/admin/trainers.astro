@@ -21,9 +21,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 </AdminLayout>
 
+<script is:inline set:html={`window.__ADMIN_TRAINERS_TRANSLATIONS__ = ${JSON.stringify({
+  'admin.no.trainers': t('admin.no.trainers'),
+})};`}></script>
+
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
   import { subscribeToUsersByRole, renderTrainerCard, renderEmptyState, renderLoadingState, ICONS, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
+
+  const tr = (key: string): string =>
+    (window as any).__ADMIN_TRAINERS_TRANSLATIONS__?.[key] || key;
 
   requireAdmin(() => {
     initTrainers();
@@ -36,7 +43,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     subscribeToUsersByRole('trainer', async (trainers) => {
       if (trainers.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.trainers, 'Sin entrenadores registrados');
+        container.innerHTML = renderEmptyState(ICONS.trainers, tr('admin.no.trainers'));
         return;
       }
 
