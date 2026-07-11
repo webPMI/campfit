@@ -131,21 +131,19 @@ Los layouts (`AdminLayout.astro`, `TrainerLayout.astro`, `ClientLayout.astro`) n
 
 ### Prioridad Baja
 
-- [ ] **AGENTE-UI-1:** Añadir estados faltantes en páginas de settings
-  - `admin/settings.astro`: empty state + error state
-  - `trainer/settings.astro`: empty state
-  - `client/settings.astro`: error state
+- [x] **AGENTE-UI-1:** Añadir estados faltantes en páginas de settings
+  - ✅ `admin/settings.astro`: empty state con retry + error state
+  - ✅ `trainer/settings.astro`: empty state con retry
+  - ✅ `client/settings.astro`: error state con try/catch + retry
 
-- [ ] **AGENTE-SSR-1:** Implementar middleware de Astro para auth server-side
-  - Verificar rol antes de renderizar layouts
-  - Redirigir a login si no autenticado
-  - Redirigir a dashboard si no tiene permisos
+- [ ] **AGENTE-SSR-1:** ~~Implementar middleware de Astro para auth server-side~~
+  - ⚠️ **NO APLICA**: El proyecto usa `output: 'static'`. El middleware de Astro solo funciona con `output: 'server'` o `output: 'hybrid'`. Para implementar SSR se necesitaría cambiar la configuración y añadir un adapter (`@astrojs/node`, `@astrojs/vercel`, etc.), lo cual es un cambio arquitectónico significativo.
+  - La autenticación actual es 100% client-side con Firebase Auth, lo cual es correcto para static output.
 
 - [ ] **AGENTE-REFACTOR-4:** Migrar lógica de scripts inline a archivos separados
-  - Mover lógica de `admin/dashboard.astro` a `src/lib/admin/dashboard.ts`
-  - Mover lógica de `admin/users.astro` a `src/lib/admin/users.ts`
-  - Mover lógica de `trainer/dashboard.astro` a `src/lib/trainer/dashboard.ts`
-  - (etc.)
+  - ⚠️ **TAREA GRANDE**: 24 páginas con scripts inline (total ~3,800+ líneas JS)
+  - Priorizar las más grandes: `trainer/diets.astro` (425), `admin/users.astro` (423), `trainer/workouts.astro` (396), `trainer/clients.astro` (315), `client/diets.astro` (331)
+  - Crear archivos en `src/lib/admin/`, `src/lib/trainer/`, `src/lib/client/` según corresponda
 
 ---
 
