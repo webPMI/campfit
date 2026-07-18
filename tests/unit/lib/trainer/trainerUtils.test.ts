@@ -1,232 +1,239 @@
 /**
- * Tests unitarios para trainerUtils.
- *
- * Las funciones de UI (escapeHtml, formatDate, formatTime, getUserInitial,
- * renderEmptyState, renderLoadingState) son funciones puras re-exportadas
- * desde @/lib/shared/ui. Se testean directamente desde shared/ui.
- *
- * Las funciones que dependen de Firebase (subscribeTo*, createWorkout, etc.)
- * requieren mocks y se testean por separado.
+ * Tests unitarios para lib/trainer/trainerUtils.ts
+ * Verifica las funciones de renderizado y utilidades del trainer.
  */
 
-import { describe, it, expect, vi } from 'vitest';
-
-// ─── Mocks con vi.hoisted() para vitest 4.x ──────────────────────────────────
-
-const { uiMock, loggerMock, chatMock } = vi.hoisted(() => ({
-  uiMock: {
-    escapeHtml: (text: string) => {
-      const map: Record<string, string> = {
-        '&': '&',
-        '<': '<',
-        '>': '>',
-        '"': '"',
-        "'": '&#x27;',
-      };
-      return text.replace(/[&<>"']/g, (ch) => map[ch] || ch);
-    },
-    showToast: vi.fn(),
-    getUserInitial: (name: string) => (name || '?').charAt(0).toUpperCase(),
-    ICONS: {},
-    formatDate: (timestamp: { toDate: () => Date } | null | undefined): string => {
-      if (!timestamp?.toDate) return '-';
-      try {
-        return timestamp.toDate().toLocaleDateString('es-ES', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
-      } catch {
-        return '-';
-      }
-    },
-    formatTime: (timestamp: { toDate: () => Date } | null | undefined): string => {
-      if (!timestamp?.toDate) return '';
-      try {
-        return timestamp.toDate().toLocaleTimeString('es-ES', {
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-      } catch {
-        return '';
-      }
-    },
-    renderEmptyState: (icon: string, message: string): string => {
-      return `<div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
-        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-800/50">
-          <svg class="h-7 w-7 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            ${icon}
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-500">${message}</p>
-      </div>`;
-    },
-    renderLoadingState: (message: string = 'Cargando...'): string => {
-      return `<div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
-        <div class="flex items-center justify-center gap-3">
-          <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p class="text-sm text-zinc-500">${message}</p>
-        </div>
-      </div>`;
-    },
-  },
-  loggerMock: {
-    logger: {
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-  },
-  chatMock: {
-    sendMessage: vi.fn(),
-    subscribeToUserMessages: vi.fn(() => vi.fn()),
-    subscribeToConversation: vi.fn(() => vi.fn()),
-    markAsRead: vi.fn(),
-  },
-}));
-
-// Mockear @/lib/firebase para que trainerUtils pueda importarse sin Firebase real
-vi.mock('@/lib/firebase', () => ({
-  db: {},
-  auth: {},
-}));
-
-// Mock shared modules that trainerUtils imports
-vi.mock('@/lib/shared/logger', () => loggerMock);
-vi.mock('@/lib/shared/ui', () => uiMock);
-vi.mock('@/lib/shared/chat', () => chatMock);
-
-// ─── Importar funciones PURAS desde shared/ui directamente ──────────────────
-// Las funciones de UI (escapeHtml, formatDate, etc.) se re-exportan desde
-// trainerUtils, pero vitest no resuelve correctamente los re-exports mockeados.
-// Las testeamos directamente desde su fuente original.
-
+import { describe, it, expect } from 'vitest';
 import {
-  escapeHtml,
-  formatDate,
-  formatTime,
-  getUserInitial,
-  renderEmptyState,
-  renderLoadingState,
-} from '../../../../src/lib/shared/ui';
+  renderClientCard,
+  renderWorkoutCard,
+  renderDietCard,
+  renderMessageBubble,
+} from '../../../../src/lib/trainer/trainerUtils';
 
-// ─── Tests: escapeHtml ─────────────────────────────────────────────────────
+describe('lib/trainer/trainerUtils', () => {
+  describe('renderClientCard', () => {
+    it('✅ should render client card with name and email', () => {
+      const client = {
+        uid: '123',
+        name: 'Juan Pérez',
+        email: 'juan@example.com',
+        role: 'client' as const,
+      };
+      const html = renderClientCard(client);
+      expect(html).toContain('Juan Pérez');
+      expect(html).toContain('juan@example.com');
+      expect(html).toContain('rounded-xl');
+    });
 
-describe('escapeHtml', () => {
-  it('should escape HTML special characters', () => {
-    const escaped = escapeHtml('<script>alert("xss")</script>');
-    expect(escaped).not.toContain('<script>');
-    expect(escaped).not.toContain('</script>');
-    expect(escaped).toContain('lt;');
-    expect(escaped).toContain('gt;');
+    it('✅ should render "Sin nombre" when name is empty', () => {
+      const client = {
+        uid: '123',
+        name: '',
+        email: 'test@example.com',
+        role: 'client' as const,
+      };
+      const html = renderClientCard(client);
+      expect(html).toContain('Sin nombre');
+    });
 
+    it('✅ should show admin badge for admin users', () => {
+      const client = {
+        uid: '123',
+        name: 'Admin User',
+        email: 'admin@example.com',
+        role: 'admin' as const,
+      };
+      const html = renderClientCard(client);
+      expect(html).toContain('Admin');
+      expect(html).toContain('bg-purple-500');
+    });
 
+    it('✅ should show alert indicator when hasActiveAlert is true', () => {
+      const client = {
+        uid: '123',
+        name: 'Client',
+        email: 'client@example.com',
+        role: 'client' as const,
+        hasActiveAlert: true,
+      };
+      const html = renderClientCard(client);
+      expect(html).toContain('animate-pulse');
+      expect(html).toContain('Alerta activa');
+    });
+
+    it('✅ should include onclick attribute when provided', () => {
+      const client = {
+        uid: '123',
+        name: 'Client',
+        email: 'client@example.com',
+        role: 'client' as const,
+      };
+      const html = renderClientCard(client, "window.location='/client/123'");
+      expect(html).toContain('onclick="window.location=\'/client/123\'"');
+      expect(html).toContain('cursor-pointer');
+    });
   });
 
+  describe('renderWorkoutCard', () => {
+    it('✅ should render workout card with name and exercises count', () => {
+      const workout = {
+        id: 'w1',
+        clientId: 'c1',
+        trainerId: 't1',
+        name: 'Rutina de Fuerza',
+        exercises: [
+          { id: 'e1', name: 'Sentadillas', sets: 3, reps: 12, restTime: '60s', videoUrl: '', description: '', order: 1, dayOfWeek: 1 },
+        ],
+        difficulty: 'intermediate',
+        description: 'Rutina enfocada en fuerza',
+      };
+      const html = renderWorkoutCard(workout);
+      expect(html).toContain('Rutina de Fuerza');
+      expect(html).toContain('1 ejercicios');
+      expect(html).toContain('intermediate');
+    });
 
+    it('✅ should show 0 exercises when exercises array is empty', () => {
+      const workout = {
+        id: 'w1',
+        clientId: 'c1',
+        trainerId: 't1',
+        name: 'Rutina Vacía',
+        exercises: [],
+        difficulty: 'beginner',
+        description: 'Test',
+      };
+      const html = renderWorkoutCard(workout);
+      expect(html).toContain('0 ejercicios');
+    });
 
-  it('should return empty string for empty input', () => {
-    expect(escapeHtml('')).toBe('');
+    it('✅ should show "custom" when difficulty is not provided', () => {
+       const workout = {
+         id: 'w1',
+         clientId: 'c1',
+         trainerId: 't1',
+         name: 'Custom Workout',
+         exercises: [],
+         description: 'Test',
+         difficulty: 'custom',
+       };
+       const html = renderWorkoutCard(workout);
+       expect(html).toContain('custom');
+    });
+
+     it('✅ should truncate long descriptions', () => {
+       const workout = {
+         id: 'w1',
+         clientId: 'c1',
+         trainerId: 't1',
+         name: 'Test',
+         exercises: [],
+         description: 'A'.repeat(100),
+         difficulty: 'beginner',
+       };
+       const html = renderWorkoutCard(workout);
+       expect(html).toContain('...');
+     });
   });
 
-  it('should return same string for plain text', () => {
-    expect(escapeHtml('Hello World')).toBe('Hello World');
+  describe('renderDietCard', () => {
+    it('✅ should render diet card with name and calories', () => {
+       const diet = {
+         id: 'd1',
+         clientId: 'c1',
+         trainerId: 't1',
+         name: 'Dieta Proteica',
+         type: 'normal' as const,
+         totalCalories: 2500,
+         meals: [
+           { id: 'm1', name: 'breakfast' as const, description: 'Avena', calories: 400, protein: 20, carbs: 50, fat: 10, order: 1 },
+         ],
+       };
+       const html = renderDietCard(diet);
+       expect(html).toContain('Dieta Proteica');
+       expect(html).toContain('1 comidas');
+       expect(html).toContain('2500 kcal');
+    });
+
+    it('✅ should show 0 meals when meals array is empty', () => {
+      const diet = {
+        id: 'd1',
+        clientId: 'c1',
+        trainerId: 't1',
+        name: 'Dieta Vacía',
+        type: 'normal' as const,
+        totalCalories: 0,
+        meals: [],
+      };
+      const html = renderDietCard(diet);
+      expect(html).toContain('0 comidas');
+      expect(html).toContain('0 kcal');
+    });
+
+    it('✅ should show diet type', () => {
+      const diet = {
+        id: 'd1',
+        clientId: 'c1',
+        trainerId: 't1',
+        name: 'Advanced Diet',
+        type: 'advanced' as const,
+        totalCalories: 3000,
+        meals: [],
+      };
+      const html = renderDietCard(diet);
+      expect(html).toContain('advanced');
+    });
   });
 
-  it('should escape ampersands', () => {
-    const escaped = escapeHtml('a & b');
-    expect(escaped).toContain('&');
-    expect(escaped).not.toContain(' & ');
-  });
+  describe('renderMessageBubble', () => {
+    const message = {
+      id: 'msg1',
+      senderId: 'user1',
+      receiverId: 'user2',
+      content: 'Hola, ¿cómo estás?',
+      type: 'text' as const,
+      participants: ['user1', 'user2'],
+      isRead: false,
+    };
 
-});
+    it('✅ should render message content', () => {
+      const html = renderMessageBubble(message, true, 'Juan', true);
+      expect(html).toContain('Hola, ¿cómo estás?');
+    });
 
-// ─── Tests: formatDate ─────────────────────────────────────────────────────
+    it('✅ should show sender name for received messages', () => {
+      const html = renderMessageBubble(message, false, 'Juan', true);
+      expect(html).toContain('Juan');
+    });
 
-describe('formatDate', () => {
-  it('should format a valid timestamp', () => {
-    const date = new Date(2024, 0, 15);
-    const timestamp = { toDate: () => date };
-    const result = formatDate(timestamp);
-    expect(result).toContain('2024');
-    expect(result).toContain('ene');
-  });
+    it('✅ should not show sender name for own messages', () => {
+      const html = renderMessageBubble(message, true, 'Juan', true);
+      expect(html).not.toContain('<p class="mb-1 text-xs text-zinc-500">Juan</p>');
+    });
 
-  it('should return "-" for null timestamp', () => {
-    expect(formatDate(null)).toBe('-');
-  });
+    it('✅ should show alert badge for alert messages', () => {
+      const alertMessage = { ...message, type: 'alert' as const };
+      const html = renderMessageBubble(alertMessage, false, 'Trainer', true);
+      expect(html).toContain('Llamado de atención');
+      expect(html).toContain('text-red-400');
+    });
 
-  it('should return "-" for undefined timestamp', () => {
-    expect(formatDate(undefined)).toBe('-');
-  });
+    it('✅ should not show alert badge for normal messages', () => {
+      const html = renderMessageBubble(message, false, 'Juan', true);
+      expect(html).not.toContain('Llamado de atención');
+    });
 
-  it('should return "-" for timestamp without toDate', () => {
-    expect(formatDate({} as any)).toBe('-');
-  });
-});
+    it('✅ should apply correct alignment for own messages', () => {
+      const html = renderMessageBubble(message, true, 'Juan', true);
+      expect(html).toContain('ml-auto');
+      expect(html).not.toContain('mr-auto');
+    });
 
-// ─── Tests: formatTime ─────────────────────────────────────────────────────
-
-describe('formatTime', () => {
-  it('should format a valid timestamp', () => {
-    const date = new Date(2024, 0, 15, 14, 30);
-    const timestamp = { toDate: () => date };
-    const result = formatTime(timestamp);
-    expect(result).toContain('14');
-    expect(result).toContain('30');
-  });
-
-  it('should return empty string for null timestamp', () => {
-    expect(formatTime(null)).toBe('');
-  });
-
-  it('should return empty string for undefined timestamp', () => {
-    expect(formatTime(undefined)).toBe('');
-  });
-});
-
-// ─── Tests: getUserInitial ──────────────────────────────────────────────────
-
-describe('getUserInitial', () => {
-  it('should return first letter uppercase', () => {
-    expect(getUserInitial('juan')).toBe('J');
-  });
-
-  it('should return first letter for full name', () => {
-    expect(getUserInitial('Maria Jose')).toBe('M');
-  });
-
-  it('should return "?" for empty string', () => {
-    expect(getUserInitial('')).toBe('?');
-  });
-
-  it('should return "?" for null/undefined', () => {
-    expect(getUserInitial(null as any)).toBe('?');
-    expect(getUserInitial(undefined as any)).toBe('?');
-  });
-});
-
-// ─── Tests: renderEmptyState ───────────────────────────────────────────────
-
-describe('renderEmptyState', () => {
-  it('should render HTML with icon and message', () => {
-    const result = renderEmptyState('<svg></svg>', 'No hay datos');
-    expect(result).toContain('<svg');
-    expect(result).toContain('No hay datos');
-    expect(result).toContain('rounded-xl');
-  });
-});
-
-// ─── Tests: renderLoadingState ─────────────────────────────────────────────
-
-describe('renderLoadingState', () => {
-  it('should render loading HTML with spinner', () => {
-    const result = renderLoadingState();
-    expect(result).toContain('animate-spin');
-    expect(result).toContain('Cargando...');
-    expect(result).toContain('rounded-xl');
+    it('✅ should apply correct alignment for received messages', () => {
+      const html = renderMessageBubble(message, false, 'Juan', true);
+      expect(html).toContain('mr-auto');
+      expect(html).not.toContain('ml-auto');
+    });
   });
 });
