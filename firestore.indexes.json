@@ -22,15 +22,6 @@
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "assignedTrainerId", "order": "ASCENDING" },
-        { "fieldPath": "role", "arrayConfig": "IN" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "assignedTrainerId", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
     },
