@@ -5,6 +5,8 @@
 > **Para agentes IA:** Este es el archivo de referencia para ver qué hacer y qué está pendiente  
 > **IMPORTANTE:** Este archivo reemplaza a `TODO_OPTIMIZACIONES.md`, `TASK_PROGRESS.md` y `tests/TASK_PROGRESS.md`  
 > **Documentación:** Ver `docs/MASTER.md` para la documentación completa del proyecto
+>
+> 📌 **IMPORTANTE:** Antes de empezar cualquier tarea, leer `GIT_WORKFLOW.md` para entender el flujo de git/deploy.
 
 ---
 
