@@ -401,10 +401,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }
     });
 
-    (window as any).__closeEditor = () => {
-      editor.classList.add('hidden');
-      editor.innerHTML = '';
-    };
+    // Close editor via event delegation (data-action="close-editor")
   }
 
   function renderExerciseRow(exercise: Exercise, index: number, dayOptions: string): string {

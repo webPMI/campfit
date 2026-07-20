@@ -1,0 +1,153 @@
+---
+/**
+ * ConfirmModal - Modal de confirmación reutilizable.
+ * Reemplaza el uso de confirm() nativo por un modal accesible y estilizado.
+ *
+ * @component
+ * @example
+ * ```astro
+ * <ConfirmModal />
+ * ```
+ *
+ * Uso en JS:
+ * ```js
+ * const confirmed = await window.showConfirm({
+ *   title: '¿Estás seguro?',
+ *   message: 'Esta acción no se puede deshacer',
+ *   confirmText: 'Eliminar',
+ *   cancelText: 'Cancelar',
+ *   variant: 'danger' // 'danger' | 'warning' | 'info'
+ * });
+ * if (confirmed) { ... }
+ * ```
+ */
+---
+
+<div
+  id="confirm-modal-overlay"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+>
+  <div
+    id="confirm-modal"
+    class="mx-4 w-full max-w-sm animate-fade-in rounded-2xl border border-zinc-800/60 bg-zinc-900/90 p-6 shadow-2xl backdrop-blur-xl"
+  >
+    <div class="flex items-start gap-4">
+      <div id="confirm-modal-icon" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20">
+        <svg id="confirm-modal-icon-svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg>
+      </div>
+      <div class="flex-1">
+        <h3 id="confirm-modal-title" class="text-lg font-semibold text-zinc-100">Confirmar</h3>
+        <p id="confirm-modal-message" class="mt-1 text-sm text-zinc-400">Mensaje</p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex gap-3">
+      <button
+        id="confirm-modal-cancel"
+        class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-all hover:bg-zinc-800"
+      >
+        Cancelar
+      </button>
+      <button
+        id="confirm-modal-confirm"
+        class="flex-1 rounded-xl bg-red-600 hover:bg-red-500 px-4 py-2.5 text-sm font-medium text-white transition-all active:scale-[0.98]"
+      >
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /**
+   * showConfirm - Muestra un modal de confirmación y retorna una promesa.
+   * @param {Object} options
+   * @param {string} options.title - Título del modal
+   * @param {string} options.message - Mensaje descriptivo
+   * @param {string} [options.confirmText='Confirmar'] - Texto del botón de confirmación
+   * @param {string} [options.cancelText='Cancelar'] - Texto del botón de cancelar
+   * @param {'danger'|'warning'|'info'} [options.variant='danger'] - Variante de color
+   * @returns {Promise<boolean>}
+   */
+  (window as any).showConfirm = function (options: {
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+    variant?: 'danger' | 'warning' | 'info';
+  }): Promise<boolean> {
+    return new Promise((resolve) => {
+      const overlay = document.getElementById('confirm-modal-overlay') as HTMLDivElement;
+      const titleEl = document.getElementById('confirm-modal-title') as HTMLHeadingElement;
+      const messageEl = document.getElementById('confirm-modal-message') as HTMLParagraphElement;
+      const confirmBtn = document.getElementById('confirm-modal-confirm') as HTMLButtonElement;
+      const cancelBtn = document.getElementById('confirm-modal-cancel') as HTMLButtonElement;
+      const iconContainer = document.getElementById('confirm-modal-icon') as HTMLDivElement;
+      const iconSvg = document.getElementById('confirm-modal-icon-svg') as unknown as SVGElement;
+
+      const variant = options.variant || 'danger';
+
+      // Variant styles
+      const styles: Record<string, { btn: string; icon: string; bg: string }> = {
+        danger: {
+          btn: 'bg-red-600 hover:bg-red-500 text-white',
+          icon: 'text-red-400',
+          bg: 'bg-red-500/10 border-red-500/20',
+        },
+        warning: {
+          btn: 'bg-amber-600 hover:bg-amber-500 text-white',
+          icon: 'text-amber-400',
+          bg: 'bg-amber-500/10 border-amber-500/20',
+        },
+        info: {
+          btn: 'bg-emerald-600 hover:bg-emerald-500 text-white',
+          icon: 'text-emerald-400',
+          bg: 'bg-emerald-500/10 border-emerald-500/20',
+        },
+      };
+
+      const colors = styles[variant] || styles.danger;
+
+      // Set content
+      titleEl.textContent = options.title;
+      messageEl.textContent = options.message;
+      confirmBtn.textContent = options.confirmText || 'Confirmar';
+      cancelBtn.textContent = options.cancelText || 'Cancelar';
+
+      // Set variant styles
+      confirmBtn.className = `flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-all active:scale-[0.98] ${colors.btn}`;
+      iconContainer.className = `flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${colors.bg}`;
+      iconSvg.className = `h-5 w-5 ${colors.icon}`;
+
+      function cleanup() {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        confirmBtn.onclick = null;
+        cancelBtn.onclick = null;
+        overlay.onclick = null;
+      }
+
+      confirmBtn.onclick = () => {
+        cleanup();
+        resolve(true);
+      };
+
+      cancelBtn.onclick = () => {
+        cleanup();
+        resolve(false);
+      };
+
+      overlay.onclick = (e) => {
+        if (e.target === overlay) {
+          cleanup();
+          resolve(false);
+        }
+      };
+
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+    });
+  };
+</script>
