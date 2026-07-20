@@ -398,13 +398,19 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ---
 
-### 20. Implementar tests para páginas
-- [ ] `client/dashboard.astro` (página principal del cliente)
-- [ ] Componentes UI (Skeleton, BaseLayout)
-- [ ] Tests E2E con Playwright para flujos críticos
+### 20. Tests E2E con Playwright
+- [x] Tests de login (formulario, validación, navegación)
+- [x] Tests de registro (formulario, validación, navegación)
+- [x] Tests de recuperación (formulario, validación, navegación)
+- [x] Tests de control de acceso (dashboard, admin, client, trainer)
+- [x] Tests de páginas públicas (landing, 404)
+- [ ] Tests de flujo completo (registro → onboarding → dashboard)
+- [ ] Tests de páginas admin (dashboard, users, clients, trainers)
+- [ ] Tests de páginas cliente (dashboard, workouts, diets, progress, chat)
+- [ ] Tests de páginas trainer (dashboard, clients, workouts, diets, chat)
 
 **Prioridad:** 🟡 MEDIA  
-**Estado:** ⏳ Pendiente
+**Estado:** 🟡 Parcial (auth flow completo, faltan flujos autenticados)
 
 ---
 

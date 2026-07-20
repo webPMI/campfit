@@ -75,20 +75,19 @@
 - [x] **1.11** Actualizar `README.md` con tabla de comandos de agente
 - [x] **1.12** Actualizar `.clinerules` con nuevos comandos npm
 
-### Fase 2: Documentación (Prioridad 🔴)
-- [ ] **2.1** Actualizar `03_arquitectura_tecnica.md` con estructura real
-- [ ] **2.2** Actualizar `07_flujos_navegacion.md` con rutas reales
-- [ ] **2.3** Actualizar `08_modulo_autenticacion.md` con archivos reales
-- [ ] **2.4** Actualizar `09_modulo_cliente.md` con settings
-- [ ] **2.5** Actualizar `10_modulo_administracion.md` con clients/trainers
-- [ ] **2.6** Actualizar `16_implementacion_incremental.md` con estado real
-- [ ] **2.7** Actualizar `AGENTS_GUIDE.md` con mejoras del harness
+### Fase 2: Documentación (Prioridad 🔴) ✅ COMPLETADA
+- [x] **2.1** Actualizar `03_arquitectura_tecnica.md` con estructura real
+- [x] **2.2** Actualizar `07_flujos_navegacion.md` con rutas reales
+- [x] **2.3** Actualizar `08_modulo_autenticacion.md` con archivos reales
+- [x] **2.4** Actualizar `09_modulo_cliente.md` con settings
+- [x] **2.5** Actualizar `10_modulo_administracion.md` con clients/trainers
+- [x] **2.6** Actualizar `16_implementacion_incremental.md` con estado real
+- [x] **2.7** Actualizar `AGENTS_GUIDE.md` con mejoras del harness
 
 ### Fase 3: Testing (Prioridad 🟡)
-- [ ] **3.1** Crear tests E2E básicos (login, register, dashboard)
+- [x] **3.1** Crear tests E2E básicos (login, register, dashboard, recover, access control)
 - [ ] **3.2** Crear tests de integración con Firebase Emulator
 - [ ] **3.3** Agregar tests para páginas admin faltantes
-- [ ] **3.4** Mejorar cobertura de servicios cliente
 
 ### Fase 4: CI/CD y Calidad (Prioridad 🟡)
 - [ ] **4.1** Optimizar CI/CD con caching y matrix
