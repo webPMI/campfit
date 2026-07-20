@@ -89,8 +89,8 @@ Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf) a trav�
       "args": ["@firebase-mcp/server"],
       "env": {
         "FIREBASE_PROJECT_ID": "mallorca-campfit",
-        "FIREBASE_CLIENT_EMAIL": "${FIREBASE_CLIENT_EMAIL}",
-        "FIREBASE_PRIVATE_KEY": "${FIREBASE_PRIVATE_KEY}"
+        "FIREBASE_CLIENT_EMAIL": "${env:FIREBASE_CLIENT_EMAIL}",
+        "FIREBASE_PRIVATE_KEY": "${env:FIREBASE_PRIVATE_KEY}"
       },
       "description": "Firebase Auth + Firestore operations",
       "disabled": false
@@ -99,7 +99,7 @@ Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf) a trav�
       "command": "npx",
       "args": ["@github-mcp/server"],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}"
       },
       "description": "GitHub repository management",
       "disabled": false
@@ -113,6 +113,8 @@ Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf) a trav�
   }
 }
 ```
+
+> **Nota:** VS Code usa la sintaxis `${env:VAR_NAME}` para variables de entorno. Asegúrate de tener las variables configuradas en tu shell o en el archivo `.env`.
 
 ### Variables de Entorno Requeridas
 
@@ -217,18 +219,17 @@ cat CONTEXT.md
 cat TASK.md
 
 # 3. Verificar el estado del proyecto
-npm run astro check
-npm test
+npm run doctor
 ```
 
 ### 2. Antes de Modificar Código
 
 ```bash
 # 1. Verificar que no hay otro agente trabajando
-ls scripts/.agent-lock 2>/dev/null && echo "LOCKED" || echo "FREE"
+bash scripts/agent-lock.sh check
 
-# 2. Si está libre, crear lock
-echo "agent-$(whoami):$(date +%s):$(cat TASK.md | head -1)" > scripts/.agent-lock
+# 2. Si está libre, adquirir lock
+bash scripts/agent-lock.sh acquire "agent-name" "feature"
 
 # 3. Hacer pull de últimos cambios
 git pull origin master --allow-unrelated-histories --no-edit
@@ -245,13 +246,14 @@ git pull origin master --allow-unrelated-histories --no-edit
 ### 4. Validación Pre-commit
 
 ```bash
-# Ejecutar validación completa
+# Validación rápida (recomendada)
+bash scripts/validate.sh --quick
+
+# Validación completa
 bash scripts/validate.sh
 
-# O manualmente:
-npm run astro check    # TypeScript check
-npm test               # Tests unitarios
-npm run lint           # ESLint
+# Validación con auto-fix
+bash scripts/validate.sh --fix
 ```
 
 ### 5. Commit y Push
@@ -268,7 +270,7 @@ git push origin master
 ### 6. Liberar Lock
 
 ```bash
-rm scripts/.agent-lock
+bash scripts/agent-lock.sh release
 ```
 
 ---
@@ -298,26 +300,26 @@ npm run test:ci          # Para CI/CD
 ### Calidad
 
 ```bash
-npm run astro check      # TypeScript check
+npm run type-check       # TypeScript check
 npm run lint             # ESLint
 npm run format           # Prettier
 ```
 
-### Utilidades
+### Utilidades para Agentes
 
 ```bash
-bash scripts/setup.sh             # Setup inicial para nuevos agentes
-bash scripts/setup.sh --full      # Setup completo (instalar + pull)
-bash scripts/doctor.sh            # Diagnóstico del proyecto
-bash scripts/doctor.sh --ci       # Diagnóstico en modo CI (exit code)
-bash scripts/mcp-setup.sh         # Verificar/configurar servidores MCP
-bash scripts/mcp-setup.sh --install # Instalar servidores MCP
-bash scripts/mcp-setup.sh --env   # Generar .env template
-bash scripts/validate.sh          # Validación completa pre-commit
-bash scripts/validate.sh --quick  # Solo type-check + tests
-bash scripts/validate.sh --fix    # Completa + auto-fix lint
-bash scripts/check-context.sh     # Verificar contexto del proyecto
-bash scripts/agent-lock.sh status # Estado del lock
+npm run doctor           # Diagnóstico del proyecto
+npm run doctor:ci        # Diagnóstico en modo CI (exit code)
+npm run mcp:setup        # Verificar/configurar servidores MCP
+npm run mcp:install      # Instalar servidores MCP
+npm run mcp:env          # Generar .env template
+npm run setup            # Setup inicial para nuevos agentes
+npm run setup:full       # Setup completo (instalar + pull)
+npm run validate         # Validación completa pre-commit
+npm run validate:quick   # Solo type-check + tests
+npm run validate:fix     # Completa + auto-fix lint
+npm run lock:status      # Verificar estado del lock
+npm run lock:release     # Liberar lock
 ```
 
 ---
@@ -384,7 +386,7 @@ git pull origin master --allow-unrelated-histories --no-edit
 git add -A
 
 # 3. Commit
-git commit -m "feat: implementar X
+git commit -m "tipo: implementar X
 
 - Detalle 1
 - Detalle 2"
@@ -462,7 +464,7 @@ El pipeline de GitHub Actions (`.github/workflows/ci.yml`) ejecuta:
 **Solución:** `git pull origin master --allow-unrelated-histories --no-edit`
 
 ### Error: Lock stale
-**Solución:** `rm scripts/.agent-lock` (si pasaron más de 30 min)
+**Solución:** `bash scripts/agent-lock.sh release` (fuerza liberación si pasaron más de 30 min)
 
 ---
 

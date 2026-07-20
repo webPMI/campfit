@@ -5,8 +5,8 @@
       "args": ["@firebase-mcp/server"],
       "env": {
         "FIREBASE_PROJECT_ID": "mallorca-campfit",
-        "FIREBASE_CLIENT_EMAIL": "${FIREBASE_CLIENT_EMAIL}",
-        "FIREBASE_PRIVATE_KEY": "${FIREBASE_PRIVATE_KEY}"
+        "FIREBASE_CLIENT_EMAIL": "${env:FIREBASE_CLIENT_EMAIL}",
+        "FIREBASE_PRIVATE_KEY": "${env:FIREBASE_PRIVATE_KEY}"
       },
       "description": "Firebase Auth + Firestore operations. Usar para CRUD de usuarios, auth, queries.",
       "disabled": false
@@ -15,7 +15,7 @@
       "command": "npx",
       "args": ["@github-mcp/server"],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}"
       },
       "description": "GitHub repository management. Commits, PRs, issues.",
       "disabled": false
