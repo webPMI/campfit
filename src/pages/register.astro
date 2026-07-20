@@ -116,6 +116,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { setUser, setAuthLoading } from '@/stores/authStore';
   import { isValidEmail, isValidPassword, isValidName } from '@/lib/validators';
   import { getStoredLanguage, t } from '@/i18n/client';
+  import type { FirebaseError } from 'firebase/app';
 
   const nameInput = document.getElementById('name') as HTMLInputElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -204,8 +205,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
-    } catch (err: any) {
-      const code = err.code || '';
+    } catch (err: unknown) {
+      const fbErr = err as FirebaseError;
+      const code = fbErr.code || '';
       const messages: Record<string, string> = {
         'auth/email-already-in-use': t('error.email-in-use'),
         'auth/invalid-email': t('error.invalid-email'),
@@ -229,8 +231,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
-    } catch (err: any) {
-      const code = err.code || '';
+    } catch (err: unknown) {
+      const fbErr = err as FirebaseError;
+      const code = fbErr.code || '';
       if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
         showError(t('error.google.register'));
       }

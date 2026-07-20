@@ -32,13 +32,24 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
 
       - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: TypeScript Check
         run: npx astro check
-        continue-on-error: true  # Astro check puede tener falsos positivos
+        continue-on-error: true
 
       - name: Lint
         run: npm run lint
@@ -73,11 +84,30 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
 
       - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Run E2E tests
@@ -110,8 +140,19 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
 
       - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build
@@ -149,8 +190,19 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
 
       - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build

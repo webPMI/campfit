@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, browserLocalPersistence, setPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { logger } from '@/lib/shared/logger';
 
 // Usamos process.env como fallback para compatibilidad con tests (Vitest)
 const env = typeof import.meta !== 'undefined' ? import.meta.env : process.env;
@@ -22,7 +23,7 @@ export const db = getFirestore(app);
 // Configurar persistencia local segura (IndexedDB)
 // Esto mantiene la sesión activa aunque el usuario cierre el navegador
 setPersistence(auth, browserLocalPersistence).catch((err) => {
-  console.error('Error setting auth persistence:', err);
+  logger.error('Firebase', 'Error setting auth persistence', err);
 });
 
 export default app;

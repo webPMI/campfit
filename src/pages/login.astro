@@ -104,6 +104,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { setUser, setAuthLoading } from '@/stores/authStore';
   import { isValidEmail } from '@/lib/validators';
   import { getStoredLanguage, t } from '@/i18n/client';
+  import type { FirebaseError } from 'firebase/app';
 
   const emailInput = document.getElementById('email') as HTMLInputElement;
   const passwordInput = document.getElementById('password') as HTMLInputElement;
@@ -158,8 +159,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
-    } catch (err: any) {
-      const code = err.code || '';
+    } catch (err: unknown) {
+      const fbErr = err as FirebaseError;
+      const code = fbErr.code || '';
       const messages: Record<string, string> = {
         'auth/invalid-credential': t('error.invalid-credential'),
         'auth/user-not-found': t('error.user-not-found'),
@@ -185,8 +187,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
-    } catch (err: any) {
-      const code = err.code || '';
+    } catch (err: unknown) {
+      const fbErr = err as FirebaseError;
+      const code = fbErr.code || '';
       if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
         showError(t('error.google.login'));
       }

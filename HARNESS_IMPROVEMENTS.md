@@ -90,12 +90,12 @@
 - [ ] **3.3** Agregar tests para páginas admin faltantes
 
 ### Fase 4: CI/CD y Calidad (Prioridad 🟡)
-- [ ] **4.1** Optimizar CI/CD con caching y matrix
+- [x] **4.1** Optimizar CI/CD con caching y matrix
 - [ ] **4.2** Agregar notificaciones al pipeline
-- [ ] **4.3** Reemplazar `console.error` con logger
+- [x] **4.3** Reemplazar `console.error` con logger (src/lib/firebase.ts, src/lib/auth/roleRedirect.ts)
 - [ ] **4.4** Migrar `window.__*` a event delegation
 - [ ] **4.5** Reemplazar `confirm()` con modal
-- [ ] **4.6** Eliminar `any` en servicios cliente
+- [x] **4.6** Eliminar `any` en servicios cliente (login.astro, register.astro, recover.astro → FirebaseError)
 
 ### Fase 5: Refactor y Limpieza (Prioridad 🟢)
 - [ ] **5.1** Refactorizar `profileService.ts` (>400 líneas)

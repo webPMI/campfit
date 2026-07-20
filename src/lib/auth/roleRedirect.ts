@@ -1,5 +1,6 @@
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { logger } from '@/lib/shared/logger';
 
 export type UserRole = 'client' | 'trainer' | 'admin';
 
@@ -12,7 +13,7 @@ export async function getUserRole(uid: string): Promise<UserRole | null> {
     }
     return null;
   } catch (err) {
-    console.error('Error getting user role:', err);
+    logger.error('RoleRedirect', 'Error getting user role', err);
     return null;
   }
 }

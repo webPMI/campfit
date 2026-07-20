@@ -74,6 +74,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { authService } from '@/services/authService';
   import { isValidEmail } from '@/lib/validators';
   import { getStoredLanguage, t } from '@/i18n/client';
+  import type { FirebaseError } from 'firebase/app';
 
   const emailInput = document.getElementById('email') as HTMLInputElement;
   const recoverForm = document.getElementById('recoverForm') as HTMLFormElement;
@@ -129,8 +130,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       await authService.recoverPassword(email);
       showSuccess('Revisa tu correo para restablecer tu contraseña');
       emailInput.value = '';
-    } catch (err: any) {
-      const code = err.code || '';
+    } catch (err: unknown) {
+      const fbErr = err as FirebaseError;
+      const code = fbErr.code || '';
       const messages: Record<string, string> = {
         'auth/user-not-found': 'No existe una cuenta con este email',
         'auth/invalid-email': 'Email inválido',
