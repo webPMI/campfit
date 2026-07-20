@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 beforeEach(() => {
   vi.clearAllMocks();
-  delete (window as Record<string, unknown>).__adminId;
+  delete (window as unknown as Record<string, unknown>).__adminId;
 });
 
 describe('adminInit', () => {

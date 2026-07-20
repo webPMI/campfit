@@ -95,10 +95,11 @@ describe('trainerChat', () => {
         { id: 'msg-2', data: () => ({ senderId: 'user-2', content: 'Adiós', participants: ['user-1', 'user-2'] }) },
       ];
 
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: mockMessages });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToConversations } = await import('@/lib/trainer/trainerChat');
       const callback = vi.fn();
@@ -120,10 +121,11 @@ describe('trainerChat', () => {
         { id: 'msg-2', data: () => ({ senderId: 'user-3', content: 'Otro chat', participants: ['user-1', 'user-3'] }) },
       ];
 
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: mockMessages });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToConversation } = await import('@/lib/trainer/trainerChat');
       const callback = vi.fn();

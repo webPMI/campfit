@@ -101,10 +101,11 @@ const mockDiet = {
 describe('trainerDiets', () => {
   describe('subscribeToDietsByTrainer', () => {
     it('debería suscribirse a las dietas del entrenador', async () => {
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: [{ id: 'd-1', data: () => mockDiet }] });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToDietsByTrainer } = await import('@/lib/trainer/trainerDiets');
       const callback = vi.fn();
@@ -118,10 +119,11 @@ describe('trainerDiets', () => {
 
   describe('subscribeToDietsByClient', () => {
     it('debería suscribirse a las dietas de un cliente', async () => {
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: [{ id: 'd-1', data: () => mockDiet }] });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToDietsByClient } = await import('@/lib/trainer/trainerDiets');
       const callback = vi.fn();

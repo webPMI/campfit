@@ -260,7 +260,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       container.innerHTML = filtered.map((user) => renderUserCardExtended(user, true)).join('');
 
-      initGlobalActions();
+      initGlobalActions('admin');
       // Override edit button to open modal
       document.querySelectorAll('[data-edit-user]').forEach((btn) => {
         btn.addEventListener('click', (e) => {

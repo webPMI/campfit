@@ -115,10 +115,11 @@ describe('trainerProgress', () => {
         },
       ];
 
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: mockLogs });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToClientProgress } = await import('@/lib/trainer/trainerProgress');
       const callback = vi.fn();
@@ -133,12 +134,11 @@ describe('trainerProgress', () => {
     });
 
     it('debería manejar errores de suscripción', async () => {
-      mockOnSnapshot.mockImplementation(
-        (_q: unknown, _success: unknown, error: (e: Error) => void) => {
-          error(new Error('Firestore error'));
-          return vi.fn();
-        },
-      );
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const error = args[2] as (e: Error) => void;
+        error(new Error('Firestore error'));
+        return vi.fn();
+      }) as never);
 
       const { subscribeToClientProgress } = await import('@/lib/trainer/trainerProgress');
       const callback = vi.fn();

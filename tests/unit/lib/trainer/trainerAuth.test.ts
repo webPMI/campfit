@@ -49,10 +49,11 @@ describe('trainerAuth', () => {
   describe('requireAuth', () => {
     it('debería llamar al callback cuando el usuario está autenticado', async () => {
       const mockUser = { uid: 'trainer-123', email: 'trainer@test.com' };
-      mockOnAuthStateChanged.mockImplementation((_auth: unknown, callback: (u: unknown) => void) => {
+      mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (u: unknown) => void;
         callback(mockUser);
         return vi.fn();
-      });
+      }) as never);
 
       const { requireAuth } = await import('@/lib/trainer/trainerAuth');
       const callback = vi.fn();
@@ -64,10 +65,11 @@ describe('trainerAuth', () => {
     });
 
     it('debería redirigir a /login cuando el usuario NO está autenticado', async () => {
-      mockOnAuthStateChanged.mockImplementation((_auth: unknown, callback: (u: unknown) => void) => {
+      mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (u: unknown) => void;
         callback(null);
         return vi.fn();
-      });
+      }) as never);
 
       const { requireAuth } = await import('@/lib/trainer/trainerAuth');
       const callback = vi.fn();

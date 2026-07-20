@@ -95,10 +95,11 @@ describe('adminSubscriptions', () => {
         { id: 'u-2', data: () => ({ name: 'User 2', email: 'u2@test.com', role: 'trainer' }) },
       ];
 
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: mockUsers });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToUsers } = await import('@/lib/admin/adminSubscriptions');
       const callback = vi.fn();
@@ -113,12 +114,11 @@ describe('adminSubscriptions', () => {
     });
 
     it('debería manejar errores de suscripción', async () => {
-      mockOnSnapshot.mockImplementation(
-        (_q: unknown, _success: unknown, error: (e: Error) => void) => {
-          error(new Error('Firestore error'));
-          return vi.fn();
-        },
-      );
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const error = args[2] as (e: Error) => void;
+        error(new Error('Firestore error'));
+        return vi.fn();
+      }) as never);
 
       const { subscribeToUsers } = await import('@/lib/admin/adminSubscriptions');
       const callback = vi.fn();
@@ -130,10 +130,11 @@ describe('adminSubscriptions', () => {
 
   describe('subscribeToUsersByRole', () => {
     it('debería suscribirse a usuarios por rol', async () => {
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: [{ id: 'u-1', data: () => ({ name: 'Trainer 1', role: 'trainer' }) }] });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToUsersByRole } = await import('@/lib/admin/adminSubscriptions');
       const callback = vi.fn();
@@ -145,10 +146,11 @@ describe('adminSubscriptions', () => {
 
   describe('subscribeToCollectionCount', () => {
     it('debería suscribirse al conteo de una colección', async () => {
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ size: 5 });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToCollectionCount } = await import('@/lib/admin/adminSubscriptions');
       const callback = vi.fn();
@@ -160,10 +162,11 @@ describe('adminSubscriptions', () => {
 
   describe('subscribeToRecentUsers', () => {
     it('debería suscribirse a los usuarios más recientes', async () => {
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: [{ id: 'u-1', data: () => ({ name: 'Recent User', role: 'client' }) }] });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToRecentUsers } = await import('@/lib/admin/adminSubscriptions');
       const callback = vi.fn();

@@ -113,10 +113,11 @@ describe('trainerClients', () => {
         },
       ];
 
-      mockOnSnapshot.mockImplementation((_q: unknown, callback: (s: unknown) => void) => {
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (s: unknown) => void;
         callback({ docs: mockClients });
         return vi.fn();
-      });
+      }) as never);
 
       const { subscribeToClients } = await import('@/lib/trainer/trainerClients');
       const callback = vi.fn();
@@ -133,12 +134,11 @@ describe('trainerClients', () => {
     });
 
     it('debería manejar errores de suscripción', async () => {
-      mockOnSnapshot.mockImplementation(
-        (_q: unknown, _success: unknown, error: (e: Error) => void) => {
-          error(new Error('Firestore error'));
-          return vi.fn();
-        },
-      );
+      mockOnSnapshot.mockImplementation(((...args: unknown[]) => {
+        const error = args[2] as (e: Error) => void;
+        error(new Error('Firestore error'));
+        return vi.fn();
+      }) as never);
 
       const { subscribeToClients } = await import('@/lib/trainer/trainerClients');
       const callback = vi.fn();

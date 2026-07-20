@@ -132,3 +132,42 @@ export function createFirestoreMock() {
 
   return { mocks, firestoreInstance, exports };
 }
+
+/**
+ * Helper para crear implementaciones mock de onSnapshot compatibles con Vitest v3.
+ *
+ * Vitest v3 tiene tipos más estrictos para mockImplementation, por lo que
+ * necesitamos usar un wrapper que evite errores de tipo.
+ *
+ * @example
+ * ```ts
+ * // En lugar de:
+ * mockOnSnapshot.mockImplementation((_q, callback) => { callback(data); return vi.fn(); });
+ *
+ * // Usar:
+ * mockOnSnapshot.mockImplementation(mockOnSnapshotImpl((callback) => { callback(data); }));
+ * ```
+ */
+export function mockOnSnapshotImpl(
+  fn: (callback: (snapshot: unknown) => void, error?: (err: Error) => void) => void,
+): (...args: unknown[]) => unknown {
+  return ((...args: unknown[]) => {
+    const callback = args[1] as (snapshot: unknown) => void;
+    const error = args[2] as ((err: Error) => void) | undefined;
+    fn(callback, error);
+    return vi.fn();
+  }) as never;
+}
+
+/**
+ * Helper para crear implementaciones mock de onAuthStateChanged compatibles con Vitest v3.
+ */
+export function mockOnAuthStateChangedImpl(
+  fn: (callback: (user: unknown) => void) => void,
+): (...args: unknown[]) => unknown {
+  return ((...args: unknown[]) => {
+    const callback = args[1] as (user: unknown) => void;
+    fn(callback);
+    return vi.fn();
+  }) as never;
+}

@@ -49,10 +49,11 @@ describe('adminAuth', () => {
   describe('requireAdmin', () => {
     it('debería llamar al callback cuando el usuario está autenticado', async () => {
       const mockUser = { uid: 'admin-123', email: 'admin@test.com' };
-      mockOnAuthStateChanged.mockImplementation((_auth: unknown, callback: (u: unknown) => void) => {
+      mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (u: unknown) => void;
         callback(mockUser);
         return vi.fn();
-      });
+      }) as never);
 
       const { requireAdmin } = await import('@/lib/admin/adminAuth');
       const callback = vi.fn();
@@ -64,10 +65,11 @@ describe('adminAuth', () => {
     });
 
     it('debería redirigir a /login cuando el usuario NO está autenticado', async () => {
-      mockOnAuthStateChanged.mockImplementation((_auth: unknown, callback: (u: unknown) => void) => {
+      mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
+        const callback = args[1] as (u: unknown) => void;
         callback(null);
         return vi.fn();
-      });
+      }) as never);
 
       const { requireAdmin } = await import('@/lib/admin/adminAuth');
       const callback = vi.fn();
