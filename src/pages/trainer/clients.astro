@@ -49,20 +49,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, getUserInitial, formatDate, renderEmptyState } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToWorkoutsByClient,
     subscribeToDietsByClient,
     subscribeToClientProgress,
     getClientProfile,
-    ICONS,
-    renderEmptyState,
     renderClientCard,
     renderWorkoutCard,
     renderDietCard,
-    escapeHtml,
-    getUserInitial,
-    formatDate,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient } from '@/lib/trainer/trainerUtils';
 

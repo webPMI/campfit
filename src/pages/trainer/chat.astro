@@ -85,17 +85,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, getUserInitial, formatTime } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToConversations,
     subscribeToConversation,
     sendMessage,
     markAsRead,
-    ICONS,
     renderMessageBubble,
-    escapeHtml,
-    getUserInitial,
-    formatTime,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerMessage } from '@/lib/trainer/trainerUtils';
 

@@ -52,15 +52,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, renderEmptyState } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToDietsByTrainer,
     createDiet,
     updateDiet,
     deleteDiet,
-    ICONS,
-    renderEmptyState,
-    escapeHtml,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerDiet, Meal } from '@/lib/trainer/trainerUtils';
 

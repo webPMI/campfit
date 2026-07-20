@@ -137,17 +137,15 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, renderEmptyState } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToWorkoutsByTrainer,
     subscribeToDietsByTrainer,
     subscribeToConversations,
-    ICONS,
-    renderEmptyState,
     renderClientCard,
     renderWorkoutCard,
     renderDietCard,
-    escapeHtml,
   } from '@/lib/trainer/trainerUtils';
 
   let unsubClients: (() => void) | null = null;
