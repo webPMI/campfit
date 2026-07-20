@@ -28,6 +28,10 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'auth.login.btn': 'Iniciar Sesión',
     'auth.register.btn': 'Crear Cuenta',
     'auth.loading.login': 'Entrando...',
+    // Admin
+    'admin.no.clients': 'Sin clientes registrados',
+    'admin.no.trainers': 'Sin entrenadores registrados',
+
     'auth.loading.register': 'Creando cuenta...',
     'auth.loading.google': 'Conectando...',
     'error.required': 'Completa todos los campos',
@@ -101,6 +105,10 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'auth.login.btn': 'Sign In',
     'auth.register.btn': 'Create Account',
     'auth.loading.login': 'Signing in...',
+    // Admin
+    'admin.no.clients': 'No registered clients',
+    'admin.no.trainers': 'No registered trainers',
+
     'auth.loading.register': 'Creating account...',
     'auth.loading.google': 'Connecting...',
     'error.required': 'Please fill in all fields',

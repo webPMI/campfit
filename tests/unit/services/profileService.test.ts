@@ -115,9 +115,8 @@ import {
   updateProfile,
   sendPasswordReset,
   changePassword,
-  getProfileInitial,
-  getRoleBadgeClass,
 } from '../../../src/lib/shared/profileService';
+import { getUserInitial, getRoleBadge } from '../../../src/lib/shared/ui';
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
@@ -274,49 +273,49 @@ describe('profileService', () => {
     });
   });
 
-  // ── getProfileInitial ────────────────────────────────────────────────────
+  // ── getUserInitial ────────────────────────────────────────────────────
 
-  describe('getProfileInitial', () => {
+  describe('getUserInitial', () => {
     it('✅ should return first letter of name', () => {
-      expect(getProfileInitial('Juan')).toBe('J');
+      expect(getUserInitial('Juan')).toBe('J');
     });
 
     it('✅ should return uppercase letter', () => {
-      expect(getProfileInitial('maría')).toBe('M');
+      expect(getUserInitial('maría')).toBe('M');
     });
 
     it('✅ should return ? for empty name', () => {
-      expect(getProfileInitial('')).toBe('?');
+      expect(getUserInitial('')).toBe('?');
     });
 
     it('✅ should return ? for undefined', () => {
-      expect(getProfileInitial(undefined as unknown as string)).toBe('?');
+      expect(getUserInitial(undefined as unknown as string)).toBe('?');
     });
   });
 
-  // ── getRoleBadgeClass ────────────────────────────────────────────────────
+  // ── getRoleBadge ────────────────────────────────────────────────────
 
-  describe('getRoleBadgeClass', () => {
+  describe('getRoleBadge', () => {
     it('✅ should return admin badge class', () => {
-      const result = getRoleBadgeClass('admin');
+      const result = getRoleBadge('admin');
       expect(result).toHaveProperty('class');
       expect(result.class).toContain('bg-purple');
     });
 
     it('✅ should return trainer badge class', () => {
-      const result = getRoleBadgeClass('trainer');
+      const result = getRoleBadge('trainer');
       expect(result).toHaveProperty('class');
       expect(result.class).toContain('bg-blue');
     });
 
     it('✅ should return client badge class', () => {
-      const result = getRoleBadgeClass('client');
+      const result = getRoleBadge('client');
       expect(result).toHaveProperty('class');
       expect(result.class).toContain('bg-emerald');
     });
 
     it('✅ should return default badge class for unknown role', () => {
-      const result = getRoleBadgeClass('unknown');
+      const result = getRoleBadge('unknown');
       expect(result).toHaveProperty('class');
       expect(result.class).toContain('bg-zinc');
     });

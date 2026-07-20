@@ -8,6 +8,7 @@
 ├── /login                     # 🔐 Inicio de sesión
 ├── /register                  # Registro de nuevo usuario
 ├── /recover                   # Recuperación de contraseña
+├── /onboarding                # Onboarding post-registro
 │
 ├── /client/                   # 👤 Panel del Cliente
 │   ├── /client/dashboard      # Resumen diario del cliente
@@ -16,18 +17,22 @@
 │   ├── /client/diets          # Visualizador de dietas
 │   ├── /client/progress       # Progreso (peso + fotos)
 │   ├── /client/chat           # Chat 1:1 con entrenador
-│   └── /client/support        # Chatbot de soporte
+│   ├── /client/support        # Chatbot de soporte
+│   └── /client/settings       # Configuración del cliente
 │
 ├── /admin/                    # ⚙️ Panel del Administrador
 │   ├── /admin/dashboard       # Dashboard de administración
 │   ├── /admin/users           # Gestión de usuarios
-│   ├── /admin/workouts        # Listado de rutinas
-│   ├── /admin/diets           # Listado de dietas
-│   ├── /admin/chat            # Bandeja de entrada de chats
-│   ├── /admin/progress        # Visor de progreso de alumnos
+│   ├── /admin/clients         # Lista de clientes
+│   ├── /admin/trainers        # Lista de entrenadores
 │   └── /admin/settings        # Configuración del sistema
 │
-└── /trainer/                  # 🏋️ Panel del Entrenador (futuro)
+└── /trainer/                  # 🏋️ Panel del Entrenador
+    ├── /trainer/dashboard     # Dashboard del entrenador
+    ├── /trainer/clients       # Gestión de clientes asignados
+    ├── /trainer/workouts      # Gestión de rutinas
+    ├── /trainer/diets         # Gestión de dietas
+    ├── /trainer/chat          # Chat con clientes
     └── /trainer/settings      # Configuración del entrenador
 ```
 
@@ -66,7 +71,7 @@
                           │               │                │
                    ┌──────▼──────┐  ┌─────▼──────┐  ┌─────▼──────┐
                    │  /admin/*   │  │ ¿Tiene     │  │  /trainer/*│
-                   │             │  │ perfil     │  │  (futuro)  │
+                   │             │  │ perfil     │  │            │
                    │             │  │ médico?    │  │            │
                    └─────────────┘  └──┬──────┬──┘  └────────────┘
                                      No│      │Sí
@@ -145,23 +150,18 @@
         ┌────────────────────┼────────────────────┐
         │                    │                    │
 ┌───────▼────────┐  ┌───────▼────────┐  ┌───────▼────────┐
-│  /admin/users  │  │  /admin/       │  │  /admin/chat   │
-│  Gestión       │  │  workouts      │  │  Bandeja       │
-│  usuarios      │  │  (listado)     │  │                │
+│  /admin/users  │  │  /admin/       │  │  /admin/       │
+│  Gestión       │  │  clients       │  │  trainers      │
+│  usuarios      │  │  (clientes)    │  │  (entrenadores)│
 └───────┬────────┘  └───────┬────────┘  └───────┬────────┘
         │                   │                    │
-┌───────▼────────┐  ┌───────▼────────┐           │
-│  /admin/diets  │  │  /admin/       │           │
-│  (listado)     │  │  progress      │           │
-└────────────────┘  │  (visor)       │           │
-                    └────────────────┘           │
-        ┌────────────────────────────────────────┘
-        │
-┌───────▼────────┐
-│  /admin/       │
-│  settings      │
-│  Configuración │
-└────────────────┘
+        └───────────────────┼────────────────────┘
+                            │
+                    ┌───────▼────────┐
+                    │  /admin/       │
+                    │  settings      │
+                    │  Configuración │
+                    └────────────────┘
 ```
 
 ### Sidebar Navigation (Admin)
@@ -170,11 +170,52 @@
 |-------|------|-------|
 | 📊 | `/admin/dashboard` | Dashboard |
 | 👥 | `/admin/users` | Usuarios |
-| 💪 | `/admin/workouts` | Rutinas |
-| 🥗 | `/admin/diets` | Dietas |
-| 💬 | `/admin/chat` | Chat |
-| 📈 | `/admin/progress` | Progreso |
+| 👤 | `/admin/clients` | Clientes |
+| 🏋️ | `/admin/trainers` | Entrenadores |
 | ⚙️ | `/admin/settings` | Configuración |
+
+---
+
+## Flujo del Entrenador
+
+```
+                    ┌─────────────────┐
+                    │  /trainer/      │
+                    │  dashboard      │
+                    └────────┬────────┘
+                             │
+        ┌────────────────────┼────────────────────┐
+        │                    │                    │
+┌───────▼────────┐  ┌───────▼────────┐  ┌───────▼────────┐
+│  /trainer/     │  │  /trainer/     │  │  /trainer/     │
+│  clients       │  │  workouts      │  │  diets         │
+│  (clientes)    │  │  (rutinas)     │  │  (dietas)      │
+└───────┬────────┘  └───────┬────────┘  └───────┬────────┘
+        │                   │                    │
+        └───────────────────┼────────────────────┘
+                            │
+                    ┌───────▼────────┐
+                    │  /trainer/     │
+                    │  chat          │
+                    │  (bandeja)     │
+                    └───────┬────────┘
+                            │
+                    ┌───────▼────────┐
+                    │  /trainer/     │
+                    │  settings      │
+                    └────────────────┘
+```
+
+### Sidebar Navigation (Trainer)
+
+| Icono | Ruta | Label |
+|-------|------|-------|
+| 📊 | `/trainer/dashboard` | Dashboard |
+| 👥 | `/trainer/clients` | Clientes |
+| 💪 | `/trainer/workouts` | Rutinas |
+| 🥗 | `/trainer/diets` | Dietas |
+| 💬 | `/trainer/chat` | Chat |
+| ⚙️ | `/trainer/settings` | Configuración |
 
 ---
 

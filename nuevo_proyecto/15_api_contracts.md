@@ -232,7 +232,7 @@ Consultar chatbot de FAQs.
 ### 3.1 Chat en tiempo real
 ```typescript
 import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import { db } from '@core/firebase/config';
+import { db } from '@/lib/firebase';
 
 export function subscribeToChat(
   userId: string,
@@ -302,21 +302,76 @@ const inboxQuery = query(
 ## 4. Índices Compuestos de Firestore
 
 Estos índices deben crearse en Firebase Console para que las consultas funcionen.
-Se listan primero los índices necesarios para el código actual, y luego los planificados.
+El archivo `firestore.indexes.json` contiene la configuración actual desplegada.
 
-### Índices Requeridos (Código Actual)
+### Índices Actuales (firestore.indexes.json)
 
 ```javascript
-// firestore.indexes.json
+// firestore.indexes.json — Estado actual del proyecto
 {
   "indexes": [
-    // messages: chat en tiempo real (orden ascendente por fecha)
+    // users: listar por rol
     {
-      "collectionGroup": "messages",
+      "collectionGroup": "users",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "participants", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "ASCENDING" }
+        { "fieldPath": "role", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    // users: clientes por trainer asignado + rol
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "assignedTrainerId", "order": "ASCENDING" },
+        { "fieldPath": "role", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    // users: clientes por trainer asignado (sin filtro de rol)
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "assignedTrainerId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    // workouts: por trainer
+    {
+      "collectionGroup": "workouts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "trainerId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    // workouts: por cliente
+    {
+      "collectionGroup": "workouts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "clientId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    // diets: por trainer
+    {
+      "collectionGroup": "diets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "trainerId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    // diets: por cliente
+    {
+      "collectionGroup": "diets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "clientId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
     },
     // messages: bandeja de entrada (orden descendente)
@@ -324,21 +379,20 @@ Se listan primero los índices necesarios para el código actual, y luego los pl
       "collectionGroup": "messages",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "participants", "order": "ASCENDING" },
+        { "fieldPath": "participants", "arrayConfig": "CONTAINS" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
     },
-    // messages: no leídos por receptor
+    // messages: chat en tiempo real (orden ascendente)
     {
       "collectionGroup": "messages",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "receiverId", "order": "ASCENDING" },
-        { "fieldPath": "isRead", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
+        { "fieldPath": "participants", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
       ]
     },
-    // progress_logs: por cliente + tipo + fecha descendente
+    // progress_logs: por cliente + tipo + fecha
     {
       "collectionGroup": "progress_logs",
       "queryScope": "COLLECTION",
@@ -348,69 +402,13 @@ Se listan primero los índices necesarios para el código actual, y luego los pl
         { "fieldPath": "date", "order": "DESCENDING" }
       ]
     },
-    // progress_logs: por cliente + fecha + tipo
+    // progress_logs: por cliente + fecha (sin tipo)
     {
       "collectionGroup": "progress_logs",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "clientId", "order": "ASCENDING" },
-        { "fieldPath": "date", "order": "ASCENDING" },
-        { "fieldPath": "type", "order": "ASCENDING" }
-      ]
-    },
-    // workouts: por cliente (orden descendente)
-    {
-      "collectionGroup": "workouts",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "clientId", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    // workouts: por trainer (orden descendente)
-    {
-      "collectionGroup": "workouts",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "trainerId", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    // diets: por cliente (orden descendente)
-    {
-      "collectionGroup": "diets",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "clientId", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    // diets: por trainer (orden descendente)
-    {
-      "collectionGroup": "diets",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "trainerId", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    // users: por rol (orden descendente)
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "role", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    // users: por assignedTrainerId + role (para trainers)
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "assignedTrainerId", "order": "ASCENDING" },
-        { "fieldPath": "role", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
+        { "fieldPath": "date", "order": "DESCENDING" }
       ]
     }
   ]
@@ -423,3 +421,10 @@ Se listan primero los índices necesarios para el código actual, y luego los pl
 - El índice compuesto `assignedTrainerId + role + createdAt` es necesario para listar clientes asignados a un trainer específico
 - La colección `messages` usa `participants` (array) con `array-contains`, lo que requiere índice compuesto con `createdAt`
 - Para consultas con `where('type', '==', 'weight')` + `orderBy('date')` en `progress_logs`, se necesita el índice compuesto con `clientId + type + date`
+- **No existe** el índice `receiverId + isRead + createdAt` para messages (no se usa actualmente)
+- **No existe** el índice `clientId + date + type` (ascendente) para progress_logs (no se usa actualmente)
+
+---
+
+> **📌 Convenciones de código:** Ver `12_guia_desarrollo_testing.md`
+> **📌 Golden Rules:** Ver `.clinerules`

@@ -4,7 +4,7 @@
 
 | Capa | Tecnología | Propósito |
 |------|------------|-----------|
-| **Framework** | Astro 5 | SSR, routing, server output con `@astrojs/node` standalone |
+| **Framework** | Astro 7 | SSR, routing, server output |
 | **UI** | Vanilla JS | Sin React. Componentes HTML renderizados desde JS puro |
 | **Estilos** | Tailwind CSS 4 | Utility-first con `@tailwindcss/vite`, modo oscuro |
 | **Estado** | Nanostores | Stores reactivos ligeros (auth store) |
@@ -19,6 +19,8 @@
 campfit-astro/
 ├── public/                  # Archivos estáticos
 ├── src/
+│   ├── components/          # Componentes .astro reutilizables
+│   │   └── Skeleton.astro   # Componente skeleton para loading
 │   ├── i18n/                # Internacionalización (es/en)
 │   │   ├── client.ts        # Traducciones para el cliente JS
 │   │   └── translations.ts  # Traducciones completas (SSR)
@@ -27,9 +29,27 @@ campfit-astro/
 │   │   ├── AdminLayout.astro
 │   │   ├── ClientLayout.astro
 │   │   └── TrainerLayout.astro
-│   ├── lib/                 # Utilidades compartidas
-│   │   ├── admin/           # adminUtils.ts (iconos, tipos, renderizado, servicios)
-│   │   ├── firebase.ts      # Configuración de Firebase
+│   ├── lib/                 # Utilidades y servicios
+│   │   ├── admin/           # adminUtils.ts — Lógica específica de admin
+│   │   ├── auth/            # roleRedirect.ts — Redirección por rol post-login
+│   │   ├── client/          # Servicios del lado cliente
+│   │   │   ├── chatService.ts      # Chat (legacy, migrar a shared/chat)
+│   │   │   ├── dietService.ts      # Dietas del cliente
+│   │   │   ├── progressService.ts  # Progreso del cliente
+│   │   │   └── workoutService.ts   # Rutinas del cliente
+│   │   ├── debug/           # firestoreDebug.ts — Utilidades de debugging
+│   │   ├── firebase/        # Wrappers de Firebase para testing
+│   │   │   ├── auth.ts      # Re-export de firebase/auth
+│   │   │   └── firestore.ts # Re-export de firebase/firestore
+│   │   ├── shared/          # Código compartido (sin duplicación)
+│   │   │   ├── authGuard.ts       # Guards unificados (requireAuth, requireAdmin)
+│   │   │   ├── chat.ts            # ChatService unificado
+│   │   │   ├── i18n.ts            # Utilidades i18n compartidas
+│   │   │   ├── logger.ts          # Sistema de logging global
+│   │   │   ├── profileService.ts  # Servicio de perfiles
+│   │   │   └── ui.ts              # Iconos, toast, estados UI
+│   │   ├── trainer/         # trainerUtils.ts — Lógica específica de trainer
+│   │   ├── firebase.ts      # Configuración e inicialización de Firebase
 │   │   ├── routeGuards.ts   # Guardias de ruta por rol
 │   │   └── validators.ts    # Validación de formularios
 │   ├── pages/               # Páginas (rutas)
@@ -37,11 +57,32 @@ campfit-astro/
 │   │   ├── login.astro      # Inicio de sesión
 │   │   ├── register.astro   # Registro
 │   │   ├── recover.astro    # Recuperar contraseña
-│   │   ├── dashboard.astro  # Dashboard post-login
+│   │   ├── dashboard.astro  # Dashboard post-login (redirección por rol)
+│   │   ├── onboarding.astro # Onboarding post-registro
+│   │   ├── 404.astro        # Página no encontrada
+│   │   ├── 500.astro        # Error del servidor
 │   │   ├── admin/           # Panel de administración
+│   │   │   ├── dashboard.astro
+│   │   │   ├── users.astro
+│   │   │   ├── clients.astro
+│   │   │   ├── trainers.astro
+│   │   │   └── settings.astro
 │   │   ├── client/          # Panel de cliente
-│   │   ├── trainer/         # Panel de entrenador
-│   │   └── api/             # Endpoints API
+│   │   │   ├── dashboard.astro
+│   │   │   ├── medical-profile.astro
+│   │   │   ├── workouts.astro
+│   │   │   ├── diets.astro
+│   │   │   ├── progress.astro
+│   │   │   ├── chat.astro
+│   │   │   ├── support.astro
+│   │   │   └── settings.astro
+│   │   └── trainer/         # Panel de entrenador
+│   │       ├── dashboard.astro
+│   │       ├── clients.astro
+│   │       ├── workouts.astro
+│   │       ├── diets.astro
+│   │       ├── chat.astro
+│   │       └── settings.astro
 │   ├── services/            # Servicios (Firebase)
 │   │   ├── authService.ts   # Autenticación
 │   │   └── adminService.ts  # Administración
@@ -120,6 +161,10 @@ Páginas (Astro .astro)
 - Las interacciones se manejan con event listeners directos
 - Ventajas: Sin bundle de React, sin JSX, sin virtual DOM, carga inicial más rápida
 
+### 6. Wrappers de Firebase para testing
+- `src/lib/firebase/auth.ts` y `src/lib/firebase/firestore.ts` re-exportan funciones de Firebase
+- Permiten mockear fácilmente en tests sin tocar firebase/large modules
+
 ---
 
 ## Roles y Rutas
@@ -130,7 +175,8 @@ Páginas (Astro .astro)
 | `/login` | Público | Inicio de sesión |
 | `/register` | Público | Registro |
 | `/recover` | Público | Recuperar contraseña |
-| `/dashboard` | Autenticado | Dashboard post-login |
+| `/onboarding` | Autenticado | Onboarding post-registro |
+| `/dashboard` | Autenticado | Dashboard post-login (redirección por rol) |
 | `/client/*` | client | Panel de cliente |
 | `/trainer/*` | trainer | Panel de entrenador |
 | `/admin/*` | admin | Panel de administración |

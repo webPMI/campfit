@@ -26,7 +26,6 @@ import {
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge } from '@/lib/shared/ui';
-import { sendMessage as chatSendMessage, subscribeToUserMessages, subscribeToConversation as chatSubscribeToConversation, markAsRead as chatMarkAsRead } from '@/lib/shared/chat';
 
 // ============================================================
 // Tipos
@@ -379,63 +378,6 @@ export async function deleteDiet(id: string): Promise<boolean> {
     showToast({ message: 'Error al eliminar la dieta', type: 'error' });
     return false;
   }
-}
-
-// ============================================================
-// Servicios de datos - Chat (delegados a shared/chat)
-// ============================================================
-
-/**
- * Se suscribe a las conversaciones del trainer.
- * @deprecated Usar subscribeToUserMessages de '@/lib/shared/chat'
- */
-export function subscribeToConversations(
-  trainerId: string,
-  callback: (messages: TrainerMessage[]) => void,
-): Unsubscribe {
-  return subscribeToUserMessages(trainerId, (messages) => {
-    callback(messages as TrainerMessage[]);
-  });
-}
-
-/**
- * Se suscribe a la conversación entre dos usuarios.
- * @deprecated Usar subscribeToConversation de '@/lib/shared/chat'
- */
-export function subscribeToConversation(
-  userId1: string,
-  userId2: string,
-  callback: (messages: TrainerMessage[]) => void,
-): Unsubscribe {
-  return chatSubscribeToConversation(userId1, userId2, (messages) => {
-    callback(messages as TrainerMessage[]);
-  });
-}
-
-/**
- * Envía un mensaje de chat.
- * @deprecated Usar sendMessage de '@/lib/shared/chat'
- */
-export async function sendMessage(
-  senderId: string,
-  receiverId: string,
-  content: string,
-  type: 'normal' | 'alert' | 'text' = 'normal',
-): Promise<boolean> {
-  const mappedType = type === 'normal' ? 'text' : type as 'text' | 'alert';
-  const result = await chatSendMessage(senderId, receiverId, content, mappedType);
-  if (!result) {
-    showToast({ message: 'Error al enviar el mensaje', type: 'error' });
-  }
-  return result !== null;
-}
-
-/**
- * Marca un mensaje como leído.
- * @deprecated Usar markAsRead de '@/lib/shared/chat'
- */
-export async function markAsRead(messageId: string): Promise<void> {
-  return chatMarkAsRead(messageId);
 }
 
 // ============================================================

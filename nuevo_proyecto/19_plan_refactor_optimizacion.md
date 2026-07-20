@@ -1,7 +1,7 @@
 # Plan de Refactorización y Optimización — CampFit 2.0
 
 > **Objetivo**: Eliminar duplicación de código, optimizar peticiones Firestore, unificar servicios y reducir líneas de código.
-> **Última actualización**: 7/11/2026
+> **Última actualización**: 7/20/2026
 
 ---
 
@@ -36,7 +36,7 @@
 | `/trainer/clients` (detalle de cliente) | ❌ No existe | Botón "Ir al Chat" que navega a `/trainer/chat` **sin seleccionar el cliente** |
 | `/trainer/clients` (tarjetas de clientes) | ❌ No existe | Al hacer clic abre detalle del cliente |
 
-**Problema**: El botón "Ir al Chat" en clients.astro (línea 162) navega a `/trainer/chat?lang=${lang}` pero **no pasa el clientId como parámetro**. El trainer llega a la página de chat y tiene que buscar manualmente al cliente en la lista.
+**Problema**: El botón "Ir al Chat" en clients.astro navega a `/trainer/chat?lang=${lang}` pero **no pasa el clientId como parámetro**. El trainer llega a la página de chat y tiene que buscar manualmente al cliente en la lista.
 
 **Solución propuesta**:
 1. Pasar `clientId` como query param: `/trainer/chat?lang=${lang}&clientId=${clientId}`
@@ -52,156 +52,69 @@
 
 ---
 
-## 🏗️ Arquitectura Objetivo
+## 🏗️ Estado Actual de la Refactorización
 
-```
-src/lib/
-├── shared/                    # 📁 Código compartido (sin duplicación)
-│   ├── ui.ts                  #    Iconos, showToast, renderEmptyState, etc.
-│   ├── chat.ts                #    ChatService unificado
-│   ├── logger.ts              #    Sistema de logging global
-│   ├── profileService.ts      #    ✅ Ya existe (474 líneas)
-│   └── firestore.ts           #    Helpers Firestore (count, pagination, etc.)
-│
-├── admin/
-│   └── adminUtils.ts          #    Solo lógica específica de admin (200 líneas)
-│
-├── trainer/
-│   └── trainerUtils.ts        #    Solo lógica específica de trainer (300 líneas)
-│
-├── client/
-│   ├── chatService.ts         #    → ELIMINAR (usar shared/chat.ts)
-│   ├── dietService.ts         #    ✅ Mantener (lógica específica)
-│   ├── progressService.ts     #    ✅ Mantener (lógica específica)
-│   └── workoutService.ts      #    ✅ Mantener (lógica específica)
-│
-└── firebase.ts                #    ✅ Mantener (inicialización)
-```
+### ✅ Completado (Fases 1-3 parcialmente)
+
+| Archivo | Estado | Líneas |
+|---------|--------|--------|
+| `src/lib/shared/ui.ts` | ✅ Creado | 207 |
+| `src/lib/shared/chat.ts` | ✅ Creado | 173 |
+| `src/lib/shared/logger.ts` | ✅ Creado | 57 |
+| `src/lib/shared/authGuard.ts` | ✅ Creado | 95 |
+| `src/lib/shared/i18n.ts` | ✅ Creado | 91 |
+| `src/lib/shared/profileService.ts` | ✅ Ya existía | 474 |
+| `src/lib/firebase/auth.ts` | ✅ Creado (wrapper testing) | 29 |
+| `src/lib/firebase/firestore.ts` | ✅ Creado (wrapper testing) | 21 |
+
+### ❌ Pendiente
+
+| Archivo | Estado | Acción |
+|---------|--------|--------|
+| `src/lib/client/chatService.ts` | ❌ No eliminado | Eliminar (usar shared/chat.ts) |
+| `src/lib/admin/adminUtils.ts` | ❌ No refactorizado | Eliminar duplicación UI, importar de shared |
+| `src/lib/trainer/trainerUtils.ts` | ❌ No refactorizado | Eliminar duplicación UI, importar de shared |
+| Optimización Firestore | ❌ No implementado | count(), caché, cleanup suscripciones |
 
 ---
 
-## 📋 Plan de Implementación por Fases
+## 📋 Plan de Implementación Restante
 
-### Fase 1: Crear shared/ui.ts (Eliminar duplicación UI)
+### Fase 1.5: Integrar shared/ui.ts en adminUtils y trainerUtils
 
-**Qué hacer**: Extraer de adminUtils.ts y trainerUtils.ts todo lo que es UI genérica.
-
-```typescript
-// src/lib/shared/ui.ts — Propuesta de API
-export const ICONS = { ... };  // Iconos SVG unificados
-
-export function escapeHtml(text: string): string;
-export function formatDate(timestamp: any): string;
-export function formatTime(timestamp: any): string;
-export function getUserInitial(name: string): string;
-
-// Toast único con configuración
-export function showToast(options: {
-  message: string;
-  type: 'success' | 'error' | 'info';
-  id?: string;        // default: 'app-toast'
-  duration?: number;  // default: 3000
-  position?: 'bottom' | 'top'; // default: 'bottom'
-}): void;
-
-// Estados
-export function renderEmptyState(icon: string, message: string): string;
-export function renderLoadingState(message?: string): string;
-
-// Badge de rol
-export function getRoleBadge(role: string): { label: string; class: string };
-```
+**Qué hacer**: Reemplazar funciones duplicadas en adminUtils.ts y trainerUtils.ts por imports de shared/ui.ts.
 
 **Archivos a modificar**:
-- Crear: `src/lib/shared/ui.ts`
-- Modificar: `src/lib/admin/adminUtils.ts` — eliminar funciones duplicadas, importar de shared
-- Modificar: `src/lib/trainer/trainerUtils.ts` — eliminar funciones duplicadas, importar de shared
-- Modificar: `src/lib/shared/profileService.ts` — eliminar escapeHtml local, importar de shared
+- `src/lib/admin/adminUtils.ts` — eliminar ICONS, escapeHtml, formatDate, getUserInitial, showToast, renderEmptyState, renderLoadingState; importar de shared/ui
+- `src/lib/trainer/trainerUtils.ts` — eliminar ICONS, escapeHtml, formatDate, getUserInitial, showToast, renderEmptyState, renderLoadingState; importar de shared/ui
+- `src/lib/shared/profileService.ts` — eliminar escapeHtml local, importar de shared/ui
 
 **Líneas eliminadas**: ~200
 
 ---
 
-### Fase 2: Crear shared/chat.ts (Unificar chat)
+### Fase 2.5: Integrar shared/chat.ts y eliminar chatService legacy
 
-**Qué hacer**: Crear un único servicio de chat que usen cliente, trainer y admin.
-
-```typescript
-// src/lib/shared/chat.ts — Propuesta de API
-export interface ChatMessage {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  participants: string[];
-  content: string;
-  type: 'text' | 'alert';
-  isRead: boolean;
-  createdAt: any;
-}
-
-// Suscripción a TODOS los mensajes de un usuario (para lista de conversaciones)
-export function subscribeToUserMessages(
-  userId: string,
-  callback: (messages: ChatMessage[]) => void,
-  onError?: (error: Error) => void
-): Unsubscribe;
-
-// Suscripción a conversación entre 2 usuarios
-export function subscribeToConversation(
-  userId1: string,
-  userId2: string,
-  callback: (messages: ChatMessage[]) => void,
-  onError?: (error: Error) => void
-): Unsubscribe;
-
-// Enviar mensaje
-export async function sendMessage(
-  senderId: string,
-  receiverId: string,
-  content: string,
-  type?: 'text' | 'alert'
-): Promise<string | null>;
-
-// Marcar como leído
-export async function markAsRead(messageId: string): Promise<void>;
-```
+**Qué hacer**: Reemplazar funciones de chat en adminUtils, trainerUtils y eliminar client/chatService.ts.
 
 **Archivos a modificar**:
-- Crear: `src/lib/shared/chat.ts`
 - Eliminar: `src/lib/client/chatService.ts`
-- Modificar: `src/lib/admin/adminUtils.ts` — eliminar funciones chat, importar de shared
-- Modificar: `src/lib/trainer/trainerUtils.ts` — eliminar funciones chat, importar de shared
+- Modificar: `src/lib/admin/adminUtils.ts` — eliminar funciones chat, importar de shared/chat
+- Modificar: `src/lib/trainer/trainerUtils.ts` — eliminar funciones chat, importar de shared/chat
 - Modificar: páginas que importan chatService (client/chat.astro, trainer/chat.astro, admin/users.astro)
 
 **Líneas eliminadas**: ~100
 
 ---
 
-### Fase 3: Crear shared/logger.ts (Logging global)
+### Fase 3.5: Integrar shared/logger.ts
 
-**Qué hacer**: Unificar todos los loggers dispersos.
-
-```typescript
-// src/lib/shared/logger.ts
-export const logger = {
-  info: (module: string, message: string, ...args: unknown[]) => {
-    if (import.meta.env.DEV) console.info(`[${module}] ${message}`, ...args);
-  },
-  warn: (module: string, message: string, ...args: unknown[]) => {
-    if (import.meta.env.DEV) console.warn(`[${module}] ${message}`, ...args);
-  },
-  error: (module: string, message: string, error?: unknown) => {
-    console.error(`[${module}] ${message}`, error || '');
-    // En producción: enviar a Sentry o similar
-  },
-};
-```
+**Qué hacer**: Reemplazar loggers dispersos por shared/logger.ts.
 
 **Archivos a modificar**:
-- Crear: `src/lib/shared/logger.ts`
-- Modificar: adminUtils.ts, trainerUtils.ts, profileService.ts, client services
+- adminUtils.ts, trainerUtils.ts, profileService.ts, client services
 
-**Líneas eliminadas**: ~60 (cada archivo tiene su propio logger)
+**Líneas eliminadas**: ~60
 
 ---
 
@@ -225,17 +138,7 @@ export async function getCollectionCount(name: string): Promise<number> {
 
 **Beneficio**: No descarga documentos completos solo para contar.
 
-#### 4.2. Limitar campos en suscripciones
-
-```typescript
-// En lugar de traer todo el documento:
-const data = doc.data();
-
-// Usar proyección (Firestore no soporta proyección en tiempo real, pero sí en getDocs):
-// Para onSnapshot, minimizar datos en el documento
-```
-
-#### 4.3. Cancelar suscripciones al navegar
+#### 4.2. Cancelar suscripciones al navegar
 
 ```typescript
 // Patrón recomendado para páginas Astro:
@@ -254,7 +157,7 @@ document.addEventListener('astro:before-swap', () => {
 });
 ```
 
-#### 4.4. Evitar queries sin filtro
+#### 4.3. Evitar queries sin filtro
 
 **Problema**: `subscribeToUsers()` en adminUtils trae TODOS los usuarios.
 **Solución**: Usar `subscribeToUsersByRole` cuando sea posible, o paginar.
@@ -382,16 +285,14 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number):
 
 ## 📋 Checklist de Implementación
 
-### Fase 1: shared/ui.ts
-- [ ] Crear `src/lib/shared/ui.ts` con ICONS, escapeHtml, formatDate, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge
-- [ ] Actualizar `adminUtils.ts` para importar de shared/ui
+### Fase 1.5: Integrar shared/ui.ts
+- [ ] Actualizar `adminUtils.ts` para importar de shared/ui (ICONS, escapeHtml, formatDate, getUserInitial, showToast, renderEmptyState, renderLoadingState)
 - [ ] Actualizar `trainerUtils.ts` para importar de shared/ui
 - [ ] Actualizar `profileService.ts` para importar escapeHtml de shared/ui
 - [ ] Verificar que todas las páginas siguen funcionando
-- [ ] Ejecutar tests (215 deben seguir pasando)
+- [ ] Ejecutar tests
 
-### Fase 2: shared/chat.ts
-- [ ] Crear `src/lib/shared/chat.ts` con ChatMessage, subscribeToUserMessages, subscribeToConversation, sendMessage, markAsRead
+### Fase 2.5: Integrar shared/chat.ts
 - [ ] Eliminar `src/lib/client/chatService.ts`
 - [ ] Actualizar `adminUtils.ts` para importar chat de shared
 - [ ] Actualizar `trainerUtils.ts` para importar chat de shared
@@ -399,8 +300,7 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number):
 - [ ] Actualizar tests de chatService
 - [ ] Ejecutar tests
 
-### Fase 3: shared/logger.ts
-- [ ] Crear `src/lib/shared/logger.ts`
+### Fase 3.5: Integrar shared/logger.ts
 - [ ] Reemplazar loggers en adminUtils.ts, trainerUtils.ts, profileService.ts, client services
 - [ ] Ejecutar tests
 
@@ -420,9 +320,9 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number):
 ## 🔍 Notas para Agentes
 
 ### Prioridad de implementación
-1. **Fase 1** (shared/ui) — Más impacto, menos riesgo
-2. **Fase 2** (shared/chat) — Crítico para eliminar duplicación
-3. **Fase 3** (shared/logger) — Bajo riesgo, mejora debugging
+1. **Fase 1.5** (shared/ui) — Más impacto, menos riesgo
+2. **Fase 2.5** (shared/chat) — Crítico para eliminar duplicación
+3. **Fase 3.5** (shared/logger) — Bajo riesgo, mejora debugging
 4. **Fase 4** (Firestore) — Optimización, no bloqueante
 5. **Fase 5** (limpieza) — Depende de fases 1-3
 
@@ -447,11 +347,11 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, ms: number):
 
 | Archivo | Líneas (actual) | Líneas (objetivo) |
 |---------|----------------|-------------------|
-| `src/lib/shared/ui.ts` | 0 (nuevo) | ~150 |
-| `src/lib/shared/chat.ts` | 0 (nuevo) | ~80 |
-| `src/lib/shared/logger.ts` | 0 (nuevo) | ~20 |
+| `src/lib/shared/ui.ts` | 207 (creado) | ~150 |
+| `src/lib/shared/chat.ts` | 173 (creado) | ~80 |
+| `src/lib/shared/logger.ts` | 57 (creado) | ~20 |
 | `src/lib/shared/profileService.ts` | 474 | ~400 (importar de shared) |
 | `src/lib/admin/adminUtils.ts` | 789 | ~200 |
 | `src/lib/trainer/trainerUtils.ts` | 757 | ~300 |
 | `src/lib/client/chatService.ts` | 63 | 0 (eliminado) |
-| **Total** | **~2083** | **~1150** (-45%) |
+| **Total** | **~2520** | **~1150** (-54%) |

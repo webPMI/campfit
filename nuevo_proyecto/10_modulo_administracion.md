@@ -13,10 +13,8 @@ src/
 ├── pages/admin/
 │   ├── dashboard.astro          # /admin/dashboard
 │   ├── users.astro              # /admin/users
-│   ├── workouts.astro           # /admin/workouts
-│   ├── diets.astro              # /admin/diets
-│   ├── chat.astro               # /admin/chat
-│   ├── progress.astro           # /admin/progress
+│   ├── clients.astro            # /admin/clients
+│   ├── trainers.astro           # /admin/trainers
 │   └── settings.astro           # /admin/settings
 ├── layouts/
 │   └── AdminLayout.astro        # Layout con Sidebar Navigation
@@ -149,144 +147,25 @@ export function subscribeToAlerts(callback: (alerts: any[]) => void) {
 
 ---
 
-## 3. Gestión de Rutinas
+## 3. Lista de Clientes
 
-**Ruta:** `/admin/workouts`  
+**Ruta:** `/admin/clients`  
 **Layout:** `AdminLayout.astro`
 
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Rutinas                        │
-│  [Crear Rutina] [Filtrar por cliente]  │
-├─────────────────────────────────────────┤
-│  Lista de Rutinas                       │
-│  ┌─────────────────────────────────┐   │
-│  │ Rutina: Full Body A            │   │
-│  │ Cliente: Juan Pérez            │   │
-│  │ Ejercicios: 6 | Días: Lun, Mié │   │
-│  │ [✏️ Editar] [🗑️ Eliminar]      │   │
-│  └─────────────────────────────────┘   │
-│  ┌─────────────────────────────────┐   │
-│  │ Rutina: Push Pull Legs         │   │
-│  │ Cliente: María García          │   │
-│  │ Ejercicios: 8 | Días: Lun-Vie  │   │
-│  │ [✏️ Editar] [🗑️ Eliminar]      │   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
+Lista filtrada de usuarios con rol `client`. Muestra tarjetas con información básica, alertas y entrenador asignado.
 
 ---
 
-## 4. Gestión de Dietas
+## 4. Lista de Entrenadores
 
-**Ruta:** `/admin/diets`  
+**Ruta:** `/admin/trainers`  
 **Layout:** `AdminLayout.astro`
 
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Dietas                         │
-│  [Crear Dieta] [Filtrar por cliente]   │
-├─────────────────────────────────────────┤
-│  Lista de Dietas                        │
-│  ┌─────────────────────────────────┐   │
-│  │ Dieta: Plan Normal 2,200 kcal  │   │
-│  │ Cliente: Juan Pérez            │   │
-│  │ Comidas: 3 | Tipo: Normal      │   │
-│  │ [✏️ Editar] [🗑️ Eliminar]      │   │
-│  └─────────────────────────────────┘   │
-│  ┌─────────────────────────────────┐   │
-│  │ Dieta: Plan Ectomorfo 2,800    │   │
-│  │ Cliente: Pedro López           │   │
-│  │ Comidas: 5 | Tipo: Ectomorfo   │   │
-│  │ [✏️ Editar] [🗑️ Eliminar]      │   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
+Lista filtrada de usuarios con rol `trainer`. Muestra tarjetas con información y cantidad de clientes asignados.
 
 ---
 
-## 5. Bandeja de Chat
-
-**Ruta:** `/admin/chat`  
-**Layout:** `AdminLayout.astro`
-
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Bandeja de Chat                │
-├─────────────────────────────────────────┤
-│  ┌──────────────┐ ┌──────────────────┐ │
-│  │ Conversaciones│ │ Chat Activo      │ │
-│  │              │ │                  │ │
-│  │ 💬 Juan      │ │ ┌──────────────┐ │ │
-│  │   14:30      │ │ │ Recibido     │ │ │
-│  │ 💬 María     │ │ │ ¿Cómo va mi  │ │ │
-│  │   14:25      │ │ │ rutina?      │ │ │
-│  │ 💬 Pedro     │ │ └──────────────┘ │ │
-│  │   13:50      │ │                  │ │
-│  │              │ │ ┌──────────────┐ │ │
-│  │              │ │ │ Enviado      │ │ │
-│  │              │ │ │ ¡Excelente!  │ │ │
-│  │              │ │ │ Sigue así    │ │ │
-│  │              │ │ └──────────────┘ │ │
-│  │              │ │                  │ │
-│  │              │ │ [Escribe...] 📎 │ │
-│  └──────────────┘ └──────────────────┘ │
-└─────────────────────────────────────────┘
-```
-
-### Funcionalidades
-
-- Lista de conversaciones ordenadas por último mensaje
-- Indicador de mensajes no leídos
-- Envío de llamados de atención (alertas)
-- Búsqueda de conversaciones por nombre de cliente
-
----
-
-## 6. Visor de Progreso
-
-**Ruta:** `/admin/progress`  
-**Layout:** `AdminLayout.astro`
-
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Progreso de Alumnos            │
-│  [Seleccionar cliente ▼]               │
-├─────────────────────────────────────────┤
-│  ┌─────────────────────────────────┐   │
-│  │  LineChart: Evolución del Peso │   │
-│  │  ┌─────────────────────────┐   │   │
-│  │  │  📈 80─╲                │   │   │
-│  │  │     75  ╲──╲            │   │   │
-│  │  │     70     ╲──          │   │   │
-│  │  │     Ene Feb Mar         │   │   │
-│  │  └─────────────────────────┘   │   │
-│  └─────────────────────────────────┘   │
-├─────────────────────────────────────────┤
-│  Adherencia                             │
-│  Rutina: ████████████░░ 75%             │
-│  Dieta:  ██████████░░░░ 60%             │
-├─────────────────────────────────────────┤
-│  Últimos Registros                      │
-│  ┌─────────────────────────────────┐   │
-│  │ 15 Mar - Peso: 75.5 kg         │   │
-│  │ 14 Mar - Rutina: ✅ RPE 7      │   │
-│  │ 14 Mar - Dieta: 3/3 comidas    │   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
-
----
-
-## 7. Configuración del Sistema
+## 5. Configuración del Sistema
 
 **Ruta:** `/admin/settings`  
 **Layout:** `AdminLayout.astro`
@@ -319,6 +198,16 @@ export function subscribeToAlerts(callback: (alerts: any[]) => void) {
 │  └─────────────────────────────────┘   │
 └─────────────────────────────────────────┘
 ```
+
+---
+
+## Páginas Pendientes (Futuras)
+
+Las siguientes páginas están planificadas pero aún no implementadas:
+- `/admin/workouts` — CRUD de rutinas
+- `/admin/diets` — CRUD de dietas
+- `/admin/chat` — Bandeja de chat con clientes
+- `/admin/progress` — Visor de progreso de alumnos
 
 ---
 

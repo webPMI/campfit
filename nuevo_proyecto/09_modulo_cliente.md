@@ -2,7 +2,7 @@
 
 ## Descripción General
 
-Conjunto de funcionalidades que el alumno (rol `client`) utiliza en su día a día: dashboard, visualización de rutinas y dietas, registro de progreso, chat con el entrenador y soporte automático.
+Conjunto de funcionalidades que el alumno (rol `client`) utiliza en su día a día: dashboard, visualización de rutinas y dietas, registro de progreso, chat con el entrenador, soporte automático y configuración.
 
 ---
 
@@ -17,18 +17,18 @@ src/
 │   ├── diets.astro              # /client/diets
 │   ├── progress.astro           # /client/progress
 │   ├── chat.astro               # /client/chat
-│   └── support.astro            # /client/support
+│   ├── support.astro            # /client/support
+│   └── settings.astro           # /client/settings
 ├── layouts/
 │   └── ClientLayout.astro       # Layout con Bottom Navigation
 ├── lib/
 │   └── client/                  # Servicios del lado cliente
-│       ├── workoutService.ts
-│       ├── dietService.ts
-│       ├── progressService.ts
-│       ├── chatService.ts
-│       └── supportService.ts
+│       ├── workoutService.ts    # Rutinas del cliente
+│       ├── dietService.ts       # Dietas del cliente
+│       ├── progressService.ts   # Progreso del cliente
+│       └── chatService.ts       # Chat (legacy — migrar a shared/chat.ts)
 └── types/
-    └── index.ts                 # User, Workout, Diet, Message, ProgressLog
+    └── index.ts                 # User, MedicalProfile, etc.
 ```
 
 ---
@@ -41,53 +41,87 @@ src/
 ### Componentes
 
 ```
-┌─────────────────────────────────┐
-│  Header                          │
-│  ¡Hola, [nombre]! 👋            │
-│  [AlertBanner si hasActiveAlert] │
-├─────────────────────────────────┤
-│  StatCard: Progreso Rutina      │
-│  ████████████░░░ 75% semanal    │
-├─────────────────────────────────┤
-│  StatCard: Adherencia Dieta     │
-│  ██████████░░░░ 60% hoy         │
-├─────────────────────────────────┤
-│  Quick Actions                  │
-│  ┌──────────┐ ┌──────────┐     │
-│  │ 💪       │ │ 🥗       │     │
-│  │ Entrenar │ │ Próxima  │     │
-│  │ hoy      │ │ comida   │     │
-│  └──────────┘ └──────────┘     │
-├─────────────────────────────────┤
-│  Stats Rápidas                  │
-│  Peso: 75 kg  |  Cal: 1,850    │
-│  RPE Prom: 7.2 | Días: 12/30   │
-└─────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  Header: ¡Hola, [Nombre]!               │
+├─────────────────────────────────────────┤
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐│
+│  │ 💪       │ │ 🥗       │ │ 📈       ││
+│  │ Rutina   │ │ Dieta    │ │ Progreso ││
+│  │ 60%      │ │ 80%      │ │ +2.5 kg  ││
+│  └──────────┘ └──────────┘ └──────────┘│
+├─────────────────────────────────────────┤
+│  Quick Actions                          │
+│  [🏋️ Entrenar hoy] [🥗 Ver dieta]      │
+│  [📊 Registrar peso] [💬 Chat]          │
+├─────────────────────────────────────────┤
+│  Stats Rápidas                          │
+│  ┌─────────────────────────────────┐   │
+│  │ Semana actual: 4/5 rutinas      │   │
+│  │ Adherencia dieta: 85%           │   │
+│  │ Próxima comida: Almuerzo 13:00  │   │
+│  └─────────────────────────────────┘   │
+└─────────────────────────────────────────┘
 ```
 
-### Datos (Firestore streams)
+### Bottom Navigation
 
-```typescript
-// src/lib/client/workoutService.ts
-import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
-
-export function subscribeToWorkouts(clientId: string, callback: (workouts: any[]) => void) {
-  const q = query(
-    collection(db, 'workouts'),
-    where('clientId', '==', clientId),
-    orderBy('createdAt', 'desc'),
-    limit(1)
-  );
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-  });
-}
-```
+| Icono | Ruta | Label |
+|-------|------|-------|
+| 🏠 | `/client/dashboard` | Inicio |
+| 💪 | `/client/workouts` | Rutinas |
+| 🥗 | `/client/diets` | Dietas |
+| 📈 | `/client/progress` | Progreso |
+| 💬 | `/client/chat` | Chat |
 
 ---
 
-## 2. Visualizador de Rutinas
+## 2. Perfil Médico (Onboarding)
+
+**Ruta:** `/client/medical-profile`  
+**Layout:** `ClientLayout.astro`
+
+### Formulario
+
+```
+┌─────────────────────────────────────────┐
+│  Header: Perfil Médico                   │
+├─────────────────────────────────────────┤
+│  Información Personal                    │
+│  ┌─────────────────────────────────┐   │
+│  │ Fecha de nacimiento: [📅    ]   │   │
+│  │ Altura (cm):        [175    ]   │   │
+│  │ Peso inicial (kg):  [75     ]   │   │
+│  └─────────────────────────────────┘   │
+│                                         │
+│  Salud                                  │
+│  ┌─────────────────────────────────┐   │
+│  │ Alergias: [➕ Añadir alergia]   │   │
+│  │ Lesiones: [➕ Añadir lesión]    │   │
+│  │ Condiciones: [➕ Añadir cond.]  │   │
+│  └─────────────────────────────────┘   │
+│                                         │
+│  Objetivos                              │
+│  ┌─────────────────────────────────┐   │
+│  │ Experiencia: [Principiante ▼]   │   │
+│  │ Objetivos: [➕ Añadir objetivo]  │   │
+│  └─────────────────────────────────┘   │
+│                                         │
+│  [Guardar Perfil Médico]                │
+└─────────────────────────────────────────┘
+```
+
+### Validaciones
+
+- **Fecha de nacimiento:** Debe ser mayor de 14 años
+- **Altura:** 100-250 cm
+- **Peso:** 30-300 kg
+- **Alergias/Lesiones/Condiciones:** Máximo 20 items cada uno
+- **Experiencia:** Requerido
+- **Objetivos:** Al menos 1 objetivo
+
+---
+
+## 3. Visualizador de Rutinas
 
 **Ruta:** `/client/workouts`  
 **Layout:** `ClientLayout.astro`
@@ -95,43 +129,49 @@ export function subscribeToWorkouts(clientId: string, callback: (workouts: any[]
 ### Componentes
 
 ```
+┌─────────────────────────────────────────┐
+│  Header: Mi Rutina                       │
+├─────────────────────────────────────────┤
+│  TabBar: [Lun] [Mar] [Mié] [Jue] [Vie] │
+├─────────────────────────────────────────┤
+│  Ejercicios del día                     │
+│  ┌─────────────────────────────────┐   │
+│  │ Press de banca                   │   │
+│  │ 4x10 @ 60kg · Descanso 90s      │   │
+│  │ [✅ Completado]                  │   │
+│  ├─────────────────────────────────┤   │
+│  │ Sentadilla                       │   │
+│  │ 4x12 @ 80kg · Descanso 120s     │   │
+│  │ [⬜ Marcar completado]           │   │
+│  ├─────────────────────────────────┤   │
+│  │ Remo con barra                   │   │
+│  │ 3x10 @ 50kg · Descanso 90s      │   │
+│  │ [⬜ Marcar completado]           │   │
+│  └─────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│  [🏁 Finalizar entrenamiento]           │
+└─────────────────────────────────────────┘
+```
+
+### Modal RPE
+
+```
 ┌─────────────────────────────────┐
-│  TabBar: Días de la semana      │
-│  Lun │ Mar │ Mié │ Jue │ Vie   │
-├─────────────────────────────────┤
-│  Ejercicio 1: Press Banca       │
-│  ┌─────────────────────────┐   │
-│  │ 4 series × 10 reps      │   │
-│  │ Descanso: 90s           │   │
-│  │ [▶ Ver demostración]    │   │
-│  │ Desc: Mantén los codos  │   │
-│  │       a 45 grados...    │   │
-│  └─────────────────────────┘   │
-├─────────────────────────────────┤
-│  [✓ Marcar rutina completada]  │
-│  Al marcar → Modal RPE         │
+│  💪 ¿Cómo fue tu entrenamiento? │
+│                                 │
+│  RPE (1-10): [7]               │
+│  ═══════════●══════════         │
+│  1  2  3  4  5  6  7  8  9  10 │
+│                                 │
+│  Notas: [Me sentí con energía] │
+│                                 │
+│  [Guardar]                      │
 └─────────────────────────────────┘
-```
-
-### Flujo de Finalización
-
-```
-1. Usuario presiona "Marcar rutina completada"
-2. Se abre Modal con Slider RPE (1-10)
-3. Usuario selecciona esfuerzo percibido
-4. Se crea progress_log:
-   {
-     clientId: uid,
-     type: 'workout',
-     date: today,
-     value: { workoutId, completed: true, rpe: 7 }
-   }
-5. Se actualiza dashboard en tiempo real
 ```
 
 ---
 
-## 3. Visualizador de Dietas
+## 4. Visualizador de Dietas
 
 **Ruta:** `/client/diets`  
 **Layout:** `ClientLayout.astro`
@@ -139,45 +179,31 @@ export function subscribeToWorkouts(clientId: string, callback: (workouts: any[]
 ### Componentes
 
 ```
-┌─────────────────────────────────┐
-│  Header: Mi Plan Nutricional    │
-│  Tipo: Normal | Ectomorfo       │
-│  Calorías: 2,200 kcal           │
-├─────────────────────────────────┤
-│  TabBar: Comidas del día        │
-│  Desayuno │ Almuerzo │ Cena    │
-├─────────────────────────────────┤
-│  Desayuno (08:00)               │
-│  ┌─────────────────────────┐   │
-│  │ Avena con proteína      │   │
-│  │ Cal: 450 | P: 35g       │   │
-│  │ C: 50g | G: 12g         │   │
-│  │ [✓] Completado          │   │
-│  └─────────────────────────┘   │
-├─────────────────────────────────┤
-│  Totales del día               │
-│  Cal: 1,100/2,200 █████░░ 50%  │
-│  P: 90g | C: 120g | G: 20g    │
-└─────────────────────────────────┘
-```
-
-### Flujo de Marcado de Comida
-
-```
-1. Usuario presiona checkbox de una comida
-2. Se crea progress_log:
-   {
-     clientId: uid,
-     type: 'meal',
-     date: today,
-     value: { mealId, completed: true }
-   }
-3. Se actualiza el progreso del día en tiempo real
+┌─────────────────────────────────────────┐
+│  Header: Mi Dieta                        │
+├─────────────────────────────────────────┤
+│  TabBar: [Desayuno] [Almuerzo] [Cena]   │
+├─────────────────────────────────────────┤
+│  Comida seleccionada                    │
+│  ┌─────────────────────────────────┐   │
+│  │ 🥗 Almuerzo                      │   │
+│  │ Calorías: 650 kcal               │   │
+│  │                                   │   │
+│  │ • Pechuga de pollo (200g)        │   │
+│  │ • Arroz integral (150g)          │   │
+│  │ • Brócoli (100g)                 │   │
+│  │ • Aceite de oliva (15ml)         │   │
+│  │                                   │   │
+│  │ Macros: P:45g C:65g G:20g        │   │
+│  │                                   │   │
+│  │ [✅ Marcar como completado]       │   │
+│  └─────────────────────────────────┘   │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
-## 4. Módulo de Progreso
+## 5. Progreso
 
 **Ruta:** `/client/progress`  
 **Layout:** `ClientLayout.astro`
@@ -185,54 +211,38 @@ export function subscribeToWorkouts(clientId: string, callback: (workouts: any[]
 ### Componentes
 
 ```
-┌─────────────────────────────────┐
-│  Tabs: Peso │ Fotos             │
-├─────────────────────────────────┤
-│  [Tab: Peso]                    │
-│  ┌─────────────────────────┐   │
-│  │  LineChart               │   │
-│  │  Evolución del Peso     │   │
-│  │  ┌─────────────────┐    │   │
-│  │  │  📈 80─╲        │    │   │
-│  │  │     75  ╲──╲    │    │   │
-│  │  │     70     ╲──  │    │   │
-│  │  │     Ene Feb Mar  │    │   │
-│  │  └─────────────────┘    │   │
-│  └─────────────────────────┘   │
-│  [Registrar nuevo peso]        │
-│  ┌─Input──────┐ [Guardar]     │
-│  │ 75.5 kg    │               │
-│  └────────────┘               │
-├─────────────────────────────────┤
-│  [Tab: Fotos]                   │
-│  ┌──────┐ ┌──────┐ ┌──────┐   │
-│  │ 📸   │ │ 📸   │ │ 📸   │   │
-│  │ Frontal│ │ Perfil│ │ Espal│   │
-│  │ Ene   │ │ Ene   │ │ Ene  │   │
-│  └──────┘ └──────┘ └──────┘   │
-│  [Subir nuevas fotos]          │
-└─────────────────────────────────┘
-```
-
-### Subida de Fotos a R2
-
-```
-1. Usuario selecciona foto (cámara o galería)
-2. Se solicita URL pre-firmada a Cloudflare Worker
-3. Se sube la foto directamente a R2
-4. Se crea progress_log:
-   {
-     clientId: uid,
-     type: 'photo',
-     date: today,
-     value: { photoUrl: 'https://r2.url/foto.jpg', type: 'front' }
-   }
-5. La foto aparece en la galería
+┌─────────────────────────────────────────┐
+│  Header: Mi Progreso                     │
+├─────────────────────────────────────────┤
+│  Tabs: [📊 Peso] [📸 Fotos]             │
+├─────────────────────────────────────────┤
+│  Tab: Peso                              │
+│  ┌─────────────────────────────────┐   │
+│  │ 📈 Evolución de peso            │   │
+│  │ 80 ┤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀│   │
+│  │ 75 ┤⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀│   │
+│  │    └─────────────────────────────    │
+│  │    Ene  Feb  Mar  Abr  May  Jun      │
+│  │                                      │
+│  │  Peso actual: 77.5 kg                │
+│  │  [📝 Registrar nuevo peso]           │
+│  └─────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│  Tab: Fotos                             │
+│  ┌─────────────────────────────────┐   │
+│  │ 📸 Galería de progreso          │   │
+│  │ ┌────┐ ┌────┐ ┌────┐ ┌────┐   │   │
+│  │ │Ene │ │Feb │ │Mar │ │Abr │   │   │
+│  │ │📷  │ │📷  │ │📷  │ │📷  │   │   │
+│  │ └────┘ └────┘ └────┘ └────┘   │   │
+│  │ [📸 Subir nueva foto]          │   │
+│  └─────────────────────────────────┘   │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Chat 1:1
+## 6. Chat 1:1 con Entrenador
 
 **Ruta:** `/client/chat`  
 **Layout:** `ClientLayout.astro`
@@ -240,88 +250,103 @@ export function subscribeToWorkouts(clientId: string, callback: (workouts: any[]
 ### Componentes
 
 ```
-┌─────────────────────────────────┐
-│  Header: Chat con Seba          │
-├─────────────────────────────────┤
-│  ┌─────────────────────────┐   │
-│  │ Recibido: ¿Cómo fue tu  │   │
-│  │ entrenamiento de hoy?   │   │
-│  │ 14:30                   │   │
-│  └─────────────────────────┘   │
-│                                 │
-│       ┌────────────────────┐   │
-│       │ ¡Muy bien! 8 RPE   │   │
-│       │ 14:35 ✓             │   │
-│       └────────────────────┘   │
-│                                 │
-│  ┌─────────────────────────┐   │
-│  │ ⚠️ ALERTA               │   │
-│  │ Recibido: Seba te ha    │   │
-│  │ enviado un llamado de   │   │
-│  │ atención.               │   │
-│  │ 15:00                   │   │
-│  └─────────────────────────┘   │
-├─────────────────────────────────┤
-│  ┌─ChatInput────────────────┐  │
-│  │ Escribe un mensaje... 📎 │  │
-│  └──────────────────────────┘  │
-└─────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  Header: Chat con [Entrenador]           │
+├─────────────────────────────────────────┤
+│  Mensajes                               │
+│  ┌─────────────────────────────────┐   │
+│  │ 10:30                            │   │
+│  │ ┌──────────────────────────┐    │   │
+│  │ │ ¡Buenos días! ¿Cómo      │    │   │
+│  │ │ fue tu entrenamiento?    │    │   │
+│  │ └──────────────────────────┘    │   │
+│  │                          ┌─────┐│   │
+│  │                          │¡Bien││   │
+│  │                          │💪   ││   │
+│  │                          └─────┘│   │
+│  └─────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│  [✏️ Escribe un mensaje...] [Enviar]   │
+└─────────────────────────────────────────┘
 ```
 
-### Stream de Mensajes
+### Funcionalidades
 
-```typescript
-// src/lib/client/chatService.ts
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
-
-export function subscribeToMessages(userId: string, callback: (messages: any[]) => void) {
-  const chatQuery = query(
-    collection(db, 'messages'),
-    where('participants', 'array-contains', userId),
-    orderBy('createdAt', 'asc')
-  );
-  
-  return onSnapshot(chatQuery, (snapshot) => {
-    const messages = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    callback(messages);
-  });
-}
-```
+- Stream de mensajes en tiempo real (Firestore onSnapshot)
+- Envío de mensajes de texto
+- Visualización de alertas del entrenador
+- Marcar mensajes como leídos automáticamente
 
 ---
 
-## 6. Chatbot de Soporte
+## 7. Chatbot de Soporte
 
 **Ruta:** `/client/support`  
 **Layout:** `ClientLayout.astro`
 
-### Funcionamiento
+### Componentes
 
 ```
-1. Usuario escribe pregunta en el chat
-2. Se evalúa si es una FAQ conocida:
-   - "¿Cómo registro mi peso?" → Respuesta automática
-   - "¿Cómo veo mi rutina?" → Respuesta automática
-   - "No encuentro mi dieta" → Respuesta automática
-3. Si no es FAQ → "No pude resolver tu consulta.
-   ¿Quieres hablar con Seba?"
-4. Si usuario acepta → Redirigir a /client/chat
+┌─────────────────────────────────────────┐
+│  Header: Centro de Ayuda                 │
+├─────────────────────────────────────────┤
+│  FAQs Predefinidas                      │
+│  ┌─────────────────────────────────┐   │
+│  │ ❓ ¿Cómo registro mi peso?      │   │
+│  ├─────────────────────────────────┤   │
+│  │ ❓ ¿Cómo veo mi rutina?         │   │
+│  ├─────────────────────────────────┤   │
+│  │ ❓ ¿Cómo contacto a mi trainer? │   │
+│  ├─────────────────────────────────┤   │
+│  │ ❓ ¿Qué hago si no puedo        │   │
+│  │    entrenar hoy?                │   │
+│  ├─────────────────────────────────┤   │
+│  │ ❓ ¿Cómo actualizo mi perfil?   │   │
+│  └─────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│  ¿No encuentras lo que buscas?          │
+│  [💬 Hablar con Seba]                   │
+└─────────────────────────────────────────┘
 ```
 
-### FAQs Predefinidas
+### FAQs
 
 | Pregunta | Respuesta |
 |----------|-----------|
-| "Cómo registro mi peso" | "Ve a la sección Progreso, presiona 'Registrar peso' e ingresa tu peso actual." |
-| "Cómo veo mi rutina" | "Ve a la sección Rutinas. Allí encontrarás tus ejercicios organizados por día." |
-| "No veo mi dieta" | "Si no ves tu dieta, contacta a Seba a través del chat." |
-| "Cómo subo fotos" | "En la sección Progreso, pestaña Fotos, presiona 'Subir nuevas fotos'." |
-| "Qué es RPE" | "RPE es tu esfuerzo percibido del 1 al 10. 1=muy fácil, 10=máximo esfuerzo." |
-| "Horario de Seba" | "Seba está disponible en horario de atención. Si es urgente, envía un llamado de atención." |
+| ¿Cómo registro mi peso? | Ve a la sección Progreso, presiona 'Registrar peso' e ingresa tu peso actual. |
+| ¿Cómo veo mi rutina? | Ve a la sección Rutinas. Ahí verás tu plan de entrenamiento semanal. |
+| ¿Cómo contacto a mi trainer? | Usa la sección Chat para enviar un mensaje directo a tu entrenador. |
+| ¿Qué hago si no puedo entrenar hoy? | Avísale a tu entrenador por el Chat para que pueda ajustar tu plan. |
+| ¿Cómo actualizo mi perfil? | Ve a Configuración para editar tu información personal. |
+
+---
+
+## 8. Configuración del Cliente
+
+**Ruta:** `/client/settings`  
+**Layout:** `ClientLayout.astro`
+
+### Componentes
+
+```
+┌─────────────────────────────────────────┐
+│  Header: Configuración                   │
+├─────────────────────────────────────────┤
+│  Sección: Perfil                        │
+│  ┌─────────────────────────────────┐   │
+│  │ Nombre: [Juan Pérez         ]   │   │
+│  │ Email:  [juan@email.com     ]   │   │
+│  │ [Guardar Cambios]               │   │
+│  └─────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│  Sección: Preferencias                  │
+│  ┌─────────────────────────────────┐   │
+│  │ Idioma: [Español ▼]            │   │
+│  │ Tema:   [Oscuro ▼]             │   │
+│  │ Notificaciones: [🔔 Activadas] │   │
+│  └─────────────────────────────────┘   │
+└─────────────────────────────────────────┘
+```
 
 ---
 
