@@ -1,0 +1,17 @@
+---
+/**
+ * DecorativeBackground
+ *
+ * Fondo decorativo con gradientes y efectos visuales para las páginas
+ * de la aplicación. Se renderiza como un overlay fijo con blur.
+ *
+ * @component
+ * @example
+ *   <DecorativeBackground />
+ */
+---
+
+<div class="pointer-events-none fixed inset-0 overflow-hidden">
+  <div class="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-emerald-500/5 blur-3xl"></div>
+  <div class="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-emerald-500/5 blur-3xl"></div>
+</div>
