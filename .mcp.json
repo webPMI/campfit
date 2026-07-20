@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "firebase-mcp": {
+      "command": "npx",
+      "args": ["@firebase-mcp/server"],
+      "env": {
+        "FIREBASE_PROJECT_ID": "mallorca-campfit",
+        "FIREBASE_CLIENT_EMAIL": "${FIREBASE_CLIENT_EMAIL}",
+        "FIREBASE_PRIVATE_KEY": "${FIREBASE_PRIVATE_KEY}"
+      }
+    },
+    "github-mcp": {
+      "command": "npx",
+      "args": ["@github-mcp/server"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "filesystem-mcp": {
+      "command": "npx",
+      "args": ["@filesystem-mcp/server"]
+    }
+  }
+}

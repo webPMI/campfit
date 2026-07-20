@@ -11,7 +11,7 @@
 - **Git config local del repo:**
   ```bash
   git config user.name "webPMI"
-  git config user.email "webPMI@users.noreply.github.com"
+  git config user.email "servicioweb.pmi@gmail.com"
   ```
 
 > ⚠️ Si no hay git config, configurar antes del primer commit:

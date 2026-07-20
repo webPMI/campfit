@@ -23,8 +23,25 @@ src/
 │   └── trainer/    # dashboard, clients, workouts, diets, chat, settings
 ├── lib/
 │   ├── shared/     # ui.ts, chat.ts, logger.ts, authGuard.ts, i18n.ts, profileService.ts
-│   ├── admin/      # adminUtils.ts (lógica admin)
-│   ├── trainer/    # trainerUtils.ts (lógica trainer)
+│   ├── admin/      # Módulo admin modularizado (7 archivos)
+│   │   ├── types.ts              # AdminUser, CreateUserPayload
+│   │   ├── adminAuth.ts          # requireAdmin, signOutUser
+│   │   ├── adminUsers.ts         # CRUD usuarios
+│   │   ├── adminSubscriptions.ts # Suscripciones Firestore
+│   │   ├── adminRender.ts        # Renderizado HTML
+│   │   ├── adminInit.ts          # initGlobalActions
+│   │   └── adminUtils.ts         # Barrel (re-export)
+│   ├── trainer/    # Módulo trainer modularizado (10 archivos)
+│   │   ├── types.ts              # TrainerClient, Workout, Diet, etc.
+│   │   ├── trainerAuth.ts        # requireAuth, signOutUser
+│   │   ├── trainerClients.ts     # Clientes del trainer
+│   │   ├── trainerWorkouts.ts    # CRUD rutinas
+│   │   ├── trainerDiets.ts       # CRUD dietas
+│   │   ├── trainerProgress.ts    # Progreso de clientes
+│   │   ├── trainerChat.ts        # Mensajería
+│   │   ├── trainerRender.ts      # Renderizado HTML
+│   │   ├── trainerInit.ts        # initGlobalActions
+│   │   └── trainerUtils.ts       # Barrel (re-export)
 │   ├── client/     # chatService.ts, dietService.ts, progressService.ts, workoutService.ts
 │   ├── helpers/    # userMappers.ts
 │   ├── firebase/   # auth.ts, firestore.ts (wrappers testing)
@@ -73,6 +90,7 @@ npm run build            # Build producción
 
 ## Estado Actual
 - ✅ Refactorización Fase 1-3 completada (shared/ui, shared/chat, shared/logger)
-- ✅ Tests: 260 tests, 18 archivos, 22.62% cobertura statements
-- ⏳ Pendiente: adminUtils.ts refactor, trainerUtils.ts refactor, optimización Firestore
-- ⏳ Pendiente: CI/CD pipeline, tests E2E, subida fotos R2
+- ✅ adminUtils.ts refactorizado (629 → 7 archivos modulares)
+- ✅ trainerUtils.ts refactorizado (570 → 10 archivos modulares)
+- ✅ Tests: 260+ tests, 18+ archivos, 22.62% cobertura statements
+- ⏳ Pendiente: optimización Firestore, CI/CD pipeline, tests E2E, subida fotos R2

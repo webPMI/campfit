@@ -125,7 +125,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
-  import { subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard, renderEmptyState, ICONS } from '@/lib/admin/adminUtils';
+  import { subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard } from '@/lib/admin/adminUtils';
+  import { ICONS, renderEmptyState } from '@/lib/shared/ui';
+
 
   let unsubUsers: (() => void) | null = null;
   let unsubWorkouts: (() => void) | null = null;

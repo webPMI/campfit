@@ -122,8 +122,25 @@ src/
 │   └── trainer/    # Panel entrenador
 ├── lib/
 │   ├── shared/     # Código compartido (UI, chat, logger, authGuard, i18n)
-│   ├── admin/      # Lógica específica de admin
-│   ├── trainer/    # Lógica específica de trainer
+│   ├── admin/      # Módulo admin (modularizado)
+│   │   ├── types.ts              # AdminUser, CreateUserPayload
+│   │   ├── adminAuth.ts          # requireAdmin, signOutUser
+│   │   ├── adminUsers.ts         # CRUD usuarios
+│   │   ├── adminSubscriptions.ts # Suscripciones Firestore
+│   │   ├── adminRender.ts        # Renderizado HTML
+│   │   ├── adminInit.ts          # initGlobalActions
+│   │   └── adminUtils.ts         # Barrel (re-export)
+│   ├── trainer/   # Módulo trainer (modularizado)
+│   │   ├── types.ts              # TrainerClient, Workout, Diet, etc.
+│   │   ├── trainerAuth.ts        # requireAuth, signOutUser
+│   │   ├── trainerClients.ts     # Clientes del trainer
+│   │   ├── trainerWorkouts.ts    # CRUD rutinas
+│   │   ├── trainerDiets.ts       # CRUD dietas
+│   │   ├── trainerProgress.ts    # Progreso de clientes
+│   │   ├── trainerChat.ts        # Mensajería
+│   │   ├── trainerRender.ts      # Renderizado HTML
+│   │   ├── trainerInit.ts        # initGlobalActions
+│   │   └── trainerUtils.ts       # Barrel (re-export)
 │   ├── client/     # Servicios del lado cliente
 │   ├── helpers/    # Utilidades puras
 │   └── firebase/   # Wrappers de Firebase para testing

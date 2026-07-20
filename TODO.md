@@ -287,6 +287,67 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ---
 
+### 15. Eliminar re-exports legacy de adminUtils y trainerUtils
+**Archivos afectados:**
+- `src/lib/admin/adminUtils.ts` (línea 373) — re-exportaba `ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge` desde `shared/ui`
+- `src/lib/trainer/trainerUtils.ts` (línea 545) — mismo re-export
+
+**Problema:** 
+- Los re-exports creaban una dependencia circular indirecta y ocultaban la fuente real de las funciones
+- Las páginas importaban de `adminUtils` en lugar de `shared/ui`, dificultando el refactor
+
+**Solución aplicada:**
+- ✅ Eliminados los bloques de re-export de ambos archivos
+- ✅ Actualizadas las páginas admin (`clients.astro`, `dashboard.astro`, `trainers.astro`, `users.astro`) para importar directamente de `@/lib/shared/ui`
+- ✅ Eliminada declaración local redundante de `ICONS` en `users.astro`
+
+**Prioridad:** 🔴 CRÍTICA - Dependencia oculta  
+**Estado:** ✅ Completado
+
+---
+
+### 16. Refactorizar adminUtils.ts (629 líneas → objetivo ~200)
+**Archivo:** `src/lib/admin/adminUtils.ts`
+
+**Problema:** Archivo de 629 líneas que mezclaba tipos, auth, servicios, renderizado e init.
+
+**Solución aplicada:**
+- ✅ `src/lib/admin/types.ts` — Tipos AdminUser, CreateUserPayload
+- ✅ `src/lib/admin/adminAuth.ts` — requireAdmin, signOutUser
+- ✅ `src/lib/admin/adminUsers.ts` — CRUD usuarios (createUser, updateUserRole, assignTrainer, deleteUser, toggleUserBlock, getUserName, getUserProfile)
+- ✅ `src/lib/admin/adminSubscriptions.ts` — Suscripciones Firestore (subscribeToUsers, subscribeToUsersByRole, subscribeToCollectionCount, subscribeToRecentUsers, getTrainerClientCount)
+- ✅ `src/lib/admin/adminRender.ts` — Renderizado HTML (renderUserRow, renderUserDetail, renderUserForm, renderUserCard, renderUserCardExtended, renderClientCard, renderTrainerCard)
+- ✅ `src/lib/admin/adminInit.ts` — initGlobalActions, initAdminActions
+- ✅ `src/lib/admin/adminUtils.ts` → Barrel (re-exporta todo)
+
+**Prioridad:** 🔴 CRÍTICA - Archivo > 300 líneas (viola regla #9)  
+**Estado:** ✅ Completado
+
+---
+
+### 17. Refactorizar trainerUtils.ts (570 líneas → objetivo ~300)
+**Archivo:** `src/lib/trainer/trainerUtils.ts`
+
+**Problema:** Archivo de 570 líneas que mezclaba tipos, auth, servicios, renderizado e init.
+
+**Solución aplicada:**
+- ✅ `src/lib/trainer/types.ts` — Tipos TrainerClient, TrainerWorkout, Exercise, TrainerDiet, Meal, TrainerMessage, ProgressLog
+- ✅ `src/lib/trainer/trainerAuth.ts` — requireAuth, signOutUser
+- ✅ `src/lib/trainer/trainerClients.ts` — subscribeToClients, getClientProfile
+- ✅ `src/lib/trainer/trainerWorkouts.ts` — subscribeToWorkoutsByTrainer, subscribeToWorkoutsByClient, createWorkout, updateWorkout, deleteWorkout
+- ✅ `src/lib/trainer/trainerDiets.ts` — subscribeToDietsByTrainer, subscribeToDietsByClient, createDiet, updateDiet, deleteDiet
+- ✅ `src/lib/trainer/trainerProgress.ts` — subscribeToClientProgress
+- ✅ `src/lib/trainer/trainerChat.ts` — subscribeToConversations, subscribeToConversation, sendMessage, markAsRead
+- ✅ `src/lib/trainer/trainerRender.ts` — renderClientCard, renderWorkoutCard, renderDietCard, renderMessageBubble
+- ✅ `src/lib/trainer/trainerInit.ts` — initGlobalActions
+- ✅ `src/lib/trainer/trainerUtils.ts` → Barrel (re-exporta todo)
+
+**Prioridad:** 🔴 CRÍTICA - Archivo > 300 líneas (viola regla #9)  
+**Status:** ✅ Completado
+
+
+---
+
 ## 🧪 Tests y Calidad
 
 ### 15. Tests eliminados (fake/muertos)
