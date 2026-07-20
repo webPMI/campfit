@@ -36,6 +36,9 @@ campfit/
 │       └── ci.yml           # CI/CD Pipeline
 ├── scripts/
 │   ├── agent-lock.sh        # Sistema de lock para multi-agente
+│   ├── setup.sh             # Setup inicial para nuevos agentes
+│   ├── doctor.sh            # Diagnóstico del proyecto
+│   ├── mcp-setup.sh         # Setup de servidores MCP
 │   ├── check-context.sh     # Verificador de contexto
 │   └── validate.sh          # Validación pre-commit
 ├── tests/                   # Tests centralizados
@@ -59,9 +62,24 @@ campfit/
 | `@github-mcp` | GitHub | Commits, PRs, issues |
 | `@filesystem-mcp` | Sistema de archivos | Leer/escribir archivos |
 
-### Configuración Local
+### Configuración Automática
 
-Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf):
+Usa el script de setup MCP para verificar y configurar todo:
+
+```bash
+# Verificar configuración MCP
+bash scripts/mcp-setup.sh
+
+# Instalar servidores MCP
+bash scripts/mcp-setup.sh --install
+
+# Generar archivo .env con template
+bash scripts/mcp-setup.sh --env
+```
+
+### Configuración Manual
+
+Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf) a través del archivo `.mcp.json`:
 
 ```json
 {
@@ -71,20 +89,38 @@ Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf):
       "args": ["@firebase-mcp/server"],
       "env": {
         "FIREBASE_PROJECT_ID": "mallorca-campfit",
-        "FIREBASE_CLIENT_EMAIL": "...",
-        "FIREBASE_PRIVATE_KEY": "..."
-      }
+        "FIREBASE_CLIENT_EMAIL": "${FIREBASE_CLIENT_EMAIL}",
+        "FIREBASE_PRIVATE_KEY": "${FIREBASE_PRIVATE_KEY}"
+      },
+      "description": "Firebase Auth + Firestore operations",
+      "disabled": false
     },
     "github-mcp": {
       "command": "npx",
       "args": ["@github-mcp/server"],
       "env": {
-        "GITHUB_TOKEN": "ghp_..."
-      }
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub repository management",
+      "disabled": false
+    },
+    "filesystem-mcp": {
+      "command": "npx",
+      "args": ["@filesystem-mcp/server"],
+      "description": "File system operations",
+      "disabled": false
     }
   }
 }
 ```
+
+### Variables de Entorno Requeridas
+
+| Variable | Propósito | Cómo obtenerla |
+|----------|-----------|---------------|
+| `FIREBASE_CLIENT_EMAIL` | Service Account email | Firebase Console → Project Settings → Service Accounts |
+| `FIREBASE_PRIVATE_KEY` | Service Account private key | Firebase Console → Project Settings → Service Accounts |
+| `GITHUB_TOKEN` | GitHub personal access token | GitHub → Settings → Developer settings → Personal access tokens |
 
 ### Buenas Prácticas MCP
 
@@ -92,6 +128,7 @@ Los servidores MCP se configuran en el IDE (VS Code / Cursor / Windsurf):
 2. **Operaciones sensibles** (cambiar roles, eliminar usuarios) → API Routes de Astro
 3. **No exponer secrets** en el código - siempre usar variables de entorno
 4. **Preferir queries con filtro** sobre colecciones completas
+5. **Verificar conexión** con `bash scripts/mcp-setup.sh` antes de usar
 
 ---
 
@@ -269,8 +306,18 @@ npm run format           # Prettier
 ### Utilidades
 
 ```bash
-bash scripts/validate.sh     # Validación completa pre-commit
-bash scripts/check-context.sh # Verificar contexto del proyecto
+bash scripts/setup.sh             # Setup inicial para nuevos agentes
+bash scripts/setup.sh --full      # Setup completo (instalar + pull)
+bash scripts/doctor.sh            # Diagnóstico del proyecto
+bash scripts/doctor.sh --ci       # Diagnóstico en modo CI (exit code)
+bash scripts/mcp-setup.sh         # Verificar/configurar servidores MCP
+bash scripts/mcp-setup.sh --install # Instalar servidores MCP
+bash scripts/mcp-setup.sh --env   # Generar .env template
+bash scripts/validate.sh          # Validación completa pre-commit
+bash scripts/validate.sh --quick  # Solo type-check + tests
+bash scripts/validate.sh --fix    # Completa + auto-fix lint
+bash scripts/check-context.sh     # Verificar contexto del proyecto
+bash scripts/agent-lock.sh status # Estado del lock
 ```
 
 ---

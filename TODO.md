@@ -433,21 +433,27 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ## 🤖 Harness para Agentes IA
 
-### Archivos del Harness (creados)
-- [x] `AGENTS_GUIDE.md` — Guía completa para agentes IA
+### Archivos del Harness (creados/mejorados)
+- [x] `AGENTS_GUIDE.md` — Guía completa para agentes IA (actualizada con MCP y scripts)
 - [x] `CONTEXT.md` — Contexto comprimido del proyecto
 - [x] `TASK.md` — Tarea actual del agente
 - [x] `CLAUDE.md` — Instrucciones para Claude
-- [x] `AGENTS.md` — Instrucciones rápidas para agentes
+- [x] `AGENTS.md` — Instrucciones rápidas para agentes (actualizado con nuevos comandos)
 - [x] `scripts/agent-lock.sh` — Sistema de lock multi-agente
-- [x] `scripts/validate.sh` — Validación pre-commit
+- [x] `scripts/validate.sh` — Validación pre-commit (modos --quick, --full, --fix)
 - [x] `scripts/check-context.sh` — Verificador de contexto
+- [x] `scripts/setup.sh` — Setup inicial para nuevos agentes
+- [x] `scripts/doctor.sh` — Diagnóstico del proyecto
+- [x] `scripts/mcp-setup.sh` — Setup de servidores MCP
+- [x] `.mcp.json` — Config MCP completa (Firebase, GitHub, Filesystem)
 - [x] `.github/workflows/ci.yml` — CI/CD pipeline completo
 - [x] `.github/workflows/agent-checks.yml` — Validación rápida para agentes
 - [x] `.eslintrc.cjs` — Config ESLint corregida (sin React)
 - [x] `astro.config.mjs` — Config Astro corregida (static con SSR comentado)
-- [x] `package.json` — Scripts añadidos (lint, format, type-check, validate, context)
-- [x] `.gitignore` — Actualizado con agent-lock, coverage, reports
+- [x] `package.json` — Scripts añadidos (validate:quick, validate:fix, doctor, mcp:setup, setup, lock:status, lock:release)
+- [x] `.gitignore` — Actualizado con agent-lock, mcp-lock, coverage, reports
+- [x] `README.md` — Tabla de comandos de agente actualizada
+- [x] `HARNESS_IMPROVEMENTS.md` — Plan de mejora del harness (Fase 1 completada)
 
 ### Flujo de trabajo para agentes
 1. Leer `CONTEXT.md` y `TASK.md`

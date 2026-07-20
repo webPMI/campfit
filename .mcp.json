@@ -7,18 +7,24 @@
         "FIREBASE_PROJECT_ID": "mallorca-campfit",
         "FIREBASE_CLIENT_EMAIL": "${FIREBASE_CLIENT_EMAIL}",
         "FIREBASE_PRIVATE_KEY": "${FIREBASE_PRIVATE_KEY}"
-      }
+      },
+      "description": "Firebase Auth + Firestore operations. Usar para CRUD de usuarios, auth, queries.",
+      "disabled": false
     },
     "github-mcp": {
       "command": "npx",
       "args": ["@github-mcp/server"],
       "env": {
         "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-      }
+      },
+      "description": "GitHub repository management. Commits, PRs, issues.",
+      "disabled": false
     },
     "filesystem-mcp": {
       "command": "npx",
-      "args": ["@filesystem-mcp/server"]
+      "args": ["@filesystem-mcp/server"],
+      "description": "File system operations. Leer/escribir archivos.",
+      "disabled": false
     }
   }
 }

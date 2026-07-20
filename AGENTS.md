@@ -32,6 +32,10 @@ npm run test:e2e         # E2E tests
 npm run type-check       # TypeScript check
 npm run build            # Build producción
 npm run context          # Project context check
+npm run doctor           # Project diagnostics
+npm run mcp:setup        # MCP server setup
+npm run setup            # Initial setup for new agents
+npm run lock:status      # Check agent lock status
 ```
 
 ## Documentation

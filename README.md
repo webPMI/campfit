@@ -133,6 +133,18 @@ campfit-astro/
 | Comando | Acción |
 |---------|--------|
 | `npm run context` | Ver contexto del proyecto |
+| `npm run doctor` | Diagnóstico del proyecto |
+| `npm run doctor:ci` | Diagnóstico en modo CI |
+| `npm run mcp:setup` | Verificar/configurar servidores MCP |
+| `npm run mcp:install` | Instalar servidores MCP |
+| `npm run mcp:env` | Generar .env template |
+| `npm run setup` | Setup inicial para nuevos agentes |
+| `npm run setup:full` | Setup completo (instalar + pull) |
+| `npm run validate` | Validación completa pre-commit |
+| `npm run validate:quick` | Solo type-check + tests |
+| `npm run validate:fix` | Completa + auto-fix lint |
+| `npm run lock:status` | Verificar estado del lock |
+| `npm run lock:release` | Liberar lock |
 | `bash scripts/agent-lock.sh check` | Verificar lock de agente |
 | `bash scripts/agent-lock.sh acquire` | Adquirir lock |
 | `bash scripts/agent-lock.sh release` | Liberar lock |

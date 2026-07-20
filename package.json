@@ -24,7 +24,18 @@
     "format:check": "prettier --check .",
     "type-check": "astro check",
     "validate": "bash scripts/validate.sh",
-    "context": "bash scripts/check-context.sh"
+    "validate:quick": "bash scripts/validate.sh --quick",
+    "validate:fix": "bash scripts/validate.sh --fix",
+    "context": "bash scripts/check-context.sh",
+    "doctor": "bash scripts/doctor.sh",
+    "doctor:ci": "bash scripts/doctor.sh --ci",
+    "mcp:setup": "bash scripts/mcp-setup.sh",
+    "mcp:install": "bash scripts/mcp-setup.sh --install",
+    "mcp:env": "bash scripts/mcp-setup.sh --env",
+    "setup": "bash scripts/setup.sh",
+    "setup:full": "bash scripts/setup.sh --full",
+    "lock:status": "bash scripts/agent-lock.sh status",
+    "lock:release": "bash scripts/agent-lock.sh release"
   },
 
   "dependencies": {
