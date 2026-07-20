@@ -30,7 +30,14 @@ campfit-astro/
 │   │   ├── ClientLayout.astro
 │   │   └── TrainerLayout.astro
 │   ├── lib/                 # Utilidades y servicios
-│   │   ├── admin/           # adminUtils.ts — Lógica específica de admin
+│   │   ├── admin/           # Módulo admin (modularizado)
+│   │   │   ├── types.ts              # AdminUser, CreateUserPayload
+│   │   │   ├── adminAuth.ts          # requireAdmin, signOutUser
+│   │   │   ├── adminUsers.ts         # CRUD usuarios
+│   │   │   ├── adminSubscriptions.ts # Suscripciones Firestore
+│   │   │   ├── adminRender.ts        # Renderizado HTML
+│   │   │   ├── adminInit.ts          # initGlobalActions
+│   │   │   └── adminUtils.ts         # Barrel (re-export)
 │   │   ├── auth/            # roleRedirect.ts — Redirección por rol post-login
 │   │   ├── client/          # Servicios del lado cliente
 │   │   │   ├── chatService.ts      # Chat (legacy, migrar a shared/chat)
@@ -41,6 +48,8 @@ campfit-astro/
 │   │   ├── firebase/        # Wrappers de Firebase para testing
 │   │   │   ├── auth.ts      # Re-export de firebase/auth
 │   │   │   └── firestore.ts # Re-export de firebase/firestore
+│   │   ├── helpers/         # Utilidades puras
+│   │   │   └── userMappers.ts      # mapDocToUser() — Mapeo de Firestore a User
 │   │   ├── shared/          # Código compartido (sin duplicación)
 │   │   │   ├── authGuard.ts       # Guards unificados (requireAuth, requireAdmin)
 │   │   │   ├── chat.ts            # ChatService unificado
@@ -48,7 +57,17 @@ campfit-astro/
 │   │   │   ├── logger.ts          # Sistema de logging global
 │   │   │   ├── profileService.ts  # Servicio de perfiles
 │   │   │   └── ui.ts              # Iconos, toast, estados UI
-│   │   ├── trainer/         # trainerUtils.ts — Lógica específica de trainer
+│   │   ├── trainer/         # Módulo trainer (modularizado)
+│   │   │   ├── types.ts              # TrainerClient, Workout, Diet, etc.
+│   │   │   ├── trainerAuth.ts        # requireAuth, signOutUser
+│   │   │   ├── trainerClients.ts     # Clientes del trainer
+│   │   │   ├── trainerWorkouts.ts    # CRUD rutinas
+│   │   │   ├── trainerDiets.ts       # CRUD dietas
+│   │   │   ├── trainerProgress.ts    # Progreso de clientes
+│   │   │   ├── trainerChat.ts        # Mensajería
+│   │   │   ├── trainerRender.ts      # Renderizado HTML
+│   │   │   ├── trainerInit.ts        # initGlobalActions
+│   │   │   └── trainerUtils.ts       # Barrel (re-export)
 │   │   ├── firebase.ts      # Configuración e inicialización de Firebase
 │   │   ├── routeGuards.ts   # Guardias de ruta por rol
 │   │   └── validators.ts    # Validación de formularios

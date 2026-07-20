@@ -18,11 +18,16 @@ src/
 │   └── settings.astro           # /admin/settings
 ├── layouts/
 │   └── AdminLayout.astro        # Layout con Sidebar Navigation
-├── lib/
-│   └── admin/
-│       └── adminUtils.ts        # Utilidades de admin (iconos, tipos, renderizado, servicios)
+├── lib/admin/                   # Módulo admin (modularizado)
+│   ├── types.ts                 # AdminUser, CreateUserPayload, AdminStats
+│   ├── adminAuth.ts             # requireAdmin, signOutUser
+│   ├── adminUsers.ts            # CRUD usuarios (Firestore)
+│   ├── adminSubscriptions.ts    # Suscripciones Firestore (streams)
+│   ├── adminRender.ts           # Renderizado HTML (tablas, modales, cards)
+│   ├── adminInit.ts             # initGlobalActions (setup de página)
+│   └── adminUtils.ts            # Barrel (re-export)
 ├── services/
-│   └── adminService.ts          # CRUD usuarios, estadísticas
+│   └── adminService.ts          # CRUD usuarios, estadísticas (legacy)
 └── types/
     └── index.ts                 # User, AdminStats, Alert
 ```
@@ -70,7 +75,7 @@ src/
 ### Datos (Firestore streams)
 
 ```typescript
-// src/services/adminService.ts
+// src/lib/admin/adminSubscriptions.ts
 import { collection, query, where, orderBy, limit, onSnapshot, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
