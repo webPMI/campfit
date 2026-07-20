@@ -141,7 +141,7 @@ describe('authService', () => {
 
       await expect(
         authService.loginUser(TEST_CREDENTIALS.email, TEST_CREDENTIALS.password),
-      ).rejects.toThrow('Perfil de usuario no encontrado');
+      ).rejects.toThrow('profile/not-found');
     });
 
     it('⚠️ should handle network errors', async () => {

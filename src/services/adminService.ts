@@ -7,13 +7,17 @@
  *   const users = await adminService.getAllUsers();
  */
 
-import { collection, getDocs, query, orderBy, limit, doc, updateDoc, deleteDoc, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, doc, updateDoc, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { User } from '@/types';
+import { mapDocToUser } from '@/lib/helpers/userMappers';
 
 export const adminService = {
   /**
    * Obtener todos los usuarios registrados.
+   *
+   * @param maxResults - Número máximo de usuarios a obtener (default: 100)
+   * @returns Lista de usuarios ordenados por fecha de creación descendente
    */
   async getAllUsers(maxResults = 100): Promise<User[]> {
     const q = query(
@@ -22,25 +26,15 @@ export const adminService = {
       limit(maxResults),
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => {
-      const data = d.data();
-      return {
-        uid: d.id,
-        name: data.name || 'Sin nombre',
-        email: data.email || '',
-        role: data.role || 'client',
-        hasActiveAlert: data.hasActiveAlert ?? false,
-        assignedTrainerId: data.assignedTrainerId,
-        medicalProfile: data.medicalProfile,
-        lastActivityAt: data.lastActivityAt,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      } as User;
-    });
+    return snapshot.docs.map((d) => mapDocToUser(d));
   },
 
   /**
    * Obtener usuarios por rol.
+   *
+   * @param role - Rol a filtrar ('admin' | 'trainer' | 'client')
+   * @param maxResults - Número máximo de usuarios a obtener (default: 100)
+   * @returns Lista de usuarios del rol especificado
    */
   async getUsersByRole(role: User['role'], maxResults = 100): Promise<User[]> {
     const q = query(
@@ -50,25 +44,14 @@ export const adminService = {
       limit(maxResults),
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => {
-      const data = d.data();
-      return {
-        uid: d.id,
-        name: data.name || 'Sin nombre',
-        email: data.email || '',
-        role: data.role || 'client',
-        hasActiveAlert: data.hasActiveAlert ?? false,
-        assignedTrainerId: data.assignedTrainerId,
-        medicalProfile: data.medicalProfile,
-        lastActivityAt: data.lastActivityAt,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      } as User;
-    });
+    return snapshot.docs.map((d) => mapDocToUser(d));
   },
 
   /**
    * Actualizar el rol de un usuario.
+   *
+   * @param uid - ID del usuario
+   * @param newRole - Nuevo rol a asignar
    */
   async updateUserRole(uid: string, newRole: User['role']): Promise<void> {
     await updateDoc(doc(db, 'users', uid), {
@@ -78,7 +61,9 @@ export const adminService = {
   },
 
   /**
-   * Eliminar un usuario (marca como deshabilitado).
+   * Deshabilitar un usuario (marca hasActiveAlert como true).
+   *
+   * @param uid - ID del usuario a deshabilitar
    */
   async disableUser(uid: string): Promise<void> {
     await updateDoc(doc(db, 'users', uid), {
@@ -89,6 +74,8 @@ export const adminService = {
 
   /**
    * Obtener estadísticas del dashboard admin.
+   *
+   * @returns Objeto con totales de usuarios, trainers, clients y alertas activas
    */
   async getStats(): Promise<{ totalUsers: number; totalTrainers: number; totalClients: number; activeAlerts: number }> {
     const snapshot = await getDocs(collection(db, 'users'));

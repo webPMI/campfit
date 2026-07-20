@@ -232,7 +232,7 @@ const altLang = lang === 'es' ? 'en' : 'es';
 - Limpiar imports huérfanos
 
 **Prioridad:** 🟡 MEDIA  
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado (páginas públicas migradas a PublicPageLayout, imports limpiados)
 
 ---
 
