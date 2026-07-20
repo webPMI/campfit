@@ -108,7 +108,7 @@
         },
       };
 
-      const colors = styles[variant] || styles.danger;
+      const colors = (styles[variant] ?? styles.danger)!;
 
       // Set content
       titleEl.textContent = options.title;
@@ -119,7 +119,7 @@
       // Set variant styles
       confirmBtn.className = `flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-all active:scale-[0.98] ${colors.btn}`;
       iconContainer.className = `flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${colors.bg}`;
-      iconSvg.className = `h-5 w-5 ${colors.icon}`;
+      iconSvg.setAttribute('class', `h-5 w-5 ${colors.icon}`);
 
       function cleanup() {
         overlay.classList.add('hidden');

@@ -9,12 +9,15 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 const currentPath = Astro.url.pathname;
 ---
 
-<BaseLayout>
-  <DecorativeBackground />
-  <LanguageSwitcher currentPath={currentPath} altLang={lang === 'es' ? 'en' : 'es'} />
+  <BaseLayout>
+    <DecorativeBackground />
+    <LanguageSwitcher currentPath={currentPath} altLang={lang === 'es' ? 'en' : 'es'} />
 
-  <!-- Bottom Navigation Admin -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-800/60 bg-zinc-900/90 backdrop-blur-xl">
+    <!-- Page content -->
+    <slot />
+
+    <!-- Bottom Navigation Admin -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-800/60 bg-zinc-900/90 backdrop-blur-xl">
     <div class="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
       <a
         href={`/admin/dashboard?lang=${lang}`}
