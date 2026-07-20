@@ -150,7 +150,7 @@ describe('adminService', () => {
 
       expect(mockFns.where).toHaveBeenCalledWith('role', '==', 'client');
       expect(users).toHaveLength(1);
-      expect(users[0].role).toBe('client');
+      expect(users[0]?.role).toBe('client');
     });
 
     it('✅ should return empty array when no users of that role exist', async () => {

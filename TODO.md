@@ -91,23 +91,17 @@ const currentPath = Astro.url.pathname;
 
 ### 4. Layouts - Wrapper con padding duplicado
 **Archivos afectados:**
-- `src/layouts/AdminLayout.astro` (líneas 31-33)
-- `src/layouts/ClientLayout.astro` (líneas 31-33)
-- `src/layouts/TrainerLayout.astro` (líneas 31-33)
+- `src/layouts/AdminLayout.astro`
+- `src/layouts/ClientLayout.astro`
+- `src/layouts/TrainerLayout.astro`
 
-**Problema:** Código idéntico:
-```html
-<div class="pb-20">
-  <slot />
-</div>
-```
+**Problema:** Código idéntico `<div class="pb-20"><slot /></div>` repetido 3 veces.
 
-**Solución propuesta:**
-- Mover a `BaseLayout.astro` si todos los layouts lo usan
-- O crear componente `ContentWrapper.astro`
+**Solución aplicada:**
+- Movido a `BaseLayout.astro` — ahora los 3 layouts hijos solo tienen `<slot />` sin wrapper
 
-**Prioridad:** ⚠️ BAJA - Solo 3 líneas, pero acumula  
-**Estado:** ⏳ Pendiente
+**Prioridad:** ⚠️ BAJA  
+**Estado:** ✅ Completado
 
 ---
 

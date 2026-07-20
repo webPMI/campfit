@@ -25,9 +25,16 @@ const lang = Astro.params.lang || 'es';
         }
       })();
     </script>
-    <slot />
+    <div class="pb-20">
+      <slot />
+    </div>
   </body>
 </html>
+
+<!-- Firestore Debug System (Ctrl+Shift+D) -->
+<script>
+  import '@/lib/debug/firestoreDebug';
+</script>
 
 <style>
   @import "tailwindcss";
