@@ -104,15 +104,39 @@ campfit-astro/
 
 ## 🛠️ Comandos
 
+### Desarrollo
 | Comando | Acción |
 |---------|--------|
 | `npm install` | Instalar dependencias |
 | `npm run dev` | Iniciar servidor de desarrollo (`localhost:4321`) |
 | `npm run build` | Compilar para producción (`dist/`) |
 | `npm run preview` | Vista previa de la build |
-| `npm test` | Ejecutar tests unitarios (Vitest) |
-| `npm run test:e2e` | Ejecutar tests E2E (Playwright) |
-| `npm run astro check` | Verificar tipos TypeScript |
+
+### Testing
+| Comando | Acción |
+|---------|--------|
+| `npm test` | Tests unitarios (Vitest) |
+| `npm run test:watch` | Tests en watch mode |
+| `npm run test:coverage` | Tests con cobertura |
+| `npm run test:e2e` | Tests E2E (Playwright) |
+| `npm run test:all` | Unitarios + E2E |
+
+### Calidad
+| Comando | Acción |
+|---------|--------|
+| `npm run type-check` | Verificar tipos TypeScript |
+| `npm run lint` | ESLint |
+| `npm run format` | Formatear con Prettier |
+| `npm run validate` | Validación completa pre-commit |
+
+### Agentes IA
+| Comando | Acción |
+|---------|--------|
+| `npm run context` | Ver contexto del proyecto |
+| `bash scripts/agent-lock.sh check` | Verificar lock de agente |
+| `bash scripts/agent-lock.sh acquire` | Adquirir lock |
+| `bash scripts/agent-lock.sh release` | Liberar lock |
+
 
 ---
 

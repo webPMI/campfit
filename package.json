@@ -18,8 +18,15 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:all": "npm run test && npm run test:e2e",
-    "test:ci": "vitest run --coverage && playwright test"
+    "test:ci": "vitest run --coverage && playwright test",
+    "lint": "eslint . --ext .ts,.astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "astro check",
+    "validate": "bash scripts/validate.sh",
+    "context": "bash scripts/check-context.sh"
   },
+
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.7",

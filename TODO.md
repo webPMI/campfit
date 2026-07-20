@@ -370,6 +370,36 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ---
 
+## 🤖 Harness para Agentes IA
+
+### Archivos del Harness (creados)
+- [x] `AGENTS_GUIDE.md` — Guía completa para agentes IA
+- [x] `CONTEXT.md` — Contexto comprimido del proyecto
+- [x] `TASK.md` — Tarea actual del agente
+- [x] `CLAUDE.md` — Instrucciones para Claude
+- [x] `AGENTS.md` — Instrucciones rápidas para agentes
+- [x] `scripts/agent-lock.sh` — Sistema de lock multi-agente
+- [x] `scripts/validate.sh` — Validación pre-commit
+- [x] `scripts/check-context.sh` — Verificador de contexto
+- [x] `.github/workflows/ci.yml` — CI/CD pipeline completo
+- [x] `.github/workflows/agent-checks.yml` — Validación rápida para agentes
+- [x] `.eslintrc.cjs` — Config ESLint corregida (sin React)
+- [x] `astro.config.mjs` — Config Astro corregida (static con SSR comentado)
+- [x] `package.json` — Scripts añadidos (lint, format, type-check, validate, context)
+- [x] `.gitignore` — Actualizado con agent-lock, coverage, reports
+
+### Flujo de trabajo para agentes
+1. Leer `CONTEXT.md` y `TASK.md`
+2. Verificar lock: `bash scripts/agent-lock.sh check`
+3. Hacer pull: `git pull origin master --allow-unrelated-histories --no-edit`
+4. Adquirir lock: `bash scripts/agent-lock.sh acquire "agent-name" "feature"`
+5. Implementar cambios
+6. Validar: `bash scripts/validate.sh`
+7. Commit y push
+8. Liberar lock: `bash scripts/agent-lock.sh release`
+
+---
+
 ## 📝 Notas para Agentes
 
 ### Reglas a respetar durante la implementación:
@@ -400,13 +430,16 @@ const altLang = lang === 'es' ? 'en' : 'es';
 ### Comandos de verificación:
 ```bash
 # Verificar tipos
-npx tsc --noEmit
+npm run type-check
 
 # Ejecutar tests
-npm run test
+npm test
 
 # Build de producción
 npm run build
+
+# Validación completa
+bash scripts/validate.sh
 ```
 
 ---
@@ -415,7 +448,12 @@ npm run build
 
 Después de cada fase, ejecutar:
 ```bash
-npm run test && npm run build
+npm test && npm run build
+```
+
+O usar el validador completo:
+```bash
+bash scripts/validate.sh
 ```
 
 Si hay errores, revisar:
@@ -427,11 +465,16 @@ Si hay errores, revisar:
 
 ## 📚 Documentación de Referencia
 
-- **Documentación completa del proyecto:** `docs/MASTER.md`
-- **Índice de documentación:** `docs/00_indice.md`
-- **Reglas de desarrollo:** Ver sección 11 de `docs/MASTER.md`
+- **Guía completa para agentes:** `AGENTS_GUIDE.md`
+- **Contexto del proyecto:** `CONTEXT.md`
+- **Tarea actual:** `TASK.md`
+- **Índice de documentación:** `nuevo_proyecto/00_indice.md`
+- **Reglas de desarrollo:** `.clinerules`
+- **Flujo de git:** `GIT_WORKFLOW.md`
 
 ---
 
 **Mantenido por:** Equipo CampFit  
-**Versión:** 1.1
+**Versión:** 2.0
+
+
