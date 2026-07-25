@@ -43,22 +43,50 @@ export const $isClient = computed($userRole, (role) => role === 'client');
 
 // ─── Acciones ───────────────────────────────────────────────────────────────
 
-/** Establecer el usuario autenticado */
+/**
+ * Establece el usuario autenticado en el store.
+ * 
+ * @param user - Objeto User a establecer, o null para limpiar
+ * 
+ * @example
+ * setUser({ uid: '123', name: 'Juan', email: 'juan@email.com', role: 'client' });
+ */
 export function setUser(user: User | null): void {
   $user.set(user);
 }
 
-/** Establecer estado de carga */
+/**
+ * Establece el estado de carga de autenticación.
+ * Útil para mostrar spinners mientras se verifica la sesión.
+ * 
+ * @param loading - true para mostrar estado de carga, false para ocultar
+ * 
+ * @example
+ * setAuthLoading(true); // Mostrar spinner
+ */
 export function setAuthLoading(loading: boolean): void {
   $authLoading.set(loading);
 }
 
-/** Establecer mensaje de error */
+/**
+ * Establece el mensaje de error de autenticación.
+ * 
+ * @param error - Mensaje de error, o null para limpiar
+ * 
+ * @example
+ * setAuthError('Credenciales inválidas');
+ */
 export function setAuthError(error: string | null): void {
   $authError.set(error);
 }
 
-/** Limpiar todo el estado de autenticación */
+/**
+ * Limpia todo el estado de autenticación.
+ * Usado al cerrar sesión o cuando hay un error crítico.
+ * 
+ * @example
+ * clearAuth(); // Resetea $user, $authLoading y $authError
+ */
 export function clearAuth(): void {
   $user.set(null);
   $authLoading.set(false);

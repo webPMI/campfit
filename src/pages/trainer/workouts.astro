@@ -12,11 +12,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">{t('trainer.workouts')}</h1>
-          <p class="mt-1 text-sm text-zinc-500">
+          <p class="mt-1 text-sm theme-text-tertiary">
             <span id="workout-count" class="text-blue-400 font-medium">0</span> {t('admin.workouts.total')}
           </p>
         </div>
-        <button id="btn-create-workout" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all active:scale-95">
+        <button id="btn-create-workout" class="rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-2 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all active:scale-95">
           <svg class="h-4 w-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -29,20 +29,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       <!-- Filter by client -->
       <div class="mt-6">
-        <select id="client-filter" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/60 px-4 py-2.5 text-sm text-zinc-300 backdrop-blur-sm focus:outline-none focus:border-emerald-500/50">
+        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
           <option value="">{t('trainer.filter.all')}</option>
         </select>
       </div>
 
       <!-- Workouts List -->
       <div id="workouts-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 text-center backdrop-blur-sm">
+        <div class="rounded-xl border theme-border theme-surface-secondary p-6 text-center backdrop-blur-sm">
           <div class="flex items-center justify-center gap-3">
-            <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+            <svg class="h-5 w-5 animate-spin theme-text-brand" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+            <p class="text-sm theme-text-tertiary">{t('admin.loading')}</p>
           </div>
         </div>
       </div>
@@ -61,18 +61,27 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     deleteWorkout,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerWorkout, Exercise } from '@/lib/trainer/trainerUtils';
+  import { logger } from '@/lib/shared/logger';
 
   let unsubClients: (() => void) | null = null;
   let unsubWorkouts: (() => void) | null = null;
   let allClients: TrainerClient[] = [];
   let allWorkouts: TrainerWorkout[] = [];
 
+<<<<<<< HEAD
   const unsubInit = requireAuth(async (user) => {
+=======
+  const unsubscribeAuth = requireAuth(async (user) => {
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     initWorkouts(user.uid);
   });
 
   document.addEventListener('astro:before-swap', () => {
+<<<<<<< HEAD
     unsubInit?.();
+=======
+    unsubscribeAuth?.();
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     unsubClients?.();
     unsubWorkouts?.();
   });
@@ -126,18 +135,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     const modal = document.createElement('div');
     modal.id = 'confirm-modal';
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center theme-bg-primary/60 backdrop-blur-sm';
     modal.innerHTML = `
-      <div class="mx-4 w-full max-w-sm rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
+      <div class="mx-4 w-full max-w-sm rounded-2xl border theme-border-strong theme-surface/95 p-6 shadow-2xl backdrop-blur-xl">
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mx-auto">
           <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
           </svg>
         </div>
-        <h3 class="text-center text-lg font-semibold text-zinc-200">Eliminar rutina</h3>
-        <p class="mt-2 text-center text-sm text-zinc-500">¿Estás seguro? Esta acción no se puede deshacer.</p>
+        <h3 class="text-center text-lg font-semibold theme-text-primary">Eliminar rutina</h3>
+        <p class="mt-2 text-center text-sm theme-text-tertiary">¿Estás seguro? Esta acción no se puede deshacer.</p>
         <div class="mt-6 flex gap-3">
-          <button id="btn-cancel-delete" class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-2.5 text-sm font-medium text-zinc-300 hover:bg-zinc-700/80 transition-all">Cancelar</button>
+          <button id="btn-cancel-delete" class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary/80 px-4 py-2.5 text-sm font-medium theme-text-secondary hover:theme-surface-active/80 transition-all">Cancelar</button>
           <button id="btn-confirm-delete" class="flex-1 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all">Eliminar</button>
         </div>
       </div>
@@ -181,6 +190,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         const clientName = isTemplate ? '✨ Plantilla' : allClients.find((c) => c.uid === w.clientId)?.name || 'Sin cliente';
         const difficultyLabels: Record<string, string> = { easy: 'Fácil', medium: 'Intermedio', hard: 'Avanzado', custom: 'Personalizado' };
         return `
+<<<<<<< HEAD
           <div class="rounded-xl border ${isTemplate ? 'border-purple-500/20 bg-purple-900/10' : 'border-zinc-800/40 bg-zinc-900/40'} p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
             <div class="flex items-center justify-between">
               <div class="min-w-0 flex-1">
@@ -191,14 +201,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
                 <p class="text-xs text-zinc-500 mt-0.5">
                   <span class="${isTemplate ? 'text-purple-400' : 'text-emerald-400'}">${escapeHtml(clientName)}</span>
                   <span class="text-zinc-600 mx-1">·</span>
+=======
+          <div class="rounded-xl border theme-border theme-surface-secondary p-4 backdrop-blur-sm transition-all hover:theme-border-strong/60">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium theme-text-primary">${escapeHtml(w.name)}</p>
+                <p class="text-xs theme-text-tertiary mt-0.5">
+                  <span class="theme-text-brand">${escapeHtml(clientName)}</span>
+                  <span class="theme-text-tertiary mx-1">·</span>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
                   ${w.exercises?.length || 0} ejercicios
-                  <span class="text-zinc-600 mx-1">·</span>
+                  <span class="theme-text-tertiary mx-1">·</span>
                   ${difficultyLabels[w.difficulty] || w.difficulty}
                 </p>
               </div>
               <div class="flex items-center gap-2 shrink-0 ml-4">
                 <span class="rounded-full bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium text-blue-400 border border-blue-500/20">${w.exercises?.length || 0}</span>
-                <button onclick="window.__editWorkout('${w.id}')" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">
+                <button onclick="window.__editWorkout('${w.id}')" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-2.5 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">
                   <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                   </svg>
@@ -240,22 +259,22 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       .map((day, i) => `<option value="${i + 1}">${day}</option>`).join('');
 
     editor.innerHTML = `
-      <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/60 p-5 backdrop-blur-sm">
+      <div class="rounded-xl border theme-border theme-surface-secondary p-5 backdrop-blur-sm">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-zinc-200">${isEditing ? 'Editar Rutina' : 'Nueva Rutina'}</h2>
-          <button onclick="window.__closeEditor()" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">Cancelar</button>
+          <h2 class="text-lg font-semibold theme-text-primary">${isEditing ? 'Editar Rutina' : 'Nueva Rutina'}</h2>
+          <button onclick="window.__closeEditor()" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-3 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
         </div>
 
         <div class="space-y-4">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label class="block text-xs text-zinc-500 mb-1">Nombre de la rutina</label>
-              <input id="workout-name" type="text" value="${escapeHtml(w.name)}" placeholder="Ej: Full Body A" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+              <label class="block text-xs theme-text-tertiary mb-1">Nombre de la rutina</label>
+              <input id="workout-name" type="text" value="${escapeHtml(w.name)}" placeholder="Ej: Full Body A" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
               <p id="workout-name-error" class="mt-1 hidden text-xs text-red-400">El nombre es obligatorio</p>
             </div>
             <div>
-              <label class="block text-xs text-zinc-500 mb-1">Cliente</label>
-              <select id="workout-client" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+              <label class="block text-xs theme-text-tertiary mb-1">Cliente</label>
+              <select id="workout-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="">Seleccionar cliente</option>
                 <option value="template" ${(workout?.isTemplate || workout?.clientId === 'template') ? 'selected' : ''}>✨ Guardar como Plantilla</option>
                 ${clientOptions}
@@ -276,8 +295,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label class="block text-xs text-zinc-500 mb-1">Dificultad</label>
-              <select id="workout-difficulty" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+              <label class="block text-xs theme-text-tertiary mb-1">Dificultad</label>
+              <select id="workout-difficulty" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="easy" ${w.difficulty === 'easy' ? 'selected' : ''}>Fácil</option>
                 <option value="medium" ${w.difficulty === 'medium' ? 'selected' : ''}>Intermedio</option>
                 <option value="hard" ${w.difficulty === 'hard' ? 'selected' : ''}>Avanzado</option>
@@ -285,23 +304,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               </select>
             </div>
             <div>
-              <label class="block text-xs text-zinc-500 mb-1">Día de la semana (por defecto)</label>
-              <select id="workout-default-day" class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+              <label class="block text-xs theme-text-tertiary mb-1">Día de la semana (por defecto)</label>
+              <select id="workout-default-day" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 ${dayOptions}
               </select>
             </div>
           </div>
 
           <div>
-            <label class="block text-xs text-zinc-500 mb-1">Descripción</label>
-            <textarea id="workout-desc" rows="2" placeholder="Descripción de la rutina..." class="w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50">${escapeHtml(w.description || '')}</textarea>
+            <label class="block text-xs theme-text-tertiary mb-1">Descripción</label>
+            <textarea id="workout-desc" rows="2" placeholder="Descripción de la rutina..." class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">${escapeHtml(w.description || '')}</textarea>
           </div>
 
           <!-- Exercises -->
           <div>
             <div class="flex items-center justify-between mb-2">
-              <label class="text-xs text-zinc-500">Ejercicios <span id="exercise-count-badge" class="text-zinc-600">(${w.exercises.length})</span></label>
-              <button id="btn-add-exercise" class="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
+              <label class="text-xs theme-text-tertiary">Ejercicios <span id="exercise-count-badge" class="theme-text-tertiary">(${w.exercises.length})</span></label>
+              <button id="btn-add-exercise" class="text-xs theme-text-brand hover:text-emerald-300 transition-colors">
                 <svg class="h-3.5 w-3.5 inline-block mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -310,13 +329,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
             <div id="exercises-list" class="space-y-2">
               ${w.exercises.length === 0
-                ? '<p class="text-xs text-zinc-600 py-2">No hay ejercicios agregados</p>'
+                ? '<p class="text-xs theme-text-tertiary py-2">No hay ejercicios agregados</p>'
                 : w.exercises.map((ex, i) => renderExerciseRow(ex, i, dayOptions)).join('')
               }
             </div>
           </div>
 
-          <button id="btn-save-workout" class="w-full rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed">
+          <button id="btn-save-workout" class="w-full rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-3 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed">
             <span id="save-btn-text">${isEditing ? 'Guardar Cambios' : 'Crear Rutina'}</span>
             <span id="save-btn-spinner" class="hidden">
               <svg class="h-4 w-4 animate-spin inline-block" fill="none" viewBox="0 0 24 24">
@@ -355,7 +374,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const wrapper = document.createElement('div');
       wrapper.innerHTML = renderExerciseRow(newEx, exerciseCounter - 1, dayOptions);
       const firstChild = exercisesList.firstChild;
-      if (firstChild && exercisesList.children.length === 1 && exercisesList.querySelector('p.text-zinc-600')) {
+      if (firstChild && exercisesList.children.length === 1 && exercisesList.querySelector('p.theme-text-tertiary')) {
         exercisesList.innerHTML = '';
       }
       exercisesList.appendChild(wrapper.firstElementChild || wrapper);
@@ -485,7 +504,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         editor.classList.add('hidden');
         editor.innerHTML = '';
       } catch (error) {
-        console.error('[TrainerWorkouts] Error saving:', error);
+        logger.error('TrainerWorkouts', 'Error saving:', error);
       } finally {
         btnSave.disabled = false;
         btnText.classList.remove('hidden');
@@ -498,11 +517,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   function renderExerciseRow(exercise: Exercise, index: number, dayOptions: string): string {
     return `
-      <div data-exercise-row class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-3 backdrop-blur-sm">
+      <div data-exercise-row class="rounded-xl border theme-border theme-surface-secondary p-3 backdrop-blur-sm">
         <div class="flex items-center gap-2 mb-2">
-          <span class="text-xs text-zinc-600 font-medium w-5">#${index + 1}</span>
-          <input type="text" value="${escapeHtml(exercise.name)}" placeholder="Nombre del ejercicio" class="flex-1 min-w-0 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2.5 py-1.5 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
-          <select class="w-24 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-emerald-500/50">
+          <span class="text-xs theme-text-tertiary font-medium w-5">#${index + 1}</span>
+          <input type="text" value="${escapeHtml(exercise.name)}" placeholder="Nombre del ejercicio" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
+          <select class="w-24 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
             ${dayOptions}
           </select>
           <button data-remove-exercise class="rounded-lg border border-red-900/30 bg-red-500/10 px-2 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
@@ -513,20 +532,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-1.5">
-            <label class="text-[10px] text-zinc-600">Series</label>
-            <input type="number" value="${exercise.sets}" min="1" max="20" class="w-14 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" />
+            <label class="text-[10px] theme-text-tertiary">Series</label>
+            <input type="number" value="${exercise.sets}" min="1" max="20" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
           <div class="flex items-center gap-1.5">
-            <label class="text-[10px] text-zinc-600">Reps</label>
-            <input type="number" value="${exercise.reps}" min="1" max="100" class="w-14 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" />
+            <label class="text-[10px] theme-text-tertiary">Reps</label>
+            <input type="number" value="${exercise.reps}" min="1" max="100" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
           <div class="flex items-center gap-1.5">
-            <label class="text-[10px] text-zinc-600">Descanso</label>
-            <input type="text" value="${exercise.restTime}" placeholder="60s" class="w-16 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" />
+            <label class="text-[10px] theme-text-tertiary">Descanso</label>
+            <input type="text" value="${exercise.restTime}" placeholder="60s" class="w-16 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
           <div class="flex-1 flex items-center gap-1.5">
-            <label class="text-[10px] text-zinc-600">Notas</label>
-            <input type="text" value="${escapeHtml(exercise.description || '')}" placeholder="Opcional" class="flex-1 min-w-0 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+            <label class="text-[10px] theme-text-tertiary">Notas</label>
+            <input type="text" value="${escapeHtml(exercise.description || '')}" placeholder="Opcional" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
         </div>
       </div>

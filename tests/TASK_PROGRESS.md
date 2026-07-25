@@ -1,5 +1,6 @@
-# Task Progress - CampFit Tests
+# ⚠️ ARCHIVO OBSOLETO - TODO CENTRALIZADO
 
+<<<<<<< HEAD
 > **Última actualización:** 2026-07-25
 
 ## Estado Actual
@@ -7,9 +8,17 @@
 - ✅ **260+ tests pasan** (18+ archivos de test)
 - ⏭️ **4 tests skipped** (tests de integración que requieren Firebase emulator)
 - ✅ **0 errores de TypeScript** en archivos de test
+=======
+> **Este archivo ha sido reemplazado por `TODO.md`**  
+> **Fecha de obsolescencia:** 2026-06-13  
+> **Motivo:** Centralización de toda la información de tareas y optimizaciones
 
-## Archivos de Test
+---
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
+## 📋 Información Migrada
+
+<<<<<<< HEAD
 ### Unit Tests (18+ archivos, 260+ tests)
 
 | Archivo | Tests | Estado |
@@ -47,13 +56,21 @@
 | `tests/unit/lib/shared/ui.test.ts` | - | ✅ |
 | `tests/unit/lib/helpers/userMappers.test.ts` | - | ✅ |
 | `tests/unit/i18n/client.test.ts` | - | ✅ |
+=======
+Todo el contenido de este archivo ha sido migrado a **`TODO.md`**, incluyendo:
 
-### Integration Tests (1 archivo, 4 tests - todos skipped)
+- ✅ Tests eliminados (fake/muertos)
+- ✅ Configuración arreglada
+- ✅ Cobertura final
+- ✅ Módulos nuevos con cobertura ~100%
+- ✅ Próximos pasos en tests
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
-| Archivo | Tests | Estado |
-|---------|-------|--------|
-| `tests/integration/auth.flow.test.ts` | 4 | ⏭️ (requiere Firebase emulator) |
+---
 
+## 🔗 Archivos de Referencia
+
+<<<<<<< HEAD
 ### E2E Tests (1 archivo, 17 tests)
 
 | Archivo | Tests | Estado |
@@ -86,3 +103,12 @@
 - [ ] Tests E2E para flujos autenticados (admin, client, trainer)
 - [ ] Tests de integración con Firebase Emulator
 - [ ] Reducir keys sin usar en traducciones
+=======
+- **TODO Centralizado:** `TODO.md`
+- **Documentación del Proyecto:** `docs/MASTER.md`
+- **Índice de Documentación:** `docs/00_indice.md`
+
+---
+
+**Este archivo ya no se actualiza. Consulta `TODO.md` para la información más reciente.**
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a

@@ -1,5 +1,6 @@
 ---
 /**
+<<<<<<< HEAD
  * ThemeToggle
  *
  * Botón flotante que alterna entre dark/light mode.
@@ -68,3 +69,150 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 </script>
+=======
+ * ThemeToggle — Botón accesible para alternar entre tema oscuro y claro.
+ *
+ * Props:
+ * - size: 'sm' | 'md' | 'lg' — Controla el tamaño del botón.
+ * - showLabel: boolean — Muestra el texto "Tema oscuro" / "Tema claro".
+ * - class: string — Clases adicionales.
+ *
+ * El estado del tema se gestiona a través de la store centralizada
+ * (@/stores/themeStore) que persiste en localStorage.
+ *
+ * A11y: Incluye aria-label dinámico y soporte para teclado.
+ */
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
+  class?: string;
+}
+
+const { size = 'md', showLabel = false, class: extraClass = '' } = Astro.props;
+
+const sizeClasses = {
+  sm: 'p-1.5 text-sm',
+  md: 'p-2 text-base',
+  lg: 'p-3 text-lg',
+} as const;
+
+const iconSize = {
+  sm: 'h-4 w-4',
+  md: 'h-5 w-5',
+  lg: 'h-6 w-6',
+} as const;
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class:list={[
+    'theme-toggle rounded-lg transition-all duration-300 cursor-pointer',
+    'theme-surface-hover',
+    'focus-visible:outline-2 focus-visible:outline-emerald-400',
+    'theme-text-tertiary',
+    sizeClasses[size],
+    extraClass,
+  ]}
+  aria-label="Cambiar tema"
+  title="Cambiar tema claro/oscuro"
+>
+  <!-- Icono Sol (tema claro) -->
+  <svg
+    id="theme-icon-light"
+    class:list={[iconSize[size], 'hidden']}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    aria-hidden="true"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+    />
+  </svg>
+
+  <!-- Icono Luna (tema oscuro) -->
+  <svg
+    id="theme-icon-dark"
+    class:list={[iconSize[size]]}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    aria-hidden="true"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+    />
+  </svg>
+
+  {
+    showLabel && (
+      <span id="theme-label" class="ml-2 text-sm font-medium">
+        Tema oscuro
+      </span>
+    )
+  }
+</button>
+
+<script>
+  import { $theme, toggleTheme } from '@/stores/themeStore';
+  // Note: initTheme() is already called globally in BaseLayout.astro
+
+  const button = document.getElementById('theme-toggle') as HTMLButtonElement | null;
+  const iconLight = document.getElementById('theme-icon-light') as SVGElement | null;
+  const iconDark = document.getElementById('theme-icon-dark') as SVGElement | null;
+  const label = document.getElementById('theme-label') as HTMLSpanElement | null;
+
+  /**
+   * Updates the button UI to match the current theme.
+   */
+  function updateButtonUI(theme: string) {
+    if (iconLight && iconDark) {
+      if (theme === 'dark') {
+        iconDark.classList.remove('hidden');
+        iconLight.classList.add('hidden');
+      } else {
+        iconLight.classList.remove('hidden');
+        iconDark.classList.add('hidden');
+      }
+    }
+    if (label) {
+      label.textContent = theme === 'dark' ? 'Tema oscuro' : 'Tema claro';
+    }
+    if (button) {
+      button.setAttribute(
+        'aria-label',
+        theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+      );
+    }
+  }
+
+  // Sync UI with store on load
+  updateButtonUI($theme.get());
+
+  // Subscribe to theme changes
+  $theme.subscribe((newTheme) => {
+    updateButtonUI(newTheme);
+  });
+
+  // Toggle on click
+  button?.addEventListener('click', () => {
+    toggleTheme();
+  });
+
+  // Keyboard shortcut: Ctrl+Shift+T (global)
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+      e.preventDefault();
+      toggleTheme();
+    }
+  });
+</script>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a

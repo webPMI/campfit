@@ -272,6 +272,7 @@ describe('profileService', () => {
       expect(result).toEqual({ success: false, message: 'Error al cambiar la contraseña' });
     });
   });
+<<<<<<< HEAD
 
   // ── getUserInitial ────────────────────────────────────────────────────
 
@@ -320,4 +321,7 @@ describe('profileService', () => {
       expect(result.class).toContain('bg-zinc');
     });
   });
+=======
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 });
+

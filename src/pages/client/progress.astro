@@ -9,8 +9,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <ClientLayout>
   <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
     <div class="text-center animate-fade-in">
-      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
-      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 theme-border-strong border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm theme-text-tertiary">{t('dashboard.loading')}</p>
     </div>
   </div>
 
@@ -20,58 +20,88 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <!-- Header -->
         <div>
           <h2 class="text-xl font-bold">{t('dashboard.progress')}</h2>
-          <p class="mt-1 text-sm text-zinc-500">{t('dashboard.progress.desc')}</p>
+          <p class="mt-1 text-sm theme-text-tertiary">{t('dashboard.progress.desc')}</p>
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-2 border-b border-zinc-800/60 pb-2">
-          <button id="tabWeight" class="tab-btn active rounded-lg px-4 py-2 text-sm font-medium text-emerald-400 bg-emerald-500/10 transition-all">Peso</button>
-          <button id="tabPhotos" class="tab-btn rounded-lg px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-300 transition-all">Fotos</button>
+        <div class="flex gap-2 border-b theme-border pb-2">
+          <button id="tabWeight" class="tab-btn active rounded-lg px-4 py-2 text-sm font-medium theme-text-brand theme-brand/10 transition-all">Peso</button>
+          <button id="tabPhotos" class="tab-btn rounded-lg px-4 py-2 text-sm font-medium theme-text-tertiary hover:theme-text-secondary transition-all">Fotos</button>
         </div>
 
         <!-- Weight Tab -->
         <div id="weightTab" class="space-y-4">
           <!-- Register Weight -->
-          <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
-            <h3 class="text-sm font-semibold text-zinc-300 mb-4">Registrar peso</h3>
+          <div class="card-glow rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Registrar peso</h3>
             <div class="flex gap-3">
               <input
                 id="weightInput"
                 type="number"
                 step="0.1"
                 placeholder="75.5"
-                class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
+                class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary px-4 py-3 text-sm theme-text-primary placeholder-theme-text-tertiary outline-none transition-all focus:ring-2 focus:ring-emerald-500/10 focus:ring-2 focus:ring-emerald-500/10"
               />
-              <span class="flex items-center text-sm text-zinc-500">{t('client.stats.kg')}</span>
+              <span class="flex items-center text-sm theme-text-tertiary">{t('client.stats.kg')}</span>
               <button
                 id="saveWeightBtn"
-                class="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+                class="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold theme-text-primary shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
               >
                 Guardar
               </button>
             </div>
           </div>
 
+          <!-- Weight Chart -->
+          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Evolución de Peso</h3>
+            <div id="chartContainer" class="flex h-56 w-full items-center justify-center rounded-xl theme-bg-primary/20 p-2">
+              <p class="text-xs theme-text-tertiary">Cargando gráfico...</p>
+            </div>
+          </div>
+
           <!-- Weight History -->
-          <div class="rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
-            <h3 class="text-sm font-semibold text-zinc-300 mb-4">Historial</h3>
+          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Historial</h3>
             <div id="weightHistory" class="space-y-2">
-              <p class="text-sm text-zinc-600">Sin registros de peso aún.</p>
+              <p class="text-sm theme-text-tertiary">Sin registros de peso aún.</p>
             </div>
           </div>
         </div>
 
         <!-- Photos Tab (hidden by default) -->
         <div id="photosTab" class="hidden space-y-4">
-          <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800/60 bg-zinc-900/40 p-12 text-center">
-            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
-              <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <!-- Upload Photo Card -->
+          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Añadir foto de evolución</h3>
+            <div id="dropZone" class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed theme-border-strong theme-surface-secondary p-8 text-center cursor-pointer hover:theme-border-focus/40 transition-all">
+              <svg class="h-8 w-8 theme-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
               </svg>
+              <p class="mt-2 text-xs theme-text-secondary">Arrastra una imagen aquí o haz clic para seleccionarla</p>
+              <input type="file" id="photoInput" accept="image/*" class="hidden" />
             </div>
-            <h3 class="mt-4 text-lg font-semibold text-zinc-400">Próximamente</h3>
-            <p class="mt-2 text-sm text-zinc-600">La subida de fotos de progreso estará disponible pronto.</p>
+
+            <!-- Preview & Notes -->
+            <div id="photoPreviewContainer" class="hidden mt-4 space-y-4">
+              <div class="flex items-center justify-center rounded-xl theme-bg-primary/20 p-2">
+                <img id="photoPreview" class="max-h-48 rounded-lg object-contain shadow-lg" />
+              </div>
+              <input type="text" id="photoNotes" placeholder="Añade notas (ej: Peso 74kg, ayunas)" class="w-full rounded-xl border theme-border-strong theme-surface-secondary px-4 py-3 text-xs theme-text-primary outline-none focus:ring-2 focus:ring-emerald-500/10" />
+              <div class="flex gap-2">
+                <button id="cancelPhotoBtn" class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary py-3 text-xs font-semibold theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
+                <button id="savePhotoBtn" class="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-xs font-semibold theme-text-primary shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-emerald-500 transition-all active:scale-[0.98]">Guardar foto</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Photo Gallery -->
+          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Mi evolución visual</h3>
+            <div id="photoGallery" class="grid grid-cols-2 gap-4">
+              <p class="col-span-2 text-sm theme-text-tertiary">Sin fotos cargadas aún.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -80,9 +110,17 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
+<<<<<<< HEAD
   import { initClientPage } from '@/lib/client/clientInit';
+=======
+  import { authService } from '@/services/authService';
+  import { setUser } from '@/stores/authStore';
+  import { db } from '@/lib/firebase';
+  import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   import { subscribeToProgress, registerWeight } from '@/lib/client/progressService';
   import { t } from '@/i18n/client';
+  import { showToast } from '@/lib/shared/ui';
 
   const tabWeight = document.getElementById('tabWeight')!;
   const tabPhotos = document.getElementById('tabPhotos')!;
@@ -91,21 +129,34 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const weightInput = document.getElementById('weightInput') as HTMLInputElement;
   const saveWeightBtn = document.getElementById('saveWeightBtn')!;
   const weightHistory = document.getElementById('weightHistory')!;
+  
+  // Chart elements
+  const chartContainer = document.getElementById('chartContainer')!;
+
+  // Photo elements
+  const dropZone = document.getElementById('dropZone')!;
+  const photoInput = document.getElementById('photoInput') as HTMLInputElement;
+  const photoPreviewContainer = document.getElementById('photoPreviewContainer')!;
+  const photoPreview = document.getElementById('photoPreview') as HTMLImageElement;
+  const photoNotes = document.getElementById('photoNotes') as HTMLInputElement;
+  const cancelPhotoBtn = document.getElementById('cancelPhotoBtn')!;
+  const savePhotoBtn = document.getElementById('savePhotoBtn')!;
+  const photoGallery = document.getElementById('photoGallery')!;
 
   // Tab switching
   function switchTab(tab: 'weight' | 'photos') {
     [tabWeight, tabPhotos].forEach(btn => {
-      btn.classList.remove('text-emerald-400', 'bg-emerald-500/10');
-      btn.classList.add('text-zinc-500');
+      btn.classList.remove('theme-text-brand', 'theme-brand/10');
+      btn.classList.add('theme-text-tertiary');
     });
     if (tab === 'weight') {
-      tabWeight.classList.add('text-emerald-400', 'bg-emerald-500/10');
-      tabWeight.classList.remove('text-zinc-500');
+      tabWeight.classList.add('theme-text-brand', 'theme-brand/10');
+      tabWeight.classList.remove('theme-text-tertiary');
       weightTab.classList.remove('hidden');
       photosTab.classList.add('hidden');
     } else {
-      tabPhotos.classList.add('text-emerald-400', 'bg-emerald-500/10');
-      tabPhotos.classList.remove('text-zinc-500');
+      tabPhotos.classList.add('theme-text-brand', 'theme-brand/10');
+      tabPhotos.classList.remove('theme-text-tertiary');
       weightTab.classList.add('hidden');
       photosTab.classList.remove('hidden');
     }
@@ -114,6 +165,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   tabWeight.addEventListener('click', () => switchTab('weight'));
   tabPhotos.addEventListener('click', () => switchTab('photos'));
 
+<<<<<<< HEAD
   // ─── State para limpieza ──────────────────────────────────────────────────
   let unsubProgress: (() => void) | null = null;
 
@@ -157,11 +209,250 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         }
       });
     }
+=======
+  // Drag and drop photo triggers
+  dropZone.addEventListener('click', () => photoInput.click());
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('theme-border-focus/50');
   });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('theme-border-focus/50');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('theme-border-focus/50');
+    const file = e.dataTransfer?.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      handleFileSelected(file);
+    }
+  });
+
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files?.[0];
+    if (file) handleFileSelected(file);
+  });
+
+  let selectedImageBase64 = '';
+
+  function handleFileSelected(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      selectedImageBase64 = e.target?.result as string;
+      photoPreview.src = selectedImageBase64;
+      dropZone.classList.add('hidden');
+      photoPreviewContainer.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  cancelPhotoBtn.addEventListener('click', () => {
+    selectedImageBase64 = '';
+    photoInput.value = '';
+    photoNotes.value = '';
+    photoPreviewContainer.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+  });
+
+  function renderWeightChart(logs: any[]) {
+    if (logs.length === 0) {
+      chartContainer.innerHTML = '<p class="text-xs theme-text-tertiary">Registra tu peso para ver la evolución gráfica</p>';
+      return;
+    }
+
+    const width = 500;
+    const height = 200;
+    const padding = 30;
+
+    // Invertir logs para orden cronológico
+    const chronologicalLogs = [...logs].reverse();
+
+    const weights = chronologicalLogs.map(l => Number(l.value.weight));
+    const minWeight = Math.min(...weights) - 1;
+    const maxWeight = Math.max(...weights) + 1;
+    const weightRange = maxWeight - minWeight || 1;
+
+    const points = chronologicalLogs.map((log, index) => {
+      const x = padding + (index * (width - 2 * padding) / (chronologicalLogs.length - 1 || 1));
+      const y = height - padding - ((Number(log.value.weight) - minWeight) * (height - 2 * padding) / weightRange);
+      const date = (log.date as { toDate?: () => Date })?.toDate?.()?.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) || 'Fecha';
+      return { x, y, weight: log.value.weight, date };
+    });
+
+    let pathD = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      pathD += ` L ${points[i].x} ${points[i].y}`;
+    }
+
+    let svgHtml = `
+      <svg viewBox="0 0 ${width} ${height}" class="w-full h-full">
+        <defs>
+          <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#34d399" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#34d399" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <!-- Grilla de fondo -->
+        <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="#27272a" stroke-dasharray="3" />
+        <line x1="${padding}" y1="${(height) / 2}" x2="${width - padding}" y2="${(height) / 2}" stroke="#27272a" stroke-dasharray="3" />
+        <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#27272a" />
+        
+        <!-- Líneas y Relleno -->
+        <path d="${pathD} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z" fill="url(#chartGlow)" />
+        <path d="${pathD}" fill="none" stroke="#34d399" stroke-width="2.5" />
+    `;
+
+    points.forEach((p) => {
+      svgHtml += `
+        <circle cx="${p.x}" cy="${p.y}" r="4" class="fill-emerald-400 stroke-zinc-900 stroke-2 hover:r-6 cursor-pointer transition-all" />
+        <text x="${p.x}" y="${height - 10}" class="text-[9px] fill-zinc-600 font-medium" text-anchor="middle">${p.date}</text>
+        <text x="${p.x}" y="${p.y - 8}" class="text-[9px] fill-zinc-300 font-bold" text-anchor="middle">${p.weight}</text>
+      `;
+    });
+
+    svgHtml += `</svg>`;
+    chartContainer.innerHTML = svgHtml;
+  }
+
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
+    }
+
+    // Verificar rol de cliente
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Actualizar authStore
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    loadingScreen.classList.add('hidden');
+    progressContent.classList.remove('hidden');
+
+    // Subscribe to weight logs
+    unsubProgress = subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
+      if (logs.length > 0) {
+        weightHistory.innerHTML = '';
+        logs.forEach((log) => {
+          const w = log.value?.weight;
+          if (w) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between rounded-lg theme-surface-secondary/30 px-4 py-3';
+            const date = (log.date as { toDate?: () => Date })?.toDate?.()?.toLocaleDateString() || 'Fecha';
+            div.innerHTML = `
+              <span class="text-sm theme-text-secondary">${date}</span>
+              <span class="text-sm font-semibold theme-text-primary">${w} ${t('client.stats.kg')}</span>
+            `;
+            weightHistory.appendChild(div);
+          }
+        });
+        renderWeightChart(logs);
+      } else {
+        weightHistory.innerHTML = '<p class="text-sm theme-text-tertiary">Sin registros de peso aún.</p>';
+        chartContainer.innerHTML = '<p class="text-xs theme-text-tertiary">Registra tu peso para ver la evolución gráfica</p>';
+      }
+    });
+
+    // Subscribe to photo logs
+    unsubPhotos = subscribeToProgress(firebaseUser.uid, 'photo', (photoLogs) => {
+      if (photoLogs.length > 0) {
+        photoGallery.innerHTML = '';
+        photoLogs.forEach((log) => {
+          const base64 = log.value?.imageBase64;
+          const notes = log.value?.notes || '';
+          const date = (log.date as { toDate?: () => Date })?.toDate?.()?.toLocaleDateString() || 'Fecha';
+          if (base64) {
+            const div = document.createElement('div');
+            div.className = 'rounded-xl overflow-hidden border theme-border theme-surface-secondary p-2 backdrop-blur-sm';
+            div.innerHTML = `
+              <img src="${base64}" class="w-full h-32 object-cover rounded-lg" />
+              <div class="mt-2 px-1">
+                <p class="text-[10px] theme-text-tertiary">${date}</p>
+                ${notes ? `<p class="text-xs theme-text-secondary truncate mt-0.5">${notes}</p>` : ''}
+              </div>
+            `;
+            photoGallery.appendChild(div);
+          }
+        });
+      } else {
+        photoGallery.innerHTML = '<p class="col-span-2 text-sm theme-text-tertiary">Sin fotos cargadas aún.</p>';
+      }
+    });
+
+    // Save weight
+    saveWeightBtn.addEventListener('click', async () => {
+      const val = parseFloat(weightInput.value);
+      if (!val || val <= 0) return;
+      try {
+        await registerWeight(firebaseUser.uid, val);
+        weightInput.value = '';
+        showToast({ message: 'Peso registrado con éxito', type: 'success' });
+      } catch (err) {
+        showToast({ message: 'Error al guardar el peso', type: 'error' });
+      }
+    });
+
+    // Save Photo
+    savePhotoBtn.addEventListener('click', async () => {
+      if (!selectedImageBase64) return;
+      savePhotoBtn.setAttribute('disabled', 'true');
+      savePhotoBtn.textContent = 'Subiendo...';
+      try {
+        await addDoc(collection(db, 'progress_logs'), {
+          clientId: firebaseUser.uid,
+          type: 'photo',
+          date: new Date(),
+          value: {
+            imageBase64: selectedImageBase64,
+            notes: photoNotes.value.trim()
+          },
+          createdAt: serverTimestamp()
+        });
+        showToast({ message: 'Foto guardada correctamente', type: 'success' });
+        // Reset form
+        selectedImageBase64 = '';
+        photoInput.value = '';
+        photoNotes.value = '';
+        photoPreviewContainer.classList.add('hidden');
+        dropZone.classList.remove('hidden');
+      } catch (err) {
+        showToast({ message: 'Error al subir la foto', type: 'error' });
+      } finally {
+        savePhotoBtn.removeAttribute('disabled');
+        savePhotoBtn.textContent = 'Guardar foto';
+      }
+    });
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
+  });
+
+  let unsubProgress: (() => void) | null = null;
+  let unsubPhotos: (() => void) | null = null;
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
+<<<<<<< HEAD
     cleanupInit();
     unsubProgress?.();
+=======
+    unsubscribe();
+    unsubProgress?.();
+    unsubPhotos?.();
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 </script>

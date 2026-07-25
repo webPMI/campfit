@@ -1,0 +1,242 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in space-y-6">
+      <div>
+        <h1 class="text-2xl font-bold">Monitoreo de Progreso de Alumnos</h1>
+        <p class="mt-1 text-sm theme-text-tertiary">Audita el progreso físico, peso y fotos de evolución de cualquier alumno</p>
+      </div>
+
+      <!-- Selector de alumno -->
+      <div class="card-glow rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+        <label class="block text-xs font-semibold theme-text-secondary mb-2">Selecciona un alumno para revisar:</label>
+        <select id="client-select" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-3 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
+          <option value="">Selecciona un alumno</option>
+        </select>
+      </div>
+
+      <!-- Detail View (hidden by default) -->
+      <div id="progress-view" class="hidden space-y-6">
+        <!-- SVG Chart -->
+        <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+          <h3 class="text-sm font-semibold theme-text-secondary mb-4">Evolución de Peso (últimos 30 días)</h3>
+          <div id="chartContainer" class="flex h-56 w-full items-center justify-center rounded-xl theme-bg-primary/20 p-2">
+            <p class="text-xs theme-text-tertiary">Selecciona un alumno para graficar</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <!-- Weight History -->
+          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Historial de peso</h3>
+            <div id="weightHistory" class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+              <p class="text-sm theme-text-tertiary">Sin registros de peso aún.</p>
+            </div>
+          </div>
+
+          <!-- Evolutionary Photos -->
+          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Fotos de evolución</h3>
+            <div id="photoGallery" class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
+              <p class="col-span-2 text-sm theme-text-tertiary">Sin fotos de evolución física.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireAdmin } from '@/lib/shared/authGuard';
+  import { subscribeToUsersByRole } from '@/lib/admin/adminUtils';
+  import { subscribeToClientProgress } from '@/lib/trainer/trainerUtils';
+  import { escapeHtml, getUserInitial } from '@/lib/shared/ui';
+  import { db } from '@/lib/firebase';
+  import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+  import { logger } from '@/lib/shared/logger';
+
+  interface Client {
+    uid: string;
+    name: string;
+  }
+
+  let unsubClients: (() => void) | null = null;
+  let unsubProgress: (() => void) | null = null;
+  let allClients: Client[] = [];
+
+  const unsubscribeAuth = requireAdmin(() => {
+    initProgressViewer();
+  });
+
+  document.addEventListener('astro:before-swap', () => {
+    unsubscribeAuth?.();
+    unsubClients?.();
+    unsubProgress?.();
+  });
+
+  async function initProgressViewer(): Promise<void> {
+    const clientSelect = document.getElementById('client-select') as HTMLSelectElement;
+    const progressView = document.getElementById('progress-view')!;
+
+    // Subscribe to all clients
+    unsubClients = subscribeToUsersByRole('client', (clients) => {
+      allClients = clients.map(c => ({ uid: c.uid, name: c.name }));
+      clientSelect.innerHTML = '<option value="">Seleccionar alumno</option>' +
+        allClients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
+    });
+
+    clientSelect.addEventListener('change', () => {
+      const clientId = clientSelect.value;
+      if (!clientId) {
+        progressView.classList.add('hidden');
+        if (unsubProgress) unsubProgress();
+        return;
+      }
+
+      progressView.classList.remove('hidden');
+      loadClientProgress(clientId);
+    });
+  }
+
+  function loadClientProgress(clientId: string) {
+    const chartContainer = document.getElementById('chartContainer')!;
+    const weightHistory = document.getElementById('weightHistory')!;
+    const photoGallery = document.getElementById('photoGallery')!;
+
+    if (unsubProgress) unsubProgress();
+
+    unsubProgress = subscribeToClientProgress(clientId, (logs) => {
+      const weightLogs = logs.filter(l => l.weight !== undefined);
+      // Las fotos en progress_logs tienen type === 'photo' (o podemos filtrar por notas/imagen si no tienen campo directo)
+      // Pero subscribeToClientProgress mapea campos genéricos del doc.
+      // Modificamos para filtrar logs de peso y fotos.
+      // logs tiene el array crudo de progress_logs
+    });
+
+    // Para soportar más flexibilidad (peso y fotos), hacemos la suscripción directa a progress_logs en Firestore
+    // Esto asegura que cargue tanto 'weight' como 'photo' del alumno
+    const q = query(
+      collection(db, 'progress_logs'),
+      where('clientId', '==', clientId),
+      orderBy('date', 'desc')
+    );
+
+    if (unsubProgress) unsubProgress();
+
+    unsubProgress = onSnapshot(q, (snapshot) => {
+      const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
+      const weightLogs = logs.filter(l => l.type === 'weight' || (l.value && l.value.weight !== undefined));
+      const photoLogs = logs.filter(l => l.type === 'photo' || (l.value && l.value.imageBase64 !== undefined));
+
+      // 1. Render weight history
+      if (weightLogs.length > 0) {
+        weightHistory.innerHTML = '';
+        weightLogs.forEach((log) => {
+          const w = log.value?.weight || log.weight;
+          const date = log.date?.toDate?.()?.toLocaleDateString() || 'Fecha';
+          const div = document.createElement('div');
+          div.className = 'flex items-center justify-between rounded-lg theme-surface-secondary/30 px-4 py-3';
+          div.innerHTML = `
+            <span class="text-sm theme-text-secondary">${date}</span>
+            <span class="text-sm font-semibold theme-text-primary">${w} kg</span>
+          `;
+          weightHistory.appendChild(div);
+        });
+        renderWeightChart(weightLogs);
+      } else {
+        weightHistory.innerHTML = '<p class="text-sm theme-text-tertiary">Sin registros de peso aún.</p>';
+        chartContainer.innerHTML = '<p class="text-xs theme-text-tertiary">Sin datos de peso para graficar</p>';
+      }
+
+      // 2. Render photo evolution
+      if (photoLogs.length > 0) {
+        photoGallery.innerHTML = '';
+        photoLogs.forEach((log) => {
+          const base64 = log.value?.imageBase64 || log.imageBase64;
+          const notes = log.value?.notes || log.notes || '';
+          const date = log.date?.toDate?.()?.toLocaleDateString() || 'Fecha';
+          if (base64) {
+            const div = document.createElement('div');
+            div.className = 'rounded-xl overflow-hidden border theme-border theme-surface-secondary p-2 backdrop-blur-sm';
+            div.innerHTML = `
+              <img src="${base64}" class="w-full h-32 object-cover rounded-lg" />
+              <div class="mt-2 px-1">
+                <p class="text-[10px] theme-text-tertiary">${date}</p>
+                ${notes ? `<p class="text-xs theme-text-secondary truncate mt-0.5">${notes}</p>` : ''}
+              </div>
+            `;
+            photoGallery.appendChild(div);
+          }
+        });
+      } else {
+        photoGallery.innerHTML = '<p class="col-span-2 text-sm theme-text-tertiary">Sin fotos cargadas aún.</p>';
+      }
+    }, (error) => {
+      logger.error('AdminProgress', 'Error al cargar progreso del alumno:', error);
+    });
+  }
+
+  function renderWeightChart(logs: any[]) {
+    const chartContainer = document.getElementById('chartContainer')!;
+    const width = 500;
+    const height = 200;
+    const padding = 30;
+
+    // Invertir logs para orden cronológico
+    const chronologicalLogs = [...logs].reverse();
+
+    const weights = chronologicalLogs.map(l => Number(l.value?.weight || l.weight));
+    const minWeight = Math.min(...weights) - 1;
+    const maxWeight = Math.max(...weights) + 1;
+    const weightRange = maxWeight - minWeight || 1;
+
+    const points = chronologicalLogs.map((log, index) => {
+      const x = padding + (index * (width - 2 * padding) / (chronologicalLogs.length - 1 || 1));
+      const y = height - padding - ((Number(log.value?.weight || log.weight) - minWeight) * (height - 2 * padding) / weightRange);
+      const date = log.date?.toDate?.()?.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) || 'Fecha';
+      return { x, y, weight: log.value?.weight || log.weight, date };
+    });
+
+    let pathD = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      pathD += ` L ${points[i].x} ${points[i].y}`;
+    }
+
+    let svgHtml = `
+      <svg viewBox="0 0 ${width} ${height}" class="w-full h-full">
+        <defs>
+          <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#34d399" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#34d399" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <!-- Grilla de fondo -->
+        <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="#27272a" stroke-dasharray="3" />
+        <line x1="${padding}" y1="${(height) / 2}" x2="${width - padding}" y2="${(height) / 2}" stroke="#27272a" stroke-dasharray="3" />
+        <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#27272a" />
+        
+        <!-- Líneas y Relleno -->
+        <path d="${pathD} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z" fill="url(#chartGlow)" />
+        <path d="${pathD}" fill="none" stroke="#34d399" stroke-width="2.5" />
+    `;
+
+    points.forEach((p) => {
+      svgHtml += `
+        <circle cx="${p.x}" cy="${p.y}" r="4" class="fill-emerald-400 stroke-zinc-900 stroke-2 hover:r-6 cursor-pointer transition-all" />
+        <text x="${p.x}" y="${height - 10}" class="text-[9px] fill-zinc-600 font-medium" text-anchor="middle">${p.date}</text>
+        <text x="${p.x}" y="${p.y - 8}" class="text-[9px] fill-zinc-300 font-bold" text-anchor="middle">${p.weight}</text>
+      `;
+    });
+
+    svgHtml += `</svg>`;
+    chartContainer.innerHTML = svgHtml;
+  }
+</script>

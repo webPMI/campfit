@@ -19,8 +19,13 @@ const currentPath = Astro.url.pathname;
     <!-- Page content -->
     <slot />
 
+<<<<<<< HEAD
     <!-- Bottom Navigation Admin -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-800/60 bg-zinc-900/90 backdrop-blur-xl">
+=======
+  <!-- Bottom Navigation Admin -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t theme-border theme-surface/90 backdrop-blur-xl">
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     <div class="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
 
 <script>
@@ -98,8 +103,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/dashboard?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath === '/admin/dashboard' || currentPath === '/admin/dashboard/'
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'theme-text-brand'
+            : 'theme-text-tertiary hover:theme-text-secondary'
         }`}
       >
         <Icon name="home" class="h-5 w-5" />
@@ -110,8 +115,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/users?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/users')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'theme-text-brand'
+            : 'theme-text-tertiary hover:theme-text-secondary'
         }`}
       >
         <Icon name="users" class="h-5 w-5" />
@@ -137,8 +142,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/trainers?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/trainers')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'theme-text-brand'
+            : 'theme-text-tertiary hover:theme-text-secondary'
         }`}
       >
         <Icon name="globe" class="h-5 w-5" />
@@ -149,8 +154,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/clients?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/clients')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'theme-text-brand'
+            : 'theme-text-tertiary hover:theme-text-secondary'
         }`}
       >
         <Icon name="diets" class="h-5 w-5" />
@@ -161,8 +166,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/dashboard?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/trainer')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'theme-text-brand'
+            : 'theme-text-tertiary hover:theme-text-secondary'
         }`}
       >
         <Icon name="globe" class="h-5 w-5" />
@@ -185,8 +190,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/settings?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/settings')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'theme-text-brand'
+            : 'theme-text-tertiary hover:theme-text-secondary'
         }`}
       >
         <Icon name="settings" class="h-5 w-5" />

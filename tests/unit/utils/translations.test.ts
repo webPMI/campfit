@@ -122,9 +122,15 @@ function getKeysByContext(dir: string): { ssrKeys: string[]; clientKeys: string[
 
     // Para archivos .astro, separar template (SSR) de script (cliente)
     if (ext === '.astro') {
-      const scriptMatch = content.match(/<script[\s\S]*?<\/script>/);
-      const templateContent = scriptMatch ? content.replace(scriptMatch[0], '') : content;
-      const scriptContent = scriptMatch ? scriptMatch[0] : '';
+      let scriptContent = '';
+      const scriptRegex = /<script([\s\S]*?)>([\s\S]*?)<\/script>/g;
+      const templateContent = content.replace(scriptRegex, (match, attrs, body) => {
+        if (attrs.includes('is:inline') && attrs.includes('set:html')) {
+          return match; // Keep server-evaluated inline scripts in the template for SSR keys scanning
+        }
+        scriptContent += body + '\n';
+        return '';
+      });
 
       // Keys en template (SSR) - con \b para evitar falsos positivos
       const ssrRegex = /\bt\(['"]([^'"]+)['"]\)/g;
@@ -202,68 +208,34 @@ describe('Integridad de traducciones', () => {
   });
 
   // ─── 3. Keys en translations.ts no usadas (posible limpieza) ───────────────
+  // NOTA: Los prefijos excluidos son organizativos o de uso indirecto.
+  // Este test es informativo: advierte de keys que podrían eliminarse,
+  // pero permite un margen para no bloquear el desarrollo.
 
-  describe('Keys no utilizadas en translations.ts', () => {
+  it('no debería haber más de 30 keys sin usar en translations.ts (excepto admin/trainer/support)', () => {
     const allUsed = [...usedKeys.ssrKeys, ...usedKeys.clientKeys];
-    // Excluir keys que son organizativas o de uso indirecto
     const excludePrefixes = ['admin.', 'trainer.', 'client.support'];
     const unused = translationsKeys.filter(
       (key) =>
         !allUsed.includes(key) &&
         !excludePrefixes.some((p) => key.startsWith(p)),
     );
-
-    it('no debería haber keys sin usar en translations.ts (excepto admin/trainer/support)', () => {
-      if (unused.length > 0) {
-        console.log('\n⚠️  Posibles keys sin usar en translations.ts:');
-        unused.forEach((k) => console.log(`   - ${k}`));
-      }
-      // No falla, solo advierte
-      expect(true).toBe(true);
-    });
+    if (unused.length > 0) {
+      console.log('\n⚠️  Keys sin usar en translations.ts (considerar limpieza):');
+      unused.forEach((k) => console.log(`   - ${k}`));
+    }
+    // Límite generoso: si supera 30, hay demasiado código muerto acumulado
+    expect(unused.length).toBeLessThanOrEqual(30);
   });
 
   // ─── 4. Keys en client.ts no usadas (posible limpieza) ─────────────────────
 
-  describe('Keys no utilizadas en client.ts', () => {
+  it('no debería haber más de 15 keys sin usar en client.ts', () => {
     const unused = clientKeys.filter((key) => !usedKeys.clientKeys.includes(key));
-
-    it('no debería haber keys sin usar en client.ts', () => {
-      if (unused.length > 0) {
-        console.log('\n⚠️  Posibles keys sin usar en client.ts:');
-        unused.forEach((k) => console.log(`   - ${k}`));
-      }
-      // No falla, solo advierte
-      expect(true).toBe(true);
-    });
-  });
-
-  // ─── 5. Reporte completo ───────────────────────────────────────────────────
-
-  it('reporte completo de cobertura de traducciones', () => {
-    console.log('\n══════════════════════════════════════════');
-    console.log('   REPORTE DE COBERTURA DE TRADUCCIONES');
-    console.log('══════════════════════════════════════════');
-    console.log(`\n📊 translations.ts: ${translationsKeys.length} keys`);
-    console.log(`📊 client.ts:       ${clientKeys.length} keys`);
-    console.log(`📊 Usadas en SSR:   ${usedKeys.ssrKeys.length} keys`);
-    console.log(`📊 Usadas en JS/TS: ${usedKeys.clientKeys.length} keys`);
-    console.log(`📊 Total únicas:    ${new Set([...usedKeys.ssrKeys, ...usedKeys.clientKeys]).size} keys`);
-
-    // Mostrar todas las keys usadas
-    console.log('\n📋 Keys usadas en SSR:');
-    usedKeys.ssrKeys.forEach((k) => {
-      const exists = translationsKeys.includes(k) ? '✅' : '❌';
-      console.log(`   ${exists} ${k}`);
-    });
-
-    console.log('\n📋 Keys usadas en JS/TS (cliente):');
-    usedKeys.clientKeys.forEach((k) => {
-      const exists = clientKeys.includes(k) ? '✅' : '❌';
-      console.log(`   ${exists} ${k}`);
-    });
-
-    console.log('\n══════════════════════════════════════════\n');
-    expect(true).toBe(true);
+    if (unused.length > 0) {
+      console.log('\n⚠️  Keys sin usar en client.ts (considerar limpieza):');
+      unused.forEach((k) => console.log(`   - ${k}`));
+    }
+    expect(unused.length).toBeLessThanOrEqual(15);
   });
 });
