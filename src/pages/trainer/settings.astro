@@ -24,48 +24,48 @@ const clientTranslations = {
   <div class="mx-auto max-w-4xl px-4 py-8">
     <div class="animate-fade-in">
       <h1 class="text-2xl font-bold">{t('trainer.settings') || 'Configuración'}</h1>
-      <p class="mt-1 text-sm text-zinc-500">{t('trainer.settings.desc') || 'Configuración de tu cuenta'}</p>
+      <p class="mt-1 text-sm theme-text-tertiary">{t('trainer.settings.desc') || 'Configuración de tu cuenta'}</p>
 
       <div class="mt-8 space-y-6">
         <!-- Profile Section -->
-        <div id="profile-section" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
+        <div id="profile-section" class="rounded-xl border theme-border theme-surface-secondary p-6 backdrop-blur-sm">
           <div id="profile-loading" class="flex items-center justify-center py-8">
             <div class="flex items-center gap-3">
-              <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+              <svg class="h-5 w-5 animate-spin theme-text-brand" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              <p class="text-sm text-zinc-500">{t('admin.loading')}</p>
+              <p class="text-sm theme-text-tertiary">{t('admin.loading')}</p>
             </div>
           </div>
         </div>
 
         <!-- Edit Profile Form -->
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
-          <h2 class="text-lg font-semibold text-zinc-200">{t('admin.settings.profile')}</h2>
-          <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.profile.desc')}</p>
+        <div class="rounded-xl border theme-border theme-surface-secondary p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold theme-text-primary">{t('admin.settings.profile')}</h2>
+          <p class="mt-1 text-sm theme-text-tertiary">{t('admin.settings.profile.desc')}</p>
 
           <form id="profile-form" class="mt-4 space-y-4">
             <div>
-              <label for="edit-name" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('auth.name')}</label>
+              <label for="edit-name" class="block text-xs font-medium theme-text-secondary mb-1.5">{t('auth.name')}</label>
               <input
                 id="edit-name"
                 type="text"
-                class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                class="w-full rounded-xl border theme-border-strong theme-surface-secondary/80 px-3.5 py-2.5 text-sm theme-text-primary placeholder-zinc-500 backdrop-blur-sm transition-all focus:theme-border-focus/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
               />
             </div>
             <div>
-              <label for="edit-email" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('auth.email')}</label>
+              <label for="edit-email" class="block text-xs font-medium theme-text-secondary mb-1.5">{t('auth.email')}</label>
               <input
                 id="edit-email"
                 type="email"
-                class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                class="w-full rounded-xl border theme-border-strong theme-surface-secondary/80 px-3.5 py-2.5 text-sm theme-text-primary placeholder-zinc-500 backdrop-blur-sm transition-all focus:theme-border-focus/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
               />
             </div>
             <button
               id="save-profile-btn"
               type="submit"
-              class="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
+              class="rounded-xl theme-brand px-6 py-2.5 text-sm font-medium theme-text-primary transition-all hover:theme-brand active:scale-[0.98]"
             >
               {t('client.medical.save')}
             </button>
@@ -73,35 +73,35 @@ const clientTranslations = {
         </div>
 
         <!-- Change Password -->
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-6 backdrop-blur-sm">
-          <h2 class="text-lg font-semibold text-zinc-200">{t('admin.settings.password')}</h2>
-          <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.password.desc')}</p>
+        <div class="rounded-xl border theme-border theme-surface-secondary p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold theme-text-primary">{t('admin.settings.password')}</h2>
+          <p class="mt-1 text-sm theme-text-tertiary">{t('admin.settings.password.desc')}</p>
 
           <form id="password-form" class="mt-4 space-y-4">
             <div>
-              <label for="new-password" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('admin.settings.password.new')}</label>
+              <label for="new-password" class="block text-xs font-medium theme-text-secondary mb-1.5">{t('admin.settings.password.new')}</label>
               <input
                 id="new-password"
                 type="password"
                 placeholder="••••••••"
                 minlength="6"
-                class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                class="w-full rounded-xl border theme-border-strong theme-surface-secondary/80 px-3.5 py-2.5 text-sm theme-text-primary placeholder-zinc-500 backdrop-blur-sm transition-all focus:theme-border-focus/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
               />
             </div>
             <div>
-              <label for="confirm-password" class="block text-xs font-medium text-zinc-400 mb-1.5">{t('admin.settings.password.confirm')}</label>
+              <label for="confirm-password" class="block text-xs font-medium theme-text-secondary mb-1.5">{t('admin.settings.password.confirm')}</label>
               <input
                 id="confirm-password"
                 type="password"
                 placeholder="••••••••"
                 minlength="6"
-                class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+                class="w-full rounded-xl border theme-border-strong theme-surface-secondary/80 px-3.5 py-2.5 text-sm theme-text-primary placeholder-zinc-500 backdrop-blur-sm transition-all focus:theme-border-focus/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
               />
             </div>
             <button
               id="save-password-btn"
               type="submit"
-              class="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
+              class="rounded-xl theme-brand px-6 py-2.5 text-sm font-medium theme-text-primary transition-all hover:theme-brand active:scale-[0.98]"
             >
               {t('admin.settings.password.btn')}
             </button>
@@ -111,10 +111,10 @@ const clientTranslations = {
         <!-- Danger Zone -->
         <div class="rounded-xl border border-red-900/30 bg-red-500/5 p-6 backdrop-blur-sm">
           <h2 class="text-lg font-semibold text-red-400">{t('admin.settings.danger')}</h2>
-          <p class="mt-1 text-sm text-zinc-500">{t('admin.settings.danger.desc')}</p>
+          <p class="mt-1 text-sm theme-text-tertiary">{t('admin.settings.danger.desc')}</p>
 
           <div class="mt-4 space-y-3">
-            <button id="btn-logout" class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-3 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all hover:bg-zinc-800">
+            <button id="btn-logout" class="w-full rounded-xl border theme-border-strong theme-surface-secondary/80 px-4 py-3 text-sm font-medium theme-text-secondary backdrop-blur-sm transition-all hover:theme-surface-secondary">
               {t('admin.settings.logout')}
             </button>
           </div>
@@ -146,13 +146,13 @@ const clientTranslations = {
     emailInput: HTMLInputElement
   ): void {
     container.innerHTML = `
-      <h2 class="text-lg font-semibold text-zinc-200 mb-4">${tr('admin.settings.profile')}</h2>
+      <h2 class="text-lg font-semibold theme-text-primary mb-4">${tr('admin.settings.profile')}</h2>
       <div class="flex flex-col items-center justify-center py-8 text-center">
-        <svg class="h-12 w-12 text-zinc-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <svg class="h-12 w-12 theme-text-tertiary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
         </svg>
-        <p class="text-sm text-zinc-500">${tr('admin.settings.profile.error')}</p>
-        <button id="btn-retry-profile" class="mt-3 rounded-xl bg-zinc-800 px-4 py-2 text-xs font-medium text-zinc-300 transition-all hover:bg-zinc-700 active:scale-[0.98]">
+        <p class="text-sm theme-text-tertiary">${tr('admin.settings.profile.error')}</p>
+        <button id="btn-retry-profile" class="mt-3 rounded-xl theme-surface-secondary px-4 py-2 text-xs font-medium theme-text-secondary transition-all hover:theme-surface-active active:scale-[0.98]">
           Reintentar
         </button>
       </div>
@@ -162,7 +162,7 @@ const clientTranslations = {
       const retryProfile = await loadProfile(user.uid);
       if (retryProfile) {
         container.innerHTML = `
-          <h2 class="text-lg font-semibold text-zinc-200 mb-4">${tr('admin.settings.profile')}</h2>
+          <h2 class="text-lg font-semibold theme-text-primary mb-4">${tr('admin.settings.profile')}</h2>
           ${renderProfileView(retryProfile)}
         `;
         nameInput.value = retryProfile.name;
@@ -181,7 +181,7 @@ const clientTranslations = {
 
     if (profile) {
       profileSection.innerHTML = `
-        <h2 class="text-lg font-semibold text-zinc-200 mb-4">${tr('admin.settings.profile')}</h2>
+        <h2 class="text-lg font-semibold theme-text-primary mb-4">${tr('admin.settings.profile')}</h2>
         ${renderProfileView(profile)}
       `;
       nameInput.value = profile.name;

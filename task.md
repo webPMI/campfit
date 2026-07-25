@@ -1,0 +1,14 @@
+- [x] Ejecutar Fase 1: Calidad de Código, SEO e i18n
+- [x] Inyectar metadatos SEO dinámicos en `BaseLayout.astro`
+- [x] Corregir tipos `any` en `src/types/index.ts`
+- [x] Limpiar las 43 claves de traducción no utilizadas en `translations.ts` y `client.ts`
+- [x] Validar con la suite de pruebas unitarias
+- [x] Ejecutar Fase 2: Módulo de Cliente
+  - [x] Habilitar completado de rutinas con modal RPE (escala 1-10) en `client/workouts.astro`
+  - [x] Implementar SVG LineChart interactivo para peso histórico en `client/progress.astro`
+  - [x] Habilitar carga/mosaico de fotos Base64 en `client/progress.astro`
+- [x] Ejecutar Fase 3: Módulo de Administración (CRUDs de Vistas)
+  - [x] Crear e integrar `admin/workouts.astro` (CRUD de entrenamientos)
+  - [x] Crear e integrar `admin/diets.astro` (CRUD de nutrición)
+  - [x] Crear e integrar `admin/chat.astro` (bandeja de mensajería de soporte)
+  - [x] Crear e integrar `admin/progress.astro` (auditor de evolución física)

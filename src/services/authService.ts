@@ -24,27 +24,18 @@ import {
   serverTimestamp,
 } from '@/lib/firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import type { User } from '@/types';
-
-function mapFirebaseUser(firebaseUser: FirebaseUser, profile: any): User {
-  return {
-    uid: firebaseUser.uid,
-    email: firebaseUser.email || '',
-    name: profile.name || firebaseUser.displayName || 'Usuario',
-    role: profile.role || 'client',
-    hasActiveAlert: profile.hasActiveAlert ?? false,
-    assignedTrainerId: profile.assignedTrainerId,
-    medicalProfile: profile.medicalProfile,
-    lastActivityAt: profile.lastActivityAt,
-    createdAt: profile.createdAt,
-    updatedAt: profile.updatedAt,
-  };
-}
+import type { User, AuthError } from '@/types';
+import { mapFirebaseUserToUser } from '@/lib/helpers/userMappers';
 
 export const authService = {
   /**
    * Iniciar sesión con email y contraseña.
    * Retorna los datos del usuario desde Firestore.
+   * 
+   * @param email - Email del usuario
+   * @param password - Contraseña del usuario
+   * @returns Promise que resuelve con los datos del usuario
+   * @throws {AuthError} Si el perfil de usuario no existe
    */
   async loginUser(email: string, password: string): Promise<User> {
     const credential = await signInWithEmailAndPassword(auth, email, password);
@@ -52,15 +43,27 @@ export const authService = {
 
     const userDoc = await getDoc(doc(db, 'users', uid));
     if (!userDoc.exists()) {
-      throw new Error('Perfil de usuario no encontrado');
+      const error: AuthError = {
+        code: 'user-not-found',
+        message: 'Perfil de usuario no encontrado',
+      };
+      throw error;
     }
 
-    return mapFirebaseUser(credential.user, userDoc.data());
+    return mapFirebaseUserToUser(credential.user, userDoc.data());
   },
 
   /**
-   * Registrar nuevo usuario.
+   * Registra un nuevo usuario en el sistema.
    * Crea el usuario en Firebase Auth y su perfil en Firestore.
+   * 
+   * @param name - Nombre completo del usuario
+   * @param email - Email del usuario
+   * @param password - Contraseña del usuario
+   * @returns Promise que resuelve con los datos del usuario creado
+   * 
+   * @example
+   * const user = await authService.registerUser('Juan Pérez', 'juan@email.com', 'password123');
    */
   async registerUser(name: string, email: string, password: string): Promise<User> {
     const credential = await createUserWithEmailAndPassword(auth, email, password);
@@ -77,26 +80,42 @@ export const authService = {
 
     await setDoc(doc(db, 'users', uid), profile);
 
-    return mapFirebaseUser(credential.user, profile);
+    return mapFirebaseUserToUser(credential.user, profile);
   },
 
   /**
-   * Cerrar sesión.
+   * Cierra la sesión del usuario actual.
+   * 
+   * @returns Promise que resuelve cuando la sesión se cierra
+   * 
+   * @example
+   * await authService.logoutUser();
    */
   async logoutUser(): Promise<void> {
     await signOut(auth);
   },
 
   /**
-   * Enviar email de recuperación de contraseña.
+   * Envía un email de recuperación de contraseña al usuario.
+   * 
+   * @param email - Email del usuario que solicita recuperación
+   * @returns Promise que resuelve cuando el email se envía
+   * 
+   * @example
+   * await authService.recoverPassword('usuario@email.com');
    */
   async recoverPassword(email: string): Promise<void> {
     await sendPasswordResetEmail(auth, email);
   },
 
   /**
-   * Iniciar sesión con Google (popup).
-   * Si es primera vez, crea el perfil en Firestore.
+   * Inicia sesión con Google usando popup.
+   * Si es la primera vez que el usuario accede, crea su perfil en Firestore.
+   * 
+   * @returns Promise que resuelve con los datos del usuario autenticado
+   * 
+   * @example
+   * const user = await authService.loginWithGoogle();
    */
   async loginWithGoogle(): Promise<User> {
     const provider = new GoogleAuthProvider();
@@ -117,15 +136,23 @@ export const authService = {
         updatedAt: serverTimestamp(),
       };
       await setDoc(doc(db, 'users', uid), profile);
-      return mapFirebaseUser(firebaseUser, profile);
+      return mapFirebaseUserToUser(firebaseUser, profile);
     }
 
-    return mapFirebaseUser(firebaseUser, userDoc.data());
+    return mapFirebaseUserToUser(firebaseUser, userDoc.data());
   },
 
   /**
-   * Observer de estado de autenticación.
-   * Retorna la función unsubscribe.
+   * Suscribe un callback al cambio de estado de autenticación.
+   * 
+   * @param callback - Función a ejecutar cuando cambie el estado de autenticación
+   * @returns Función unsubscribe para cancelar la suscripción
+   * 
+   * @example
+   * const unsubscribe = authService.onAuthChange((user) => {
+   *   if (user) console.log('Usuario autenticado:', user.uid);
+   * });
+   * // Para cancelar: unsubscribe();
    */
   onAuthChange(callback: (user: FirebaseUser | null) => void): () => void {
     return onAuthStateChanged(auth, callback);

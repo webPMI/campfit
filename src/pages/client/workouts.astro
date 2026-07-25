@@ -9,8 +9,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <ClientLayout>
   <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
     <div class="text-center animate-fade-in">
-      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
-      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 theme-border-strong border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm theme-text-tertiary">{t('dashboard.loading')}</p>
     </div>
   </div>
 
@@ -20,17 +20,17 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <!-- Header -->
         <div>
           <h2 class="text-xl font-bold">{t('dashboard.routines')}</h2>
-          <p class="mt-1 text-sm text-zinc-500">{t('dashboard.routines.desc')}</p>
+          <p class="mt-1 text-sm theme-text-tertiary">{t('dashboard.routines.desc')}</p>
         </div>
 
         <!-- Workout Card -->
-        <div id="workoutCard" class="hidden card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
+        <div id="workoutCard" class="hidden card-glow rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 id="workoutName" class="text-lg font-bold text-zinc-100"></h3>
-              <span id="workoutDifficulty" class="mt-1 inline-block rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400"></span>
+              <h3 id="workoutName" class="text-lg font-bold theme-text-primary"></h3>
+              <span id="workoutDifficulty" class="mt-1 inline-block rounded-full theme-brand/10 px-3 py-1 text-xs font-medium theme-text-brand"></span>
             </div>
-            <p id="workoutDescription" class="text-sm text-zinc-500 max-w-xs text-right"></p>
+            <p id="workoutDescription" class="text-sm theme-text-tertiary max-w-xs text-right"></p>
           </div>
 
           <div class="space-y-3" id="exercisesList">
@@ -39,7 +39,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
           <button
             id="completeWorkoutBtn"
-            class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+            class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold theme-text-primary shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
           >
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -49,17 +49,41 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
 
         <!-- Empty State -->
-        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800/60 bg-zinc-900/40 p-12 text-center">
-          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
-            <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed theme-border theme-surface-secondary p-12 text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-2xl theme-surface-hover">
+            <svg class="h-8 w-8 theme-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
             </svg>
           </div>
-          <h3 class="mt-4 text-lg font-semibold text-zinc-400">{t('client.no.workout')}</h3>
-          <p class="mt-2 text-sm text-zinc-600">Tu entrenador asignará una rutina personalizada para ti.</p>
+          <h3 class="mt-4 text-lg font-semibold theme-text-secondary">{t('client.no.workout')}</h3>
+          <p class="mt-2 text-sm theme-text-tertiary">Tu entrenador asignará una rutina personalizada para ti.</p>
         </div>
       </div>
     </main>
+
+    <!-- Modal RPE -->
+    <div id="rpeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center theme-bg-primary/80 backdrop-blur-md transition-all duration-300">
+      <div class="w-full max-w-md scale-95 transform rounded-2xl border theme-border theme-surface p-6 shadow-2xl transition-all duration-300">
+        <h3 class="text-lg font-bold theme-text-primary">Valorar Esfuerzo (RPE)</h3>
+        <p class="mt-1 text-xs theme-text-tertiary">¿Qué tan duro ha sido el entrenamiento de hoy?</p>
+        
+        <!-- Selector 1-10 -->
+        <div class="mt-5 grid grid-cols-5 gap-2" id="rpeButtonsContainer">
+          <!-- Generado por JS -->
+        </div>
+        
+        <div id="rpeHint" class="mt-4 rounded-xl theme-surface-secondary/40 py-2.5 text-center text-xs font-semibold theme-text-brand">
+          Selecciona una valoración
+        </div>
+        
+        <textarea id="rpeNotes" placeholder="Notas sobre tu sesión (opcional)" class="mt-4 h-20 w-full rounded-xl border theme-border-strong theme-surface-hover p-3 text-xs theme-text-primary outline-none focus:theme-border-focus/50"></textarea>
+        
+        <div class="mt-5 flex gap-3">
+          <button id="closeRpeBtn" class="flex-1 rounded-xl border theme-border-strong theme-surface-hover py-3 text-xs font-semibold theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
+          <button id="confirmRpeBtn" disabled class="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-xs font-semibold theme-text-primary opacity-50 transition-all hover:from-emerald-400 hover:to-emerald-500 shadow-lg shadow-emerald-500/10">Confirmar</button>
+        </div>
+      </div>
+    </div>
   </div>
 </ClientLayout>
 
@@ -67,9 +91,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { authService } from '@/services/authService';
   import { setUser } from '@/stores/authStore';
   import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
   import { subscribeToWorkouts } from '@/lib/client/workoutService';
   import { t } from '@/i18n/client';
+  import { showToast } from '@/lib/shared/ui';
 
   const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
@@ -80,9 +105,98 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const workoutDifficulty = document.getElementById('workoutDifficulty')!;
   const workoutDescription = document.getElementById('workoutDescription')!;
   const exercisesList = document.getElementById('exercisesList')!;
-  // const completeWorkoutBtn = document.getElementById('completeWorkoutBtn')!;
+  const completeWorkoutBtn = document.getElementById('completeWorkoutBtn')!;
+  
+  // RPE elements
+  const rpeModal = document.getElementById('rpeModal')!;
+  const rpeButtonsContainer = document.getElementById('rpeButtonsContainer')!;
+  const rpeHint = document.getElementById('rpeHint')!;
+  const rpeNotes = document.getElementById('rpeNotes') as HTMLTextAreaElement;
+  const closeRpeBtn = document.getElementById('closeRpeBtn')!;
+  const confirmRpeBtn = document.getElementById('confirmRpeBtn') as HTMLButtonElement;
 
   loadingText.textContent = t('dashboard.loading');
+
+  let currentWorkoutId = '';
+  let currentWorkoutName = '';
+  let selectedRpe: number | null = null;
+
+  // Generar botones RPE
+  const rpeHints: Record<number, string> = {
+    1: 'Muy fácil - Sin esfuerzo',
+    2: 'Fácil - Ritmo cómodo',
+    3: 'Ligero - Esfuerzo bajo',
+    4: 'Moderado - Ritmo estable',
+    5: 'Esfuerzo medio - Algo cansado',
+    6: 'Duro - Esfuerzo considerable',
+    7: 'Muy duro - Fatiga alta',
+    8: 'Extremo - Esfuerzo límite',
+    9: 'Casi máximo - Agotamiento',
+    10: 'Máximo - Fallo muscular total'
+  };
+
+  for (let i = 1; i <= 10; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'flex h-10 w-10 items-center justify-center rounded-xl border theme-border-strong theme-surface-hover text-sm font-semibold theme-text-secondary transition-all hover:theme-brand/10 hover:theme-text-brand';
+    btn.textContent = `${i}`;
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      // Remover activas
+      rpeButtonsContainer.querySelectorAll('button').forEach(b => {
+        b.classList.remove('theme-brand/20', 'theme-text-brand', 'theme-border-focus/30');
+      });
+      // Añadir activas
+      btn.classList.add('theme-brand/20', 'theme-text-brand', 'theme-border-focus/30');
+      selectedRpe = i;
+      rpeHint.textContent = rpeHints[i];
+      confirmRpeBtn.removeAttribute('disabled');
+      confirmRpeBtn.classList.remove('opacity-50');
+    });
+    rpeButtonsContainer.appendChild(btn);
+  }
+
+  completeWorkoutBtn.addEventListener('click', () => {
+    rpeModal.classList.remove('hidden');
+  });
+
+  closeRpeBtn.addEventListener('click', () => {
+    rpeModal.classList.add('hidden');
+  });
+
+  confirmRpeBtn.addEventListener('click', async () => {
+    if (selectedRpe === null || !currentWorkoutId) return;
+
+    confirmRpeBtn.disabled = true;
+    confirmRpeBtn.textContent = 'Guardando...';
+
+    try {
+      const firebaseUser = authService.getCurrentUser();
+      if (!firebaseUser) return;
+
+      await addDoc(collection(db, 'progress_logs'), {
+        clientId: firebaseUser.uid,
+        type: 'workout',
+        date: new Date(),
+        value: {
+          workoutId: currentWorkoutId,
+          workoutName: currentWorkoutName,
+          rpe: selectedRpe,
+          notes: rpeNotes.value.trim()
+        },
+        createdAt: serverTimestamp()
+      });
+
+      showToast({ message: 'Entrenamiento registrado con RPE con éxito ✅', type: 'success' });
+      rpeModal.classList.add('hidden');
+      window.location.href = `/client/dashboard?lang=${lang}`;
+    } catch (err) {
+      showToast({ message: 'Error al registrar el entrenamiento', type: 'error' });
+      confirmRpeBtn.disabled = false;
+      confirmRpeBtn.textContent = 'Confirmar';
+    }
+  });
+
+  const lang = (new URL(window.location.href)).searchParams.get('lang') || 'es';
 
   const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
     if (!firebaseUser) {
@@ -112,9 +226,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     loadingScreen.classList.add('hidden');
     workoutsContent.classList.remove('hidden');
 
-    subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+    unsubWorkouts = subscribeToWorkouts(firebaseUser.uid, (workouts) => {
       if (workouts.length > 0 && workouts[0]) {
         const w = workouts[0];
+        currentWorkoutId = w.id;
+        currentWorkoutName = w.name;
         workoutName.textContent = w.name;
         workoutDifficulty.textContent = w.difficulty;
         workoutDescription.textContent = w.description;
@@ -123,19 +239,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         if (w.exercises && w.exercises.length > 0) {
           w.exercises.forEach((ex: any, i: number) => {
             const div = document.createElement('div');
-            div.className = 'rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm';
+            div.className = 'rounded-xl border theme-border theme-surface-secondary p-4 backdrop-blur-sm';
             div.innerHTML = `
               <div class="flex items-start justify-between">
                 <div class="flex-1">
                   <div class="flex items-center gap-2">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-400">${i + 1}</span>
-                    <h4 class="font-medium text-zinc-200">${ex.name}</h4>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full theme-brand/10 text-xs font-bold theme-text-brand">${i + 1}</span>
+                    <h4 class="font-medium theme-text-primary">${ex.name}</h4>
                   </div>
-                  <div class="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
+                  <div class="mt-2 flex flex-wrap gap-3 text-xs theme-text-tertiary">
                     <span>${ex.sets} series × ${ex.reps} reps</span>
                     <span>Descanso: ${ex.restTime || '90s'}</span>
                   </div>
-                  ${ex.description ? `<p class="mt-2 text-xs text-zinc-600">${ex.description}</p>` : ''}
+                  ${ex.description ? `<p class="mt-2 text-xs theme-text-tertiary">${ex.description}</p>` : ''}
                 </div>
               </div>
             `;
@@ -152,8 +268,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     });
   });
 
+  let unsubWorkouts: (() => void) | null = null;
+
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
     unsubscribe();
+    unsubWorkouts?.();
   });
 </script>

@@ -1,0 +1,335 @@
+/**
+ * CampFit Design System — Centralized Theme Tokens
+ * =================================================
+ *
+ * This file defines ALL design tokens used across the entire application.
+ * Tokens are organized into semantic groups and scoped by [data-theme="dark"]
+ * and [data-theme="light"] selectors.
+ *
+ * Usage in components:
+ *   color: var(--color-surface-primary);
+ *   background: var(--color-bg-primary);
+ *   border: 1px solid var(--color-border-default);
+ *
+ * NEVER use hardcoded Tailwind color classes (e.g. bg-zinc-950) directly in
+ * components for theme-dependent colors. Use the semantic token classes
+ * defined below or reference the CSS variables directly.
+ *
+ * ---------------------------------------------------------------------------
+ * Token Naming Convention
+ * ---------------------------------------------------------------------------
+ * --color-{category}-{variant}
+ * --space-{size}
+ * --radius-{size}
+ * --font-{property}
+ * --shadow-{variant}
+ * --anim-{property}
+ *
+ * ---------------------------------------------------------------------------
+ * How to Add/Modify a Token
+ * ---------------------------------------------------------------------------
+ * 1. Edit the value in both :root (light) and [data-theme="dark"] blocks below.
+ * 2. If adding a new token, document it in @/docs/THEME.md.
+ * 3. Run `npm run theme:validate` to verify consistency.
+ * 4. Update tests in @/tests/unit/stores/themeStore.test.ts if needed.
+ */
+
+/* =========================================================================
+   BASE :ROOT — Light theme defaults
+   All custom properties that don't change with theme live here.
+   ========================================================================= */
+
+:root {
+  /* ---------- Typography ---------- */
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-line-height-tight: 1.25;
+  --font-line-height-normal: 1.5;
+  --font-line-height-relaxed: 1.75;
+  --font-letter-spacing-tight: -0.025em;
+  --font-letter-spacing-normal: 0;
+  --font-letter-spacing-wide: 0.025em;
+
+  /* ---------- Spacing ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* ---------- Border Radius ---------- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* ---------- Shadows ---------- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 20px rgb(52 211 153 / 0.15);
+  --shadow-glow-lg: 0 0 30px rgb(52 211 153 / 0.25);
+
+  /* ---------- Animations ---------- */
+  --anim-duration-fast: 150ms;
+  --anim-duration-normal: 300ms;
+  --anim-duration-slow: 500ms;
+  --anim-easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --anim-easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---------- Z-Index ---------- */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  --z-tooltip: 60;
+}
+
+/* =========================================================================
+   LIGHT THEME — [data-theme="light"]
+   Default theme. Applied when no data-theme or data-theme="light".
+   ========================================================================= */
+
+:root,
+[data-theme='light'] {
+  /* ---------- Background ---------- */
+  --color-bg-primary: #fafafa;
+  --color-bg-secondary: #f4f4f5;
+  --color-bg-tertiary: #e4e4e7;
+  --color-bg-elevated: #ffffff;
+  --color-bg-inverse: #18181b;
+  --color-bg-overlay: rgb(0 0 0 / 0.4);
+  --color-bg-gradient-start: #f4f4f5;
+  --color-bg-gradient-mid: #ffffff;
+  --color-bg-gradient-end: #f4f4f5;
+
+  /* ---------- Surface (cards, panels, inputs) ---------- */
+  --color-surface-primary: #ffffff;
+  --color-surface-secondary: #fafafa;
+  --color-surface-hover: #f4f4f5;
+  --color-surface-active: #e4e4e7;
+  --color-surface-disabled: #f4f4f5;
+
+  /* ---------- Text ---------- */
+  --color-text-primary: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-tertiary: #a1a1aa;
+  --color-text-inverse: #fafafa;
+  --color-text-disabled: #d4d4d8;
+  --color-text-link: #059669;
+  --color-text-link-hover: #047857;
+  --color-text-error: #dc2626;
+  --color-text-success: #16a34a;
+  --color-text-warning: #ca8a04;
+  --color-text-info: #2563eb;
+
+  /* ---------- Border ---------- */
+  --color-border-default: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+  --color-border-hover: #a1a1aa;
+  --color-border-focus: #10b981;
+  --color-border-error: #ef4444;
+
+  /* ---------- Brand / Accent ---------- */
+  --color-brand-primary: #10b981;
+  --color-brand-primary-hover: #059669;
+  --color-brand-primary-active: #047857;
+  --color-brand-secondary: #34d399;
+  --color-brand-light: #d1fae5;
+  --color-brand-light-hover: #a7f3d0;
+
+  /* ---------- Status Colors ---------- */
+  --color-status-success: #16a34a;
+  --color-status-success-bg: #dcfce7;
+  --color-status-warning: #ca8a04;
+  --color-status-warning-bg: #fef9c3;
+  --color-status-error: #dc2626;
+  --color-status-error-bg: #fee2e2;
+  --color-status-info: #2563eb;
+  --color-status-info-bg: #dbeafe;
+
+  /* ---------- Scrollbar ---------- */
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: #d4d4d8;
+  --color-scrollbar-thumb-hover: #a1a1aa;
+}
+
+/* =========================================================================
+   DARK THEME — [data-theme="dark"]
+   ========================================================================= */
+
+[data-theme='dark'] {
+  /* ---------- Background ---------- */
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #18181b;
+  --color-bg-tertiary: #27272a;
+  --color-bg-elevated: #1c1c1f;
+  --color-bg-inverse: #fafafa;
+  --color-bg-overlay: rgb(0 0 0 / 0.6);
+  --color-bg-gradient-start: #09090b;
+  --color-bg-gradient-mid: #18181b;
+  --color-bg-gradient-end: #09090b;
+
+  /* ---------- Surface (cards, panels, inputs) ---------- */
+  --color-surface-primary: #18181b;
+  --color-surface-secondary: #27272a;
+  --color-surface-hover: #3f3f46;
+  --color-surface-active: #52525b;
+  --color-surface-disabled: #27272a;
+
+  /* ---------- Text ---------- */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-text-inverse: #18181b;
+  --color-text-disabled: #52525b;
+  --color-text-link: #34d399;
+  --color-text-link-hover: #6ee7b7;
+  --color-text-error: #fca5a5;
+  --color-text-success: #86efac;
+  --color-text-warning: #fde047;
+  --color-text-info: #93c5fd;
+
+  /* ---------- Border ---------- */
+  --color-border-default: #27272a;
+  --color-border-strong: #3f3f46;
+  --color-border-hover: #71717a;
+  --color-border-focus: #34d399;
+  --color-border-error: #f87171;
+
+  /* ---------- Brand / Accent ---------- */
+  --color-brand-primary: #34d399;
+  --color-brand-primary-hover: #6ee7b7;
+  --color-brand-primary-active: #10b981;
+  --color-brand-secondary: #10b981;
+  --color-brand-light: #064e3b;
+  --color-brand-light-hover: #065f46;
+
+  /* ---------- Status Colors ---------- */
+  --color-status-success: #4ade80;
+  --color-status-success-bg: #14532d;
+  --color-status-warning: #facc15;
+  --color-status-warning-bg: #713f12;
+  --color-status-error: #f87171;
+  --color-status-error-bg: #7f1d1d;
+  --color-status-info: #60a5fa;
+  --color-status-info-bg: #1e3a5f;
+
+  /* ---------- Scrollbar ---------- */
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: #3f3f46;
+  --color-scrollbar-thumb-hover: #52525b;
+}
+
+/* =========================================================================
+   UTILITY CLASSES — Semantic theme-aware classes
+   Use these in Astro/HTML instead of raw Tailwind color utilities so that
+   theme switching works seamlessly.
+   ========================================================================= */
+
+/* --- Backgrounds --- */
+.theme-bg-primary {
+  background-color: var(--color-bg-primary);
+}
+.theme-bg-secondary {
+  background-color: var(--color-bg-secondary);
+}
+.theme-bg-elevated {
+  background-color: var(--color-bg-elevated);
+}
+.theme-bg-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-gradient-start),
+    var(--color-bg-gradient-mid),
+    var(--color-bg-gradient-end)
+  );
+}
+
+/* --- Surfaces --- */
+.theme-surface {
+  background-color: var(--color-surface-primary);
+  border-color: var(--color-border-default);
+}
+.theme-surface-secondary {
+  background-color: var(--color-surface-secondary);
+}
+.theme-surface-hover:hover {
+  background-color: var(--color-surface-hover);
+}
+
+/* --- Text --- */
+.theme-text-primary {
+  color: var(--color-text-primary);
+}
+.theme-text-secondary {
+  color: var(--color-text-secondary);
+}
+.theme-text-tertiary {
+  color: var(--color-text-tertiary);
+}
+.theme-text-brand {
+  color: var(--color-brand-primary);
+}
+.theme-text-error {
+  color: var(--color-text-error);
+}
+.theme-text-success {
+  color: var(--color-text-success);
+}
+
+/* --- Borders --- */
+.theme-border {
+  border-color: var(--color-border-default);
+}
+.theme-border-strong {
+  border-color: var(--color-border-strong);
+}
+.theme-border-focus:focus {
+  border-color: var(--color-border-focus);
+  outline-color: var(--color-border-focus);
+}
+
+/* --- Brand --- */
+.theme-brand {
+  background-color: var(--color-brand-primary);
+  color: white;
+}
+.theme-brand:hover {
+  background-color: var(--color-brand-primary-hover);
+}
+
+/* --- Scrollbar --- */
+.theme-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-scrollbar-track);
+}
+.theme-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 3px;
+}
+.theme-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+}

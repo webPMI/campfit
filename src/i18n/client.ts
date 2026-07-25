@@ -31,7 +31,6 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'auth.loading.register': 'Creando cuenta...',
     'auth.loading.google': 'Conectando...',
     'error.required': 'Completa todos los campos',
-    'error.password.length': 'La contraseña debe tener al menos 6 caracteres',
     'error.invalid-credential': 'Email o contraseña incorrectos',
     'error.user-not-found': 'No existe una cuenta con este email',
     'error.wrong-password': 'Contraseña incorrecta',
@@ -48,22 +47,9 @@ const clientTranslations: Record<Language, Record<string, string>> = {
 
     // Dashboard
     'dashboard.loading': 'Verificando sesión...',
-    'dashboard.logout': 'Cerrar Sesión',
 
     // Client Dashboard
     'client.greeting': '¡Hola',
-    'client.workout.progress': 'Progreso Rutina',
-    'client.workout.progress.desc': 'Completado esta semana',
-    'client.diet.adherence': 'Adherencia Dieta',
-    'client.diet.adherence.desc': 'Completado hoy',
-    'client.quick.workout': 'Entrenar hoy',
-    'client.quick.workout.desc': 'Ver rutina del día',
-    'client.quick.meal': 'Próxima comida',
-    'client.quick.meal.desc': 'Ver plan nutricional',
-    'client.stats.weight': 'Peso',
-    'client.stats.calories': 'Calorías',
-    'client.stats.rpe': 'RPE Prom',
-    'client.stats.days': 'Días',
     'client.stats.kg': 'kg',
     'client.stats.kcal': 'kcal',
     'client.no.workout': 'Sin rutina asignada',
@@ -104,7 +90,6 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'auth.loading.register': 'Creating account...',
     'auth.loading.google': 'Connecting...',
     'error.required': 'Please fill in all fields',
-    'error.password.length': 'Password must be at least 6 characters',
     'error.invalid-credential': 'Invalid email or password',
     'error.user-not-found': 'No account found with this email',
     'error.wrong-password': 'Incorrect password',
@@ -121,22 +106,9 @@ const clientTranslations: Record<Language, Record<string, string>> = {
 
     // Dashboard
     'dashboard.loading': 'Verifying session...',
-    'dashboard.logout': 'Sign Out',
 
     // Client Dashboard
     'client.greeting': 'Hello',
-    'client.workout.progress': 'Workout Progress',
-    'client.workout.progress.desc': 'Completed this week',
-    'client.diet.adherence': 'Diet Adherence',
-    'client.diet.adherence.desc': 'Completed today',
-    'client.quick.workout': 'Train today',
-    'client.quick.workout.desc': "View today's workout",
-    'client.quick.meal': 'Next meal',
-    'client.quick.meal.desc': 'View meal plan',
-    'client.stats.weight': 'Weight',
-    'client.stats.calories': 'Calories',
-    'client.stats.rpe': 'Avg RPE',
-    'client.stats.days': 'Days',
     'client.stats.kg': 'kg',
     'client.stats.kcal': 'kcal',
     'client.no.workout': 'No workout assigned',

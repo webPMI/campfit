@@ -349,8 +349,9 @@ async function runTests(uid: string, role: string): Promise<void> {
     }
 
     const start = performance.now();
+    const test = queryTests[i]!;
     try {
-      const result = await queryTests[i].run();
+      const result = await test.run();
       const duration = Math.round(performance.now() - start);
 
       if (result.ok) {
@@ -377,7 +378,7 @@ async function runTests(uid: string, role: string): Promise<void> {
         testEl.appendChild(errorDiv);
       }
 
-      results.push({ name: queryTests[i].name, ...result, duration });
+      results.push({ name: test.name, ...result, duration });
     } catch (err: unknown) {
       const duration = Math.round(performance.now() - start);
       const errorMsg = err instanceof Error ? err.message : String(err);
@@ -390,7 +391,7 @@ async function runTests(uid: string, role: string): Promise<void> {
       errorDiv.className = 'error-detail';
       errorDiv.textContent = errorMsg;
       testEl.appendChild(errorDiv);
-      results.push({ name: queryTests[i].name, ok: false, count: 0, error: errorMsg, duration });
+      results.push({ name: test.name, ok: false, count: 0, error: errorMsg, duration });
     }
   }
 

@@ -6,7 +6,6 @@
  */
 
 import { auth, db } from '@/lib/firebase';
-import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
 import {
   collection,
   query,
@@ -23,11 +22,15 @@ import {
   getDocs,
   deleteDoc,
   writeBatch,
+  getCountFromServer,
   type Unsubscribe,
 } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { logger } from '@/lib/shared/logger';
 import { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge } from '@/lib/shared/ui';
+
+// Re-export shared UI utilities for convenience
+export { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge };
 
 // ============================================================
 // Tipos
@@ -52,21 +55,6 @@ export interface CreateUserPayload {
   name: string;
   role: 'admin' | 'trainer' | 'client';
   assignedTrainerId?: string;
-}
-
-// ============================================================
-// Auth guard
-// ============================================================
-
-export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscribe {
-  return onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      logger.warn('Admin', 'Usuario no autenticado, redirigiendo a login');
-      window.location.href = '/login';
-      return;
-    }
-    callback(user);
-  });
 }
 
 // ============================================================
@@ -367,123 +355,6 @@ export function renderUserForm(
 }
 
 // ============================================================
-// Re-export desde shared/ui
-// ============================================================
-
-export { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge };
-
-// ============================================================
-// Auth helpers
-// ============================================================
-
-/**
- * Cierra la sesión del usuario actual.
- */
-export async function signOutUser(): Promise<void> {
-  try {
-    await signOut(auth);
-    window.location.href = '/login';
-  } catch (error) {
-    logger.error('Admin', 'Error al cerrar sesión:', error);
-    showToast({ message: 'Error al cerrar sesión', type: 'error' });
-  }
-}
-
-/**
- * Obtiene el nombre de un usuario por su UID.
- */
-export async function getUserName(userId: string): Promise<string> {
-  try {
-    const docSnap = await getDoc(doc(db, 'users', userId));
-    if (docSnap.exists()) {
-      return docSnap.data().name || 'Sin nombre';
-    }
-    return 'Usuario desconocido';
-  } catch (error) {
-    logger.error('Admin', 'Error al obtener nombre de usuario:', error);
-    return 'Error';
-  }
-}
-
-/**
- * Bloquea o desbloquea un usuario.
- */
-export async function toggleUserBlock(uid: string, isBlocked: boolean): Promise<boolean> {
-  try {
-    await updateDoc(doc(db, 'users', uid), {
-      isBlocked,
-      blockedAt: isBlocked ? serverTimestamp() : null,
-      updatedAt: serverTimestamp(),
-    });
-    logger.info('Admin', `Usuario ${uid} ${isBlocked ? 'bloqueado' : 'desbloqueado'}`);
-    return true;
-  } catch (error) {
-    logger.error('Admin', 'Error al cambiar estado de bloqueo:', error);
-    showToast({ message: 'Error al cambiar estado de bloqueo', type: 'error' });
-    return false;
-  }
-}
-
-// ============================================================
-// Suscripciones adicionales
-// ============================================================
-
-/**
- * Se suscribe al conteo de documentos en una colección.
- */
-export function subscribeToCollectionCount(
-  collectionName: string,
-  callback: (count: number) => void,
-): Unsubscribe {
-  const q = query(collection(db, collectionName));
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      callback(snapshot.size);
-    },
-    (error) => {
-      logger.error('Admin', `Error al contar ${collectionName}:`, error);
-    },
-  );
-}
-
-/**
- * Se suscribe a los usuarios más recientes.
- */
-export function subscribeToRecentUsers(
-  limitCount: number,
-  callback: (users: AdminUser[]) => void,
-): Unsubscribe {
-  const q = query(
-    collection(db, 'users'),
-    orderBy('createdAt', 'desc'),
-    limit(limitCount),
-  );
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const users = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          uid: doc.id,
-          name: data.name || 'Sin nombre',
-          email: data.email || '',
-          role: data.role || 'client',
-          assignedTrainerId: data.assignedTrainerId,
-          hasActiveAlert: data.hasActiveAlert ?? false,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
-        } as AdminUser;
-      });
-      callback(users);
-    },
-    (error) => {
-      logger.error('Admin', 'Error al suscribirse a usuarios recientes:', error);
-    },
-  );
-}
-
-// ============================================================
 // Renderizado adicional
 // ============================================================
 
@@ -534,13 +405,6 @@ export function renderUserCardExtended(user: AdminUser, showEdit: boolean = fals
       </div>
     </div>
   `;
-}
-
-/**
- * Inicializa acciones globales (compatible con trainerUtils.initGlobalActions).
- */
-export function initGlobalActions(adminId: string): void {
-  (window as unknown as Record<string, unknown>).__adminId = adminId;
 }
 
 /**
@@ -620,10 +484,110 @@ export async function getTrainerClientCount(trainerId: string): Promise<number> 
   }
 }
 
+/**
+ * Obtiene el nombre de un usuario por su UID.
+ */
+export async function getUserName(userId: string): Promise<string> {
+  try {
+    const docSnap = await getDoc(doc(db, 'users', userId));
+    if (docSnap.exists()) {
+      return docSnap.data().name || 'Sin nombre';
+    }
+    return 'Usuario desconocido';
+  } catch (error) {
+    logger.error('Admin', 'Error al obtener nombre de usuario:', error);
+    return 'Error';
+  }
+}
+
+/**
+ * Bloquea o desbloquea un usuario.
+ */
+export async function toggleUserBlock(uid: string, isBlocked: boolean): Promise<boolean> {
+  try {
+    await updateDoc(doc(db, 'users', uid), {
+      isBlocked,
+      blockedAt: isBlocked ? serverTimestamp() : null,
+      updatedAt: serverTimestamp(),
+    });
+    logger.info('Admin', `Usuario ${uid} ${isBlocked ? 'bloqueado' : 'desbloqueado'}`);
+    return true;
+  } catch (error) {
+    logger.error('Admin', 'Error al cambiar estado de bloqueo:', error);
+    showToast({ message: 'Error al cambiar estado de bloqueo', type: 'error' });
+    return false;
+  }
+}
+
 // ============================================================
-// Inicialización global
+// Suscripciones adicionales
 // ============================================================
 
-export function initAdminActions(adminId: string): void {
-  (window as unknown as Record<string, unknown>).__adminId = adminId;
+/**
+ * Obtiene el conteo de documentos en una colección usando la API count() de Firestore.
+ * Mucho más eficiente que leer todos los documentos; solo consume 1 lectura de agregación.
+ * Devuelve una función de limpieza que detiene el polling.
+ */
+export function subscribeToCollectionCount(
+  collectionName: string,
+  callback: (count: number) => void,
+): Unsubscribe {
+  let cancelled = false;
+
+  async function fetchCount(): Promise<void> {
+    if (cancelled) return;
+    try {
+      const snapshot = await getCountFromServer(collection(db, collectionName));
+      if (!cancelled) callback(snapshot.data().count);
+    } catch (error) {
+      logger.error('Admin', `Error al contar ${collectionName}:`, error);
+    }
+  }
+
+  // Initial fetch
+  fetchCount();
+
+  // Poll every 30 seconds (dashboard counts don't need real-time precision)
+  const intervalId = setInterval(fetchCount, 30_000);
+
+  return () => {
+    cancelled = true;
+    clearInterval(intervalId);
+  };
+}
+
+/**
+ * Se suscribe a los usuarios más recientes.
+ */
+export function subscribeToRecentUsers(
+  limitCount: number,
+  callback: (users: AdminUser[]) => void,
+): Unsubscribe {
+  const q = query(
+    collection(db, 'users'),
+    orderBy('createdAt', 'desc'),
+    limit(limitCount),
+  );
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const users = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          uid: doc.id,
+          name: data.name || 'Sin nombre',
+          email: data.email || '',
+          role: data.role || 'client',
+          assignedTrainerId: data.assignedTrainerId,
+          hasActiveAlert: data.hasActiveAlert ?? false,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+        } as AdminUser;
+      });
+      callback(users);
+    },
+    (error) => {
+      logger.error('Admin', 'Error al suscribirse a usuarios recientes:', error);
+    },
+  );
 }

@@ -7,7 +7,6 @@
  */
 
 import { auth, db } from '@/lib/firebase';
-import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
 import {
   collection,
   query,
@@ -26,7 +25,10 @@ import {
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge } from '@/lib/shared/ui';
-import { sendMessage as chatSendMessage, subscribeToUserMessages, subscribeToConversation as chatSubscribeToConversation, markAsRead as chatMarkAsRead } from '@/lib/shared/chat';
+import { subscribeToUserMessages, subscribeToConversation as chatSubscribeToConversation, sendMessage as chatSendMessage, markAsRead as chatMarkAsRead } from '@/lib/shared/chat';
+
+// Re-exportar símbolos de UI para que estén disponibles desde trainerUtils
+export { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge };
 
 // ============================================================
 // Tipos
@@ -108,21 +110,6 @@ export interface TrainerMessage {
   participants: string[];
   isRead: boolean;
   createdAt?: { toDate: () => Date } | null;
-}
-
-// ============================================================
-// Auth guard
-// ============================================================
-
-export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe {
-  return onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      logger.warn('Trainer', 'Usuario no autenticado, redirigiendo a login');
-      window.location.href = '/login';
-      return;
-    }
-    callback(user);
-  });
 }
 
 // ============================================================
@@ -594,35 +581,4 @@ export function renderMessageBubble(
       </div>
     </div>
   `;
-}
-
-// ============================================================
-// Re-export desde shared/ui
-// ============================================================
-
-export { ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge };
-
-// ============================================================
-// Auth helpers
-// ============================================================
-
-/**
- * Cierra la sesión del usuario actual.
- */
-export async function signOutUser(): Promise<void> {
-  try {
-    await signOut(auth);
-    window.location.href = '/login';
-  } catch (error) {
-    logger.error('Trainer', 'Error al cerrar sesión:', error);
-    showToast({ message: 'Error al cerrar sesión', type: 'error' });
-  }
-}
-
-// ============================================================
-// Inicialización global
-// ============================================================
-
-export function initGlobalActions(trainerId: string): void {
-  (window as unknown as Record<string, unknown>).__trainerId = trainerId;
 }

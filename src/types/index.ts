@@ -1,6 +1,4 @@
-/**
- * Tipos globales de CampFit
- */
+import type { Timestamp } from 'firebase/firestore';
 
 export interface User {
   uid: string;
@@ -10,9 +8,9 @@ export interface User {
   hasActiveAlert: boolean;
   assignedTrainerId?: string;
   medicalProfile?: MedicalProfile;
-  lastActivityAt?: any;
-  createdAt?: any;
-  updatedAt?: any;
+  lastActivityAt?: Timestamp | Date | null;
+  createdAt?: Timestamp | Date | null;
+  updatedAt?: Timestamp | Date | null;
 }
 
 export interface MedicalProfile {
@@ -21,7 +19,7 @@ export interface MedicalProfile {
   conditions: string[];
   goals: string[];
   experience: 'beginner' | 'intermediate' | 'advanced';
-  birthDate: any;
+  birthDate: Timestamp | Date | string | null;
   height: number;
   initialWeight: number;
 }

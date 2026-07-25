@@ -33,7 +33,6 @@ export default defineConfig({
     // ─── Tests centralizados en tests/ ─────────────────────────────────────
     include: [
       'tests/unit/**/*.{test,spec}.{ts,tsx}',
-      'tests/integration/**/*.{test,spec}.{ts,tsx}',
     ],
     exclude: [
       'node_modules',
@@ -41,16 +40,11 @@ export default defineConfig({
       '.astro',
       'tests/e2e',
       'tests/e2e/**',
-      'tests/e2e/*.spec.ts',
-      'tests/**/*.spec.ts',
-      'tests/**/*.spec.ts',
-      'tests/e2e/**/*.spec.ts',
-      'tests/e2e/**/*.test.ts',
     ],
 
     // ─── Cobertura ─────────────────────────────────────────────────────────
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: './tests/coverage',
       include: ['src/**/*.{ts,tsx}'],

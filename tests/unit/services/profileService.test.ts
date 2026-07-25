@@ -115,8 +115,6 @@ import {
   updateProfile,
   sendPasswordReset,
   changePassword,
-  getProfileInitial,
-  getRoleBadgeClass,
 } from '../../../src/lib/shared/profileService';
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
@@ -273,52 +271,5 @@ describe('profileService', () => {
       expect(result).toEqual({ success: false, message: 'Error al cambiar la contraseña' });
     });
   });
-
-  // ── getProfileInitial ────────────────────────────────────────────────────
-
-  describe('getProfileInitial', () => {
-    it('✅ should return first letter of name', () => {
-      expect(getProfileInitial('Juan')).toBe('J');
-    });
-
-    it('✅ should return uppercase letter', () => {
-      expect(getProfileInitial('maría')).toBe('M');
-    });
-
-    it('✅ should return ? for empty name', () => {
-      expect(getProfileInitial('')).toBe('?');
-    });
-
-    it('✅ should return ? for undefined', () => {
-      expect(getProfileInitial(undefined as unknown as string)).toBe('?');
-    });
-  });
-
-  // ── getRoleBadgeClass ────────────────────────────────────────────────────
-
-  describe('getRoleBadgeClass', () => {
-    it('✅ should return admin badge class', () => {
-      const result = getRoleBadgeClass('admin');
-      expect(result).toHaveProperty('class');
-      expect(result.class).toContain('bg-purple');
-    });
-
-    it('✅ should return trainer badge class', () => {
-      const result = getRoleBadgeClass('trainer');
-      expect(result).toHaveProperty('class');
-      expect(result.class).toContain('bg-blue');
-    });
-
-    it('✅ should return client badge class', () => {
-      const result = getRoleBadgeClass('client');
-      expect(result).toHaveProperty('class');
-      expect(result.class).toContain('bg-emerald');
-    });
-
-    it('✅ should return default badge class for unknown role', () => {
-      const result = getRoleBadgeClass('unknown');
-      expect(result).toHaveProperty('class');
-      expect(result.class).toContain('bg-zinc');
-    });
-  });
 });
+

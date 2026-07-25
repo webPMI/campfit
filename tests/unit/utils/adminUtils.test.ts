@@ -14,10 +14,10 @@ const { uiMock, loggerMock } = vi.hoisted(() => ({
   uiMock: {
     escapeHtml: (text: string) => {
       const map: Record<string, string> = {
-        '&': '&',
-        '<': '<',
-        '>': '>',
-        '"': '"',
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
         "'": '&#x27;',
       };
       return text.replace(/[&<>"']/g, (ch) => map[ch] || ch);
@@ -104,7 +104,6 @@ import {
   renderUserRow,
   renderUserDetail,
   renderUserForm,
-  initAdminActions,
 } from '../../../src/lib/admin/adminUtils';
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
@@ -257,25 +256,4 @@ describe('adminUtils', () => {
     });
   });
 
-  // ── initAdminActions ────────────────────────────────────────────────────
-
-  describe('initAdminActions', () => {
-    it('should set __adminId on window', () => {
-      // Guardar referencia original
-      const originalWindow = globalThis.window;
-
-      // Mockear globalThis.window si no existe (happy-dom debería tenerlo)
-      if (typeof globalThis.window === 'undefined') {
-        (globalThis as any).window = {} as Window & typeof globalThis;
-      }
-
-      initAdminActions('admin-123');
-      expect((globalThis.window as unknown as Record<string, unknown>).__adminId).toBe('admin-123');
-
-      // Restaurar
-      if (originalWindow === undefined) {
-        delete (globalThis as any).window;
-      }
-    });
-  });
 });
