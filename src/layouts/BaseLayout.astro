@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from '@/components/ThemeToggle.astro';
+
 export type Language = 'es' | 'en';
 const lang = Astro.params.lang || 'es';
 
@@ -57,7 +59,6 @@ const {
           var theme = localStorage.getItem('campfit_theme') || 'dark';
           var root = document.documentElement;
           root.setAttribute('data-theme', theme);
-          // Update meta theme-color immediately (avoids stale color in browser chrome)
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) {
             meta.setAttribute('content', theme === 'dark' ? '#09090b' : '#fafafa');
@@ -80,6 +81,11 @@ const {
       import { initTheme } from '@/stores/themeStore';
       initTheme();
     </script>
+
+    <!-- Global theme toggle (visible on all pages) -->
+    <div class="fixed top-4 right-4 z-50">
+      <ThemeToggle />
+    </div>
 
     <slot />
 

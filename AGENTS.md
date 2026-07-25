@@ -1,3 +1,140 @@
+# CampFit - Guía para Agentes IA
+
+## 🚀 Comandos Rápidos
+
+```bash
+npm run build            # Build producción (8-10s)
+npx vitest run           # Tests unitarios (388 tests, ~8s)
+npx vitest run --reporter=verbose  # Tests con detalle
+npx vitest run tests/unit/services/authService.test.ts  # Test específico
+npm run dev              # Dev server
+```
+
+## 🔥 Deploy (Firebase)
+
+```bash
+npm run build                                    # Build local
+npx firebase deploy --only firestore:rules,hosting # Deploy
+npx firebase deploy --only hosting              # Solo hosting
+npx firebase deploy --only firestore:rules      # Solo reglas
+```
+
+**Proyecto:** `mallorca-campfit`  
+**URL:** https://mallorca-campfit.web.app
+
+## 🧪 Testing Rápido para Agentes Paralelos
+
+### Regla #1: NO ejecutes la suite completa salvo que sea necesario
+
+Usa test targeting en su lugar:
+
+```bash
+# Después de cambiar un servicio
+npx vitest run tests/unit/services/authService.test.ts
+
+# Después de cambiar un store
+npx vitest run tests/unit/stores/authStore.test.ts
+
+# Después de cambiar utilidades i18n
+npx vitest run tests/unit/utils/translations.test.ts tests/unit/i18n/
+```
+
+### Regla #2: Tests por módulo (~2-5s cada uno)
+
+| Módulo | Comando | Tests |
+|--------|---------|-------|
+| Auth Service | `npx vitest run tests/unit/services/authService.test.ts` | 16 |
+| Admin Service | `npx vitest run tests/unit/services/adminService.test.ts` | 14 |
+| Profile Service | `npx vitest run tests/unit/services/profileService.test.ts` | 10 |
+| Auth Store | `npx vitest run tests/unit/stores/authStore.test.ts` | 16 |
+| Theme Store | `npx vitest run tests/unit/stores/themeStore.test.ts` | 25 |
+| Admin Utils | `npx vitest run tests/unit/lib/admin/adminUtils.test.ts` | 38 |
+| Trainer Utils | `npx vitest run tests/unit/lib/trainer/trainerUtils.test.ts` | 19 |
+| Chat Service | `npx vitest run tests/unit/lib/client/chatService.test.ts` | 12 |
+| Diet Service | `npx vitest run tests/unit/lib/client/dietService.test.ts` | 21 |
+| i18n/Translations | `npx vitest run tests/unit/utils/translations.test.ts` | 4 |
+| Validators | `npx vitest run tests/unit/utils/validators.test.ts` | 17 |
+| UI/shared | `npx vitest run tests/unit/lib/shared/ui.test.ts` | 35 |
+| i18n/shared | `npx vitest run tests/unit/lib/shared/i18n.test.ts` | 22 |
+
+### Regla #3: Verificación pre-commit (rápida, <15s)
+
+```bash
+npx vitest run tests/unit/services/ tests/unit/stores/ tests/unit/utils/ && npm run build
+```
+
+### Regla #4: Build check (siempre hacerlo)
+
+```bash
+npm run build
+# Debe salir: "✓ Completed" sin errores
+# Build exitoso genera /dist con todas las rutas
+```
+
+### Regla #5: Tags en mensajes de commit
+
+Usa estos prefixes para que otros agentes sepan qué cambió:
+- `[auth]` - Cambios en autenticación
+- `[admin]` - Panel admin
+- `[client]` - Panel cliente
+- `[trainer]` - Panel entrenador
+- `[theme]` - Sistema de tema
+- `[i18n]` - Traducciones
+- `[test]` - Tests
+- `[docs]` - Documentación
+- `[ci]` - CI/CD, deploy
+- `[refactor]` - Refactorización
+
+## 🎨 Sistema de Tema (CRÍTICO)
+
+**NUNCA uses clases de color hardcodeadas de Tailwind.** Usa siempre las clases semánticas:
+
+| Clase | Uso |
+|-------|-----|
+| `theme-surface` / `theme-surface-secondary` | Cards, paneles |
+| `theme-bg-primary` / `theme-bg-secondary` | Fondos |
+| `theme-text-primary` / `theme-text-secondary` | Texto |
+| `theme-border` / `theme-border-strong` | Bordes |
+| `theme-brand` | Botones principales |
+
+### Verificación de tema:
+```bash
+npm run theme:validate   # Valida tokens (100% = OK)
+```
+
+## ⚠️ Conflictos entre Agentes
+
+Si haces `git pull` y hay conflictos:
+
+1. **NO hagas `git rebase`** si hay múltiples agentes tocando los mismos archivos
+2. Usa `git merge origin/master` en su lugar
+3. Resuelve conflictos con:
+   ```bash
+   git mergetool   # Si tienes herramienta configurada
+   # O manualmente: editar archivos, luego:
+   git add <archivo-resuelto>
+   git commit -m "merge: resolver conflictos con origin/master"
+   ```
+
+## 📋 Estado Actual del Proyecto
+
+- **Tests:** 26/26 files, 388/388 tests ✅
+- **Build:** 31 rutas generadas ✅
+- **Deploy:** Firebase `mallorca-campfit` (rules + hosting) ✅
+- **Docs:** Documentación completa en `docs/` (MASTER.md + 10 módulos)
+- **TODO:** 22/22 tareas completadas (100%)
+- **Pendiente multi-agente:** Ver `docs/10_todo_y_problemas.md` sección 2
+
+### Archivos clave:
+- `docs/MASTER.md` - Documentación maestra
+- `TODO.md` - TODO centralizado (fuente única de verdad)
+- `docs/10_todo_y_problemas.md` - Checklist multi-agente
+- `src/lib/firebase.ts` - Config Firebase
+- `.env.example` - Variables de entorno (copiar a `.env`)
+- `src/styles/theme.css` - Tokens del tema
+- `src/stores/themeStore.ts` - Estado reactivo del tema
+- `src/components/ThemeToggle.astro` - Botón toggle tema
+
 ## Development
 
 When starting the dev server, use background mode:
@@ -7,63 +144,6 @@ astro dev --background
 ```
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
-
-## 🎨 Theme System (CRÍTICO — Leer antes de tocar estilos)
-
-**Regla de oro: NUNCA uses clases de color hardcodeadas de Tailwind en componentes Astro.**
-
-```astro
-<!-- ❌ PROHIBIDO — Rompe el tema oscuro/claro -->
-<div class="bg-zinc-900 text-zinc-100 border-zinc-800">
-
-<!-- ✅ CORRECTO — Usa las clases semánticas del tema -->
-<div class="theme-surface theme-text-primary theme-border">
-```
-
-### Clases semánticas disponibles (definidas en `src/styles/theme.css`):
-
-| Clase | Cuándo usarla |
-|---|---|
-| `theme-bg-primary` / `theme-bg-secondary` / `theme-bg-elevated` | Fondos de página/cards |
-| `theme-bg-gradient` | Gradiente de fondo principal |
-| `theme-surface` / `theme-surface-secondary` / `theme-surface-hover` | Cards, paneles, inputs |
-| `theme-text-primary` / `theme-text-secondary` / `theme-text-tertiary` | Jerarquía de texto |
-| `theme-text-brand` / `theme-text-error` / `theme-text-success` | Texto de marca/estado |
-| `theme-border` / `theme-border-strong` / `theme-border-focus` | Bordes |
-| `theme-brand` | Botones/fondos con color de marca |
-| `theme-scrollbar` | Scrollbars personalizadas |
-
-### Cómo verificar que todo está bien:
-
-```bash
-npm run theme:validate   # Valida integridad del sistema (100% = OK)
-npm run theme:test       # 25 tests unitarios del theme store
-npm run theme:check      # Validación + tests (útil antes de commit)
-```
-
-### Si necesitas un color que no existe:
-
-1. **NUNCA** pongas `bg-zinc-800` o `text-white` en un componente
-2. Ve a `src/styles/theme.css` y añade el token en AMBOS temas (light y dark)
-3. Si es nuevo, crea una clase utilitaria `.theme-mi-color`
-4. Ejecuta `npm run theme:validate` para verificar que los tokens están sincronizados
-5. Si no estás seguro, consulta `docs/THEME.md`
-
-### Si encuentras hardcodeos:
-
-```bash
-npx tsx scripts/migrate-theme.ts --dry-run   # Ver hardcodeos sin modificar
-npx tsx scripts/migrate-theme.ts             # Migrar automáticamente
-```
-
-### Estructura de archivos del tema:
-
-| Archivo | Propósito |
-|---|---|
-| `src/styles/theme.css` | Fuente única de verdad — tokens CSS |
-| `src/stores/themeStore.ts` | Estado reactivo (Nanostores) |
-| `src/components/ThemeToggle.astro` | Botón toggle + Ctrl+Shift+T |
-| `docs/THEME.md` | Documentación completa |
 
 ## Documentation
 

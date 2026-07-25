@@ -29,7 +29,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       <!-- Filter by client -->
       <div class="mt-6">
-        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:theme-border-focus/50">
+        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
           <option value="">Filtrar por alumno</option>
         </select>
       </div>
@@ -286,12 +286,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Nombre de la dieta</label>
-              <input id="diet-name" type="text" value="${escapeHtml(d.name)}" placeholder="Ej: Dieta de Volumen" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-zinc-600 focus:outline-none focus:theme-border-focus/50" />
+              <input id="diet-name" type="text" value="${escapeHtml(d.name)}" placeholder="Ej: Dieta de Volumen" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
               <p id="diet-name-error" class="mt-1 hidden text-xs text-red-400">El nombre es obligatorio</p>
             </div>
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Alumno</label>
-              <select id="diet-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+              <select id="diet-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="">Seleccionar alumno</option>
                 ${clientOptions}
               </select>
@@ -302,14 +302,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Tipo</label>
-              <select id="diet-type" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+              <select id="diet-type" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="normal" ${d.type === 'normal' ? 'selected' : ''}>Normal</option>
                 <option value="advanced" ${d.type === 'advanced' ? 'selected' : ''}>Avanzada</option>
               </select>
             </div>
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Somatotipo</label>
-              <select id="diet-somatotype" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+              <select id="diet-somatotype" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="">No especificado</option>
                 <option value="ectomorph" ${d.somatotype === 'ectomorph' ? 'selected' : ''}>Ectomorfo</option>
                 <option value="mesomorph" ${d.somatotype === 'mesomorph' ? 'selected' : ''}>Mesomorfo</option>
@@ -318,7 +318,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Calorías Totales <span id="cal-auto-badge" class="theme-text-brand/70 text-[10px]">(auto)</span></label>
-              <input id="diet-calories" type="number" readonly value="${d.totalCalories || 0}" placeholder="Calculado de comidas" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary placeholder-zinc-600 focus:outline-none cursor-not-allowed" />
+              <input id="diet-calories" type="number" readonly value="${d.totalCalories || 0}" placeholder="Calculado de comidas" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary placeholder-theme-text-tertiary focus:outline-none cursor-not-allowed" />
             </div>
           </div>
 
@@ -506,7 +506,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div data-meal-row class="rounded-xl border theme-border theme-surface-secondary p-3 backdrop-blur-sm">
         <div class="flex items-center gap-2 mb-2">
           <span class="text-xs theme-text-tertiary font-medium w-5">#${index + 1}</span>
-          <select class="flex-1 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary focus:outline-none focus:theme-border-focus/50">
+          <select class="flex-1 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
             <option value="breakfast" ${meal.name === 'breakfast' ? 'selected' : ''}>Desayuno</option>
             <option value="lunch" ${meal.name === 'lunch' ? 'selected' : ''}>Almuerzo</option>
             <option value="snack" ${meal.name === 'snack' ? 'selected' : ''}>Snack</option>
@@ -520,22 +520,22 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </button>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <input type="text" value="${escapeHtml(meal.description)}" placeholder="Descripción (Ej: 150g pechuga de pollo, 100g arroz)" class="flex-1 min-w-[200px] rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-zinc-600 focus:outline-none focus:theme-border-focus/50" />
+          <input type="text" value="${escapeHtml(meal.description)}" placeholder="Descripción (Ej: 150g pechuga de pollo, 100g arroz)" class="flex-1 min-w-[200px] rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           <div class="flex items-center gap-1">
             <label class="text-[10px] theme-text-tertiary">Cal</label>
-            <input type="number" value="${meal.calories || ''}" placeholder="0" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" title="Calorías" />
+            <input type="number" value="${meal.calories || ''}" placeholder="0" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Calorías" />
           </div>
           <div class="flex items-center gap-1">
             <label class="text-[10px] theme-text-tertiary">Prot</label>
-            <input type="number" value="${meal.protein || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" title="Proteínas" />
+            <input type="number" value="${meal.protein || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Proteínas" />
           </div>
           <div class="flex items-center gap-1">
             <label class="text-[10px] theme-text-tertiary">Carbs</label>
-            <input type="number" value="${meal.carbs || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" title="Carbohidratos" />
+            <input type="number" value="${meal.carbs || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Carbohidratos" />
           </div>
           <div class="flex items-center gap-1">
             <label class="text-[10px] theme-text-tertiary">Grasas</label>
-            <input type="number" value="${meal.fat || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" title="Grasas" />
+            <input type="number" value="${meal.fat || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Grasas" />
           </div>
         </div>
       </div>

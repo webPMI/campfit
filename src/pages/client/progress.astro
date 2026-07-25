@@ -40,7 +40,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
                 type="number"
                 step="0.1"
                 placeholder="75.5"
-                class="flex-1 rounded-xl border theme-border-strong theme-surface-hover px-4 py-3 text-sm theme-text-primary placeholder-zinc-600 outline-none transition-all focus:theme-border-focus/50 focus:ring-2 focus:ring-emerald-500/10"
+                class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary px-4 py-3 text-sm theme-text-primary placeholder-theme-text-tertiary outline-none transition-all focus:ring-2 focus:ring-emerald-500/10 focus:ring-2 focus:ring-emerald-500/10"
               />
               <span class="flex items-center text-sm theme-text-tertiary">{t('client.stats.kg')}</span>
               <button
@@ -88,9 +88,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div class="flex items-center justify-center rounded-xl theme-bg-primary/20 p-2">
                 <img id="photoPreview" class="max-h-48 rounded-lg object-contain shadow-lg" />
               </div>
-              <input type="text" id="photoNotes" placeholder="Añade notas (ej: Peso 74kg, ayunas)" class="w-full rounded-xl border theme-border-strong theme-surface-hover px-4 py-3 text-xs theme-text-primary outline-none focus:theme-border-focus/50" />
+              <input type="text" id="photoNotes" placeholder="Añade notas (ej: Peso 74kg, ayunas)" class="w-full rounded-xl border theme-border-strong theme-surface-secondary px-4 py-3 text-xs theme-text-primary outline-none focus:ring-2 focus:ring-emerald-500/10" />
               <div class="flex gap-2">
-                <button id="cancelPhotoBtn" class="flex-1 rounded-xl border theme-border-strong theme-surface-hover py-3 text-xs font-semibold theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
+                <button id="cancelPhotoBtn" class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary py-3 text-xs font-semibold theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
                 <button id="savePhotoBtn" class="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-xs font-semibold theme-text-primary shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-emerald-500 transition-all active:scale-[0.98]">Guardar foto</button>
               </div>
             </div>

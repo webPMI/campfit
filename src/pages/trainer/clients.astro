@@ -24,7 +24,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 theme-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
-          <input id="client-search" type="text" placeholder="Buscar clientes por nombre..." class="w-full rounded-xl border theme-border theme-surface-secondary pl-10 pr-4 py-2.5 text-sm theme-text-primary placeholder-zinc-600 backdrop-blur-sm focus:outline-none focus:theme-border-focus/50" />
+          <input id="client-search" type="text" placeholder="Buscar clientes por nombre..." class="w-full rounded-xl border theme-border theme-surface-secondary pl-10 pr-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
         </div>
       </div>
 
@@ -151,7 +151,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <!-- Profile Header -->
           <div id="client-profile-info" class="mb-6">
             <div class="flex items-center gap-3">
-              <div class="flex h-12 w-12 items-center justify-center rounded-full theme-surface-hover text-lg font-medium theme-text-tertiary animate-pulse">?</div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-full theme-surface-secondary text-lg font-medium theme-text-tertiary animate-pulse">?</div>
               <div class="flex-1">
                 <div class="h-4 w-32 rounded theme-surface-hover animate-pulse"></div>
                 <div class="mt-1.5 h-3 w-48 rounded theme-surface-secondary/30 animate-pulse"></div>

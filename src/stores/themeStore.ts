@@ -13,6 +13,7 @@
  */
 
 import { atom, computed } from 'nanostores';
+import { logger } from '@/lib/shared/logger';
 
 // ---------------------------------------------------------------------------
 // Types

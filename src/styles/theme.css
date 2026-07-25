@@ -35,6 +35,14 @@
  */
 
 /* =========================================================================
+   Tailwind v4 Dark Mode Configuration
+   Makes Tailwind's `dark:` variant respond to our `data-theme="dark"` attribute
+   instead of the default `.dark` class.
+   ========================================================================= */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* =========================================================================
    BASE :ROOT — Light theme defaults
    All custom properties that don't change with theme live here.
    ========================================================================= */
@@ -277,8 +285,22 @@
 .theme-surface-secondary {
   background-color: var(--color-surface-secondary);
 }
+.theme-surface-active {
+  background-color: var(--color-surface-active);
+}
 .theme-surface-hover:hover {
   background-color: var(--color-surface-hover);
+}
+
+/* --- Surfaces with opacity (for nav bars, backdrops) --- */
+.theme-surface\/90 {
+  background-color: color-mix(in srgb, var(--color-surface-primary) 90%, transparent);
+}
+.theme-surface\/80 {
+  background-color: color-mix(in srgb, var(--color-surface-primary) 80%, transparent);
+}
+.theme-surface-secondary\/80 {
+  background-color: color-mix(in srgb, var(--color-surface-secondary) 80%, transparent);
 }
 
 /* --- Text --- */
@@ -320,6 +342,15 @@
 }
 .theme-brand:hover {
   background-color: var(--color-brand-primary-hover);
+}
+
+
+/* --- Placeholder text --- */
+.placeholder-theme-text-tertiary::placeholder {
+  color: var(--color-text-tertiary);
+}
+.placeholder-theme-text-secondary::placeholder {
+  color: var(--color-text-secondary);
 }
 
 /* --- Scrollbar --- */

@@ -31,7 +31,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <!-- Botón Google -->
         <button
           id="googleBtn"
-          class="group flex w-full items-center justify-center gap-3 rounded-xl border theme-border-strong theme-surface-hover px-6 py-3 text-sm font-medium theme-text-secondary transition-all hover:border-zinc-400 hover:theme-surface-secondary hover:theme-text-primary"
+          class="group flex w-full items-center justify-center gap-3 rounded-xl border theme-border-strong theme-surface-secondary px-6 py-3 text-sm font-medium theme-text-secondary transition-all hover:border-zinc-400 hover:theme-surface-secondary hover:theme-text-primary"
         >
           <svg class="h-5 w-5" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -59,7 +59,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               placeholder={t('auth.email.placeholder')}
               required
               autocomplete="email"
-              class="w-full rounded-xl border theme-border-strong theme-surface-hover px-4 py-3 text-sm theme-text-primary placeholder-zinc-600 outline-none transition-all focus:theme-border-focus/50 focus:theme-surface-secondary focus:ring-2 focus:ring-emerald-500/10"
+              class="w-full rounded-xl border theme-border-strong theme-surface-secondary px-4 py-3 text-sm theme-text-primary placeholder-theme-text-tertiary outline-none transition-all focus:ring-2 focus:ring-emerald-500/10 focus:theme-surface-secondary focus:ring-2 focus:ring-emerald-500/10"
             />
           </div>
 
@@ -71,7 +71,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               placeholder={t('auth.password.placeholder')}
               required
               autocomplete="current-password"
-              class="w-full rounded-xl border theme-border-strong theme-surface-hover px-4 py-3 text-sm theme-text-primary placeholder-zinc-600 outline-none transition-all focus:theme-border-focus/50 focus:theme-surface-secondary focus:ring-2 focus:ring-emerald-500/10"
+              class="w-full rounded-xl border theme-border-strong theme-surface-secondary px-4 py-3 text-sm theme-text-primary placeholder-theme-text-tertiary outline-none transition-all focus:ring-2 focus:ring-emerald-500/10 focus:theme-surface-secondary focus:ring-2 focus:ring-emerald-500/10"
             />
           </div>
 

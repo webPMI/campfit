@@ -29,7 +29,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       <!-- Filter by client -->
       <div class="mt-6">
-        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:theme-border-focus/50">
+        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
           <option value="">{t('trainer.filter.all')}</option>
         </select>
       </div>
@@ -240,12 +240,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Nombre de la rutina</label>
-              <input id="workout-name" type="text" value="${escapeHtml(w.name)}" placeholder="Ej: Full Body A" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-zinc-600 focus:outline-none focus:theme-border-focus/50" />
+              <input id="workout-name" type="text" value="${escapeHtml(w.name)}" placeholder="Ej: Full Body A" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
               <p id="workout-name-error" class="mt-1 hidden text-xs text-red-400">El nombre es obligatorio</p>
             </div>
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Cliente</label>
-              <select id="workout-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+              <select id="workout-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="">Seleccionar cliente</option>
                 ${clientOptions}
               </select>
@@ -256,7 +256,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Dificultad</label>
-              <select id="workout-difficulty" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+              <select id="workout-difficulty" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="easy" ${w.difficulty === 'easy' ? 'selected' : ''}>Fácil</option>
                 <option value="medium" ${w.difficulty === 'medium' ? 'selected' : ''}>Intermedio</option>
                 <option value="hard" ${w.difficulty === 'hard' ? 'selected' : ''}>Avanzado</option>
@@ -265,7 +265,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
             <div>
               <label class="block text-xs theme-text-tertiary mb-1">Día de la semana (por defecto)</label>
-              <select id="workout-default-day" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+              <select id="workout-default-day" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 ${dayOptions}
               </select>
             </div>
@@ -273,7 +273,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
           <div>
             <label class="block text-xs theme-text-tertiary mb-1">Descripción</label>
-            <textarea id="workout-desc" rows="2" placeholder="Descripción de la rutina..." class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-zinc-600 focus:outline-none focus:theme-border-focus/50">${escapeHtml(w.description || '')}</textarea>
+            <textarea id="workout-desc" rows="2" placeholder="Descripción de la rutina..." class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">${escapeHtml(w.description || '')}</textarea>
           </div>
 
           <!-- Exercises -->
@@ -416,8 +416,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div data-exercise-row class="rounded-xl border theme-border theme-surface-secondary p-3 backdrop-blur-sm">
         <div class="flex items-center gap-2 mb-2">
           <span class="text-xs theme-text-tertiary font-medium w-5">#${index + 1}</span>
-          <input type="text" value="${escapeHtml(exercise.name)}" placeholder="Nombre del ejercicio" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-zinc-600 focus:outline-none focus:theme-border-focus/50" />
-          <select class="w-24 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-secondary focus:outline-none focus:theme-border-focus/50">
+          <input type="text" value="${escapeHtml(exercise.name)}" placeholder="Nombre del ejercicio" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
+          <select class="w-24 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
             ${dayOptions}
           </select>
           <button data-remove-exercise class="rounded-lg border border-red-900/30 bg-red-500/10 px-2 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
@@ -429,19 +429,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-1.5">
             <label class="text-[10px] theme-text-tertiary">Series</label>
-            <input type="number" value="${exercise.sets}" min="1" max="20" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" />
+            <input type="number" value="${exercise.sets}" min="1" max="20" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
           <div class="flex items-center gap-1.5">
             <label class="text-[10px] theme-text-tertiary">Reps</label>
-            <input type="number" value="${exercise.reps}" min="1" max="100" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" />
+            <input type="number" value="${exercise.reps}" min="1" max="100" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
           <div class="flex items-center gap-1.5">
             <label class="text-[10px] theme-text-tertiary">Descanso</label>
-            <input type="text" value="${exercise.restTime}" placeholder="60s" class="w-16 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:theme-border-focus/50" />
+            <input type="text" value="${exercise.restTime}" placeholder="60s" class="w-16 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
           <div class="flex-1 flex items-center gap-1.5">
             <label class="text-[10px] theme-text-tertiary">Notas</label>
-            <input type="text" value="${escapeHtml(exercise.description || '')}" placeholder="Opcional" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary placeholder-zinc-600 focus:outline-none focus:theme-border-focus/50" />
+            <input type="text" value="${escapeHtml(exercise.description || '')}" placeholder="Opcional" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           </div>
         </div>
       </div>
