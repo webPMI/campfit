@@ -4,7 +4,7 @@
 > **Propósito:** Lista única de todas las tareas, optimizaciones y seguimiento del proyecto  
 > **Para agentes IA:** Este es el archivo de referencia para ver qué hacer y qué está pendiente  
 > **IMPORTANTE:** Este archivo reemplaza a `TODO_OPTIMIZACIONES.md`, `TASK_PROGRESS.md` y `tests/TASK_PROGRESS.md`  
-> **Documentación:** Ver `docs/MASTER.md` para la documentación completa del proyecto
+> **Documentación:** Ver `nuevo_proyecto/00_indice.md` para la documentación completa del proyecto
 >
 > 📌 **IMPORTANTE:** Antes de empezar cualquier tarea, leer `GIT_WORKFLOW.md` para entender el flujo de git/deploy.
 
@@ -14,11 +14,12 @@
 
 | Categoría | Total | Completadas | Pendientes |
 |-----------|-------|-------------|------------|
-| 🔴 CRÍTICO - Código Repetido | 9 | 3 | 6 |
-| 🟡 MEDIO - Código Muerto/No Utilizado | 2 | 1 | 1 |
+| 🔴 CRÍTICO - Código Repetido | 9 | 9 | 0 |
+| 🟡 MEDIO - Código Muerto/No Utilizado | 2 | 2 | 0 |
 | 🟢 BAJO - Mejoras de Código | 3 | 0 | 3 |
+| 🎨 UI/UX - Notificaciones y Feedback | 5 | 5 | 0 |
 | 🧪 Tests y Calidad | 8 | 4 | 4 |
-| **TOTAL** | **22** | **8** | **14** |
+| **TOTAL** | **27** | **20** | **7** |
 
 ---
 
@@ -414,6 +415,29 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ---
 
+## ✅ Funcionalidades Completadas (2026-07-25)
+
+### Sistema de Notificaciones Chat
+- ✅ Badges en tiempo real en layouts (Client, Trainer, Admin)
+- ✅ Toasts de notificación al recibir mensajes nuevos
+- ✅ Indicadores de mensajes no leídos por usuario en lista de admin
+- ✅ Contador total de no leídos en lista de conversaciones del trainer
+- ✅ Ocultar badge al abrir conversación
+- ✅ Actualización automática via Firestore onSnapshot
+
+### Marcado de Entrenamientos Completados
+- ✅ Función `completeWorkout()` en workoutService
+- ✅ Botón funcional en página de workouts del cliente
+- ✅ Estado de carga y feedback visual
+- ✅ Persistencia en Firestore con Timestamp
+- ✅ Actualización del estado al recargar
+
+### Documentación Actualizada
+- ✅ README.md actualizado con nuevas funcionalidades
+- ✅ TODO.md actualizado con resumen de cambios
+
+---
+
 ## 🎯 Plan de Acción Recomendado
 
 ### Fase 1 - Refactorización Crítica (1-2 horas)
@@ -430,10 +454,18 @@ const altLang = lang === 'es' ? 'en' : 'es';
 9. ✅ **#5** - Mover debug script a `BaseLayout.astro`
 10. ✅ **#8** - Usar componentes en layouts
 
-### Fase 3 - Limpieza (1 hora)
+### Fase 3 - Limpieza (1 hora) ✅ COMPLETADA
 11. ✅ **#10** - Verificar y condicionar código de debug
-12. ⏳ **#11** - Limpiar imports no usados
+12. ✅ **#11** - Limpiar imports no usados
 13. ⏳ **#12, #13, #14** - Mejoras menores (opcional)
+
+### Fase 4 - Notificaciones y Feedback UI (2 horas) ✅ COMPLETADA
+14. ✅ **Sistema de notificaciones chat** - Badges, toasts, indicadores en tiempo real
+15. ✅ **Marcado de workouts** - Botón funcional con estado y feedback visual
+
+### Fase 5 - Próximas Funcionalidades (En progreso)
+16. ⏳ **Mejoras en tests** - Aumentar cobertura en módulos pendientes
+17. ⏳ **Nuevas funcionalidades** - Ver sección "Próximas Funcionalidades" abajo
 
 ---
 
@@ -536,9 +568,36 @@ Si hay errores, revisar:
 
 ---
 
+## 🚀 Próximas Funcionalidades a Implementar
+
+### Prioridad Alta
+- [ ] **Sistema de logros y badges** - Logros por completar workouts, adherencia, hitos
+  - Colección `achievements` en Firestore
+  - Tipos: `workout_completed`, `streak_7_days`, `first_workout`, `diet_adherence`
+  - Mostrar en dashboard del cliente
+  - Notificación al desbloquear logro
+- [ ] **Sistema de notificaciones push** - Web Push API para notificaciones del navegador
+- [ ] **Calendario de entrenamientos** - Vista semanal/mensual con días completados
+- [ ] **Seguimiento de adherencia** - Estadísticas de cumplimiento de rutinas y dietas
+
+### Prioridad Media
+- [ ] **Galería de ejercicios** - Biblioteca visual con videos y descripciones
+- [ ] **Exportar datos** - Descargar historial de progreso en PDF/CSV
+- [ ] **Compartir logros** - Compartir en redes sociales
+- [ ] **Modo oscuro/claro** - Toggle de tema visual
+
+### Prioridad Baja
+- [ ] **Integración con wearables** - Sincronización con Apple Watch, Fitbit
+- [ ] **Chat grupal** - Grupos de entrenamiento
+- [ ] **Marketplace de rutinas** - Compartir rutinas entre entrenadores
+- [ ] **Sistema de reseñas** - Calificar entrenadores y rutinas
+
+---
+
 ## 📚 Documentación de Referencia
 
 - **Guía completa para agentes:** `AGENTS_GUIDE.md`
+- **Agente de testing:** `testing-agent/GUIDE.md` y `testing-agent/CHECKLIST.md` - Golden rules específicas, proceso profesional, estrategias para evitar falsos positivos y lograr alta cobertura
 - **Contexto del proyecto:** `CONTEXT.md`
 - **Tarea actual:** `TASK.md`
 - **Índice de documentación:** `nuevo_proyecto/00_indice.md`

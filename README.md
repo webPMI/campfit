@@ -26,40 +26,91 @@
 campfit-astro/
 ├── public/                  # Archivos estáticos
 ├── src/
-│   ├── i18n/                # Internacionalización (es/en)
-│   │   ├── client.ts        # Traducciones para el cliente JS
-│   │   └── translations.ts  # Traducciones completas (SSR)
+│   ├── components/          # Componentes .astro reutilizables
+│   │   ├── DecorativeBackground.astro
+│   │   ├── LanguageSwitcher.astro
+│   │   └── PublicPageLayout.astro
 │   ├── layouts/             # Layouts por rol
 │   │   ├── BaseLayout.astro
 │   │   ├── AdminLayout.astro
 │   │   ├── ClientLayout.astro
 │   │   └── TrainerLayout.astro
-│   ├── lib/                 # Utilidades compartidas
-│   │   ├── admin/           # Utilidades específicas del panel admin
-│   │   │   └── adminUtils.ts
-│   │   ├── firebase.ts      # Configuración de Firebase
-│   │   ├── routeGuards.ts   # Guardias de ruta por rol
-│   │   └── validators.ts    # Validación de formularios
+│   ├── lib/                 # Utilidades compartidas (modularizadas)
+│   │   ├── shared/          # ui, chat, logger, authGuard, i18n, profileService
+│   │   ├── admin/           # Módulo admin (7 archivos modulares)
+│   │   ├── trainer/         # Módulo trainer (10 archivos modulares)
+│   │   ├── client/          # chatService, dietService, progressService, workoutService
+│   │   ├── auth/            # roleRedirect
+│   │   ├── helpers/         # userMappers
+│   │   ├── firebase/        # auth, firestore (wrappers testing)
+│   │   └── debug/           # firestoreDebug
 │   ├── pages/               # Páginas (rutas)
 │   │   ├── index.astro      # Landing page
 │   │   ├── login.astro      # Inicio de sesión
 │   │   ├── register.astro   # Registro
 │   │   ├── recover.astro    # Recuperar contraseña
 │   │   ├── dashboard.astro  # Dashboard post-login
+│   │   ├── onboarding.astro # Onboarding inicial
+│   │   ├── 404.astro        # Página no encontrada
+│   │   ├── 500.astro        # Error del servidor
 │   │   ├── admin/           # Panel de administración
+│   │   │   ├── dashboard.astro
+│   │   │   ├── users.astro
+│   │   │   ├── clients.astro
+│   │   │   ├── trainers.astro
+│   │   │   └── settings.astro
 │   │   ├── client/          # Panel de cliente
+│   │   │   ├── dashboard.astro
+│   │   │   ├── workouts.astro
+│   │   │   ├── diets.astro
+│   │   │   ├── progress.astro
+│   │   │   ├── chat.astro
+│   │   │   ├── support.astro
+│   │   │   ├── settings.astro
+│   │   │   └── medical-profile.astro
 │   │   ├── trainer/         # Panel de entrenador
+│   │   │   ├── dashboard.astro
+│   │   │   ├── clients.astro
+│   │   │   ├── workouts.astro
+│   │   │   ├── diets.astro
+│   │   │   ├── chat.astro
+│   │   │   └── settings.astro
 │   │   └── api/             # Endpoints API
 │   ├── services/            # Servicios (Firebase)
 │   │   ├── authService.ts   # Autenticación
 │   │   └── adminService.ts  # Administración
 │   ├── stores/              # Stores reactivos
 │   │   └── authStore.ts     # Estado de autenticación (Nanostores)
-│   └── types/               # Tipos TypeScript
-│       └── index.ts
-├── tests/                   # Tests
-├── astro.config.mjs         # Configuración de Astro
-├── tsconfig.json            # Configuración de TypeScript
+│   ├── types/               # Tipos TypeScript
+│   │   └── index.ts
+│   └── i18n/                # Internacionalización (es/en)
+│       ├── translations.ts
+│       └── client.ts
+├── tests/                   # Tests centralizados
+│   ├── setup/               # Setup global (vitest, e2e)
+│   ├── mocks/               # Mocks de Firebase (firebase, firestore)
+│   ├── unit/                # Tests unitarios
+│   │   ├── services/
+│   │   ├── stores/
+│   │   ├── lib/             # admin, auth, client, helpers, shared, trainer
+│   │   └── utils/
+│   ├── integration/         # Tests de integración
+│   └── e2e/                 # Tests E2E (Playwright)
+├── testing-agent/           # Documentación del agente de testing
+│   ├── GUIDE.md
+│   └── CHECKLIST.md
+├── nuevo_proyecto/          # Documentación del proyecto
+├── scripts/                 # Scripts para agentes IA
+│   ├── agent-lock.sh
+│   ├── setup.sh
+│   ├── doctor.sh
+│   ├── mcp-setup.sh
+│   ├── check-context.sh
+│   └── validate.sh
+├── astro.config.mjs
+├── tsconfig.json
+├── vitest.config.ts
+├── playwright.config.ts
 └── package.json
 ```
 
@@ -79,20 +130,27 @@ campfit-astro/
 - Dashboard personal con progreso semanal
 - Rutinas de entrenamiento asignadas por el trainer
 - Plan nutricional con seguimiento de comidas
-- Registro de progreso (peso, medidas)
+- Registro de progreso (peso, medidas, fotos)
 - Chat directo con el entrenador
 - Perfil médico
+- Notificaciones en tiempo real de mensajes nuevos en el chat
+- Marcado de entrenamientos como completados
 
 ### 🏋️ Entrenador
 - Gestión de clientes asignados
 - Creación y asignación de rutinas
 - Creación y asignación de planes nutricionales
+- Seguimiento de progreso de clientes
 - Comunicación con clientes vía chat
+- Notificaciones en tiempo real de mensajes nuevos
+- Indicadores de mensajes no leídos por cliente
 
 ### ⚙️ Administración
 - Dashboard con estadísticas en tiempo real
 - Gestión de usuarios (cambiar roles, eliminar)
-- Vista de entrenadores y clientes
+- Chat directo con cualquier usuario de la plataforma
+- Notificaciones en tiempo real de mensajes nuevos
+- Indicadores de mensajes no leídos por usuario en la lista
 - Configuración del sistema
 
 ### 🌐 Internacionalización

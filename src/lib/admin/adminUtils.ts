@@ -6,6 +6,7 @@
  */
 
 export type { AdminUser, CreateUserPayload } from './types';
+export type { PaginatedResult } from './adminSubscriptions';
 
 export { requireAdmin, signOutUser } from './adminAuth';
 export {
@@ -23,6 +24,7 @@ export {
   subscribeToCollectionCount,
   subscribeToRecentUsers,
   getTrainerClientCount,
+  getPaginatedUsers,
 } from './adminSubscriptions';
 export {
   renderUserRow,

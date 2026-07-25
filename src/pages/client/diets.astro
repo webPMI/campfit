@@ -105,17 +105,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { initClientPage } from '@/lib/client/clientInit';
   import { subscribeToDiets, subscribeToDietHistory, subscribeToTodayMeals, registerMealComplete } from '@/lib/client/dietService';
   import { t } from '@/i18n/client';
 
   // ─── DOM refs ────────────────────────────────────────────────────────────────
-  const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
-  const dietsContent = document.getElementById('dietsContent')!;
   const dietCard = document.getElementById('dietCard')!;
   const emptyState = document.getElementById('emptyState')!;
   const dietName = document.getElementById('dietName')!;
@@ -137,12 +132,15 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const toast = document.getElementById('diet-toast')!;
 
   // ─── State ───────────────────────────────────────────────────────────────────
+  let currentClientId: string = '';
   let currentDietId: string | null = null;
   let currentMealsCount = 0;
   let unsubDiets: (() => void) | null = null;
   let unsubHistory: (() => void) | null = null;
   let unsubTodayMeals: (() => void) | null = null;
   let allDiets: any[] = [];
+  let cleanupHistoryListener: (() => void) | null = null;
+  let cleanupBackListener: (() => void) | null = null;
 
   // ─── Toast helper ────────────────────────────────────────────────────────────
   function showToast(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
@@ -167,66 +165,49 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   // ─── Init ────────────────────────────────────────────────────────────────────
   loadingText.textContent = t('dashboard.loading');
 
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
-    }
+  const cleanupInit = initClientPage({
+    onReady: async (firebaseUser) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetClientId = urlParams.get('clientId') || urlParams.get('user') || firebaseUser.uid;
+      currentClientId = targetClientId;
 
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || userData.role !== 'client') {
-      window.location.href = '/dashboard';
-      return;
-    }
+      // Suscribirse a la dieta actual (última)
+      unsubDiets = subscribeToDiets(currentClientId, (diets) => {
+        allDiets = diets;
+        if (diets.length > 0 && diets[0]) {
+          renderCurrentDiet(diets[0]);
+          btnHistory.classList.remove('hidden');
+        } else {
+          dietCard.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+          btnHistory.classList.add('hidden');
+        }
+      });
 
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
+      // Suscribirse a comidas completadas hoy para adherencia
+      unsubTodayMeals = subscribeToTodayMeals(currentClientId, (completedIds) => {
+        updateAdherence(completedIds);
+      });
 
-    loadingScreen.classList.add('hidden');
-    dietsContent.classList.remove('hidden');
+      // History toggle
+      cleanupHistoryListener?.();
+      const onHistoryClick = () => showHistory(currentClientId);
+      btnHistory.addEventListener('click', onHistoryClick);
+      cleanupHistoryListener = () => btnHistory.removeEventListener('click', onHistoryClick);
 
-    const clientId = firebaseUser.uid;
-
-    // Suscribirse a la dieta actual (última)
-    unsubDiets = subscribeToDiets(clientId, (diets) => {
-      allDiets = diets;
-      if (diets.length > 0 && diets[0]) {
-        renderCurrentDiet(diets[0]);
+      cleanupBackListener?.();
+      const onBackClick = () => {
+        historyView.classList.add('hidden');
+        dietCard.classList.remove('hidden');
         btnHistory.classList.remove('hidden');
-      } else {
-        dietCard.classList.add('hidden');
-        emptyState.classList.remove('hidden');
-        btnHistory.classList.add('hidden');
-      }
-    });
-
-    // Suscribirse a comidas completadas hoy para adherencia
-    unsubTodayMeals = subscribeToTodayMeals(clientId, (completedIds) => {
-      updateAdherence(completedIds);
-    });
-
-    // History toggle
-    btnHistory.addEventListener('click', () => {
-      showHistory(clientId);
-    });
-
-    btnBackCurrent.addEventListener('click', () => {
-      historyView.classList.add('hidden');
-      dietCard.classList.remove('hidden');
-      btnHistory.classList.remove('hidden');
-      if (unsubHistory) {
-        unsubHistory();
-        unsubHistory = null;
-      }
-    });
+        if (unsubHistory) {
+          unsubHistory();
+          unsubHistory = null;
+        }
+      };
+      btnBackCurrent.addEventListener('click', onBackClick);
+      cleanupBackListener = () => btnBackCurrent.removeEventListener('click', onBackClick);
+    }
   });
 
   // ─── Render current diet ─────────────────────────────────────────────────────
@@ -305,12 +286,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         const mealName = btn.getAttribute('data-meal-name');
         if (!mealId || !currentDietId) return;
 
-        // Deshabilitar botón temporalmente
         btn.setAttribute('disabled', 'true');
         btn.classList.add('opacity-50');
 
         const result = await registerMealComplete(
-          '', // clientId se obtiene del auth
+          currentClientId,
           currentDietId,
           mealId,
           mealName || '',
@@ -318,7 +298,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
         if (result) {
           showToast('Comida marcada como completada ✅', 'success');
-          // Marcar visualmente
           const row = btn.closest('[class*="rounded-xl"]');
           if (row) {
             row.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
@@ -350,7 +329,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     adherenceFill.style.width = `${pct}%`;
     adherenceText.textContent = `${pct}% (${completedIds.length}/${currentMealsCount})`;
 
-    // Marcar visualmente las comidas completadas
     completedIds.forEach((mealId) => {
       const mealRow = document.getElementById(`meal-${mealId}`);
       if (mealRow) {
@@ -429,7 +407,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
+    cleanupInit();
+    cleanupHistoryListener?.();
+    cleanupBackListener?.();
     unsubDiets?.();
     unsubHistory?.();
     unsubTodayMeals?.();

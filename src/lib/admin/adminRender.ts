@@ -171,7 +171,12 @@ export function renderUserCardExtended(user: AdminUser, showEdit: boolean = fals
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <span class="rounded-full px-2 py-0.5 text-[10px] font-medium border ${roleColor}">${user.role}</span>
-          ${showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all">
+          <a href="/admin/chat?user=${user.uid}" onclick="event.stopPropagation();" class="rounded-lg p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all" title="Abrir chat con este usuario">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.777 5.98 5.98 0 0 1 1.05-2.617A8.995 8.995 0 0 1 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+            </svg>
+          </a>
+          ${showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all" title="Editar usuario">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
             </svg>
@@ -203,8 +208,15 @@ export function renderClientCard(client: AdminUser): string {
             <p class="text-xs text-zinc-500 truncate">${escapeHtml(email)}</p>
           </div>
         </div>
-        <div class="text-right shrink-0">
-          <p class="text-xs text-zinc-500">Trainer: <span class="text-zinc-400">${escapeHtml(trainerName)}</span></p>
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="text-right">
+            <p class="text-xs text-zinc-500">Trainer: <span class="text-zinc-400">${escapeHtml(trainerName)}</span></p>
+          </div>
+          <a href="/admin/chat?user=${client.uid}" class="rounded-lg p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all" title="Abrir chat">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.777 5.98 5.98 0 0 1 1.05-2.617A8.995 8.995 0 0 1 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -232,9 +244,16 @@ export function renderTrainerCard(trainer: AdminUser & { clientCount?: number })
             <p class="text-xs text-zinc-500 truncate">${escapeHtml(email)}</p>
           </div>
         </div>
-        <div class="text-right shrink-0">
-          <p class="text-sm font-semibold text-blue-400">${clientCount}</p>
-          <p class="text-xs text-zinc-500">clientes</p>
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="text-right">
+            <p class="text-sm font-semibold text-blue-400">${clientCount}</p>
+            <p class="text-xs text-zinc-500">clientes</p>
+          </div>
+          <a href="/admin/chat?user=${trainer.uid}" class="rounded-lg p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-all" title="Abrir chat">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.777 5.98 5.98 0 0 1 1.05-2.617A8.995 8.995 0 0 1 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+            </svg>
+          </a>
         </div>
       </div>
     </div>

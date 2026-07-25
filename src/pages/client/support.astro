@@ -74,18 +74,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { initClientPage } from '@/lib/client/clientInit';
   import { t } from '@/i18n/client';
 
-  const loadingScreen = document.getElementById('loadingScreen')!;
-  const loadingText = document.getElementById('loadingText')!;
-  const supportContent = document.getElementById('supportContent')!;
   const faqContainer = document.getElementById('faqContainer')!;
-
-  loadingText.textContent = t('dashboard.loading');
 
   // FAQ data
   const faqItems = [
@@ -111,7 +103,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     },
   ];
 
-  function renderFaqs() {
+  function renderFaqs(): void {
     faqContainer.innerHTML = '';
     faqItems.forEach((item, index) => {
       const faqEl = document.createElement('div');
@@ -136,14 +128,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       faqContainer.appendChild(faqEl);
 
-      // Add click handler
       const questionBtn = faqEl.querySelector('.faq-question') as HTMLButtonElement;
       questionBtn.addEventListener('click', () => {
         const answer = faqEl.querySelector('.faq-answer') as HTMLDivElement;
         const chevron = faqEl.querySelector('.faq-chevron') as SVGElement;
         const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
 
-        // Close all other FAQs
         document.querySelectorAll('.faq-answer').forEach((el) => {
           (el as HTMLDivElement).style.maxHeight = '0px';
         });
@@ -159,40 +149,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     });
   }
 
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
+  const cleanupInit = initClientPage({
+    onReady: async () => {
+      renderFaqs();
     }
-
-    // Verificar rol de cliente
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || userData.role !== 'client') {
-      window.location.href = '/dashboard';
-      return;
-    }
-
-    // Actualizar authStore
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
-
-    loadingScreen.classList.add('hidden');
-    supportContent.classList.remove('hidden');
-
-    // Render FAQ items
-    renderFaqs();
   });
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
+    cleanupInit();
   });
 </script>

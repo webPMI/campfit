@@ -80,16 +80,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { initClientPage } from '@/lib/client/clientInit';
   import { subscribeToProgress, registerWeight } from '@/lib/client/progressService';
   import { t } from '@/i18n/client';
 
-  const loadingScreen = document.getElementById('loadingScreen')!;
-  const loadingText = document.getElementById('loadingText')!;
-  const progressContent = document.getElementById('progressContent')!;
   const tabWeight = document.getElementById('tabWeight')!;
   const tabPhotos = document.getElementById('tabPhotos')!;
   const weightTab = document.getElementById('weightTab')!;
@@ -97,8 +91,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const weightInput = document.getElementById('weightInput') as HTMLInputElement;
   const saveWeightBtn = document.getElementById('saveWeightBtn')!;
   const weightHistory = document.getElementById('weightHistory')!;
-
-  loadingText.textContent = t('dashboard.loading');
 
   // Tab switching
   function switchTab(tab: 'weight' | 'photos') {
@@ -122,75 +114,54 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   tabWeight.addEventListener('click', () => switchTab('weight'));
   tabPhotos.addEventListener('click', () => switchTab('photos'));
 
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
+  // ─── State para limpieza ──────────────────────────────────────────────────
+  let unsubProgress: (() => void) | null = null;
+
+  const cleanupInit = initClientPage({
+    onReady: async (firebaseUser) => {
+      // Subscribe to weight logs
+      unsubProgress = subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
+        if (logs.length > 0) {
+          weightHistory.innerHTML = '';
+          logs.forEach((log) => {
+            const w = log.value?.weight;
+            if (w) {
+              const div = document.createElement('div');
+              div.className = 'flex items-center justify-between rounded-lg bg-zinc-800/30 px-4 py-3';
+              const date = (log.date && typeof (log.date as { toDate?: () => Date }).toDate === 'function'
+                ? (log.date as { toDate: () => Date }).toDate().toLocaleDateString()
+                : log.date instanceof Date
+                  ? log.date.toLocaleDateString()
+                  : 'Fecha');
+              div.innerHTML = `
+                <span class="text-sm text-zinc-400">${date}</span>
+                <span class="text-sm font-semibold text-zinc-200">${w} ${t('client.stats.kg')}</span>
+              `;
+              weightHistory.appendChild(div);
+            }
+          });
+        } else {
+          weightHistory.innerHTML = '<p class="text-sm text-zinc-600">Sin registros de peso aún.</p>';
+        }
+      });
+
+      // Save weight
+      saveWeightBtn.addEventListener('click', async () => {
+        const val = parseFloat(weightInput.value);
+        if (!val || val <= 0) return;
+        try {
+          await registerWeight(firebaseUser.uid, val);
+          weightInput.value = '';
+        } catch (err) {
+          console.error('Error saving weight:', err);
+        }
+      });
     }
-
-    // Verificar rol de cliente
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || userData.role !== 'client') {
-      window.location.href = '/dashboard';
-      return;
-    }
-
-    // Actualizar authStore
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
-
-    loadingScreen.classList.add('hidden');
-    progressContent.classList.remove('hidden');
-
-    // Subscribe to weight logs
-    subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
-      if (logs.length > 0) {
-        weightHistory.innerHTML = '';
-        logs.forEach((log) => {
-          const w = log.value?.weight;
-          if (w) {
-            const div = document.createElement('div');
-            div.className = 'flex items-center justify-between rounded-lg bg-zinc-800/30 px-4 py-3';
-            const date = (log.date && typeof (log.date as { toDate?: () => Date }).toDate === 'function'
-              ? (log.date as { toDate: () => Date }).toDate().toLocaleDateString()
-              : log.date instanceof Date
-                ? log.date.toLocaleDateString()
-                : 'Fecha');
-            div.innerHTML = `
-              <span class="text-sm text-zinc-400">${date}</span>
-              <span class="text-sm font-semibold text-zinc-200">${w} ${t('client.stats.kg')}</span>
-            `;
-            weightHistory.appendChild(div);
-          }
-        });
-      } else {
-        weightHistory.innerHTML = '<p class="text-sm text-zinc-600">Sin registros de peso aún.</p>';
-      }
-    });
-
-    // Save weight
-    saveWeightBtn.addEventListener('click', async () => {
-      const val = parseFloat(weightInput.value);
-      if (!val || val <= 0) return;
-      try {
-        await registerWeight(firebaseUser.uid, val);
-        weightInput.value = '';
-      } catch (err) {
-        console.error('Error saving weight:', err);
-      }
-    });
   });
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
+    cleanupInit();
+    unsubProgress?.();
   });
 </script>

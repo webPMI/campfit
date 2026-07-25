@@ -11,6 +11,7 @@ const mockDoc = vi.fn();
 const mockAddDoc = vi.fn();
 const mockGetDoc = vi.fn();
 const mockGetDocs = vi.fn();
+const mockGetCountFromServer = vi.fn();
 const mockSetDoc = vi.fn();
 const mockUpdateDoc = vi.fn();
 const mockDeleteDoc = vi.fn();
@@ -52,6 +53,7 @@ const firestoreExports = {
   addDoc: mockAddDoc,
   getDoc: mockGetDoc,
   getDocs: mockGetDocs,
+  getCountFromServer: mockGetCountFromServer,
   setDoc: mockSetDoc,
   updateDoc: mockUpdateDoc,
   deleteDoc: mockDeleteDoc,
@@ -178,7 +180,7 @@ describe('adminSubscriptions', () => {
 
   describe('getTrainerClientCount', () => {
     it('debería retornar el conteo de clientes de un trainer', async () => {
-      mockGetDocs.mockResolvedValue({ size: 3 });
+      mockGetCountFromServer.mockResolvedValue({ data: () => ({ count: 3 }) });
 
       const { getTrainerClientCount } = await import('@/lib/admin/adminSubscriptions');
       const count = await getTrainerClientCount('trainer-123');
@@ -187,7 +189,7 @@ describe('adminSubscriptions', () => {
     });
 
     it('debería retornar 0 si falla la consulta', async () => {
-      mockGetDocs.mockRejectedValue(new Error('Error'));
+      mockGetCountFromServer.mockRejectedValue(new Error('Error'));
 
       const { getTrainerClientCount } = await import('@/lib/admin/adminSubscriptions');
       const count = await getTrainerClientCount('trainer-123');

@@ -30,6 +30,7 @@ export interface TrainerWorkout {
   difficulty: string;
   description: string;
   exercises: Exercise[];
+  isTemplate?: boolean;
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
 }
@@ -55,6 +56,7 @@ export interface TrainerDiet {
   somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph';
   totalCalories: number;
   meals: Meal[];
+  isTemplate?: boolean;
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
 }

@@ -6,11 +6,12 @@
  * @module shared/logger
  */
 
-type LogLevel = 'info' | 'warn' | 'error';
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 function shouldLog(level: LogLevel): boolean {
-  // Error siempre se loguea; info y warn solo en desarrollo
-  if (level === 'error') return true;
+  // Error y warn siempre se loguean en producción
+  if (level === 'error' || level === 'warn') return true;
+  // Info y debug solo en desarrollo
   return import.meta.env.DEV === true;
 }
 
@@ -33,7 +34,7 @@ export const logger = {
   },
 
   /**
-   * Log de advertencia (solo en desarrollo).
+   * Log de advertencia (siempre se registra).
    * @param module - Nombre del módulo
    * @param message - Mensaje descriptivo
    * @param args - Argumentos adicionales

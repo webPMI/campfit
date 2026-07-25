@@ -1,6 +1,6 @@
 # CampFit - Contexto del Proyecto
 
-> **Contexto comprimido para agentes de IA.** Última actualización: 2026-07-20
+> **Contexto comprimido para agentes de IA.** Última actualización: 2026-07-25
 
 ## Stack
 - **Framework:** Astro 7 (SSR con `@astrojs/node`)
@@ -15,15 +15,19 @@
 ## Estructura src/
 ```
 src/
-├── components/     # Componentes .astro
-├── layouts/        # Layouts por rol (Base, Admin, Client, Trainer, PublicPage)
-├── pages/          # Páginas + API routes
-│   ├── admin/      # dashboard, users, trainers, clients, settings
-│   ├── client/     # dashboard, workouts, diets, progress, chat, support, settings
-│   └── trainer/    # dashboard, clients, workouts, diets, chat, settings
+├── components/         # Componentes .astro (DecorativeBackground, LanguageSwitcher, PublicPageLayout)
+├── layouts/            # Layouts por rol (Base, Admin, Client, Trainer, PublicPage)
+├── pages/              # Páginas + API routes
+│   ├── admin/          # dashboard, users, clients, trainers, settings
+│   ├── client/         # dashboard, workouts, diets, progress, chat, support, settings, medical-profile
+│   ├── trainer/        # dashboard, clients, workouts, diets, chat, settings
+│   ├── api/            # API routes
+│   ├── login.astro, register.astro, recover.astro, onboarding.astro
+│   ├── index.astro, 404.astro, 500.astro
+│   └── dashboard.astro
 ├── lib/
-│   ├── shared/     # ui.ts, chat.ts, logger.ts, authGuard.ts, i18n.ts, profileService.ts
-│   ├── admin/      # Módulo admin modularizado (7 archivos)
+│   ├── shared/         # ui.ts, chat.ts, logger.ts, authGuard.ts, i18n.ts, profileService.ts
+│   ├── admin/          # Módulo admin modularizado (7 archivos)
 │   │   ├── types.ts              # AdminUser, CreateUserPayload
 │   │   ├── adminAuth.ts          # requireAdmin, signOutUser
 │   │   ├── adminUsers.ts         # CRUD usuarios
@@ -31,7 +35,7 @@ src/
 │   │   ├── adminRender.ts        # Renderizado HTML
 │   │   ├── adminInit.ts          # initGlobalActions
 │   │   └── adminUtils.ts         # Barrel (re-export)
-│   ├── trainer/    # Módulo trainer modularizado (10 archivos)
+│   ├── trainer/        # Módulo trainer modularizado (10 archivos)
 │   │   ├── types.ts              # TrainerClient, Workout, Diet, etc.
 │   │   ├── trainerAuth.ts        # requireAuth, signOutUser
 │   │   ├── trainerClients.ts     # Clientes del trainer
@@ -42,14 +46,15 @@ src/
 │   │   ├── trainerRender.ts      # Renderizado HTML
 │   │   ├── trainerInit.ts        # initGlobalActions
 │   │   └── trainerUtils.ts       # Barrel (re-export)
-│   ├── client/     # chatService.ts, dietService.ts, progressService.ts, workoutService.ts
-│   ├── helpers/    # userMappers.ts
-│   ├── firebase/   # auth.ts, firestore.ts (wrappers testing)
-│   └── debug/      # firestoreDebug.ts
-├── services/       # authService.ts, adminService.ts
-├── stores/         # authStore.ts (Nanostores)
-├── types/          # index.ts (User, MedicalProfile, etc.)
-└── i18n/           # translations.ts, client.ts
+│   ├── client/         # chatService.ts, dietService.ts, progressService.ts, workoutService.ts
+│   ├── auth/           # roleRedirect.ts
+│   ├── helpers/        # userMappers.ts
+│   ├── firebase/       # auth.ts, firestore.ts (wrappers testing)
+│   └── debug/          # firestoreDebug.ts
+├── services/           # authService.ts, adminService.ts
+├── stores/             # authStore.ts (Nanostores)
+├── types/              # index.ts (User, MedicalProfile, etc.)
+└── i18n/               # translations.ts, client.ts
 ```
 
 ## Roles
@@ -70,7 +75,8 @@ src/
 - **Centralizados en `tests/`** (nada en `src/__tests__/`)
 - Unitarios: Vitest (node, sin jsdom)
 - E2E: Playwright
-- Mocks: Firebase (auth, firestore, storage)
+- Mocks: Firebase (auth, firestore, storage) en `tests/mocks/`
+- **Estructura:** `tests/unit/`, `tests/integration/`, `tests/e2e/`
 
 ## Comandos Rápidos
 ```bash
@@ -86,6 +92,7 @@ npm run build            # Build producción
 - `AGENTS_GUIDE.md` - Guía completa para agentes
 - `TODO.md` - Tareas pendientes
 - `GIT_WORKFLOW.md` - Flujo de git
+- `testing-agent/GUIDE.md` - Guía del agente de testing
 - `nuevo_proyecto/00_indice.md` - Índice de documentación
 
 ## Estado Actual

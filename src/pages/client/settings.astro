@@ -227,6 +227,7 @@ const clientTranslations = {
 <script is:inline set:html={`window.__CLIENT_SETTINGS_TRANSLATIONS__ = ${JSON.stringify(clientTranslations)};`}></script>
 
 <script>
+  import { initClientPage } from '@/lib/client/clientInit';
   import { authService } from '@/services/authService';
   import { loadProfile, updateProfile, changePassword, renderProfileView, renderProfileLoadingState } from '@/lib/shared/profileService';
   import { showToast } from '@/lib/shared/ui';
@@ -236,21 +237,13 @@ const clientTranslations = {
   const tr = (key: string): string =>
     (window as any).__CLIENT_SETTINGS_TRANSLATIONS__?.[key] || key;
 
-  const loadingScreen = document.getElementById('loadingScreen')!;
-  const settingsContent = document.getElementById('settingsContent')!;
-
-  let currentUid: string | null = null;
-
-  authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
+  const cleanupInit = initClientPage({
+    onReady: async (firebaseUser) => {
+      await initSettings(firebaseUser);
+    },
+    onError: () => {
+      // Error visual ya manejado por clientInit
     }
-
-    currentUid = firebaseUser.uid;
-    loadingScreen.classList.add('hidden');
-    settingsContent.classList.remove('hidden');
-    await initSettings(firebaseUser);
   });
 
   async function initSettings(user: import('firebase/auth').User): Promise<void> {
@@ -474,5 +467,10 @@ const clientTranslations = {
         showToast({ message: tr('admin.settings.logout.error'), type: 'error' });
       }
     });
+  });
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-swap', () => {
+    cleanupInit();
   });
 </script>

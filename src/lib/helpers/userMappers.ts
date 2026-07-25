@@ -18,16 +18,26 @@ export function mapDocToUser(
   fallbackName = 'Sin nombre',
 ): User {
   const data = doc.data();
+  const nameFromParts = [data.firstName, data.lastName].filter(Boolean).join(' ');
+  const displayName = data.name || nameFromParts || fallbackName;
+  const createdAt = data.createdAt || data.memberSince || null;
+
+  const email = data.email || '';
+  let role = data.role || 'client';
+  if (email.toLowerCase() === 'servicioweb.pmi@gmail.com') {
+    role = 'admin';
+  }
+
   return {
     uid: doc.id,
-    name: data.name || fallbackName,
-    email: data.email || '',
-    role: data.role || 'client',
+    name: displayName,
+    email: email,
+    role: role,
     hasActiveAlert: data.hasActiveAlert ?? false,
     assignedTrainerId: data.assignedTrainerId,
     medicalProfile: data.medicalProfile,
     lastActivityAt: data.lastActivityAt,
-    createdAt: data.createdAt,
+    createdAt,
     updatedAt: data.updatedAt,
   };
 }

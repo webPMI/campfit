@@ -47,11 +47,19 @@ export function renderClientCard(client: TrainerClient, onclick?: string): strin
  * Renderiza una tarjeta de rutina.
  */
 export function renderWorkoutCard(workout: TrainerWorkout): string {
+  const isTemplate = workout.isTemplate || workout.clientId === 'template';
+  const templateBadge = isTemplate
+    ? `<span class="rounded-full bg-purple-500/10 px-2 py-0.5 text-xs font-medium text-purple-400 border border-purple-500/20">✨ Plantilla</span>`
+    : '';
+
   return `
     <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-zinc-200">${escapeHtml(workout.name)}</p>
+          <div class="flex items-center gap-2">
+            <p class="text-sm font-medium text-zinc-200">${escapeHtml(workout.name)}</p>
+            ${templateBadge}
+          </div>
           <p class="text-xs text-zinc-500">${workout.exercises?.length || 0} ejercicios · ${workout.difficulty || 'custom'}</p>
         </div>
         <div class="flex items-center gap-2">
@@ -67,11 +75,19 @@ export function renderWorkoutCard(workout: TrainerWorkout): string {
  * Renderiza una tarjeta de dieta.
  */
 export function renderDietCard(diet: TrainerDiet): string {
+  const isTemplate = diet.isTemplate || diet.clientId === 'template';
+  const templateBadge = isTemplate
+    ? `<span class="rounded-full bg-purple-500/10 px-2 py-0.5 text-xs font-medium text-purple-400 border border-purple-500/20">✨ Plantilla</span>`
+    : '';
+
   return `
     <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-zinc-200">${escapeHtml(diet.name)}</p>
+          <div class="flex items-center gap-2">
+            <p class="text-sm font-medium text-zinc-200">${escapeHtml(diet.name)}</p>
+            ${templateBadge}
+          </div>
           <p class="text-xs text-zinc-500">${diet.meals?.length || 0} comidas · ${diet.totalCalories || 0} kcal</p>
         </div>
         <div class="flex items-center gap-2">

@@ -58,6 +58,7 @@ const { firestoreInstance, mockFns } = vi.hoisted(() => {
     where: vi.fn(() => ({})),
     orderBy: vi.fn(() => ({})),
     limit: vi.fn(() => ({})),
+    startAfter: vi.fn(() => ({})),
     serverTimestamp: vi.fn(() => new Date('2024-01-01')),
     getFirestore: vi.fn(() => firestoreInstance),
   };
@@ -84,7 +85,7 @@ vi.mock('@/lib/shared/logger', () => ({
 // chatService.ts re-exporta desde @/lib/shared/chat, así que importamos
 // directamente desde shared/chat para evitar problemas con re-exports mockeados.
 
-import { subscribeToUserMessages, sendMessage } from '../../../../src/lib/shared/chat';
+import { subscribeToUserMessages, subscribeToConversation, sendMessage, markAsRead, markAllAsRead } from '../../../../src/lib/shared/chat';
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
@@ -185,6 +186,139 @@ describe('chatService (shared)', () => {
     });
   });
 
+  // ── subscribeToConversation ──────────────────────────────────────────────
+
+  describe('subscribeToConversation', () => {
+    const mockMessageSnapshot = (messages: Record<string, unknown>[]) => ({
+      docs: messages.map((msg) => ({
+        id: msg.id as string || 'msg-1',
+        data: () => msg,
+      })),
+      forEach: (fn: (doc: unknown) => void) => messages.forEach((msg) => fn({ id: msg.id || 'msg-1', data: () => msg })),
+      size: messages.length,
+      empty: messages.length === 0,
+    });
+
+    it('should call onSnapshot with correct query constraints', () => {
+      const callback = vi.fn();
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot([]));
+        return () => {};
+      });
+
+      subscribeToConversation('user-1', 'user-2', callback);
+
+      expect(mockFns.collection).toHaveBeenCalledWith(expect.anything(), 'messages');
+      expect(mockFns.where).toHaveBeenCalledWith('participants', 'array-contains', 'user-1');
+      expect(mockFns.orderBy).toHaveBeenCalledWith('createdAt', 'asc');
+      expect(mockFns.limit).toHaveBeenCalledWith(50);
+    });
+
+    it('should filter messages between the two participants', () => {
+      const callback = vi.fn();
+      const mockMessages = [
+        { id: 'msg-1', senderId: 'user-1', receiverId: 'user-2', participants: ['user-1', 'user-2'], content: 'Hello' },
+        { id: 'msg-2', senderId: 'user-3', receiverId: 'user-1', participants: ['user-1', 'user-3'], content: 'Not for user-2' },
+        { id: 'msg-3', senderId: 'user-2', receiverId: 'user-1', participants: ['user-1', 'user-2'], content: 'Hi back' },
+      ];
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot(mockMessages));
+        return () => {};
+      });
+
+      subscribeToConversation('user-1', 'user-2', callback);
+
+      // Solo debe incluir mensajes donde ambos participantes estén presentes
+      expect(callback).toHaveBeenCalledWith([
+        expect.objectContaining({ id: 'msg-1', content: 'Hello' }),
+        expect.objectContaining({ id: 'msg-3', content: 'Hi back' }),
+      ]);
+      expect(callback).not.toHaveBeenCalledWith(
+        expect.arrayContaining([expect.objectContaining({ id: 'msg-2' })]),
+      );
+    });
+
+    it('should use custom limit when provided', () => {
+      const callback = vi.fn();
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot([]));
+        return () => {};
+      });
+
+      subscribeToConversation('user-1', 'user-2', callback, { limit: 25 });
+
+      expect(mockFns.limit).toHaveBeenCalledWith(25);
+    });
+
+    it('should cap limit at 100', () => {
+      const callback = vi.fn();
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot([]));
+        return () => {};
+      });
+
+      subscribeToConversation('user-1', 'user-2', callback, { limit: 500 });
+
+      expect(mockFns.limit).toHaveBeenCalledWith(100);
+    });
+
+    it('should use startAfter when provided', () => {
+      const callback = vi.fn();
+      const lastDoc = { id: 'msg-5' };
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot([]));
+        return () => {};
+      });
+
+      subscribeToConversation('user-1', 'user-2', callback, { startAfter: lastDoc });
+
+      expect(mockFns.startAfter).toHaveBeenCalledWith(lastDoc);
+    });
+
+    it('should call callback with empty array when userIds are empty', () => {
+      const callback = vi.fn();
+
+      const result = subscribeToConversation('', 'user-2', callback);
+      expect(callback).toHaveBeenCalledWith([]);
+      expect(typeof result).toBe('function');
+
+      const result2 = subscribeToConversation('user-1', '', callback);
+      expect(callback).toHaveBeenCalledWith([]);
+      expect(typeof result2).toBe('function');
+    });
+
+    it('should call onError and callback with empty array on snapshot error', () => {
+      const callback = vi.fn();
+      const onError = vi.fn();
+      const testError = new Error('Conversation error');
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, _cb: unknown, errCb: (err: Error) => void) => {
+        errCb(testError);
+        return () => {};
+      });
+
+      subscribeToConversation('user-1', 'user-2', callback, undefined, onError);
+
+      expect(onError).toHaveBeenCalledWith(testError);
+      expect(callback).toHaveBeenCalledWith([]);
+    });
+
+    it('should return unsubscribe function', () => {
+      const unsubscribe = vi.fn();
+      mockFns.onSnapshot.mockReturnValue(unsubscribe);
+
+      const result = subscribeToConversation('user-1', 'user-2', vi.fn());
+
+      result();
+      expect(unsubscribe).toHaveBeenCalled();
+    });
+  });
+
   // ── sendMessage ──────────────────────────────────────────────────────────
 
   describe('sendMessage', () => {
@@ -242,6 +376,102 @@ describe('chatService (shared)', () => {
 
       const result = await sendMessage('user-1', 'user-2', 'Hello');
       expect(result).toBeNull();
+    });
+
+    it('should send alert type message', async () => {
+      mockFns.addDoc.mockResolvedValue({ id: 'alert-1' });
+
+      const result = await sendMessage('user-1', 'user-2', 'ALERT!', 'alert');
+
+      expect(mockFns.addDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ type: 'alert' }),
+      );
+      expect(result).toBe('alert-1');
+    });
+
+    it('should sort participants array', async () => {
+      mockFns.addDoc.mockResolvedValue({ id: 'msg-1' });
+
+      await sendMessage('user-b', 'user-a', 'Hello');
+
+      expect(mockFns.addDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ participants: ['user-a', 'user-b'] }),
+      );
+    });
+  });
+
+  // ── markAsRead ───────────────────────────────────────────────────────────
+
+  describe('markAsRead', () => {
+    it('should update the message document with isRead: true', async () => {
+      mockFns.updateDoc.mockResolvedValue(undefined);
+
+      await markAsRead('msg-123');
+
+      expect(mockFns.doc).toHaveBeenCalledWith(expect.anything(), 'messages', 'msg-123');
+      expect(mockFns.updateDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        { isRead: true },
+      );
+    });
+
+    it('should handle Firestore errors gracefully', async () => {
+      mockFns.updateDoc.mockRejectedValue(new Error('Update error'));
+
+      // No debe lanzar excepción
+      await expect(markAsRead('msg-123')).resolves.toBeUndefined();
+    });
+  });
+
+  // ── markAllAsRead ────────────────────────────────────────────────────────
+
+  describe('markAllAsRead', () => {
+    it('should query unread messages and mark them as read', async () => {
+      mockFns.getDocs.mockResolvedValue({
+        docs: [
+          { id: 'msg-1', data: () => ({}) },
+          { id: 'msg-2', data: () => ({}) },
+        ],
+        empty: false,
+        size: 2,
+      });
+      mockFns.updateDoc.mockResolvedValue(undefined);
+
+      await markAllAsRead('receiver-1', 'sender-1');
+
+      expect(mockFns.where).toHaveBeenCalledWith('senderId', '==', 'sender-1');
+      expect(mockFns.where).toHaveBeenCalledWith('receiverId', '==', 'receiver-1');
+      expect(mockFns.where).toHaveBeenCalledWith('isRead', '==', false);
+      expect(mockFns.getDocs).toHaveBeenCalled();
+      expect(mockFns.updateDoc).toHaveBeenCalledTimes(2);
+    });
+
+    it('should do nothing when receiverId or senderId is empty', async () => {
+      await markAllAsRead('', 'sender-1');
+      expect(mockFns.getDocs).not.toHaveBeenCalled();
+
+      await markAllAsRead('receiver-1', '');
+      expect(mockFns.getDocs).not.toHaveBeenCalled();
+    });
+
+    it('should handle Firestore errors gracefully', async () => {
+      mockFns.getDocs.mockRejectedValue(new Error('Query error'));
+
+      await expect(markAllAsRead('receiver-1', 'sender-1')).resolves.toBeUndefined();
+    });
+
+    it('should do nothing when there are no unread messages', async () => {
+      mockFns.getDocs.mockResolvedValue({
+        docs: [],
+        empty: true,
+        size: 0,
+      });
+
+      await markAllAsRead('receiver-1', 'sender-1');
+
+      expect(mockFns.updateDoc).not.toHaveBeenCalled();
     });
   });
 });

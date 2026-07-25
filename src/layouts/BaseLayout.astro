@@ -14,15 +14,12 @@ const lang = Astro.params.lang || 'es';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 text-zinc-100 antialiased" style="font-family: 'Inter', sans-serif;" data-theme="dark">
+  <body class="min-h-screen antialiased" style="font-family: 'Inter', sans-serif;">
     <script>
       // Apply theme immediately to prevent flash
       (function() {
         const theme = localStorage.getItem('campfit_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
-        if (theme === 'light') {
-          document.body.className = 'min-h-screen bg-gradient-to-br from-zinc-100 via-white to-zinc-100 text-zinc-900 antialiased';
-        }
       })();
     </script>
     <div class="pb-20">
@@ -44,6 +41,22 @@ const lang = Astro.params.lang || 'es';
     --color-emerald-500: #10b981;
     --color-emerald-900: #064e3b;
   }
+
+  /* ─── Dark mode (default) ──────────────────────────────────── */
+  [data-theme="dark"] body {
+    background: linear-gradient(to bottom right, #09090b, #18181b, #09090b);
+    color: #f4f4f5;
+  }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #27272a; }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+  /* ─── Light mode ───────────────────────────────────────────── */
+  [data-theme="light"] body {
+    background: linear-gradient(to bottom right, #f4f4f5, #ffffff, #f4f4f5);
+    color: #18181b;
+  }
+  [data-theme="light"] ::-webkit-scrollbar-thumb { background: #d4d4d8; }
+  [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
 
   /* Animaciones personalizadas */
   @keyframes fadeIn {
@@ -70,17 +83,8 @@ const lang = Astro.params.lang || 'es';
   }
 
   /* Scrollbar personalizada */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #27272a;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #3f3f46;
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { }
 </style>

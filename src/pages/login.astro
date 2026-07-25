@@ -103,7 +103,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { authService } from '@/services/authService';
   import { setUser, setAuthLoading } from '@/stores/authStore';
   import { isValidEmail } from '@/lib/validators';
-  import { getStoredLanguage, t } from '@/i18n/client';
+  import { t } from '@/i18n/client';
+  import { logger } from '@/lib/shared/logger';
   import type { FirebaseError } from 'firebase/app';
 
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -127,8 +128,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   function redirectByRole(role: string) {
     const routes: Record<string, string> = {
-      admin: '/dashboard',
-      trainer: '/dashboard',
+      admin: '/admin/dashboard',
+      trainer: '/trainer/dashboard',
       client: '/client/dashboard',
     };
     window.location.href = routes[role] || '/client/dashboard';
@@ -137,31 +138,37 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
+    logger.info('Login', 'Formulario de login enviado');
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
     if (!email || !password) {
+      logger.warn('Login', 'Campos vacíos en formulario de login');
       showError(t('error.required'));
       return;
     }
 
     if (!isValidEmail(email)) {
+      logger.warn('Login', `Email inválido: ${email}`);
       showError(t('error.invalid-email'));
       return;
     }
 
     loginBtn.disabled = true;
     loginBtn.innerHTML = `<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> ${t('auth.loading.login')}`;
+    logger.info('Login', `Intentando login con email: ${email}`);
 
     try {
       const user = await authService.loginUser(email, password);
+      logger.info('Login', `Login exitoso para usuario: ${user.uid}, rol: ${user.role}`);
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
     } catch (err: unknown) {
       const fbErr = err as FirebaseError;
       const code = fbErr.code || '';
+      logger.error('Login', `Error en login para email: ${email}`, { code, message: fbErr.message });
       const messages: Record<string, string> = {
         'auth/invalid-credential': t('error.invalid-credential'),
         'auth/user-not-found': t('error.user-not-found'),
@@ -174,6 +181,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     } finally {
       loginBtn.disabled = false;
       loginBtn.textContent = t('auth.login.btn');
+      logger.info('Login', 'Botón de login restaurado');
     }
   });
 
@@ -181,17 +189,26 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     hideError();
     googleBtn.disabled = true;
     googleBtn.textContent = t('auth.loading.google');
+    logger.info('Login', 'Botón de Google presionado');
 
     try {
       const user = await authService.loginWithGoogle();
+      logger.info('Login', `Login con Google exitoso para usuario: ${user.uid}, rol: ${user.role}`);
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
     } catch (err: unknown) {
-      const fbErr = err as FirebaseError;
-      const code = fbErr.code || '';
+      const fbErr = err as { code?: string; message?: string };
+      const code = fbErr.code || fbErr.message || '';
+      logger.error('Login', `Error en login con Google`, { code, message: fbErr.message });
+      
       if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
-        showError(t('error.google.login'));
+        const customMessages: Record<string, string> = {
+          'auth/operation-not-allowed': 'El inicio de sesión con Google no está habilitado en Firebase Console.',
+          'auth/unauthorized-domain': 'Este dominio no está en la lista de dominios autorizados en Firebase Console.',
+          'auth/popup-blocked': 'La ventana emergente fue bloqueada por el navegador.',
+        };
+        showError(customMessages[code] || (code ? `${t('error.google.login')} (${code})` : t('error.google.login')));
       }
     } finally {
       googleBtn.disabled = false;
@@ -204,6 +221,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </svg>
         ${t('auth.google.login')}
       `;
+      logger.info('Login', 'Botón de Google restaurado');
     }
   });
 </script>

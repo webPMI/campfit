@@ -153,13 +153,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let unsubDiets: (() => void) | null = null;
   let unsubMessages: (() => void) | null = null;
 
-  requireAuth(async (user) => {
+  const unsubInit = requireAuth(async (user) => {
     const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
     initDashboard(user.uid, lang);
   });
 
   // Cleanup subscriptions on page unload
-  window.addEventListener('beforeunload', () => {
+  document.addEventListener('astro:before-swap', () => {
+    unsubInit?.();
     unsubClients?.();
     unsubWorkouts?.();
     unsubDiets?.();

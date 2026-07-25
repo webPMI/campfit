@@ -73,7 +73,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <script>
   import { authService } from '@/services/authService';
   import { isValidEmail } from '@/lib/validators';
-  import { getStoredLanguage, t } from '@/i18n/client';
+  import { t } from '@/i18n/client';
+  import { logger } from '@/lib/shared/logger';
   import type { FirebaseError } from 'firebase/app';
 
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -110,29 +111,35 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   recoverForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideAll();
+    logger.info('Recover', 'Formulario de recuperación de contraseña enviado');
 
     const email = emailInput.value.trim();
 
     if (!email) {
+      logger.warn('Recover', 'Campo de email vacío en formulario de recuperación');
       showError(t('error.required'));
       return;
     }
 
     if (!isValidEmail(email)) {
+      logger.warn('Recover', `Email inválido en formulario de recuperación: ${email}`);
       showError(t('error.invalid-email'));
       return;
     }
 
     recoverBtn.disabled = true;
     recoverBtn.innerHTML = `<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Enviando...`;
+    logger.info('Recover', `Intentando enviar email de recuperación a: ${email}`);
 
     try {
       await authService.recoverPassword(email);
+      logger.info('Recover', `Email de recuperación enviado exitosamente a: ${email}`);
       showSuccess('Revisa tu correo para restablecer tu contraseña');
       emailInput.value = '';
     } catch (err: unknown) {
       const fbErr = err as FirebaseError;
       const code = fbErr.code || '';
+      logger.error('Recover', `Error al enviar email de recuperación a: ${email}`, { code, message: fbErr.message });
       const messages: Record<string, string> = {
         'auth/user-not-found': 'No existe una cuenta con este email',
         'auth/invalid-email': 'Email inválido',
@@ -142,6 +149,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     } finally {
       recoverBtn.disabled = false;
       recoverBtn.textContent = 'Enviar Enlace';
+      logger.info('Recover', 'Botón de recuperación restaurado');
     }
   });
 </script>

@@ -24,7 +24,8 @@ import {
   serverTimestamp,
 } from '@/lib/firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import type { User, AuthError } from '@/types';
+import { AuthError, type User } from '@/types';
+import { logger } from '@/lib/shared/logger';
 
 /**
  * Convierte un error de Firebase en un Error con el code como mensaje.
@@ -36,19 +37,18 @@ import type { User, AuthError } from '@/types';
  * @param err - Error capturado (puede tener code y/o message)
  * @returns Error con el code de Firebase como mensaje
  */
-function toAuthError(err: unknown): Error {
+function toAuthError(err: unknown): AuthError {
   if (err && typeof err === 'object') {
     const e = err as Record<string, unknown>;
-    // Firebase real: error.code
+    let codeStr = 'auth/unknown';
     if (typeof e.code === 'string') {
-      return new Error(e.code);
+      codeStr = e.code;
+    } else if (typeof e.message === 'string') {
+      codeStr = e.message;
     }
-    // Mock: new Error('auth/...') -> message contiene el code
-    if (typeof e.message === 'string' && e.message.startsWith('auth/')) {
-      return new Error(e.message);
-    }
+    return new AuthError(codeStr, codeStr);
   }
-  return new Error('auth/unknown');
+  return new AuthError('auth/unknown', 'auth/unknown');
 }
 
 export const authService = {
@@ -61,29 +61,38 @@ export const authService = {
    * @throws {AuthError} Si el perfil no existe o hay error de autenticación
    */
   async loginUser(email: string, password: string): Promise<User> {
+    logger.info('Auth', `Intento de login con email: ${email}`);
+
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
       const uid = credential.user.uid;
+      logger.info('Auth', `Login exitoso en Firebase Auth para uid: ${uid}`);
 
       const userDoc = await getDoc(doc(db, 'users', uid));
       if (!userDoc.exists()) {
-        throw { code: 'profile/not-found', message: 'Perfil de usuario no encontrado' };
+        logger.warn('Auth', `Perfil no encontrado en Firestore para uid: ${uid}`);
+        throw new AuthError('profile/not-found', 'Perfil de usuario no encontrado');
       }
+
+      const userData = userDoc.data();
+      logger.info('Auth', `Perfil encontrado en Firestore para uid: ${uid}, rol: ${userData.role}`);
 
       return {
         uid: credential.user.uid,
         email: credential.user.email || '',
-        name: userDoc.data().name || credential.user.displayName || 'Usuario',
-        role: userDoc.data().role || 'client',
-        hasActiveAlert: userDoc.data().hasActiveAlert ?? false,
-        assignedTrainerId: userDoc.data().assignedTrainerId,
-        medicalProfile: userDoc.data().medicalProfile,
-        lastActivityAt: userDoc.data().lastActivityAt,
-        createdAt: userDoc.data().createdAt,
-        updatedAt: userDoc.data().updatedAt,
+        name: userData.name || credential.user.displayName || 'Usuario',
+        role: userData.role || 'client',
+        hasActiveAlert: userData.hasActiveAlert ?? false,
+        assignedTrainerId: userData.assignedTrainerId,
+        medicalProfile: userData.medicalProfile,
+        lastActivityAt: userData.lastActivityAt,
+        createdAt: userData.createdAt,
+        updatedAt: userData.updatedAt,
       };
     } catch (err) {
-      throw toAuthError(err);
+      const authErr = toAuthError(err);
+      logger.error('Auth', `Error en login para email: ${email}`, { code: authErr.code, message: authErr.message });
+      throw authErr;
     }
   },
 
@@ -98,9 +107,12 @@ export const authService = {
    * @throws {AuthError} Si hay error en el registro
    */
   async registerUser(name: string, email: string, password: string): Promise<User> {
+    logger.info('Auth', `Intento de registro para email: ${email}, nombre: ${name}`);
+
     try {
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = credential.user.uid;
+      logger.info('Auth', `Usuario creado en Firebase Auth: ${uid}`);
 
       const profile = {
         name,
@@ -112,6 +124,7 @@ export const authService = {
       };
 
       await setDoc(doc(db, 'users', uid), profile);
+      logger.info('Auth', `Perfil creado en Firestore para uid: ${uid}`);
 
       return {
         uid: credential.user.uid,
@@ -126,7 +139,9 @@ export const authService = {
         updatedAt: undefined,
       };
     } catch (err) {
-      throw toAuthError(err);
+      const authErr = toAuthError(err);
+      logger.error('Auth', `Error en registro para email: ${email}`, { code: authErr.code, message: authErr.message });
+      throw authErr;
     }
   },
 
@@ -134,7 +149,15 @@ export const authService = {
    * Cerrar sesión.
    */
   async logoutUser(): Promise<void> {
-    await signOut(auth);
+    logger.info('Auth', 'Iniciando cierre de sesión');
+    try {
+      await signOut(auth);
+      logger.info('Auth', 'Sesión cerrada exitosamente');
+    } catch (err) {
+      const authErr = toAuthError(err);
+      logger.error('Auth', 'Error al cerrar sesión', { code: authErr.code, message: authErr.message });
+      throw authErr;
+    }
   },
 
   /**
@@ -144,10 +167,15 @@ export const authService = {
    * @throws {AuthError} Si hay error al enviar el email
    */
   async recoverPassword(email: string): Promise<void> {
+    logger.info('Auth', `Solicitud de recuperación de contraseña para: ${email}`);
+
     try {
       await sendPasswordResetEmail(auth, email);
+      logger.info('Auth', `Email de recuperación enviado a: ${email}`);
     } catch (err) {
-      throw toAuthError(err);
+      const authErr = toAuthError(err);
+      logger.error('Auth', `Error al enviar email de recuperación a: ${email}`, { code: authErr.code, message: authErr.message });
+      throw authErr;
     }
   },
 
@@ -159,53 +187,57 @@ export const authService = {
    * @throws {AuthError} Si hay error en la autenticación con Google
    */
   async loginWithGoogle(): Promise<User> {
+    logger.info('Auth', 'Iniciando login con Google');
+
     try {
       const provider = new GoogleAuthProvider();
       const credential = await signInWithPopup(auth, provider);
       const { user: firebaseUser } = credential;
       const uid = firebaseUser.uid;
+      logger.info('Auth', `Login con Google exitoso para uid: ${uid}, email: ${firebaseUser.email}`);
 
-      const userDoc = await getDoc(doc(db, 'users', uid));
+      let profileData: any = null;
+      try {
+        const userDoc = await getDoc(doc(db, 'users', uid));
 
-      if (!userDoc.exists()) {
-        const profile = {
-          name: firebaseUser.displayName || 'Usuario',
-          email: firebaseUser.email || '',
-          role: 'client' as const,
-          hasActiveAlert: false,
-          onboardingCompleted: false,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        };
-        await setDoc(doc(db, 'users', uid), profile);
-        return {
-          uid,
-          email: firebaseUser.email || '',
-          name: firebaseUser.displayName || 'Usuario',
-          role: 'client',
-          hasActiveAlert: false,
-          assignedTrainerId: undefined,
-          medicalProfile: undefined,
-          lastActivityAt: undefined,
-          createdAt: undefined,
-          updatedAt: undefined,
-        };
+        if (!userDoc.exists()) {
+          logger.info('Auth', `Perfil no existe, creando nuevo perfil para uid: ${uid}`);
+          const profile = {
+            name: firebaseUser.displayName || 'Usuario',
+            email: firebaseUser.email || '',
+            role: 'client' as const,
+            hasActiveAlert: false,
+            onboardingCompleted: false,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          };
+          await setDoc(doc(db, 'users', uid), profile);
+          profileData = profile;
+          logger.info('Auth', `Perfil creado en Firestore para uid: ${uid}`);
+        } else {
+          profileData = userDoc.data();
+          logger.info('Auth', `Perfil existente encontrado para uid: ${uid}, rol: ${profileData.role}`);
+        }
+      } catch (firestoreErr) {
+        logger.error('Auth', 'Error al obtener/crear perfil en Firestore', firestoreErr);
       }
 
       return {
         uid,
         email: firebaseUser.email || '',
-        name: userDoc.data().name || firebaseUser.displayName || 'Usuario',
-        role: userDoc.data().role || 'client',
-        hasActiveAlert: userDoc.data().hasActiveAlert ?? false,
-        assignedTrainerId: userDoc.data().assignedTrainerId,
-        medicalProfile: userDoc.data().medicalProfile,
-        lastActivityAt: userDoc.data().lastActivityAt,
-        createdAt: userDoc.data().createdAt,
-        updatedAt: userDoc.data().updatedAt,
+        name: profileData?.name || firebaseUser.displayName || 'Usuario',
+        role: profileData?.role || 'client',
+        hasActiveAlert: profileData?.hasActiveAlert ?? false,
+        assignedTrainerId: profileData?.assignedTrainerId,
+        medicalProfile: profileData?.medicalProfile,
+        lastActivityAt: profileData?.lastActivityAt,
+        createdAt: profileData?.createdAt,
+        updatedAt: profileData?.updatedAt,
       };
     } catch (err) {
-      throw toAuthError(err);
+      const authErr = toAuthError(err);
+      logger.error('Auth', 'Error en login con Google', { code: authErr.code, message: authErr.message });
+      throw authErr;
     }
   },
 
@@ -216,6 +248,7 @@ export const authService = {
    * @returns Función unsubscribe para limpiar el observer
    */
   onAuthChange(callback: (user: FirebaseUser | null) => void): () => void {
+    logger.info('Auth', 'Registrando observer de estado de autenticación');
     return onAuthStateChanged(auth, callback);
   },
 };

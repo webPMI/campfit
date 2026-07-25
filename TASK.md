@@ -1,42 +1,29 @@
 # Tarea Actual
 
-> **Instrucciones:** Actualizar este archivo con la tarea que el agente debe realizar.
-> **Formato:** Una línea de título + descripción breve.
+> **Última actualización:** 2026-07-25
 
 ---
 
-## Tarea: Refactorización completa de adminUtils y trainerUtils
+## Tarea: Integración del Sistema de Agentes Especializados
 
 **Prioridad:** 🔴 Alta
-**Estado:** ✅ Completado
+**Estado:** 🔄 En progreso
 
 ### Descripción
-Refactorización completa de los archivos monolíticos `adminUtils.ts` (629 líneas) y `trainerUtils.ts` (570 líneas) en módulos pequeños y especializados. Cada módulo tiene una única responsabilidad: tipos, auth, servicios de datos, renderizado o init.
-
-### Archivos creados (admin)
-- [x] `src/lib/admin/types.ts` — Tipos AdminUser, CreateUserPayload
-- [x] `src/lib/admin/adminAuth.ts` — requireAdmin, signOutUser
-- [x] `src/lib/admin/adminUsers.ts` — CRUD usuarios
-- [x] `src/lib/admin/adminSubscriptions.ts` — Suscripciones Firestore
-- [x] `src/lib/admin/adminRender.ts` — Renderizado HTML
-- [x] `src/lib/admin/adminInit.ts` — initGlobalActions
-- [x] `src/lib/admin/adminUtils.ts` → Barrel (re-exporta todo)
-
-### Archivos creados (trainer)
-- [x] `src/lib/trainer/types.ts` — TrainerClient, Workout, Diet, etc.
-- [x] `src/lib/trainer/trainerAuth.ts` — requireAuth, signOutUser
-- [x] `src/lib/trainer/trainerClients.ts` — Clientes del trainer
-- [x] `src/lib/trainer/trainerWorkouts.ts` — CRUD rutinas
-- [x] `src/lib/trainer/trainerDiets.ts` — CRUD dietas
-- [x] `src/lib/trainer/trainerProgress.ts` — Progreso de clientes
-- [x] `src/lib/trainer/trainerChat.ts` — Mensajería
-- [x] `src/lib/trainer/trainerRender.ts` — Renderizado HTML
-- [x] `src/lib/trainer/trainerInit.ts` — initGlobalActions
-- [x] `src/lib/trainer/trainerUtils.ts` → Barrel (re-exporta todo)
+Completar la integración del sistema de 9 agentes especializados. El sistema ya está creado (agents/, language-agent/, testing-agent/) con GUIDE, RULES, CHECKLIST y TASKS para cada rol. Pendiente: instalar ESLint, verificar tests de authStore, actualizar documentación raíz.
 
 ### Criterios de aceptación
-- [x] Todos los tests existentes pasan (38 tests en adminUtils + trainerUtils)
-- [x] Los barrels mantienen compatibilidad hacia atrás
-- [x] Cada archivo < 300 líneas
-- [x] JSDoc en todas las funciones públicas
-- [x] Sin `any` - tipos explícitos en todas partes
+- [x] agents/__master.md creado y funcional
+- [x] 7 agentes nuevos creados (Theme, Client, Admin, Trainer, Auth, Infra, Planner)
+- [x] 2 agentes legacy (Language, Testing) referenciados
+- [x] .clinerules actualizado (Astro 5 → 7, estructura src/, referencia agents/)
+- [x] translations.ts: onboarding EN completado (~38 claves)
+- [x] .env.example completado (ASTRO_SITE, ASTRO_BASE_URL, PUBLIC_API_URL, etc.)
+- [x] AGENTS_GUIDE.md con sección de agentes especializados
+- [x] AGENTS.md actualizado con tabla de agentes
+- [x] Tests authStore expandidos (16 tests)
+- [ ] ESLint instalado en package.json (INFRA-001)
+- [ ] Icon.astro creado y layouts migrados (Theme #12)
+
+### Próxima tarea sugerida
+Instalar ESLint con `npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-astro`

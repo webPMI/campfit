@@ -149,19 +149,19 @@ describe('shared/ui', () => {
   describe('getRoleBadge', () => {
     it('debería devolver badge para admin', () => {
       const badge = getRoleBadge('admin');
-      expect(badge.label).toBe('Admin');
+      expect(badge.label).toBe('Administrador');
       expect(badge.class).toContain('purple');
     });
 
     it('debería devolver badge para trainer', () => {
       const badge = getRoleBadge('trainer');
-      expect(badge.label).toBe('Trainer');
+      expect(badge.label).toBe('Entrenador');
       expect(badge.class).toContain('blue');
     });
 
     it('debería devolver badge para client', () => {
       const badge = getRoleBadge('client');
-      expect(badge.label).toBe('Client');
+      expect(badge.label).toBe('Cliente');
       expect(badge.class).toContain('emerald');
     });
 
