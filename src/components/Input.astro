@@ -1,0 +1,50 @@
+---
+/**
+ * Input.astro - Input premium con label flotante, icono y error state.
+ *
+ * @prop {'text'|'email'|'password'|'number'|'tel'} [type='text']
+ * @prop {string} [placeholder]
+ * @prop {string} [value]
+ * @prop {string} [name]
+ * @prop {string} [label]
+ * @prop {string} [error]
+ * @prop {boolean} [required]
+ * @prop {string} [class]
+ */
+export interface Props {
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel';
+  placeholder?: string;
+  value?: string;
+  name?: string;
+  label?: string;
+  error?: string;
+  required?: boolean;
+  class?: string;
+}
+
+const { type = 'text', placeholder, value, name, label, error, required, class: className } = Astro.props;
+---
+
+<div class="group/input relative ${className || ''}">
+  {label && (
+    <label class="mb-1.5 block text-xs font-medium text-zinc-400">
+      {label}{required && <span class="ml-0.5 text-emerald-400">*</span>}
+    </label>
+  )}
+  <input
+    type={type}
+    name={name}
+    value={value}
+    placeholder={placeholder || (label ? `Ingresa tu ${label.toLowerCase()}` : '')}
+    required={required}
+    class="w-full rounded-xl border bg-zinc-900/60 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 backdrop-blur-sm transition-all duration-300 focus:outline-none ${error ? 'border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20' : 'border-zinc-700/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'}"
+  />
+  {error && (
+    <p class="mt-1.5 text-xs text-red-400 flex items-center gap-1">
+      <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+      </svg>
+      {error}
+    </p>
+  )}
+</div>
