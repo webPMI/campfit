@@ -116,7 +116,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { db } from '@/lib/firebase';
-  import { collection, getDocs, query, where, type Timestamp } from 'firebase/firestore';
+  import { collection, getDocs, query, where } from 'firebase/firestore';
   import { logger } from '@/lib/shared/logger';
 
   interface ClinicalClient {

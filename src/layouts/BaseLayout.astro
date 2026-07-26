@@ -16,7 +16,6 @@ const lang = Astro.params.lang || 'es';
   </head>
   <body style="font-family: 'Inter', sans-serif;">
     <script>
-      // Apply theme immediately to prevent flash (FOUC)
       (function() {
         const saved = localStorage.getItem('campfit_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', saved);
@@ -29,8 +28,8 @@ const lang = Astro.params.lang || 'es';
   </body>
 </html>
 
-<!-- Firestore Debug System (Ctrl+Shift+D) -->
 <script>
+  import '@/lib/debug/consoleFileLogger';
   import '@/lib/debug/firestoreDebug';
 </script>
 
@@ -38,19 +37,12 @@ const lang = Astro.params.lang || 'es';
   @import "tailwindcss";
 
   /* ============================================================
-   * CAMPFIT DESIGN SYSTEM TOKENS
-   * ============================================================
-   * Futuristic Material-inspired theme system.
-   * All colors, shadows, and animations are controlled via
-   * CSS custom properties with data-theme toggling.
-   */
-
-  /* ── Base Theme (Dark by default) ──────────────────────── */
+   * CAMPFIT DESIGN SYSTEM TOKENS v2 — WCAG AA contrast optimized
+   * ============================================================ */
   :root,
   [data-theme="dark"] {
     color-scheme: dark;
 
-    /* Surface colors - Layered depth system */
     --surface-0: #09090b;
     --surface-1: #131316;
     --surface-2: #18181b;
@@ -59,49 +51,43 @@ const lang = Astro.params.lang || 'es';
     --surface-5: #2f2f36;
     --surface-glass: oklch(0.15 0.01 260 / 0.6);
 
-    /* Brand colors */
     --brand: #10b981;
     --brand-hover: #34d399;
-    --brand-dim: #064e3b;
+    --brand-dim: #065f46;
     --brand-glow: oklch(0.75 0.2 160 / 0.25);
     --brand-gradient: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
     --brand-gradient-subtle: linear-gradient(135deg, oklch(0.35 0.08 160) 0%, oklch(0.30 0.06 160) 100%);
 
-    /* Accent colors */
     --accent-blue: #3b82f6;
     --accent-blue-hover: #60a5fa;
-    --accent-blue-dim: #1e3a5f;
+    --accent-blue-dim: #1e3a6f;
     --accent-purple: #8b5cf6;
     --accent-purple-hover: #a78bfa;
     --accent-purple-dim: #2e1a4f;
     --accent-amber: #f59e0b;
     --accent-amber-hover: #fbbf24;
-    --accent-amber-dim: #4a3000;
+    --accent-amber-dim: #5c3d00;
 
-    /* Text hierarchy */
     --text-primary: #fafafa;
     --text-secondary: #a1a1aa;
-    --text-tertiary: #71717a;
-    --text-disabled: #52525b;
+    --text-tertiary: #909099;
+    --text-disabled: #6b6b73;
     --text-on-brand: #022c22;
 
-    /* Borders */
     --border-default: oklch(0.28 0.01 260);
     --border-subtle: oklch(0.22 0.01 260);
     --border-strong: oklch(0.35 0.01 260);
     --border-brand: oklch(0.45 0.12 160 / 0.5);
 
-    /* Status colors */
     --success: #10b981;
     --success-dim: #064e3b;
     --warning: #f59e0b;
-    --warning-dim: #4a3000;
+    --warning-dim: #5c3d00;
     --danger: #ef4444;
-    --danger-dim: #450a0a;
+    --danger-dim: #581c1c;
     --info: #3b82f6;
-    --info-dim: #1e3a5f;
+    --info-dim: #1e3a6f;
 
-    /* Shadows - Modern layered elevation */
     --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.4);
     --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.5), 0 1px 2px oklch(0 0 0 / 0.4);
     --shadow-md: 0 4px 6px oklch(0 0 0 / 0.5), 0 2px 4px oklch(0 0 0 / 0.4);
@@ -111,7 +97,6 @@ const lang = Astro.params.lang || 'es';
     --shadow-glow-md: 0 0 24px var(--brand-glow);
     --shadow-glow-lg: 0 0 40px var(--brand-glow), 0 0 80px oklch(0.75 0.2 160 / 0.12);
 
-    /* Radius scale */
     --radius-xs: 0.25rem;
     --radius-sm: 0.375rem;
     --radius-md: 0.625rem;
@@ -120,48 +105,16 @@ const lang = Astro.params.lang || 'es';
     --radius-2xl: 1.5rem;
     --radius-full: 9999px;
 
-    /* Typography scale */
-    --font-xs: 0.75rem;
-    --font-sm: 0.8125rem;
-    --font-base: 0.9375rem;
-    --font-lg: 1.0625rem;
-    --font-xl: 1.25rem;
-    --font-2xl: 1.5rem;
-    --font-3xl: 1.875rem;
-    --font-4xl: 2.25rem;
-
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-weight-bold: 700;
-    --font-weight-extrabold: 800;
-
-    /* Spacing scale */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-
-    /* Transitions */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Glass morphism */
     --glass-bg: oklch(0.12 0.01 260 / 0.7);
     --glass-border: oklch(0.28 0.01 260 / 0.5);
     --glass-blur: 16px;
   }
 
-  /* ── Light Theme ────────────────────────────────────────── */
   [data-theme="light"] {
     color-scheme: light;
 
@@ -175,7 +128,7 @@ const lang = Astro.params.lang || 'es';
 
     --brand: #059669;
     --brand-hover: #047857;
-    --brand-dim: #d1fae5;
+    --brand-dim: #a7f3d0;
     --brand-glow: oklch(0.65 0.18 160 / 0.2);
     --brand-gradient: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
     --brand-gradient-subtle: linear-gradient(135deg, oklch(0.88 0.06 160) 0%, oklch(0.92 0.04 160) 100%);
@@ -192,8 +145,8 @@ const lang = Astro.params.lang || 'es';
 
     --text-primary: #18181b;
     --text-secondary: #52525b;
-    --text-tertiary: #71717a;
-    --text-disabled: #a1a1aa;
+    --text-tertiary: #6b6b73;
+    --text-disabled: #787882;
     --text-on-brand: #fafafa;
 
     --border-default: oklch(0.85 0.01 260);
@@ -219,7 +172,6 @@ const lang = Astro.params.lang || 'es';
     --glass-border: oklch(0.85 0.01 260 / 0.6);
   }
 
-  /* ── Tailwind v4 Theme Integration ──────────────────────── */
   @theme {
     --color-surface-0: var(--surface-0);
     --color-surface-1: var(--surface-1);
@@ -244,7 +196,6 @@ const lang = Astro.params.lang || 'es';
     --color-info: var(--info);
   }
 
-  /* ── Global Styles ──────────────────────────────────────── */
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -258,7 +209,6 @@ const lang = Astro.params.lang || 'es';
     transition: background-color var(--transition-base), color var(--transition-base);
   }
 
-  /* Subtle noise texture overlay for depth */
   body::before {
     content: '';
     position: fixed;
@@ -269,7 +219,6 @@ const lang = Astro.params.lang || 'es';
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
-  /* 3D grid pattern for depth perception */
   body::after {
     content: '';
     position: fixed;
@@ -284,125 +233,47 @@ const lang = Astro.params.lang || 'es';
     mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 70%);
   }
 
-  /* Smooth page transition */
-  @view-transition {
-    navigation: auto;
-  }
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: fadeOutScale 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  ::view-transition-new(root) { animation: fadeInScale 0.3s cubic-bezier(0.4, 0, 1, 1) 0.1s forwards; }
 
-  ::view-transition-old(root) {
-    animation: fadeOutScale 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
+  @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
 
-  ::view-transition-new(root) {
-    animation: fadeInScale 0.3s cubic-bezier(0.4, 0, 1, 1) 0.1s forwards;
-  }
+  .app-shell { padding-bottom: 5rem; min-height: 100vh; }
 
-  @keyframes fadeOutScale {
-    from { opacity: 1; transform: scale(1); }
-    to { opacity: 0; transform: scale(0.98); }
-  }
-
-  /* App shell - bottom nav spacing */
-  .app-shell {
-    padding-bottom: 5rem;
-    min-height: 100vh;
-  }
-
-  /* ── Scrollbar (themed) ─────────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb {
-    background: var(--surface-4);
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--surface-5);
-  }
+  ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--surface-5); }
 
-  /* ── Focus ring (accessible, brand-colored) ─────────────── */
-  :focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-  }
+  :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: var(--radius-sm); }
 
-  /* ── Selection color ────────────────────────────────────── */
-  ::selection {
-    background: oklch(0.65 0.18 160 / 0.3);
-    color: var(--text-primary);
-  }
+  ::selection { background: oklch(0.65 0.18 160 / 0.3); color: var(--text-primary); }
 
-  /* ── Animations ─────────────────────────────────────────── */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulseGlow { 0%, 100% { box-shadow: var(--shadow-glow-sm); } 50% { box-shadow: var(--shadow-glow-md); } }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  @keyframes toastOut { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -8px); } }
 
-  @keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
+  .animate-fade-in { animation: fadeIn var(--transition-base) ease-out forwards; }
+  .animate-fade-in-delay { animation: fadeIn var(--transition-base) ease-out 0.15s forwards; opacity: 0; }
+  .animate-fade-in-scale { animation: fadeInScale var(--transition-spring) ease-out forwards; }
+  .animate-slide-up { animation: slideUp var(--transition-base) ease-out forwards; }
+  .animate-slide-down { animation: slideDown var(--transition-base) ease-out forwards; }
+  .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
 
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(16px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  @keyframes pulseGlow {
-    0%, 100% { box-shadow: var(--shadow-glow-sm); }
-    50% { box-shadow: var(--shadow-glow-md); }
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes toastIn {
-    from { opacity: 0; transform: translate(-50%, 16px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-  }
-
-  @keyframes toastOut {
-    from { opacity: 1; transform: translate(-50%, 0); }
-    to { opacity: 0; transform: translate(-50%, -8px); }
-  }
-
-  .animate-fade-in         { animation: fadeIn var(--transition-base) ease-out forwards; }
-  .animate-fade-in-delay   { animation: fadeIn var(--transition-base) ease-out 0.15s forwards; opacity: 0; }
-  .animate-fade-in-scale   { animation: fadeInScale var(--transition-spring) ease-out forwards; }
-  .animate-slide-up        { animation: slideUp var(--transition-base) ease-out forwards; }
-  .animate-slide-down      { animation: slideDown var(--transition-base) ease-out forwards; }
-  .animate-pulse-glow      { animation: pulseGlow 3s ease-in-out infinite; }
-
-  /* ── Utility: Shimmer loading ───────────────────────────── */
   .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--surface-2) 25%,
-      var(--surface-3) 50%,
-      var(--surface-2) 75%
-    );
+    background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
     border-radius: var(--radius-md);
   }
 
-  /* ── Utility: Glass panel ───────────────────────────────── */
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));

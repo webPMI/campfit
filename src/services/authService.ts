@@ -24,7 +24,7 @@ import {
   serverTimestamp,
 } from '@/lib/firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import type { User, AuthError } from '@/types';
+import type { User } from '@/types';
 
 /**
  * Convierte un error de Firebase en un Error con el code como mensaje.
