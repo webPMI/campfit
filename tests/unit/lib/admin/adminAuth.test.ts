@@ -51,7 +51,8 @@ describe('adminAuth', () => {
       const mockUser = { uid: 'admin-123', email: 'admin@test.com' };
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
         const callback = args[1] as (u: unknown) => void;
-        callback(mockUser);
+        callback(null); // primera llamada (initialized = true)
+        callback(mockUser); // segunda llamada (auth confirmada)
         return vi.fn();
       }) as never);
 

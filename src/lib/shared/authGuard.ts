@@ -67,6 +67,7 @@ export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe
  */
 export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscribe {
   let initialized = false;
+  let callbackFired = false;
 
   return onAuthStateChanged(auth, async (user) => {
     if (!initialized) {
@@ -82,16 +83,32 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
       return;
     }
 
+    // Solo ejecutar el callback una vez (evita double-init por re-fires de Firebase)
+    if (callbackFired) return;
+
     try {
       const docSnap = await getDoc(doc(db, 'users', user.uid));
       const role = docSnap.data()?.role;
 
-      if (role !== 'admin') {
-        logger.warn('AuthGuard', `Usuario ${user.uid} con rol ${role} intentó acceder a ruta admin`);
-        window.location.replace('/dashboard');
+      // Detectar bootstrap admins (sin documento en Firestore)
+      const email = (user.email || '').toLowerCase();
+      const isBootstrapAdmin =
+        email === 'servicioweb.pmi@gmail.com' ||
+        email === 'sevicioweb.pmi@gmail.com';
+
+      const effectiveRole = role || (isBootstrapAdmin ? 'admin' : null);
+
+      if (effectiveRole !== 'admin') {
+        logger.warn('AuthGuard', `Usuario ${user.uid} con rol ${effectiveRole} intentó acceder a ruta admin`);
+        // Redirigir al dashboard correcto según el rol (nunca a /dashboard genérico)
+        const target =
+          effectiveRole === 'trainer' ? '/trainer/dashboard' :
+          effectiveRole === 'client'  ? '/client/dashboard'  : '/login';
+        window.location.replace(target);
         return;
       }
 
+      callbackFired = true;
       callback(user);
     } catch (error) {
       logger.error('AuthGuard', 'Error al verificar rol de admin:', error);

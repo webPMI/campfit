@@ -135,14 +135,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   }
 
   // Si ya hay sesión activa, redirigir al dashboard correspondiente
-  import { getAuth, onAuthStateChanged } from 'firebase/auth';
-  import { getFirestore, doc, getDoc } from 'firebase/firestore';
-  onAuthStateChanged(getAuth(), async (user) => {
+  import { auth } from '@/lib/firebase';
+  import { onAuthStateChanged } from 'firebase/auth';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { db } from '@/lib/firebase';
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       try {
-        const snap = await getDoc(doc(getFirestore(), 'users', user.uid));
+        const snap = await getDoc(doc(db, 'users', user.uid));
         if (snap.exists()) {
           redirectByRole(snap.data().role || 'client');
+        } else {
+          // Sin documento en Firestore: detectar bootstrap admin por email
+          const email = (user.email || '').toLowerCase();
+          const isBootstrap =
+            email === 'servicioweb.pmi@gmail.com' ||
+            email === 'sevicioweb.pmi@gmail.com';
+          redirectByRole(isBootstrap ? 'admin' : 'client');
         }
       } catch { /* ignore */ }
     }

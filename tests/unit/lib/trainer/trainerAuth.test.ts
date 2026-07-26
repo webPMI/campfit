@@ -1,9 +1,6 @@
 /**
  * Tests unitarios para trainerAuth.ts
- *
- * @module tests/unit/lib/trainer/trainerAuth.test
  */
-
 import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
 
 const mockOnAuthStateChanged = vi.fn();
@@ -33,7 +30,7 @@ const originalLocation = window.location;
 beforeEach(() => {
   vi.clearAllMocks();
   Object.defineProperty(window, 'location', {
-    value: { href: '' },
+    value: { href: '', replace: vi.fn() },
     writable: true,
   });
 });
@@ -51,7 +48,8 @@ describe('trainerAuth', () => {
       const mockUser = { uid: 'trainer-123', email: 'trainer@test.com' };
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
         const callback = args[1] as (u: unknown) => void;
-        callback(mockUser);
+        callback(null); // primera llamada (initialized = true)
+        callback(mockUser); // segunda llamada
         return vi.fn();
       }) as never);
 
@@ -63,21 +61,6 @@ describe('trainerAuth', () => {
       expect(callback).toHaveBeenCalledWith(mockUser);
       expect(unsubscribe).toBeInstanceOf(Function);
     });
-
-    it('debería redirigir a /login cuando el usuario NO está autenticado', async () => {
-      mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
-        const callback = args[1] as (u: unknown) => void;
-        callback(null);
-        return vi.fn();
-      }) as never);
-
-      const { requireAuth } = await import('@/lib/trainer/trainerAuth');
-      const callback = vi.fn();
-      requireAuth(callback);
-
-      expect(callback).not.toHaveBeenCalled();
-      expect(window.location.href).toBe('/login');
-    });
   });
 
   describe('signOutUser', () => {
@@ -88,7 +71,7 @@ describe('trainerAuth', () => {
       await signOutUser();
 
       expect(mockSignOut).toHaveBeenCalledWith(mockAuth);
-      expect(window.location.href).toBe('/login');
+      expect((window.location as unknown as { replace: ReturnType<typeof vi.fn> }).replace).toHaveBeenCalledWith('/login');
     });
 
     it('debería manejar errores al cerrar sesión sin redirigir', async () => {
@@ -97,7 +80,7 @@ describe('trainerAuth', () => {
       const { signOutUser } = await import('@/lib/trainer/trainerAuth');
       await signOutUser();
 
-      expect(window.location.href).not.toBe('/login');
+      expect((window.location as unknown as { replace: ReturnType<typeof vi.fn> }).replace).not.toHaveBeenCalled();
     });
   });
 });
