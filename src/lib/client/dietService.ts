@@ -12,6 +12,8 @@ export interface Meal {
   carbs: number;
   fat: number;
   order: number;
+  /** Alérgenos / ingredientes a evitar: gluten, lactose, nuts, shellfish, etc. */
+  allergens: string[];
 }
 
 export interface Diet {

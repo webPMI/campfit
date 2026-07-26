@@ -41,14 +41,20 @@ function toAuthError(err: unknown): Error {
     const e = err as Record<string, unknown>;
     // Firebase real: error.code
     if (typeof e.code === 'string') {
-      return new Error(e.code);
+      const error = new Error(e.code);
+      (error as unknown as { code: string }).code = e.code;
+      return error;
     }
     // Mock: new Error('auth/...') -> message contiene el code
     if (typeof e.message === 'string' && e.message.startsWith('auth/')) {
-      return new Error(e.message);
+      const error = new Error(e.message);
+      (error as unknown as { code: string }).code = e.message;
+      return error;
     }
   }
-  return new Error('auth/unknown');
+  const unknownError = new Error('auth/unknown');
+  (unknownError as unknown as { code: string }).code = 'auth/unknown';
+  return unknownError;
 }
 
 export const authService = {

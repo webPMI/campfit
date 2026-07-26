@@ -82,6 +82,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
                   <option value="other">{t('client.medical.gender.other')}</option>
                 </select>
               </div>
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-1.5">Grupo sanguíneo</label>
+                <select
+                  id="bloodTypeSelect"
+                  class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-3 text-sm text-zinc-100 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
+                >
+                  <option value="">Desconocido</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -297,7 +314,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       successMessage.classList.remove('hidden');
       setTimeout(() => successMessage.classList.add('hidden'), 5000);
     } catch (err) {
-      console.error('Error saving medical profile:', err);
+      logger.error('Client/Medical', 'Error saving medical profile:', err);
       errorMessage.classList.remove('hidden');
       setTimeout(() => errorMessage.classList.add('hidden'), 5000);
     } finally {

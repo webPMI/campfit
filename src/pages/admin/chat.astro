@@ -1,0 +1,255 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">Chat Global</h1>
+          <p class="mt-1 text-sm text-zinc-500">Bandeja de entrada de todas las conversaciones del sistema</p>
+        </div>
+        <div id="last-update" class="text-xs text-zinc-600">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Conversaciones</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Mensajes hoy</p>
+          <p id="stat-today" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Sin leer</p>
+          <p id="stat-unread" class="mt-1 text-2xl font-bold text-yellow-400">-</p>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre de participante..."
+          class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800"
+        />
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-300 transition-all hover:border-zinc-600 hover:text-white"
+        >
+          Actualizar
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-zinc-800"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 rounded bg-zinc-800"></div>
+              <div class="h-3 w-56 rounded bg-zinc-800/60"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-zinc-800"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-32 rounded bg-zinc-800"></div>
+              <div class="h-3 w-48 rounded bg-zinc-800/60"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
+          <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-zinc-400">No hay conversaciones</h3>
+        <p class="mt-1 text-sm text-zinc-600">Aún no se ha iniciado ninguna conversación en la plataforma</p>
+      </div>
+
+      <!-- Conversations List -->
+      <div id="conversationsList" class="mt-6 hidden space-y-3"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-red-400/70 hover:text-red-400">&times;</button>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { db } from '@/lib/firebase';
+  import {
+    collection, getDocs, doc, getDoc,
+    query, orderBy, limit,
+    type Timestamp,
+  } from 'firebase/firestore';
+  import { formatDate } from '@/lib/shared/ui';
+  import { logger } from '@/lib/shared/logger';
+
+  interface ConversationItem {
+    id: string;
+    participantIds: string[];
+    participantNames: string[];
+    lastMessage: string;
+    unreadCount: number;
+    totalMessages: number;
+    updatedAt: Timestamp | null;
+  }
+
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const conversationsList = document.getElementById('conversationsList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allConversations: ConversationItem[] = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('admin/chat', msg);
+  }
+
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
+  });
+
+  function updateStats(convs: ConversationItem[]): void {
+    document.getElementById('stat-total')!.textContent = String(convs.length);
+    const totalUnread = convs.reduce((sum, c) => sum + c.unreadCount, 0);
+    document.getElementById('stat-unread')!.textContent = String(totalUnread);
+    document.getElementById('stat-today')!.textContent = String(convs.length);
+  }
+
+  function renderConversations(convs: ConversationItem[]): void {
+    conversationsList.innerHTML = '';
+    if (convs.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      conversationsList.classList.add('hidden');
+      return;
+    }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    conversationsList.classList.remove('hidden');
+
+    convs.forEach(conv => {
+      const card = document.createElement('div');
+      card.className = `rounded-xl border p-5 backdrop-blur-sm transition-all hover:border-zinc-700/60 cursor-pointer ${conv.unreadCount > 0 ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-zinc-800/40 bg-zinc-900/40'}`;
+      card.innerHTML = `
+        <div class="flex items-center gap-4">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-semibold text-zinc-300">
+            ${conv.participantNames[0]?.charAt(0)?.toUpperCase() || '?'}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium text-zinc-200 truncate">${conv.participantNames.join(', ')}</h3>
+              <span class="text-xs text-zinc-500">${formatDate(conv.updatedAt)}</span>
+            </div>
+            <p class="mt-0.5 text-sm text-zinc-400 truncate">${conv.lastMessage || 'Sin mensajes'}</p>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            <span class="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-500">${conv.totalMessages} msgs</span>
+            ${conv.unreadCount > 0 ? `<span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-400">${conv.unreadCount} nuevos</span>` : ''}
+          </div>
+        </div>
+      `;
+      conversationsList.appendChild(card);
+    });
+  }
+
+  function filterConversations(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    let filtered = allConversations;
+    if (searchTerm) {
+      filtered = filtered.filter(c =>
+        c.participantNames.some(n => n.toLowerCase().includes(searchTerm)) ||
+        c.lastMessage.toLowerCase().includes(searchTerm)
+      );
+    }
+    renderConversations(filtered);
+  }
+
+  searchInput.addEventListener('input', filterConversations);
+
+  async function loadConversations(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    conversationsList.classList.add('hidden');
+
+    try {
+      const conversationsRef = collection(db, 'conversations');
+      const q = query(conversationsRef, orderBy('updatedAt', 'desc'), limit(200));
+      const snap = await getDocs(q);
+
+      const convPromises = snap.docs.map(async (convDoc) => {
+        const data = convDoc.data();
+        const participantIds: string[] = data.participants || [];
+        const participantNames: string[] = [];
+        for (const pid of participantIds) {
+          try {
+            const userSnap = await getDoc(doc(db, 'users', pid));
+            if (userSnap.exists()) {
+              participantNames.push(userSnap.data().name || userSnap.data().email || pid);
+            } else {
+              participantNames.push(pid);
+            }
+          } catch {
+            participantNames.push(pid);
+          }
+        }
+        const lastMsg = data.lastMessage || '';
+        const lastMsgText = typeof lastMsg === 'string' ? lastMsg : (lastMsg.text || '');
+        return {
+          id: convDoc.id,
+          participantIds,
+          participantNames: participantNames.length > 0 ? participantNames : ['Desconocido'],
+          lastMessage: lastMsgText,
+          unreadCount: data.unreadCount || 0,
+          totalMessages: data.messageCount || 0,
+          updatedAt: data.updatedAt || data.createdAt || null,
+        } satisfies ConversationItem;
+      });
+
+      allConversations = await Promise.all(convPromises);
+      updateStats(allConversations);
+      renderConversations(allConversations);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error al cargar conversaciones: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'Error al cargar las conversaciones. Intenta de nuevo.';
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadConversations);
+
+  loadConversations();
+
+  const interval = setInterval(loadConversations, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
+</script>

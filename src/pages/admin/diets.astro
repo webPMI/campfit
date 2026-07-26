@@ -1,0 +1,304 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">{t('admin.diets')}</h1>
+          <p class="mt-1 text-sm text-zinc-500">Supervisión global de planes nutricionales</p>
+        </div>
+        <div id="last-update" class="text-xs text-zinc-600">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Total dietas</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Activas hoy</p>
+          <p id="stat-active" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Comidas totales</p>
+          <p id="stat-meals" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Adherencia media</p>
+          <p id="stat-adherence" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre de dieta o cliente..."
+          class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800"
+        />
+        <select
+          id="filterTrainer"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 outline-none transition-all focus:border-emerald-500/50"
+        >
+          <option value="all">{t('trainer.filter.all')}</option>
+        </select>
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-300 transition-all hover:border-zinc-600 hover:text-white"
+        >
+          Actualizar
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-zinc-800"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-48 rounded bg-zinc-800"></div>
+              <div class="h-3 w-32 rounded bg-zinc-800/60"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-zinc-800"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 rounded bg-zinc-800"></div>
+              <div class="h-3 w-28 rounded bg-zinc-800/60"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
+          <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-zinc-400">No hay dietas registradas</h3>
+        <p class="mt-1 text-sm text-zinc-600">Los entrenadores aún no han creado planes nutricionales</p>
+      </div>
+
+      <!-- Diets List -->
+      <div id="dietsList" class="mt-6 hidden space-y-3"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-red-400/70 hover:text-red-400">&times;</button>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { db } from '@/lib/firebase';
+  import {
+    collection, getDocs, doc, getDoc,
+    query, orderBy, limit,
+    type Timestamp,
+  } from 'firebase/firestore';
+  import { formatDate } from '@/lib/shared/ui';
+  import { logger } from '@/lib/shared/logger';
+
+  interface DietItem {
+    id: string;
+    name: string;
+    trainerId: string;
+    trainerName: string;
+    clientId?: string;
+    clientName?: string;
+    meals: Array<{ name: string; calories: number; completed?: boolean }>;
+    totalCalories: number;
+    createdAt: Timestamp | null;
+    updatedAt: Timestamp | null;
+  }
+
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const dietsList = document.getElementById('dietsList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const filterTrainer = document.getElementById('filterTrainer') as HTMLSelectElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allDiets: DietItem[] = [];
+  let trainers: Array<{ uid: string; name: string }> = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('admin/diets', msg);
+  }
+
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
+  });
+
+  function updateStats(diets: DietItem[]): void {
+    document.getElementById('stat-total')!.textContent = String(diets.length);
+    document.getElementById('stat-active')!.textContent = String(diets.length);
+    const totalMeals = diets.reduce((sum, d) => sum + (d.meals?.length || 0), 0);
+    document.getElementById('stat-meals')!.textContent = String(totalMeals);
+    const allMeals = diets.flatMap(d => d.meals || []);
+    const completed = allMeals.filter(m => m.completed).length;
+    const pct = allMeals.length > 0 ? Math.round((completed / allMeals.length) * 100) : 0;
+    document.getElementById('stat-adherence')!.textContent = `${pct}%`;
+  }
+
+  function renderDiets(diets: DietItem[]): void {
+    dietsList.innerHTML = '';
+    if (diets.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      dietsList.classList.add('hidden');
+      return;
+    }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    dietsList.classList.remove('hidden');
+
+    diets.forEach(diet => {
+      const completed = diet.meals?.filter(m => m.completed).length || 0;
+      const total = diet.meals?.length || 0;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const timestamp = diet.updatedAt || diet.createdAt;
+
+      const card = document.createElement('div');
+      card.className = 'rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm transition-all hover:border-zinc-700/60';
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10">
+              <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-zinc-200">${diet.name}</h3>
+              ${diet.clientName ? `<p class="text-xs text-zinc-500">Cliente: ${diet.clientName}</p>` : ''}
+              <p class="text-xs text-zinc-600">Entrenador: ${diet.trainerName} &middot; ${formatDate(timestamp)} &middot; ${diet.totalCalories || 0} kcal</p>
+            </div>
+          </div>
+          <span class="rounded-full px-2.5 py-1 text-xs font-medium ${pct === 100 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-yellow-500/10 text-yellow-400'}">${pct}%</span>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 overflow-hidden rounded-full bg-zinc-800">
+            <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all" style="width: ${pct}%"></div>
+          </div>
+          <p class="mt-2 text-xs text-zinc-600">${completed}/${total} comidas completadas</p>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          ${(diet.meals || []).map(m => `<span class="rounded-md px-2 py-0.5 text-xs ${m.completed ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-800 text-zinc-500'}">${m.name} (${m.calories} kcal)</span>`).join('')}
+        </div>
+      `;
+      dietsList.appendChild(card);
+    });
+  }
+
+  function filterDiets(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    const trainerFilter = filterTrainer.value;
+
+    let filtered = allDiets;
+    if (searchTerm) {
+      filtered = filtered.filter(d =>
+        d.name.toLowerCase().includes(searchTerm) ||
+        (d.clientName && d.clientName.toLowerCase().includes(searchTerm)) ||
+        d.trainerName.toLowerCase().includes(searchTerm)
+      );
+    }
+    if (trainerFilter !== 'all') {
+      filtered = filtered.filter(d => d.trainerId === trainerFilter);
+    }
+    renderDiets(filtered);
+  }
+
+  searchInput.addEventListener('input', filterDiets);
+  filterTrainer.addEventListener('change', filterDiets);
+
+  async function loadDiets(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    dietsList.classList.add('hidden');
+
+    try {
+      const trainersSnap = await getDocs(collection(db, 'users'));
+      trainers = [];
+      trainersSnap.forEach(d => {
+        const data = d.data();
+        if (data.role === 'trainer') {
+          trainers.push({ uid: d.id, name: data.name || data.email || d.id });
+        }
+      });
+      filterTrainer.innerHTML = '<option value="all">Todos los entrenadores</option>';
+      trainers.forEach(tr => {
+        filterTrainer.innerHTML += `<option value="${tr.uid}">${tr.name}</option>`;
+      });
+
+      const dietsRef = collection(db, 'diets');
+      const q = query(dietsRef, orderBy('updatedAt', 'desc'), limit(200));
+      const snap = await getDocs(q);
+
+      const dietPromises = snap.docs.map(async (dietDoc) => {
+        const data = dietDoc.data();
+        const trainerDoc = trainers.find(t => t.uid === data.trainerId);
+        let clientName = '';
+        if (data.clientId) {
+          try {
+            const clientSnap = await getDoc(doc(db, 'users', data.clientId));
+            if (clientSnap.exists()) {
+              clientName = clientSnap.data().name || clientSnap.data().email || '';
+            }
+          } catch { /* ignore */ }
+        }
+        return {
+          id: dietDoc.id,
+          name: data.name || 'Sin nombre',
+          trainerId: data.trainerId || '',
+          trainerName: trainerDoc?.name || 'Desconocido',
+          clientId: data.clientId || undefined,
+          clientName,
+          meals: data.meals || [],
+          totalCalories: data.totalCalories || 0,
+          createdAt: data.createdAt || null,
+          updatedAt: data.updatedAt || data.createdAt || null,
+        } satisfies DietItem;
+      });
+
+      allDiets = await Promise.all(dietPromises);
+      updateStats(allDiets);
+      renderDiets(allDiets);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error al cargar dietas: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'Error al cargar las dietas. Intenta de nuevo.';
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadDiets);
+
+  loadDiets();
+
+  const interval = setInterval(loadDiets, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
+</script>

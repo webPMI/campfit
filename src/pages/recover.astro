@@ -131,8 +131,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       showSuccess('Revisa tu correo para restablecer tu contraseña');
       emailInput.value = '';
     } catch (err: unknown) {
-      const fbErr = err as FirebaseError;
-      const code = fbErr.code || '';
+      const fbErr = err as FirebaseError & { message?: string };
+      const code = fbErr.code || fbErr.message || '';
       const messages: Record<string, string> = {
         'auth/user-not-found': 'No existe una cuenta con este email',
         'auth/invalid-email': 'Email inválido',

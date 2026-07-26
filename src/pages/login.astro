@@ -161,8 +161,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       setAuthLoading(false);
       redirectByRole(user.role);
     } catch (err: unknown) {
-      const fbErr = err as FirebaseError;
-      const code = fbErr.code || '';
+      const fbErr = err as FirebaseError & { message?: string };
+      const code = fbErr.code || fbErr.message || '';
       const messages: Record<string, string> = {
         'auth/invalid-credential': t('error.invalid-credential'),
         'auth/user-not-found': t('error.user-not-found'),

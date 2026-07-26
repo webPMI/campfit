@@ -1,0 +1,83 @@
+---
+/**
+ * UIStatCard - Theme-aware statistics card.
+ * Used in dashboards for KPIs, metrics, and quick stats.
+ * Futuristic 3D subtle lift effect on hover.
+ */
+export interface Props {
+  /** SVG path del icono */
+  icon?: string;
+  /** Label descriptivo */
+  label: string;
+  /** Valor principal */
+  value: string | number;
+  /** Tendencia opcional */
+  trend?: 'up' | 'down' | 'neutral';
+  /** Valor de tendencia (ej: '+12%') */
+  trendValue?: string;
+  /** Color de acento */
+  accent?: 'brand' | 'blue' | 'purple' | 'amber' | 'info' | 'success' | 'danger';
+  /** Clases adicionales */
+  class?: string;
+}
+
+const { icon, label, value, trend, trendValue, accent = 'brand' } = Astro.props;
+
+const accentColors: Record<string, string> = {
+  brand: 'bg-[var(--brand-dim)] text-[var(--brand)]',
+  blue: 'bg-[var(--info-dim)] text-[var(--info)]',
+  purple: 'bg-[var(--accent-purple-dim)] text-[var(--accent-purple)]',
+  amber: 'bg-[var(--warning-dim)] text-[var(--warning)]',
+  info: 'bg-[var(--info-dim)] text-[var(--info)]',
+  success: 'bg-[var(--success-dim)] text-[var(--success)]',
+  danger: 'bg-[var(--danger-dim)] text-[var(--danger)]',
+};
+
+const trendStyles: Record<string, string> = {
+  up: 'text-[var(--success)]',
+  down: 'text-[var(--danger)]',
+  neutral: 'text-[var(--text-tertiary)]',
+};
+
+const trendIcons: Record<string, string> = {
+  up: '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75 10.5 9l4.5 4.5 4.5-4.5M19.5 9v4.5M19.5 9H15" />',
+  down: '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 8.25 10.5 15l4.5-4.5 4.5 4.5M19.5 15v-4.5M19.5 15H15" />',
+  neutral: '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15" />',
+};
+---
+
+<div class={[
+  'group relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)]',
+  'p-5 transition-all duration-300 ease-out',
+  'hover:border-[var(--border-default)] hover:shadow-[var(--shadow-md)]',
+  'hover:-translate-y-0.5',
+  'active:scale-[0.99]',
+  Astro.props.class ?? '',
+].join(' ')}>
+  {/* Subtle 3D highlight */}
+  <div class="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+  <div class="relative flex items-start justify-between">
+    <div class="flex-1 min-w-0">
+      <p class="text-xs font-medium text-[var(--text-tertiary)] truncate">{label}</p>
+      <p class="mt-1 text-2xl font-bold text-[var(--text-primary)] tabular-nums tracking-tight">{value}</p>
+      {trend && trendValue && (
+        <div class={['mt-1.5 flex items-center gap-1 text-xs font-medium', trendStyles[trend]].join(' ')}>
+          <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            {trendIcons[trend]}
+          </svg>
+          {trendValue}
+        </div>
+      )}
+    </div>
+
+    {icon && (
+      <div class={['flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ml-3', accentColors[accent]].join(' ')}>
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          {icon}
+        </svg>
+      </div>
+    )}
+  </div>
+</div>
+</write_to_file>

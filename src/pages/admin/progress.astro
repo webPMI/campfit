@@ -1,0 +1,306 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">Visor de Progreso</h1>
+          <p class="mt-1 text-sm text-zinc-500">Monitorización global del progreso de todos los clientes</p>
+        </div>
+        <div id="last-update" class="text-xs text-zinc-600">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Clientes con datos</p>
+          <p id="stat-clients" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Registros totales</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Última semana</p>
+          <p id="stat-week" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+          <p class="text-xs text-zinc-500">Con fotos</p>
+          <p id="stat-photos" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre de cliente o tipo de progreso..."
+          class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800"
+        />
+        <select
+          id="filterType"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 outline-none transition-all focus:border-emerald-500/50"
+        >
+          <option value="all">Todos los tipos</option>
+          <option value="weight">Peso</option>
+          <option value="photo">Fotos</option>
+          <option value="measurement">Medidas</option>
+        </select>
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-300 transition-all hover:border-zinc-600 hover:text-white"
+        >
+          Actualizar
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-zinc-800"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-48 rounded bg-zinc-800"></div>
+              <div class="h-3 w-32 rounded bg-zinc-800/60"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-zinc-800"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 rounded bg-zinc-800"></div>
+              <div class="h-3 w-28 rounded bg-zinc-800/60"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
+          <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-zinc-400">No hay datos de progreso</h3>
+        <p class="mt-1 text-sm text-zinc-600">Los clientes aún no han registrado datos de progreso</p>
+      </div>
+
+      <!-- Progress List -->
+      <div id="progressList" class="mt-6 hidden space-y-3"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-red-400/70 hover:text-red-400">&times;</button>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { db } from '@/lib/firebase';
+  import {
+    collection, getDocs, doc, getDoc,
+    query, orderBy, limit,
+    type Timestamp,
+  } from 'firebase/firestore';
+  import { formatDate } from '@/lib/shared/ui';
+  import { logger } from '@/lib/shared/logger';
+
+  interface ProgressItem {
+    id: string;
+    clientId: string;
+    clientName: string;
+    type: string;
+    value: Record<string, unknown>;
+    hasPhoto: boolean;
+    note: string;
+    createdAt: Timestamp | null;
+  }
+
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const progressList = document.getElementById('progressList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const filterType = document.getElementById('filterType') as HTMLSelectElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allProgress: ProgressItem[] = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('admin/progress', msg);
+  }
+
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
+  });
+
+  function updateStats(items: ProgressItem[]): void {
+    const uniqueClients = new Set(items.map(i => i.clientId));
+    document.getElementById('stat-clients')!.textContent = String(uniqueClients.size);
+    document.getElementById('stat-total')!.textContent = String(items.length);
+    document.getElementById('stat-week')!.textContent = String(items.length);
+    const withPhotos = items.filter(i => i.hasPhoto).length;
+    document.getElementById('stat-photos')!.textContent = String(withPhotos);
+  }
+
+  function formatValue(item: ProgressItem): string {
+    if (item.type === 'weight' && item.value?.weight !== undefined) {
+      return `${item.value.weight} kg`;
+    }
+    if (item.type === 'measurement') {
+      const parts: string[] = [];
+      if (item.value?.chest) parts.push(`Pecho: ${item.value.chest}cm`);
+      if (item.value?.waist) parts.push(`Cintura: ${item.value.waist}cm`);
+      if (item.value?.arms) parts.push(`Brazos: ${item.value.arms}cm`);
+      return parts.join(' | ') || 'Sin medidas';
+    }
+    if (item.type === 'photo') return `📸 ${item.note || 'Foto de progreso'}`;
+    return JSON.stringify(item.value);
+  }
+
+  function getTypeBadge(type: string): string {
+    const badges: Record<string, string> = {
+      weight: 'bg-blue-500/10 text-blue-400',
+      photo: 'bg-purple-500/10 text-purple-400',
+      measurement: 'bg-emerald-500/10 text-emerald-400',
+    };
+    return badges[type] || 'bg-zinc-800 text-zinc-500';
+  }
+
+  function getTypeIcon(type: string): string {
+    const icons: Record<string, string> = {
+      weight: '⚖️',
+      photo: '📸',
+      measurement: '📏',
+    };
+    return icons[type] || '📊';
+  }
+
+  function renderProgress(items: ProgressItem[]): void {
+    progressList.innerHTML = '';
+    if (items.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      progressList.classList.add('hidden');
+      return;
+    }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    progressList.classList.remove('hidden');
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5 backdrop-blur-sm transition-all hover:border-zinc-700/60';
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg text-lg">
+              ${getTypeIcon(item.type)}
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-zinc-200">${item.clientName}</h3>
+                <span class="rounded-full px-2 py-0.5 text-xs font-medium ${getTypeBadge(item.type)}">${item.type}</span>
+              </div>
+              <p class="mt-0.5 text-sm text-zinc-400">${formatValue(item)}</p>
+              <p class="mt-1 text-xs text-zinc-600">${formatDate(item.createdAt)}</p>
+            </div>
+          </div>
+          ${item.hasPhoto ? '<span class="rounded-lg bg-purple-500/10 px-2 py-1 text-xs text-purple-400">📸 Foto</span>' : ''}
+        </div>
+        ${item.note && item.type !== 'photo' ? `<p class="mt-3 text-sm text-zinc-500 border-t border-zinc-800/40 pt-3">📝 ${item.note}</p>` : ''}
+      `;
+      progressList.appendChild(card);
+    });
+  }
+
+  function filterProgress(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    const typeFilter = filterType.value;
+
+    let filtered = allProgress;
+    if (searchTerm) {
+      filtered = filtered.filter(p =>
+        p.clientName.toLowerCase().includes(searchTerm) ||
+        p.type.toLowerCase().includes(searchTerm) ||
+        (p.note && p.note.toLowerCase().includes(searchTerm))
+      );
+    }
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(p => p.type === typeFilter);
+    }
+    renderProgress(filtered);
+  }
+
+  searchInput.addEventListener('input', filterProgress);
+  filterType.addEventListener('change', filterProgress);
+
+  async function loadProgress(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    progressList.classList.add('hidden');
+
+    try {
+      const clientsSnap = await getDocs(collection(db, 'users'));
+      const clientMap = new Map<string, string>();
+      clientsSnap.forEach(d => {
+        const data = d.data();
+        if (data.role === 'client') {
+          clientMap.set(d.id, data.name || data.email || d.id);
+        }
+      });
+
+      const progressRef = collection(db, 'progress_logs');
+      const q = query(progressRef, orderBy('createdAt', 'desc'), limit(500));
+      const snap = await getDocs(q);
+
+      allProgress = snap.docs.map(pDoc => {
+        const data = pDoc.data();
+        return {
+          id: pDoc.id,
+          clientId: data.clientId || data.userId || '',
+          clientName: clientMap.get(data.clientId || data.userId) || 'Desconocido',
+          type: data.type || 'weight',
+          value: data.value || {},
+          hasPhoto: !!data.photoUrl || !!data.photoURL || data.type === 'photo',
+          note: data.note || data.notes || '',
+          createdAt: data.createdAt || null,
+        } satisfies ProgressItem;
+      });
+
+      updateStats(allProgress);
+      renderProgress(allProgress);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error al cargar progreso: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'Error al cargar los datos. Intenta de nuevo.';
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadProgress);
+
+  loadProgress();
+
+  const interval = setInterval(loadProgress, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
+</script>

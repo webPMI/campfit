@@ -1,0 +1,46 @@
+---
+/**
+ * UIEmptyState - Theme-aware empty state placeholder.
+ * Centralized for all pages. Supports icon, title, description, and optional action.
+ */
+export interface Props {
+  /** SVG path del icono */
+  icon?: string;
+  /** Título */
+  title?: string;
+  /** Descripción */
+  description?: string;
+  /** Label del botón de acción */
+  actionLabel?: string;
+  /** URL del botón */
+  actionHref?: string;
+  /** Clases adicionales */
+  class?: string;
+}
+
+const { icon, title, description, actionLabel, actionHref } = Astro.props;
+
+const defaultIcon = '<path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />';
+---
+
+<div class={['rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-10 text-center animate-fade-in-scale', Astro.props.class ?? ''].join(' ')}>
+  <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+    <svg class="h-8 w-8 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      {icon || defaultIcon}
+    </svg>
+  </div>
+
+  {title && <h3 class="text-base font-semibold text-[var(--text-primary)] mb-1">{title}</h3>}
+  {description && <p class="text-sm text-[var(--text-secondary)] max-w-xs mx-auto">{description}</p>}
+
+  {actionLabel && actionHref && (
+    <a
+      href={actionHref}
+      class="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--brand)] text-[var(--text-on-brand)] text-sm font-medium shadow-[var(--shadow-glow-sm)] hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 transition-all duration-200 active:scale-[0.97]"
+    >
+      {actionLabel}
+      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+    </a>
+  )}
+</div>
+</write_to_file>
