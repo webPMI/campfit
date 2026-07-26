@@ -36,7 +36,12 @@ function isPublicPath(): boolean {
  * @returns Función para cancelar la suscripción
  */
 export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe {
+  let initialized = false; // 🔑 clave: evita redirigir durante inicialización de Firebase
+
   return onAuthStateChanged(auth, (user) => {
+    // Primera llamada: Firebase está inicializando — no tomar acción
+    if (!initialized) { initialized = true; return; }
+
     // Usuario cerró sesión o expiró
     if (!user) {
       if (!isPublicPath()) {
