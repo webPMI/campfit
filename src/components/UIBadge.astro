@@ -1,0 +1,84 @@
+---
+export interface Props {
+  /** Variante de color */
+  variant?: 'default' | 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'purple';
+  /** Tamaño */
+  size?: 'sm' | 'md';
+  /** Con borde */
+  outlined?: boolean;
+  /** Con dot indicador */
+  dot?: boolean;
+  /** Clases adicionales */
+  class?: string;
+}
+
+const {
+  variant = 'default',
+  size = 'sm',
+  outlined = false,
+  dot = false,
+} = Astro.props;
+
+const sizeClasses: Record<string, string> = {
+  sm: 'px-2 py-0.5 text-xs',
+  md: 'px-2.5 py-1 text-sm',
+};
+
+const variantStyles: Record<string, string> = {
+  default: [
+    'bg-[var(--surface-3)] text-[var(--text-secondary)]',
+    'border-[var(--border-default)]',
+  ].join(' '),
+  brand: [
+    'bg-[var(--brand-dim)] text-[var(--brand)]',
+    'border-[var(--brand)]',
+  ].join(' '),
+  success: [
+    'bg-[var(--success-dim)] text-[var(--success)]',
+    'border-[var(--success)]',
+  ].join(' '),
+  warning: [
+    'bg-[var(--warning-dim)] text-[var(--warning)]',
+    'border-[var(--warning)]',
+  ].join(' '),
+  danger: [
+    'bg-[var(--danger-dim)] text-[var(--danger)]',
+    'border-[var(--danger)]',
+  ].join(' '),
+  info: [
+    'bg-[var(--info-dim)] text-[var(--info)]',
+    'border-[var(--info)]',
+  ].join(' '),
+  purple: [
+    'bg-[var(--accent-purple-dim)] text-[var(--accent-purple)]',
+    'border-[var(--accent-purple)]',
+  ].join(' '),
+};
+
+const borderClass = outlined ? `border border-opacity-30` : '';
+
+const classes = [
+  'inline-flex items-center gap-1.5 font-medium rounded-full',
+  sizeClasses[size],
+  variantStyles[variant],
+  borderClass,
+  Astro.props.class ?? '',
+].join(' ');
+---
+
+<span class={classes}>
+  {dot && (
+    <span class={[
+      'w-1.5 h-1.5 rounded-full shrink-0',
+      variant === 'brand' ? 'bg-[var(--brand)]' : '',
+      variant === 'success' ? 'bg-[var(--success)]' : '',
+      variant === 'warning' ? 'bg-[var(--warning)]' : '',
+      variant === 'danger' ? 'bg-[var(--danger)]' : '',
+      variant === 'info' ? 'bg-[var(--info)]' : '',
+      variant === 'purple' ? 'bg-[var(--accent-purple)]' : '',
+      variant === 'default' ? 'bg-[var(--text-tertiary)]' : '',
+    ].join(' ')}></span>
+  )}
+  <slot />
+</span>
+</write_to_file>

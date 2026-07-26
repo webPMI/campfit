@@ -1,0 +1,126 @@
+---
+export interface Props {
+  /** Variante visual del botón */
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'brand-gradient';
+  /** Tamaño */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /** Estado de carga (muestra spinner) */
+  loading?: boolean;
+  /** Deshabilitado */
+  disabled?: boolean;
+  /** Ancho completo */
+  fullWidth?: boolean;
+  /** Icono a la izquierda (SVG inline) */
+  icon?: string;
+  /** Icono a la derecha (SVG inline) */
+  iconRight?: string;
+  /** Solo icono (circular) */
+  iconOnly?: boolean;
+  /** Tipo HTML del botón */
+  type?: 'button' | 'submit' | 'reset';
+  /** Clases adicionales */
+  class?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  disabled = false,
+  fullWidth = false,
+  icon,
+  iconRight,
+  iconOnly = false,
+  type = 'button',
+} = Astro.props;
+
+const isDisabled = disabled || loading;
+
+// ── Base classes ──────────────────────────
+const baseClasses = [
+  'inline-flex items-center justify-center gap-2',
+  'font-medium whitespace-nowrap select-none',
+  'transition-all duration-200 ease-out',
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+  'disabled:opacity-40 disabled:pointer-events-none',
+  'active:scale-[0.97]',
+];
+
+// ── Size classes ──────────────────────────
+const sizeClasses: Record<string, string> = {
+  xs: 'h-7 px-2.5 text-xs rounded-lg gap-1',
+  sm: 'h-8 px-3 text-sm rounded-lg',
+  md: 'h-10 px-4 text-sm rounded-xl',
+  lg: 'h-11 px-5 text-base rounded-xl',
+  xl: 'h-12 px-6 text-base rounded-2xl',
+};
+
+const iconOnlySizes: Record<string, string> = {
+  xs: 'h-7 w-7 rounded-lg',
+  sm: 'h-8 w-8 rounded-lg',
+  md: 'h-10 w-10 rounded-xl',
+  lg: 'h-11 w-11 rounded-xl',
+  xl: 'h-12 w-12 rounded-2xl',
+};
+
+// ── Variant classes ────────────────────────
+const variantClasses: Record<string, string> = {
+  primary: [
+    'bg-brand text-[var(--text-on-brand)]',
+    'hover:bg-brand-hover',
+    'shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]',
+    'hover:shadow-[0_0_24px_var(--brand-glow)]',
+  ].join(' '),
+  secondary: [
+    'bg-[var(--surface-3)] text-[var(--text-primary)]',
+    'hover:bg-[var(--surface-4)]',
+    'border border-[var(--border-default)]',
+  ].join(' '),
+  outline: [
+    'bg-transparent text-[var(--brand)]',
+    'border border-[var(--border-brand)]',
+    'hover:bg-[var(--brand-dim)]',
+  ].join(' '),
+  ghost: [
+    'bg-transparent text-[var(--text-secondary)]',
+    'hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]',
+  ].join(' '),
+  danger: [
+    'bg-[var(--danger)] text-white',
+    'hover:brightness-110',
+    'shadow-[var(--shadow-sm)]',
+  ].join(' '),
+  'brand-gradient': [
+    'text-[var(--text-on-brand)]',
+    'bg-[var(--brand-gradient)]',
+    'shadow-[var(--shadow-glow-sm)] hover:shadow-[var(--shadow-glow-md)]',
+    'hover:brightness-105',
+  ].join(' '),
+};
+
+// ── Build classes ──────────────────────────
+const classes = [
+  ...baseClasses,
+  iconOnly ? iconOnlySizes[size] : sizeClasses[size],
+  variantClasses[variant],
+  fullWidth ? 'w-full' : '',
+  Astro.props.class ?? '',
+].join(' ');
+---
+<button
+  type={type}
+  class={classes}
+  disabled={isDisabled}
+>
+  {loading && (
+    <svg class="h-4 w-4 animate-spin shrink-0" viewBox="0 0 24 24" fill="none">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5" />
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
+  )}
+  {!loading && icon && <span class="shrink-0 inline-flex w-4 h-4 items-center justify-center">{icon}</span>}
+  {!iconOnly && <span><slot /></span>}
+  {!loading && iconRight && !iconOnly && <span class="shrink-0 inline-flex w-4 h-4 items-center justify-center">{iconRight}</span>}
+  {iconOnly && !loading && <slot />}
+</button>
+</write_to_file>

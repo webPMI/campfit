@@ -1,0 +1,67 @@
+---
+export interface Props {
+  /** Variante visual */
+  variant?: 'default' | 'glass' | 'elevated' | 'brand' | 'interactive';
+  /** Padding size */
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  /** Estado hover para interactive */
+  hover?: boolean;
+  /** Clases adicionales */
+  class?: string;
+}
+
+const {
+  variant = 'default',
+  padding = 'md',
+  hover = false,
+} = Astro.props;
+
+const paddingClasses: Record<string, string> = {
+  none: 'p-0',
+  sm: 'p-3',
+  md: 'p-5',
+  lg: 'p-6',
+};
+
+const variantClasses: Record<string, string> = {
+  default: [
+    'bg-[var(--surface-1)]',
+    'border border-[var(--border-subtle)]',
+    'rounded-2xl',
+  ].join(' '),
+  glass: [
+    'glass',
+    'rounded-2xl',
+  ].join(' '),
+  elevated: [
+    'bg-[var(--surface-1)]',
+    'border border-[var(--border-subtle)]',
+    'rounded-2xl',
+    'shadow-[var(--shadow-md)]',
+  ].join(' '),
+  brand: [
+    'bg-[var(--brand-gradient-subtle)]',
+    'border border-[var(--border-brand)]',
+    'rounded-2xl',
+    'shadow-[var(--shadow-glow-sm)]',
+  ].join(' '),
+  interactive: [
+    'bg-[var(--surface-1)]',
+    'border border-[var(--border-subtle)]',
+    'rounded-2xl',
+    'transition-all duration-200 ease-out',
+    hover ? 'hover:border-[var(--border-brand)] hover:shadow-[var(--shadow-glow-sm)] hover:-translate-y-0.5 cursor-pointer' : '',
+  ].join(' '),
+};
+
+const classes = [
+  variantClasses[variant],
+  paddingClasses[padding],
+  Astro.props.class ?? '',
+].join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>
+</write_to_file>

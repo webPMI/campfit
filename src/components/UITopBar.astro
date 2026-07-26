@@ -1,0 +1,72 @@
+---
+/**
+ * UITopBar - Futuristic Material Top App Bar
+ * Theme-aware, with optional back button, title, actions, and theme switcher.
+ */
+export interface Props {
+  /** Título de la página */
+  title?: string;
+  /** Mostrar botón de volver */
+  backHref?: string;
+  /** Subtítulo opcional */
+  subtitle?: string;
+  /** Clases adicionales */
+  class?: string;
+}
+
+import UIThemeSwitcher from './UIThemeSwitcher.astro';
+
+const { title, backHref, subtitle } = Astro.props;
+---
+
+<header class={[
+  'sticky top-0 z-40',
+  Astro.props.class ?? '',
+].join(' ')}>
+  <!-- Glass background -->
+  <div class="absolute inset-0 glass border-b border-[var(--border-subtle)]"></div>
+
+  <!-- Gradient bottom line -->
+  <div class="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[var(--brand)] to-transparent opacity-30"></div>
+
+  <!-- Content -->
+  <div class="relative flex items-center h-14 px-4 gap-3">
+    <!-- Back button -->
+    {backHref && (
+      <a
+        href={backHref}
+        class="flex items-center justify-center w-9 h-9 rounded-xl
+               text-[var(--text-secondary)] hover:text-[var(--text-primary)]
+               hover:bg-[var(--surface-3)] active:scale-90
+               transition-all duration-200 ease-out
+               -ml-1 shrink-0"
+        aria-label="Volver"
+      >
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+      </a>
+    )}
+
+    <!-- Title section -->
+    <div class="flex-1 min-w-0">
+      {title && (
+        <h1 class="text-base font-semibold text-[var(--text-primary)] truncate">
+          {title}
+        </h1>
+      )}
+      {subtitle && (
+        <p class="text-xs text-[var(--text-tertiary)] truncate mt-0.5">
+          {subtitle}
+        </p>
+      )}
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-1 shrink-0">
+      <UIThemeSwitcher />
+      <slot name="actions" />
+    </div>
+  </div>
+</header>
+</write_to_file>
