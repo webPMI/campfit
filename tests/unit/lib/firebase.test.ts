@@ -24,9 +24,9 @@ beforeAll(async () => {
 describe("src/lib/firebase", () => {
   it("should init Firebase with env config", () => {
     expect(mockInitializeApp).toHaveBeenCalledTimes(1);
-    const config = mockInitializeApp.mock.calls[0][0];
-    expect(config.apiKey).toBe("test-key");
-    expect(config.projectId).toBe("test-project");
+    const config = (mockInitializeApp.mock.calls as any)[0]?.[0];
+    expect(config?.apiKey).toBe("test-key");
+    expect(config?.projectId).toBe("test-project");
   });
 
   it("should export auth, db, and default", () => {

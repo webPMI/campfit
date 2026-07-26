@@ -206,7 +206,6 @@ Lista filtrada de usuarios con rol `trainer`. Muestra tarjetas con información 
 
 ---
 
-<<<<<<< HEAD:nuevo_proyecto/10_modulo_administracion.md
 ## Páginas Pendientes (Futuras)
 
 Las siguientes páginas están planificadas pero aún no implementadas:
@@ -218,25 +217,6 @@ Las siguientes páginas están planificadas pero aún no implementadas:
 ---
 
 > **📌 Convenciones de código:** Ver `12_guia_desarrollo_testing.md`
-=======
-## 8. Listado de Clientes
-**Ruta:** `/admin/clients`  
-**Layout:** `AdminLayout.astro`
-
-Visualiza todos los alumnos/clientes registrados en la plataforma y sus respectivos entrenadores asignados, resolviendo dinámicamente los nombres de los entrenadores en tiempo real.
-
----
-
-## 9. Listado de Entrenadores
-**Ruta:** `/admin/trainers`  
-**Layout:** `AdminLayout.astro`
-
-Muestra el listado de todos los entrenadores del sistema junto con la cantidad total de clientes reales que tienen bajo su supervisión.
-
----
-
-> **📌 Convenciones de código:** Ver `09_setup_y_desarrollo.md`
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a:docs/08_modulo_administracion.md
 > **📌 Golden Rules:** Ver `.clinerules`
 > **📌 Componentes UI:** Ver `06_design_system.md`
 > **📌 Guards de ruta:** Ver `08_modulo_autenticacion.md`

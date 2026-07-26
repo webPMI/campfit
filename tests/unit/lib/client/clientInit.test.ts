@@ -96,7 +96,7 @@ describe('initClientPage', () => {
 
     it('debe redirigir a /dashboard si el rol no es permitido', async () => {
         mockGetDoc.mockResolvedValue({
-            data: () => ({ role: 'admin', hasActiveAlert: false }),
+            data: () => ({ role: 'unknown', hasActiveAlert: false }),
             exists: () => true,
         });
 

@@ -86,7 +86,7 @@ describe('shared/profileService - render functions', () => {
       };
       const html = renderProfileView(profile);
       expect(html).toContain('Alerta activa');
-      expect(html).toContain('text-red-400');
+      expect(html).toContain('var(--danger)');
     });
 
     it('✅ should not show trainer name when not assigned', () => {
@@ -170,28 +170,28 @@ describe('shared/profileService - render functions', () => {
       const html = renderMedicalTagSection('Alergias', ['Lactosa'], 'amber');
       expect(html).toContain('Alergias');
       expect(html).toContain('Lactosa');
-      expect(html).toContain('amber-400');
+      expect(html).toContain('var(--warning)');
     });
 
     it('✅ should render red color section', () => {
       const html = renderMedicalTagSection('Lesiones', ['Tobillo'], 'red');
       expect(html).toContain('Lesiones');
       expect(html).toContain('Tobillo');
-      expect(html).toContain('red-400');
+      expect(html).toContain('var(--danger)');
     });
 
     it('✅ should render orange color section', () => {
       const html = renderMedicalTagSection('Condiciones', ['Diabetes'], 'orange');
       expect(html).toContain('Condiciones');
       expect(html).toContain('Diabetes');
-      expect(html).toContain('orange-400');
+      expect(html).toContain('var(--warning)');
     });
 
     it('✅ should render emerald color section', () => {
       const html = renderMedicalTagSection('Medicamentos', ['Ibuprofeno'], 'emerald');
       expect(html).toContain('Medicamentos');
       expect(html).toContain('Ibuprofeno');
-      expect(html).toContain('emerald-400');
+      expect(html).toContain('var(--brand)');
     });
   });
 

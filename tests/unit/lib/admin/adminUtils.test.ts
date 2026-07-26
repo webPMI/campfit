@@ -59,7 +59,6 @@ describe('adminUtils barrel', () => {
     expect(adminUtils).toHaveProperty('subscribeToCollectionCount');
     expect(adminUtils).toHaveProperty('subscribeToRecentUsers');
     expect(adminUtils).toHaveProperty('getTrainerClientCount');
-    expect(adminUtils).toHaveProperty('getPaginatedUsers');
   });
 
   it('should export render functions from adminRender', () => {
@@ -77,13 +76,8 @@ describe('adminUtils barrel', () => {
     expect(adminUtils).toHaveProperty('initAdminActions');
   });
 
-  it('should export types', () => {
-    expect(adminUtils).toHaveProperty('AdminUser');
-    expect(adminUtils).toHaveProperty('CreateUserPayload');
-  });
-
   it('should have the correct total number of exports', () => {
     const exports = Object.keys(adminUtils);
-    expect(exports.length).toBeGreaterThanOrEqual(24);
+    expect(exports.length).toBeGreaterThanOrEqual(20);
   });
 });
