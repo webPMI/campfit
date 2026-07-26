@@ -46,13 +46,13 @@
     <div class="mt-6 flex gap-3">
       <button
         id="confirm-modal-cancel"
-        class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-3)]"
+        class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
       >
         Cancelar
       </button>
       <button
         id="confirm-modal-confirm"
-        class="flex-1 rounded-xl bg-red-600 hover:bg-red-500 px-4 py-2.5 text-sm font-medium text-white transition-all active:scale-[0.98]"
+        class="flex-1 rounded-xl bg-[var(--danger)] hover:bg-[var(--danger)] px-4 py-2.5 text-sm font-medium text-[var(--text-on-brand)] transition-all active:scale-[0.98]"
       >
         Confirmar
       </button>
@@ -92,17 +92,17 @@
       // Variant styles
       const styles: Record<string, { btn: string; icon: string; bg: string }> = {
         danger: {
-          btn: 'bg-red-600 hover:bg-red-500 text-white',
+          btn: 'bg-[var(--danger)] hover:brightness-105 text-[var(--text-on-brand)]',
           icon: 'text-[var(--danger)]',
           bg: 'bg-[var(--danger-dim)] border-[var(--danger)]',
         },
         warning: {
-          btn: 'bg-amber-600 hover:bg-amber-500 text-white',
-          icon: 'text-amber-400',
-          bg: 'bg-amber-500/10 border-amber-500/20',
+          btn: 'bg-[var(--warning)] hover:brightness-105 text-[var(--text-on-brand)]',
+          icon: 'text-[var(--warning)]',
+          bg: 'bg-[var(--warning-dim)] border-[var(--warning)]',
         },
         info: {
-          btn: 'bg-[var(--brand)] hover:bg-[var(--brand)] text-white',
+          btn: 'bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-[var(--text-on-brand)]',
           icon: 'text-[var(--brand)]',
           bg: 'bg-[var(--brand-dim)] border-[var(--border-brand)]',
         },

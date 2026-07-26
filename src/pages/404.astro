@@ -25,13 +25,13 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     <div class="mt-8 flex gap-3 animate-fade-in-delay">
       <a
         href="/"
-        class="rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]"
+        class="rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]"
       >
         Volver al inicio
       </a>
       <button
         onclick="history.back()"
-        class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-6 py-3 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-white active:scale-[0.98]"
+        class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-6 py-3 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] active:scale-[0.98]"
       >
         Página anterior
       </button>

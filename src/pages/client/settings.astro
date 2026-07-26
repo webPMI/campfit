@@ -98,7 +98,7 @@ const clientTranslations = {
               <button
                 id="save-profile-btn"
                 type="submit"
-                class="rounded-xl bg-[var(--brand)] px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-[var(--brand)] active:scale-[0.98]"
+                class="rounded-xl bg-[var(--brand)] px-6 py-2.5 text-sm font-medium text-[var(--text-on-brand)] transition-all hover:bg-[var(--brand-hover)] active:scale-[0.98]"
               >
                 {t('client.medical.save')}
               </button>
@@ -134,7 +134,7 @@ const clientTranslations = {
               <button
                 id="save-password-btn"
                 type="submit"
-                class="rounded-xl bg-[var(--brand)] px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-[var(--brand)] active:scale-[0.98]"
+                class="rounded-xl bg-[var(--brand)] px-6 py-2.5 text-sm font-medium text-[var(--text-on-brand)] transition-all hover:bg-[var(--brand-hover)] active:scale-[0.98]"
               >
                 {t('admin.settings.password.btn')}
               </button>
@@ -142,18 +142,18 @@ const clientTranslations = {
           </div>
 
           <!-- Email Verification -->
-          <div id="email-verification-section" class="hidden rounded-xl border border-amber-900/30 bg-amber-500/5 p-6 backdrop-blur-sm">
+          <div id="email-verification-section" class="hidden rounded-xl border border-[var(--warning-dim)] bg-[var(--warning-dim)] p-6 backdrop-blur-sm">
             <div class="flex items-center gap-3">
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10">
-                <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--warning-dim)]">
+                <svg class="h-5 w-5 text-[var(--warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                 </svg>
               </div>
               <div class="flex-1">
-                <h3 class="text-sm font-semibold text-amber-400">{t('client.settings.email.unverified')}</h3>
-                <p class="mt-0.5 text-xs text-amber-500/80">{t('client.settings.email.unverified.desc')}</p>
+                <h3 class="text-sm font-semibold text-[var(--warning)]">{t('client.settings.email.unverified')}</h3>
+                <p class="mt-0.5 text-xs text-[var(--text-tertiary)]">{t('client.settings.email.unverified.desc')}</p>
               </div>
-              <button id="btn-verify-email" class="shrink-0 rounded-xl bg-amber-600 px-4 py-2 text-xs font-medium text-white transition-all hover:bg-amber-500 active:scale-[0.98]">
+              <button id="btn-verify-email" class="shrink-0 rounded-xl bg-[var(--warning)] px-4 py-2 text-xs font-medium text-[var(--text-on-brand)] transition-all hover:bg-[var(--warning)] active:scale-[0.98]">
                 {t('client.settings.email.resend')}
               </button>
             </div>

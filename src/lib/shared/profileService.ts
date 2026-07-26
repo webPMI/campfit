@@ -192,16 +192,16 @@ export function renderProfileView(profile: ProfileData): string {
 
   return `
     <div class="flex items-center gap-5">
-      <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-3xl font-bold text-white shadow-lg shadow-emerald-500/20">
+      <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[var(--brand-gradient)] text-3xl font-bold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
         ${initial}
       </div>
       <div class="min-w-0">
-        <h2 class="text-xl font-bold text-zinc-100 truncate">${escapeHtml(profile.name)}</h2>
-        <p class="text-sm text-zinc-500 truncate">${escapeHtml(profile.email)}</p>
+        <h2 class="text-xl font-bold text-[var(--text-primary)] truncate">${escapeHtml(profile.name)}</h2>
+        <p class="text-sm text-[var(--text-tertiary)] truncate">${escapeHtml(profile.email)}</p>
         <div class="mt-2 flex flex-wrap items-center gap-2">
           <span class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${badge.class}">${badge.label}</span>
-          ${hasTrainer ? `<span class="text-xs text-zinc-500">Trainer: ${escapeHtml(profile.assignedTrainerName!)}</span>` : ''}
-          ${profile.hasActiveAlert ? '<span class="inline-flex items-center gap-1 text-xs text-red-400"><span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span> Alerta activa</span>' : ''}
+          ${hasTrainer ? `<span class="text-xs text-[var(--text-tertiary)]">Trainer: ${escapeHtml(profile.assignedTrainerName!)}</span>` : ''}
+          ${profile.hasActiveAlert ? '<span class="inline-flex items-center gap-1 text-xs text-[var(--danger)]"><span class="h-1.5 w-1.5 rounded-full bg-[var(--danger)] animate-pulse"></span> Alerta activa</span>' : ''}
         </div>
       </div>
     </div>
@@ -218,26 +218,26 @@ export function renderMedicalGeneralInfo(mp: MedicalProfileData): string {
 
   if (mp.birthDate) {
     const age = calculateAge(mp.birthDate);
-    fields.push(`<div><span class="text-zinc-500">Edad:</span> <span class="text-zinc-200">${age} años</span></div>`);
+    fields.push(`<div><span class="text-[var(--text-tertiary)]">Edad:</span> <span class="text-[var(--text-primary)] font-medium">${age} años</span></div>`);
   }
   if (mp.height) {
-    fields.push(`<div><span class="text-zinc-500">Altura:</span> <span class="text-zinc-200">${mp.height} cm</span></div>`);
+    fields.push(`<div><span class="text-[var(--text-tertiary)]">Altura:</span> <span class="text-[var(--text-primary)] font-medium">${mp.height} cm</span></div>`);
   }
   if (mp.initialWeight) {
-    fields.push(`<div><span class="text-zinc-500">Peso inicial:</span> <span class="text-zinc-200">${mp.initialWeight} kg</span></div>`);
+    fields.push(`<div><span class="text-[var(--text-tertiary)]">Peso inicial:</span> <span class="text-[var(--text-primary)] font-medium">${mp.initialWeight} kg</span></div>`);
   }
   if (mp.experience) {
-    fields.push(`<div><span class="text-zinc-500">Experiencia:</span> <span class="text-zinc-200 capitalize">${mp.experience}</span></div>`);
+    fields.push(`<div><span class="text-[var(--text-tertiary)]">Experiencia:</span> <span class="text-[var(--text-primary)] font-medium capitalize">${mp.experience}</span></div>`);
   }
   if (mp.goals?.length) {
-    fields.push(`<div class="col-span-2"><span class="text-zinc-500">Objetivos:</span> <span class="text-zinc-200">${mp.goals.join(', ')}</span></div>`);
+    fields.push(`<div class="col-span-2"><span class="text-[var(--text-tertiary)]">Objetivos:</span> <span class="text-[var(--text-primary)] font-medium">${mp.goals.join(', ')}</span></div>`);
   }
 
   if (fields.length === 0) return '';
 
   return `
-    <div class="rounded-xl border border-zinc-800/40 bg-zinc-800/30 p-4">
-      <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Información General</h4>
+    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4">
+      <h4 class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Información General</h4>
       <div class="grid grid-cols-2 gap-2 text-sm">
         ${fields.join('')}
       </div>
@@ -260,19 +260,19 @@ export function renderMedicalTagSection(
   if (!items?.length) return '';
 
   const colorMap = {
-    amber: { border: 'amber-900/30', bg: 'amber-500/5', text: 'amber-400', tagBg: 'amber-500/10', tagText: 'amber-300', tagBorder: 'amber-500/20' },
-    red: { border: 'red-900/30', bg: 'red-500/5', text: 'red-400', tagBg: 'red-500/10', tagText: 'red-300', tagBorder: 'red-500/20' },
-    orange: { border: 'orange-900/30', bg: 'orange-500/5', text: 'orange-400', tagBg: 'orange-500/10', tagText: 'orange-300', tagBorder: 'orange-500/20' },
-    emerald: { border: 'emerald-900/30', bg: 'emerald-500/5', text: 'emerald-400', tagBg: 'emerald-500/10', tagText: 'emerald-300', tagBorder: 'emerald-500/20' },
+    amber: { border: 'border-[var(--warning)]', bg: 'bg-[var(--warning-dim)]', text: 'text-[var(--warning)]', tagBg: 'bg-[var(--warning-dim)]', tagText: 'text-[var(--warning)]', tagBorder: 'border-[var(--warning)]' },
+    red: { border: 'border-[var(--danger)]', bg: 'bg-[var(--danger-dim)]', text: 'text-[var(--danger)]', tagBg: 'bg-[var(--danger-dim)]', tagText: 'text-[var(--danger)]', tagBorder: 'border-[var(--danger)]' },
+    orange: { border: 'border-[var(--warning)]', bg: 'bg-[var(--warning-dim)]', text: 'text-[var(--warning)]', tagBg: 'bg-[var(--warning-dim)]', tagText: 'text-[var(--warning)]', tagBorder: 'border-[var(--warning)]' },
+    emerald: { border: 'border-[var(--brand)]', bg: 'bg-[var(--brand-dim)]', text: 'text-[var(--brand)]', tagBg: 'bg-[var(--brand-dim)]', tagText: 'text-[var(--brand)]', tagBorder: 'border-[var(--border-brand)]' },
   };
 
   const c = colorMap[colorClass];
 
   return `
-    <div class="rounded-xl border border-${c.border} bg-${c.bg} p-4">
-      <h4 class="text-xs font-semibold text-${c.text} uppercase tracking-wider mb-2">${title}</h4>
+    <div class="rounded-xl border ${c.border} ${c.bg} p-4 border-opacity-30">
+      <h4 class="text-xs font-semibold ${c.text} uppercase tracking-wider mb-2">${title}</h4>
       <div class="flex flex-wrap gap-1.5">
-        ${items.map((item: string) => `<span class="rounded-full bg-${c.tagBg} px-2.5 py-0.5 text-xs text-${c.tagText} border border-${c.tagBorder}">${escapeHtml(item)}</span>`).join('')}
+        ${items.map((item: string) => `<span class="rounded-full ${c.tagBg} px-2.5 py-0.5 text-xs ${c.tagText} border ${c.tagBorder} border-opacity-30">${escapeHtml(item)}</span>`).join('')}
       </div>
     </div>
   `;
@@ -286,8 +286,8 @@ export function renderMedicalTagSection(
 export function renderMedicalProfile(mp: MedicalProfileData): string {
   if (!mp || Object.keys(mp).length === 0) {
     return `
-      <div class="rounded-xl border border-zinc-800/40 bg-zinc-800/30 p-6 text-center">
-        <p class="text-zinc-500">Perfil médico no completado</p>
+      <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center">
+        <p class="text-[var(--text-tertiary)]">Perfil médico no completado</p>
       </div>
     `;
   }
@@ -303,8 +303,8 @@ export function renderMedicalProfile(mp: MedicalProfileData): string {
 
   if (!hasMedicalTags && !mp.birthDate && !mp.height && !mp.initialWeight) {
     sections.push(`
-      <div class="rounded-xl border border-emerald-900/30 bg-emerald-500/5 p-4 text-center">
-        <p class="text-sm text-emerald-400">No hay alertas médicas registradas</p>
+      <div class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4 text-center">
+        <p class="text-sm text-[var(--brand)]">No hay alertas médicas registradas</p>
       </div>
     `);
   }
@@ -321,11 +321,11 @@ export function renderProfileLoadingState(): string {
   return `
     <div class="flex items-center justify-center py-12">
       <div class="flex items-center gap-3">
-        <svg class="h-5 w-5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+        <svg class="h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
-        <p class="text-sm text-zinc-500">Cargando perfil...</p>
+        <p class="text-sm text-[var(--text-tertiary)]">Cargando perfil...</p>
       </div>
     </div>
   `;
@@ -349,13 +349,13 @@ export function renderFormField(
 ): string {
   return `
     <div>
-      <label for="${id}" class="block text-xs font-medium text-zinc-400 mb-1.5">${label}</label>
+      <label for="${id}" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">${label}</label>
       <input
         id="${id}"
         type="${type}"
         value="${escapeHtml(value)}"
         ${placeholder ? `placeholder="${escapeHtml(placeholder)}"` : ''}
-        class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 backdrop-blur-sm transition-all focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
+        class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--brand)] focus:bg-[var(--surface-3)] focus:shadow-[0_0_0_3px_var(--brand-dim)]"
       />
     </div>
   `;

@@ -11,7 +11,7 @@ const currentPath = Astro.url.pathname;
 
   <BaseLayout>
     <DecorativeBackground />
-    <LanguageSwitcher currentPath={currentPath} altLang={lang === 'es' ? 'en' : 'es'} />
+    <LanguageSwitcher currentPath={currentPath} lang={lang} />
 
     <!-- Page content -->
     <slot />
