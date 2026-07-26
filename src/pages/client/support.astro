@@ -168,7 +168,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     // Verificar rol de cliente
     const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
     const userData = userDoc.data();
-    if (!userData || userData.role !== 'client') {
+    if (!userData || (userData.role !== 'client' && userData.role !== 'admin' && userData.role !== 'trainer')) {
       window.location.href = '/dashboard';
       return;
     }

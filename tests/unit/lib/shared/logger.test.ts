@@ -24,7 +24,11 @@ describe('logger', () => {
 
   describe('en desarrollo (DEV=true)', () => {
     beforeEach(() => {
-      import.meta.env.DEV = true;
+      vi.stubEnv('DEV', true as any);
+    });
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
     });
 
     it('logger.info debería llamar a console.info con el formato correcto', () => {
@@ -58,7 +62,7 @@ describe('logger', () => {
     });
 
     it('logger.error debería pasar el objeto de error', () => {
-      const err = new Error('Algo salió mal');
+      const err = new Error('fallo grave');
       logger.error('TestModule', 'error crítico', err);
 
       expect(consoleErrorSpy).toHaveBeenCalledWith('[TestModule] error crítico', err);
@@ -67,7 +71,11 @@ describe('logger', () => {
 
   describe('en producción (DEV=false)', () => {
     beforeEach(() => {
-      import.meta.env.DEV = false;
+      vi.stubEnv('DEV', 'false');
+    });
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
     });
 
     it('logger.info NO debería llamar a console.info en producción', () => {

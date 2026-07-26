@@ -111,7 +111,7 @@ export function initClientPage(options: InitClientOptions): () => void {
                 uid: firebaseUser.uid,
                 email: firebaseUser.email || '',
                 name: userData?.name || firebaseUser.displayName || 'Usuario',
-                role: userData?.role || 'client',
+                role: userData?.role || (isBootstrapAdmin ? 'admin' : 'client'),
                 hasActiveAlert: userData?.hasActiveAlert ?? false,
                 assignedTrainerId: userData?.assignedTrainerId,
                 medicalProfile: userData?.medicalProfile,

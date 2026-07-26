@@ -30,8 +30,14 @@ import { showToast } from '@/lib/shared/ui';
 export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe {
   return onAuthStateChanged(auth, (user) => {
     if (!user) {
-      logger.warn('AuthGuard', 'Usuario no autenticado, redirigiendo a login');
-      window.location.href = '/login';
+      // Evitar bucle infinito: si ya estamos en /login, no redirigir
+      if (!window.location.pathname.startsWith('/login') &&
+          !window.location.pathname.startsWith('/register') &&
+          !window.location.pathname.startsWith('/recover') &&
+          window.location.pathname !== '/') {
+        logger.warn('AuthGuard', 'Usuario no autenticado, redirigiendo a login');
+        window.location.href = '/login';
+      }
       return;
     }
     callback(user);

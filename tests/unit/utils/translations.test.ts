@@ -37,7 +37,7 @@ function extractTranslationKeys(filePath: string): string[] {
   // Excluye 'lang' que es un parámetro de función, no una key de traducción
   // Nota: las keys pueden contener guiones bajos (ej: gain_muscle, lose_weight)
   // y guiones (ej: email-in-use, invalid-credential)
-  const regex = /['"]((?:[a-z]+\.)+[a-z][a-zA-Z0-9._-]*)['"]\s*:/g;
+  const regex = /['"]((?:[a-z0-9]+\.)+[a-z0-9][a-zA-Z0-9._-]*)['"]\s*:/g;
   let match: RegExpExecArray | null;
   while ((match = regex.exec(content)) !== null) {
     if (match[1] && match[1] !== 'lang') {

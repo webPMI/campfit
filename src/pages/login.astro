@@ -127,12 +127,26 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   function redirectByRole(role: string) {
     const routes: Record<string, string> = {
-      admin: '/dashboard',
-      trainer: '/dashboard',
+      admin: '/admin/dashboard',
+      trainer: '/trainer/dashboard',
       client: '/client/dashboard',
     };
     window.location.href = routes[role] || '/client/dashboard';
   }
+
+  // Si ya hay sesión activa, redirigir al dashboard correspondiente
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
+  import { getFirestore, doc, getDoc } from 'firebase/firestore';
+  onAuthStateChanged(getAuth(), async (user) => {
+    if (user) {
+      try {
+        const snap = await getDoc(doc(getFirestore(), 'users', user.uid));
+        if (snap.exists()) {
+          redirectByRole(snap.data().role || 'client');
+        }
+      } catch { /* ignore */ }
+    }
+  });
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

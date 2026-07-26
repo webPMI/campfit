@@ -27,6 +27,24 @@ const altLang = lang === 'es' ? 'en' : 'es';
         {altLang === 'en' ? 'EN' : 'ES'}
       </a>
     </div>
+    <!-- Navbar -->
+    <nav class="relative z-20 border-b border-[var(--border-subtle)] bg-[var(--surface-1)]/80 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+        <a href={`/?lang=${lang}`} class="flex items-center gap-2 font-bold text-lg text-[var(--text-primary)]">
+          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)]">
+            <svg class="h-4 w-4 text-[var(--text-on-brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+            </svg>
+          </div>
+          CampFit
+        </a>
+        <div class="flex items-center gap-3">
+          <a href={`/login?lang=${lang}`} class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Iniciar Sesión</a>
+          <a href={`/register?lang=${lang}`} class="rounded-lg bg-[var(--brand)] px-3 py-1.5 text-sm font-medium text-[var(--text-on-brand)] hover:bg-[var(--brand-hover)] transition-colors">Registrarse</a>
+        </div>
+      </div>
+    </nav>
+
     <main class="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10 w-full max-w-7xl mx-auto">
       <slot />
     </main>

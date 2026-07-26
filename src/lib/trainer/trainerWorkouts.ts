@@ -20,6 +20,7 @@ import {
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { showToast } from '@/lib/shared/ui';
+import { logFirestoreData } from '@/lib/debug/debugDataLogger';
 import type { TrainerWorkout } from './types';
 
 /**
@@ -41,6 +42,7 @@ export function subscribeToWorkoutsByTrainer(
         id: doc.id,
         ...doc.data(),
       })) as TrainerWorkout[];
+      logFirestoreData('workouts', snapshot.docs.map(d => ({ id: d.id, ...d.data() })), { trainerId, operation: 'subscribe' });
       callback(workouts);
     },
     (error) => {

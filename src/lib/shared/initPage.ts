@@ -35,6 +35,33 @@ export interface InitPageOptions {
 let isInitializing = false;
 let currentUnsubscribe: (() => void) | null = null;
 
+// ─── Cache de userData por sesión ───────────────────────────────────────────
+// Evita múltiples lecturas de Firestore al navegar entre páginas
+const USER_CACHE_KEY = 'campfit_user_cache';
+
+function getCachedUserData(uid: string): any | null {
+    try {
+        const raw = sessionStorage.getItem(USER_CACHE_KEY);
+        if (!raw) return null;
+        const cached = JSON.parse(raw);
+        // El cache es válido si corresponde al mismo uid y tiene menos de 5 min
+        if (cached.uid === uid && Date.now() - cached.ts < 5 * 60 * 1000) {
+            return cached.data;
+        }
+    } catch { /* ignore */ }
+    return null;
+}
+
+function setCachedUserData(uid: string, data: any): void {
+    try {
+        sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid, data, ts: Date.now() }));
+    } catch { /* ignore */ }
+}
+
+export function clearUserCache(): void {
+    try { sessionStorage.removeItem(USER_CACHE_KEY); } catch { /* ignore */ }
+}
+
 /**
  * Crea un elemento de error visual con createElement (sin innerHTML inseguro).
  */
@@ -82,6 +109,7 @@ function createErrorElement(title: string, message: string): HTMLElement {
  * Inicializa una página con autenticación y verificación de rol.
  * Versión genérica que reemplaza requireAdmin/requireAuth y proporciona
  * timeout de seguridad, manejo de errores visual, y cleanup automático.
+ * Usa cache de sessionStorage para evitar lecturas repetidas de Firestore.
  *
  * @param options - Opciones de inicialización
  * @returns Función de limpieza para usar en astro:before-swap
@@ -119,23 +147,54 @@ export function initPage(options: InitPageOptions): () => void {
         currentUnsubscribe();
     }
 
+    // Guard: sólo ejecutamos el callback una vez por montaje
+    let hasRun = false;
+
     currentUnsubscribe = authService.onAuthChange(async (firebaseUser) => {
         clearTimeout(timeoutId);
 
         if (!firebaseUser) {
             isInitializing = false;
-            window.location.href = '/login';
+            if (!window.location.pathname.startsWith('/login') &&
+                !window.location.pathname.startsWith('/register')) {
+                window.location.href = '/login';
+            }
             return;
         }
 
+        // Evitar re-ejecución si ya corrimos el callback
+        if (hasRun) return;
+        hasRun = true;
+
         try {
-            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-            const userData = userDoc.data();
+            // Intentar usar cache antes de leer Firestore
+            let userData = getCachedUserData(firebaseUser.uid);
+            if (!userData) {
+                const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+                userData = userDoc.data() || {};
+                setCachedUserData(firebaseUser.uid, userData);
+            }
+
+            // Resolver rol (con fallback para bootstrap admins)
+            const userEmail = (firebaseUser.email || '').toLowerCase();
+            const isBootstrapAdmin =
+                userEmail === 'servicioweb.pmi@gmail.com' ||
+                userEmail === 'sevicioweb.pmi@gmail.com';
+            const userRole = userData.role || (isBootstrapAdmin ? 'admin' : 'client');
 
             // Verificar rol si se especificaron roles permitidos
-            if (allowedRoles && userData && !allowedRoles.includes(userData.role)) {
+            if (allowedRoles && !allowedRoles.includes(userRole)) {
                 isInitializing = false;
-                window.location.href = '/dashboard';
+                // Redirigir al dashboard correcto según el rol, no a /dashboard (genera bucle)
+                const roleMap: Record<string, string> = {
+                    admin: '/admin/dashboard',
+                    trainer: '/trainer/dashboard',
+                    client: '/client/dashboard',
+                };
+                const target = roleMap[userRole] || '/login';
+                if (window.location.pathname !== target) {
+                    window.location.href = target;
+                }
                 return;
             }
 
@@ -144,7 +203,7 @@ export function initPage(options: InitPageOptions): () => void {
                 uid: firebaseUser.uid,
                 email: firebaseUser.email || '',
                 name: userData?.name || firebaseUser.displayName || 'Usuario',
-                role: userData?.role || 'client',
+                role: userRole,
                 hasActiveAlert: userData?.hasActiveAlert ?? false,
                 assignedTrainerId: userData?.assignedTrainerId,
                 medicalProfile: userData?.medicalProfile,
@@ -188,5 +247,6 @@ export function initPage(options: InitPageOptions): () => void {
             currentUnsubscribe = null;
         }
         isInitializing = false;
+        hasRun = false;
     };
 }

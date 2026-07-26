@@ -74,6 +74,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { isValidEmail } from '@/lib/validators';
   import { getStoredLanguage, t } from '@/i18n/client';
   import type { FirebaseError } from 'firebase/app';
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
+  import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+  // Detectar sesion existente
+  onAuthStateChanged(getAuth(), async (u) => {
+    if (u) {
+      const snap = await getDoc(doc(getFirestore(), 'users', u.uid));
+      if (snap.exists()) {
+        const role = snap.data().role || 'client';
+        const routes: Record<string, string> = { admin: '/admin/dashboard', trainer: '/trainer/dashboard', client: '/client/dashboard' };
+        window.location.href = routes[role] || '/client/dashboard';
+      }
+    }
+  });
 
   const emailInput = document.getElementById('email') as HTMLInputElement;
   const recoverForm = document.getElementById('recoverForm') as HTMLFormElement;

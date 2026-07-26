@@ -233,10 +233,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
+  import { initPage } from '@/lib/shared/initPage';
+  import { setAuthLoading } from '@/stores/authStore';
   import { authService } from '@/services/authService';
-  import { setUser, setAuthLoading } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
   import { subscribeToWorkouts } from '@/lib/client/workoutService';
   import { subscribeToDiets, subscribeToTodayMeals } from '@/lib/client/dietService';
   import { subscribeToProgress } from '@/lib/client/progressService';
@@ -256,96 +255,74 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const avgRpe = document.getElementById('avgRpe')!;
   const activeDays = document.getElementById('activeDays')!;
 
-  // Suscribirse a cambios de autenticación
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
-    }
+  // ─── Inicialización única (auth + Firestore con cache) ────────────────────
+  const cleanup = initPage({
+    // Admins y trainers también pueden ver la vista cliente
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser, userData) => {
+      const userName = userData?.name || firebaseUser.displayName || firebaseUser.email || 'Usuario';
+      greeting.textContent = `${t('client.greeting')}, ${userName}! 👋`;
 
-    // Cargar perfil del usuario
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
+      loadingScreen.classList.add('hidden');
+      dashboardContent.classList.remove('hidden');
 
-    // Verificar rol de cliente
-    if (!userData || userData.role !== 'client') {
-      window.location.href = '/dashboard';
-      return;
-    }
+      // ─── State para adherencia real de dietas ────────────────────────────
+      let currentMealsCount = 0;
+      let unsubTodayMeals: (() => void) | null = null;
 
-    // Actualizar authStore
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
+      // Suscribirse a streams en tiempo real
+      subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+        if (workouts.length > 0 && workouts[0]) {
+          const workout = workouts[0];
+          const completed = workout.exercises?.filter((ex: any) => ex.completed)?.length || 0;
+          const total = workout.exercises?.length || 0;
+          const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+          workoutProgress.textContent = `${pct}%`;
+          workoutBar.style.width = `${pct}%`;
+        } else {
+          workoutProgress.textContent = t('client.no.workout');
+          workoutBar.style.width = '0%';
+        }
+      });
 
-    const userName = userData?.name || firebaseUser.displayName || firebaseUser.email || 'Usuario';
-    greeting.textContent = `${t('client.greeting')}, ${userName}! 👋`;
+      // Suscribirse a la dieta actual para obtener el total de comidas
+      subscribeToDiets(firebaseUser.uid, (diets) => {
+        if (diets.length > 0 && diets[0]) {
+          const diet = diets[0];
+          currentMealsCount = diet.meals?.length || 0;
+          todayCalories.textContent = `${diet.totalCalories || '--'} ${t('client.stats.kcal')}`;
 
-    loadingScreen.classList.add('hidden');
-    dashboardContent.classList.remove('hidden');
+          // Si no hay suscripción a comidas de hoy, crearla
+          if (!unsubTodayMeals) {
+            unsubTodayMeals = subscribeToTodayMeals(firebaseUser.uid, (completedIds) => {
+              const pct = currentMealsCount > 0
+                ? Math.round((completedIds.length / currentMealsCount) * 100)
+                : 0;
+              dietAdherence.textContent = `${pct}%`;
+              dietBar.style.width = `${pct}%`;
+            });
+          }
+        } else {
+          dietAdherence.textContent = t('client.no.diet');
+          dietBar.style.width = '0%';
+          todayCalories.textContent = `-- ${t('client.stats.kcal')}`;
+        }
+      });
 
-  // ─── State para adherencia real de dietas ──────────────────────────────────
-  let currentMealsCount = 0;
-  let unsubTodayMeals: (() => void) | null = null;
+      subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
+        if (logs.length > 0 && logs[0]) {
+          const latest = logs[0];
+          const w = latest.value?.weight;
+          lastWeight.textContent = w ? `${w} ${t('client.stats.kg')}` : t('client.no.weight');
+        } else {
+          lastWeight.textContent = t('client.no.weight');
+        }
+      }, 1);
 
-  // Suscribirse a streams en tiempo real
-  subscribeToWorkouts(firebaseUser.uid, (workouts) => {
-    if (workouts.length > 0 && workouts[0]) {
-      const workout = workouts[0];
-      const completed = workout.exercises?.filter((ex: any) => ex.completed)?.length || 0;
-      const total = workout.exercises?.length || 0;
-      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-      workoutProgress.textContent = `${pct}%`;
-      workoutBar.style.width = `${pct}%`;
-    } else {
-      workoutProgress.textContent = t('client.no.workout');
-      workoutBar.style.width = '0%';
-    }
-  });
-
-  // Suscribirse a la dieta actual para obtener el total de comidas
-  subscribeToDiets(firebaseUser.uid, (diets) => {
-    if (diets.length > 0 && diets[0]) {
-      const diet = diets[0];
-      currentMealsCount = diet.meals?.length || 0;
-      todayCalories.textContent = `${diet.totalCalories || '--'} ${t('client.stats.kcal')}`;
-
-      // Si no hay suscripción a comidas de hoy, crearla
-      if (!unsubTodayMeals) {
-        unsubTodayMeals = subscribeToTodayMeals(firebaseUser.uid, (completedIds) => {
-          const pct = currentMealsCount > 0
-            ? Math.round((completedIds.length / currentMealsCount) * 100)
-            : 0;
-          dietAdherence.textContent = `${pct}%`;
-          dietBar.style.width = `${pct}%`;
-        });
-      }
-    } else {
-      dietAdherence.textContent = t('client.no.diet');
-      dietBar.style.width = '0%';
-      todayCalories.textContent = `-- ${t('client.stats.kcal')}`;
-    }
-  });
-
-  subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
-    if (logs.length > 0 && logs[0]) {
-      const latest = logs[0];
-      const w = latest.value?.weight;
-      lastWeight.textContent = w ? `${w} ${t('client.stats.kg')}` : t('client.no.weight');
-    } else {
-      lastWeight.textContent = t('client.no.weight');
-    }
-  }, 1);
-
-  // Stats simuladas (se actualizarán con datos reales después)
-  avgRpe.textContent = '--';
-  activeDays.textContent = '--';
+      // Stats simuladas (se actualizarán con datos reales después)
+      avgRpe.textContent = '--';
+      activeDays.textContent = '--';
+    },
   });
 
   logoutBtn.addEventListener('click', async () => {
@@ -358,8 +335,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     }
   });
 
-  // Cleanup on page unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
-  });
+  // Cleanup on page transition
+  document.addEventListener('astro:before-swap', cleanup);
 </script>
+
