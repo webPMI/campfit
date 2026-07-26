@@ -2052,3 +2052,11 @@ FirebaseError: Missing or insufficient permissions.
 [2026-07-26T13:15:02.660Z] [CLIENT] [LOG] [/login] [vite] server connection lost. Polling for restart...
 [2026-07-26T13:15:02.661Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
 [2026-07-26T13:15:04.193Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:15:40.200Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T13:15:41.303Z
+============================================================
+[2026-07-26T13:15:41.311Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-07-26T13:15:42.394Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:15:43.105Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.

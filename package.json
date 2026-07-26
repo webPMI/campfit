@@ -37,7 +37,6 @@
     "lock:status": "bash scripts/agent-lock.sh status",
     "lock:release": "bash scripts/agent-lock.sh release"
   },
-
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.7",
@@ -48,6 +47,7 @@
     "@astrojs/check": "^0.9.9",
     "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.9.1",
+    "firebase-admin": "^14.2.0",
     "happy-dom": "^20.10.6",
     "jsdom": "^29.1.1",
     "prettier": "^3.9.4",
