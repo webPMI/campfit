@@ -114,6 +114,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
+  import { requireAdmin } from '@/lib/shared/authGuard';
   import { db } from '@/lib/firebase';
   import {
     collection, getDocs, doc, getDoc,
@@ -122,6 +123,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   } from 'firebase/firestore';
   import { formatDate } from '@/lib/shared/ui';
   import { logger } from '@/lib/shared/logger';
+
+  requireAdmin(() => {
+    loadWorkouts();
+  });
 
   interface WorkoutItem {
     id: string;
@@ -306,9 +311,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   }
 
   refreshBtn.addEventListener('click', loadWorkouts);
-
-  // Initial load
-  loadWorkouts();
 
   // Auto-refresh every 60s
   const interval = setInterval(loadWorkouts, 60000);

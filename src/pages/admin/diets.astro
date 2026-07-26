@@ -105,6 +105,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
+  import { requireAdmin } from '@/lib/shared/authGuard';
   import { db } from '@/lib/firebase';
   import {
     collection, getDocs, doc, getDoc,
@@ -113,6 +114,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   } from 'firebase/firestore';
   import { formatDate } from '@/lib/shared/ui';
   import { logger } from '@/lib/shared/logger';
+
+  requireAdmin(() => {
+    loadDiets();
+  });
 
   interface DietItem {
     id: string;

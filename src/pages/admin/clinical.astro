@@ -115,9 +115,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
+  import { requireAdmin } from '@/lib/shared/authGuard';
   import { db } from '@/lib/firebase';
   import { collection, getDocs, query, where } from 'firebase/firestore';
   import { logger } from '@/lib/shared/logger';
+
+  requireAdmin(() => {
+    loadClinical();
+  });
 
   interface ClinicalClient {
     uid: string;
