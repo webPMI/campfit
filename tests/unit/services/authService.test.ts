@@ -71,8 +71,10 @@ vi.mock('@/lib/firebase/auth', () => ({
   signOut: mockSignOut,
   sendPasswordResetEmail: mockSendPasswordResetEmail,
   onAuthStateChanged: mockOnAuthStateChanged,
-  GoogleAuthProvider: vi.fn(function GoogleAuthProvider() { return {}; }),
+  GoogleAuthProvider: vi.fn(function GoogleAuthProvider() { return { setCustomParameters: vi.fn() }; }),
   signInWithPopup: mockSignInWithPopup,
+  signInWithRedirect: vi.fn(),
+  getRedirectResult: vi.fn(),
 }));
 
 // Mock del wrapper @/lib/firebase/firestore
@@ -236,37 +238,67 @@ describe('authService', () => {
     });
   });
 
-  // ── loginWithGoogle ──────────────────────────────────────────────────────
+  // ── loginWithGoogle (redirect) ────────────────────────────────────────────
 
   describe('loginWithGoogle', () => {
-    it('✅ should login with Google and return existing user', async () => {
+    it('✅ should call signInWithRedirect with GoogleAuthProvider', async () => {
+      const { signInWithRedirect } = await import('@/lib/firebase/auth');
+
+      await authService.loginWithGoogle();
+
+      expect(signInWithRedirect).toHaveBeenCalledTimes(1);
+      expect(signInWithRedirect).toHaveBeenCalledWith(expect.anything(), expect.any(Object));
+    });
+
+    it('❌ should propagate redirect errors', async () => {
+      const { signInWithRedirect } = await import('@/lib/firebase/auth');
+      (signInWithRedirect as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('redirect-error'));
+
+      await expect(authService.loginWithGoogle()).rejects.toThrow('redirect-error');
+    });
+  });
+
+  // ── handleRedirectResult ──────────────────────────────────────────────────
+
+  describe('handleRedirectResult', () => {
+    it('✅ should return null if no redirect result', async () => {
+      const { getRedirectResult } = await import('@/lib/firebase/auth');
+      (getRedirectResult as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+
+      const result = await authService.handleRedirectResult();
+
+      expect(result).toBeNull();
+    });
+
+    it('✅ should return existing user from redirect result', async () => {
+      const { getRedirectResult } = await import('@/lib/firebase/auth');
       const mockCredential = createMockUserCredential();
       const mockProfile = createMockUserProfile();
 
-      mockSignInWithPopup.mockResolvedValue(mockCredential);
+      (getRedirectResult as ReturnType<typeof vi.fn>).mockResolvedValue(mockCredential);
       mockGetDoc.mockResolvedValue({
         exists: () => true,
         data: () => mockProfile,
       });
 
-      const result = await authService.loginWithGoogle();
+      const result = await authService.handleRedirectResult();
 
       expect(result).toHaveProperty('uid', mockCredential.user.uid);
       expect(result).toHaveProperty('name', mockProfile.name);
       expect(result).toHaveProperty('role', mockProfile.role);
-      expect(mockSignInWithPopup).toHaveBeenCalledTimes(1);
     });
 
     it('✅ should create new profile if user does not exist in Firestore', async () => {
+      const { getRedirectResult } = await import('@/lib/firebase/auth');
       const mockCredential = createMockUserCredential({ uid: 'new-google-uid', displayName: 'Google User' });
 
-      mockSignInWithPopup.mockResolvedValue(mockCredential);
+      (getRedirectResult as ReturnType<typeof vi.fn>).mockResolvedValue(mockCredential);
       mockGetDoc.mockResolvedValue({
         exists: () => false,
         data: () => null,
       });
 
-      const result = await authService.loginWithGoogle();
+      const result = await authService.handleRedirectResult();
 
       expect(result).toHaveProperty('uid', 'new-google-uid');
       expect(result).toHaveProperty('name', 'Google User');
@@ -281,10 +313,11 @@ describe('authService', () => {
       );
     });
 
-    it('❌ should propagate Google auth errors', async () => {
-      mockSignInWithPopup.mockRejectedValue(TEST_ERRORS.popupClosed);
+    it('❌ should propagate redirect result errors', async () => {
+      const { getRedirectResult } = await import('@/lib/firebase/auth');
+      (getRedirectResult as ReturnType<typeof vi.fn>).mockRejectedValue(TEST_ERRORS.popupClosed);
 
-      await expect(authService.loginWithGoogle()).rejects.toThrow('auth/popup-closed-by-user');
+      await expect(authService.handleRedirectResult()).rejects.toThrow('auth/popup-closed-by-user');
     });
   });
 

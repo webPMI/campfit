@@ -41,9 +41,12 @@ service cloud.firestore {
     // Admins pueden leer todos los perfiles.
     // Trainers pueden leer los perfiles de sus clientes asignados.
     // Solo admins pueden cambiar el rol o bloquear/desbloquear.
-    // Usuarios bloqueados no pueden leer ni escribir nada.
+    // 
+    // NOTA: isBlocked NO se verifica en read porque causaría una referencia
+    // circular (isBlocked hace get() del mismo documento que se está leyendo).
+    // La verificación de bloqueo se aplica en update y create.
     match /users/{userId} {
-      allow read: if isAuth() && !isBlocked(userId) && (
+      allow read: if isAuth() && (
         request.auth.uid == userId ||
         isAdmin() ||
         (isTrainer() && resource.data.assignedTrainerId == request.auth.uid)

@@ -330,6 +330,9 @@
 .theme-border-strong {
   border-color: var(--color-border-strong);
 }
+.theme-border-hover:hover {
+  border-color: var(--color-border-hover);
+}
 .theme-border-focus:focus {
   border-color: var(--color-border-focus);
   outline-color: var(--color-border-focus);
@@ -344,6 +347,37 @@
   background-color: var(--color-brand-primary-hover);
 }
 
+/* --- Brand Gradient (for primary action buttons) --- */
+.theme-brand-gradient {
+  background: linear-gradient(to right, var(--color-brand-primary), var(--color-brand-primary-hover));
+  color: white;
+}
+.theme-brand-gradient:hover {
+  background: linear-gradient(to right, var(--color-brand-primary-hover), var(--color-brand-primary-active));
+}
+
+/* --- Brand Shadows / Glow --- */
+.theme-shadow-brand-lg {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+.theme-glow-brand {
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-brand-primary) 20%, transparent);
+}
+
+/* --- Error State (for error messages, banners) --- */
+.theme-error-bg {
+  background-color: var(--color-status-error-bg);
+  border-color: color-mix(in srgb, var(--color-status-error) 20%, transparent);
+}
+.theme-error-text {
+  color: var(--color-text-error);
+}
+
+/* --- Surface hover with border --- */
+.theme-surface-hover-border:hover {
+  border-color: var(--color-border-hover);
+  background-color: var(--color-surface-hover);
+}
 
 /* --- Placeholder text --- */
 .placeholder-theme-text-tertiary::placeholder {
