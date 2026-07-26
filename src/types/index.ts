@@ -1,8 +1,6 @@
-import type { Timestamp } from 'firebase/firestore';
-
-import type { Timestamp } from 'firebase/firestore';
-
-export type FireTimestamp = Timestamp | Date | string;
+/**
+ * Tipos globales de CampFit
+ */
 
 export interface User {
   uid: string;
@@ -12,9 +10,9 @@ export interface User {
   hasActiveAlert: boolean;
   assignedTrainerId?: string;
   medicalProfile?: MedicalProfile;
-  lastActivityAt?: Timestamp | null;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
+  lastActivityAt?: any;
+  createdAt?: any;
+  updatedAt?: any;
 }
 
 export interface DietaryRestrictions {
@@ -76,11 +74,7 @@ export interface RegisterForm {
   password: string;
 }
 
-export class AuthError extends Error {
+export interface AuthError {
   code: string;
-  constructor(code: string, message: string) {
-    super(message);
-    this.name = 'AuthError';
-    this.code = code;
-  }
+  message: string;
 }

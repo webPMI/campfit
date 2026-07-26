@@ -62,7 +62,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <p id="stat-total-blocked" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
           <p class="mt-1 text-xs text-[var(--text-tertiary)]">Usuarios bloqueados</p>
         </div>
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
       </div>
 
       <!-- Second row -->
@@ -126,7 +125,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
-  import { subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCardExtended } from '@/lib/admin/adminUtils';
+  import { subscribeToUsers, subscribeToCollectionCount, subscribeToRecentUsers, renderUserCard } from '@/lib/admin/adminUtils';
   import { ICONS, renderEmptyState } from '@/lib/shared/ui';
 
 
@@ -135,13 +134,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let unsubDiets: (() => void) | null = null;
   let unsubRecentUsers: (() => void) | null = null;
 
-  const unsubInit = requireAdmin(() => {
+  requireAdmin(() => {
     initDashboard();
   });
 
   // Cleanup subscriptions on page unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
+  window.addEventListener('beforeunload', () => {
     unsubUsers?.();
     unsubWorkouts?.();
     unsubDiets?.();
@@ -225,7 +223,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         recentContainer.innerHTML = renderEmptyState(ICONS.users, 'Sin usuarios registrados');
         return;
       }
-      recentContainer.innerHTML = users.map((user) => renderUserCardExtended(user, true)).join('');
+      recentContainer.innerHTML = users.map((user) => renderUserCard(user)).join('');
     });
   }
 </script>

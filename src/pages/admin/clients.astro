@@ -34,12 +34,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const tr = (key: string): string =>
     (window as any).__ADMIN_CLIENTS_TRANSLATIONS__?.[key] || key;
 
-  const unsubInit = requireAdmin(() => {
+  requireAdmin(() => {
     initClients();
-  });
-
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
   });
 
   async function initClients(): Promise<void> {
@@ -47,7 +43,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     container.innerHTML = renderLoadingState();
 
-    unsubClients = subscribeToUsersByRole('client', async (clients) => {
+    subscribeToUsersByRole('client', async (clients) => {
       if (clients.length === 0) {
         container.innerHTML = renderEmptyState(ICONS.clients, tr('admin.no.clients'));
         return;

@@ -135,12 +135,8 @@ const clientTranslations = {
   const tr = (key: string): string =>
     (window as any).__TRAINER_SETTINGS_TRANSLATIONS__?.[key] || key;
 
-  const unsubInit = requireAuth(async (user) => {
+  requireAuth(async (user) => {
     await initSettings(user);
-  });
-
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
   });
 
   function renderProfileEmptyState(

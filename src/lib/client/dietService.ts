@@ -1,4 +1,4 @@
-import { collection, query, where, orderBy, limit, startAfter, onSnapshot, addDoc, serverTimestamp, type Timestamp } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, onSnapshot, addDoc, serverTimestamp, type Timestamp } from 'firebase/firestore';
 import type { Unsubscribe } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/shared/logger';
@@ -40,7 +40,7 @@ export function subscribeToDiets(
 ): Unsubscribe {
   if (!clientId) {
     callback([]);
-    return () => { };
+    return () => {};
   }
 
   const q = query(
@@ -50,134 +50,57 @@ export function subscribeToDiets(
     limit(1)
   );
 
-  let fallbackUnsub: Unsubscribe | null = null;
-
-  const unsub = onSnapshot(
+  return onSnapshot(
     q,
     (snapshot) => {
       callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Diet)));
     },
     (error) => {
-      logger.error('Diet', 'Error al suscribirse a dietas (intentando fallback sin orderBy):', error);
+      logger.error('Diet', 'Error al suscribirse a dietas:', error);
       if (onError) onError(error);
       callback([]);
-      try {
-        const fallbackQ = query(
-          collection(db, 'diets'),
-          where('clientId', '==', clientId)
-        );
-        fallbackUnsub = onSnapshot(
-          fallbackQ,
-          (snapshot) => {
-            const diets = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Diet));
-            diets.sort((a, b) => {
-              const tA = (a.createdAt as any)?.toMillis ? (a.createdAt as any).toMillis() : 0;
-              const tB = (b.createdAt as any)?.toMillis ? (b.createdAt as any).toMillis() : 0;
-              return tB - tA;
-            });
-            callback(diets.slice(0, 1));
-          },
-          () => { }
-        );
-      } catch (e) {
-        // Safe fallback catch
-      }
     }
   );
-
-  return () => {
-    unsub();
-    fallbackUnsub?.();
-  };
 }
 
 /**
- * Se suscribe a las dietas de un cliente (historial).
+ * Se suscribe a TODAS las dietas de un cliente (historial completo).
  * Útil para la vista de historial del cliente.
  */
 export function subscribeToDietHistory(
   clientId: string,
   callback: (diets: Diet[]) => void,
-  optionsOrOnError?: { limit?: number; startAfter?: any } | ((error: Error) => void),
   onError?: (error: Error) => void
 ): Unsubscribe {
   if (!clientId) {
     callback([]);
-    return () => { };
+    return () => {};
   }
 
-  let options: { limit?: number; startAfter?: any } | undefined;
-  let errCb = onError;
-
-  if (typeof optionsOrOnError === 'function') {
-    errCb = optionsOrOnError;
-  } else if (optionsOrOnError) {
-    options = optionsOrOnError;
-  }
-
-  const constraints: any[] = [
+  const q = query(
+    collection(db, 'diets'),
     where('clientId', '==', clientId),
     orderBy('createdAt', 'desc'),
-  ];
-
-  if (options?.startAfter) {
-    constraints.push(startAfter(options.startAfter));
-  }
-
-  if (options?.limit) {
-    constraints.push(limit(Math.min(options.limit, 100)));
-  } else {
-    constraints.push(limit(100));
-  }
-
-  const q = query(collection(db, 'diets'), ...constraints);
-  let fallbackUnsub: Unsubscribe | null = null;
-
-  const unsub = onSnapshot(
-    q,
-    (snapshot) => {
-      try {
-        callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Diet)));
-      } catch (err) {
-        logger.error('Diet', 'Error procesando snapshot de historial de dietas:', err);
-        if (errCb) errCb(err instanceof Error ? err : new Error(String(err)));
-      }
-    },
-    (error) => {
-      logger.error('Diet', 'Error al suscribirse a historial de dietas (fallback sin orderBy):', error);
-      if (errCb) errCb(error);
-      callback([]);
-      try {
-        const fallbackQ = query(collection(db, 'diets'), where('clientId', '==', clientId));
-        fallbackUnsub = onSnapshot(
-          fallbackQ,
-          (snapshot) => {
-            const diets = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Diet));
-            diets.sort((a, b) => {
-              const tA = (a.createdAt as any)?.toMillis ? (a.createdAt as any).toMillis() : 0;
-              const tB = (b.createdAt as any)?.toMillis ? (b.createdAt as any).toMillis() : 0;
-              return tB - tA;
-            });
-            callback(diets);
-          },
-          () => { }
-        );
-      } catch (e) {
-        // Safe fallback catch
-      }
-    }
   );
 
-  return () => {
-    unsub();
-    fallbackUnsub?.();
-  };
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Diet)));
+    },
+    (error) => {
+      logger.error('Diet', 'Error al suscribirse a historial de dietas:', error);
+      if (onError) onError(error);
+      callback([]);
+    }
+  );
 }
 
 /**
  * Registra una comida como completada en progress_logs.
- * Permite llevar un seguimiento real de adherencia.
+ * Esto permite llevar un seguimiento real de adherencia.
  * @returns ID del documento creado, o null si hay error de validación
+ * @throws Error si hay un error de Firestore (para que el caller pueda manejarlo)
  */
 export async function registerMealComplete(
   clientId: string,
@@ -223,7 +146,7 @@ export function subscribeToTodayMeals(
 ): Unsubscribe {
   if (!clientId) {
     callback([]);
-    return () => { };
+    return () => {};
   }
 
   // Normalizar a UTC para evitar race conditions con zonas horarias
@@ -238,7 +161,6 @@ export function subscribeToTodayMeals(
     where('date', '>=', todayStart),
     where('date', '<=', todayEnd),
     orderBy('date', 'desc'),
-    limit(50) // Limitar a 50 comidas por día (suficiente para cualquier dieta)
   );
 
   return onSnapshot(

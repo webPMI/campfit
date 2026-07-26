@@ -12,7 +12,7 @@
     "astro": "astro",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest --coverage",
     "test:integration": "vitest --config vitest.config.ts tests/integration",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -35,14 +35,9 @@
     "setup": "bash scripts/setup.sh",
     "setup:full": "bash scripts/setup.sh --full",
     "lock:status": "bash scripts/agent-lock.sh status",
-    "lock:release": "bash scripts/agent-lock.sh release",
-    "i18n:validate": "node scripts/i18n-validate.cjs",
-    "i18n:find-missing": "node scripts/i18n-find-missing.cjs",
-    "i18n:dedup": "node scripts/i18n-dedup.cjs",
-    "i18n:sync": "node scripts/i18n-sync.cjs",
-    "i18n:report": "node scripts/i18n-report.cjs",
-    "i18n:fix": "npm run i18n:sync && npm run i18n:validate"
+    "lock:release": "bash scripts/agent-lock.sh release"
   },
+
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.7",
@@ -52,13 +47,9 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@playwright/test": "^1.61.1",
-    "@typescript-eslint/eslint-plugin": "^8.65.0",
-    "@typescript-eslint/parser": "^8.65.0",
-    "eslint": "^10.8.0",
-    "eslint-plugin-astro": "^3.0.1",
-    "@vitest/coverage-istanbul": "^3.0.9",
-    "@vitest/coverage-v8": "^3.0.9",
+    "@testing-library/jest-dom": "^6.9.1",
     "happy-dom": "^20.10.6",
+    "jsdom": "^29.1.1",
     "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.3",

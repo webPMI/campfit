@@ -60,242 +60,100 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
       </div>
     </main>
-
-    <!-- Modal RPE -->
-    <div id="rpeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center theme-bg-primary/80 backdrop-blur-md transition-all duration-300">
-      <div class="w-full max-w-md scale-95 transform rounded-2xl border theme-border theme-surface p-6 shadow-2xl transition-all duration-300">
-        <h3 class="text-lg font-bold theme-text-primary">Valorar Esfuerzo (RPE)</h3>
-        <p class="mt-1 text-xs theme-text-tertiary">¿Qué tan duro ha sido el entrenamiento de hoy?</p>
-        
-        <!-- Selector 1-10 -->
-        <div class="mt-5 grid grid-cols-5 gap-2" id="rpeButtonsContainer">
-          <!-- Generado por JS -->
-        </div>
-        
-        <div id="rpeHint" class="mt-4 rounded-xl theme-surface-secondary/40 py-2.5 text-center text-xs font-semibold theme-text-brand">
-          Selecciona una valoración
-        </div>
-        
-        <textarea id="rpeNotes" placeholder="Notas sobre tu sesión (opcional)" class="mt-4 h-20 w-full rounded-xl border theme-border-strong theme-surface-hover p-3 text-xs theme-text-primary outline-none focus:ring-2 focus:ring-emerald-500/10"></textarea>
-        
-        <div class="mt-5 flex gap-3">
-          <button id="closeRpeBtn" class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary py-3 text-xs font-semibold theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
-          <button id="confirmRpeBtn" disabled class="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-xs font-semibold theme-text-primary opacity-50 transition-all hover:from-emerald-400 hover:to-emerald-500 shadow-lg shadow-emerald-500/10">Confirmar</button>
-        </div>
-      </div>
-    </div>
   </div>
 </ClientLayout>
 
 <script>
-  import { initClientPage } from '@/lib/client/clientInit';
-  import { subscribeToWorkouts, completeWorkout } from '@/lib/client/workoutService';
-  import { subscribeToWeeklyAdherence } from '@/lib/client/adherenceService';
-  import { checkAndGrantAchievements, ACHIEVEMENT_DEFINITIONS } from '@/lib/client/achievementsService';
+  import { authService } from '@/services/authService';
+  import { setUser } from '@/stores/authStore';
+  import { db } from '@/lib/firebase';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { subscribeToWorkouts } from '@/lib/client/workoutService';
   import { t } from '@/i18n/client';
-  import { showToast } from '@/lib/shared/ui';
 
+  const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
+  const workoutsContent = document.getElementById('workoutsContent')!;
   const workoutCard = document.getElementById('workoutCard')!;
   const emptyState = document.getElementById('emptyState')!;
   const workoutName = document.getElementById('workoutName')!;
   const workoutDifficulty = document.getElementById('workoutDifficulty')!;
   const workoutDescription = document.getElementById('workoutDescription')!;
   const exercisesList = document.getElementById('exercisesList')!;
-  const completeWorkoutBtn = document.getElementById('completeWorkoutBtn') as HTMLButtonElement;
-  const weeklyCalendar = document.getElementById('weeklyCalendar')!;
-  const weekDays = document.getElementById('weekDays')!;
-  const weeklyStreak = document.getElementById('weeklyStreak')!;
-  let currentWorkoutId: string | null = null;
-
-  const DAY_NAMES = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-
-  function renderWeekCalendar(daysWithWorkouts: Set<string>, streakDays: number): void {
-    weeklyCalendar.classList.remove('hidden');
-    weeklyStreak.textContent = `🔥 ${streakDays} ${streakDays === 1 ? 'día' : 'días'}`;
-
-    const today = new Date();
-    const todayStr = today.toISOString().substring(0, 10);
-    weekDays.innerHTML = '';
-
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      const dateStr = d.toISOString().substring(0, 10);
-      const isToday = dateStr === todayStr;
-      const isDone = daysWithWorkouts.has(dateStr);
-      const dayLabel = DAY_NAMES[d.getDay() === 0 ? 6 : d.getDay() - 1];
-
-      const cell = document.createElement('div');
-      cell.className = 'flex flex-col items-center gap-1';
-      cell.innerHTML = `
-        <span class="text-[10px] font-medium ${isToday ? 'text-emerald-400' : 'text-zinc-600'}">${dayLabel}</span>
-        <div class="h-8 w-full rounded-lg flex items-center justify-center text-xs font-bold transition-all
-          ${isDone ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400' :
-            isToday ? 'bg-zinc-700/80 border border-dashed border-zinc-500 text-zinc-400' :
-            'bg-zinc-800/40 border border-zinc-800/20 text-zinc-700'}">
-          ${isDone ? '✓' : isToday ? '•' : d.getDate()}
-        </div>
-      `;
-      weekDays.appendChild(cell);
-    }
-  }
+  // const completeWorkoutBtn = document.getElementById('completeWorkoutBtn')!;
 
   loadingText.textContent = t('dashboard.loading');
 
-  // ─── State para limpieza ──────────────────────────────────────────────────
-  let unsubWorkouts: (() => void) | null = null;
-  let unsubAdherence: (() => void) | null = null;
-
-  const cleanupInit = initClientPage({
-    onReady: async (firebaseUser) => {
-      // ─── Weekly Adherence Calendar ──────────────────────────────────────
-      unsubAdherence = subscribeToWeeklyAdherence(firebaseUser.uid, 3, (stats) => {
-        const now = new Date();
-        const daysSet = new Set<string>();
-        for (let i = 0; i < stats.daysWithWorkouts; i++) {
-          const d = new Date(now);
-          d.setDate(now.getDate() - i);
-          if (i < stats.daysWithWorkouts) daysSet.add(d.toISOString().substring(0, 10));
-        }
-        renderWeekCalendar(daysSet, stats.streakDays);
-      });
-
-      unsubWorkouts = subscribeToWorkouts(firebaseUser.uid, (workouts) => {
-        if (workouts.length > 0 && workouts[0]) {
-          const w = workouts[0];
-          currentWorkoutId = w.id;
-          workoutName.textContent = w.name;
-          workoutDifficulty.textContent = w.difficulty;
-          workoutDescription.textContent = w.description;
-
-          if (w.completed) {
-            completeWorkoutBtn.innerHTML = `
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-              ¡Completado!
-            `;
-            completeWorkoutBtn.disabled = true;
-            completeWorkoutBtn.classList.remove('from-emerald-500', 'to-emerald-600', 'hover:from-emerald-400', 'hover:to-emerald-500');
-            completeWorkoutBtn.classList.add('from-emerald-600', 'to-emerald-700', 'cursor-not-allowed', 'opacity-75');
-          } else {
-            completeWorkoutBtn.innerHTML = `
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-              Marcar rutina completada
-            `;
-            completeWorkoutBtn.disabled = false;
-            completeWorkoutBtn.classList.add('from-emerald-500', 'to-emerald-600', 'hover:from-emerald-400', 'hover:to-emerald-500');
-            completeWorkoutBtn.classList.remove('from-emerald-600', 'to-emerald-700', 'cursor-not-allowed', 'opacity-75');
-          }
-
-          exercisesList.innerHTML = '';
-          if (w.exercises && w.exercises.length > 0) {
-            w.exercises.forEach((ex: any, i: number) => {
-              const div = document.createElement('div');
-              div.className = 'rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm';
-              div.innerHTML = `
-                <div class="flex items-start justify-between">
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2">
-                      <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-400">${i + 1}</span>
-                      <h4 class="font-medium text-zinc-200">${ex.name}</h4>
-                    </div>
-                    <div class="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
-                      <span>${ex.sets} series × ${ex.reps} reps</span>
-                      <span>Descanso: ${ex.restTime || '90s'}</span>
-                    </div>
-                    ${ex.description ? `<p class="mt-2 text-xs text-zinc-600">${ex.description}</p>` : ''}
-                  </div>
-                </div>
-              `;
-              exercisesList.appendChild(div);
-            });
-          }
-
-          workoutCard.classList.remove('hidden');
-          emptyState.classList.add('hidden');
-        } else {
-          currentWorkoutId = null;
-          workoutCard.classList.add('hidden');
-          emptyState.classList.remove('hidden');
-        }
-      });
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
     }
-  });
 
-  // Configurar botón de completar entrenamiento (una sola vez)
-  if (completeWorkoutBtn) {
-    completeWorkoutBtn.onclick = async () => {
-      if (!currentWorkoutId) return;
-      
-      completeWorkoutBtn.disabled = true;
-      completeWorkoutBtn.innerHTML = `
-        <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-        </svg>
-        Guardando...
-      `;
-      
-      const success = await completeWorkout(currentWorkoutId);
-      if (success) {
-        completeWorkoutBtn.innerHTML = `
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          ¡Completado!
-        `;
-        completeWorkoutBtn.classList.remove('from-emerald-500', 'to-emerald-600');
-        completeWorkoutBtn.classList.add('from-emerald-600', 'to-emerald-700');
+    // Verificar rol de cliente
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
 
-        // Check achievements after completing workout
-        try {
-          const { getAuth } = await import('firebase/auth');
-          const user = getAuth().currentUser;
-          if (user) {
-            const newAchievements = await checkAndGrantAchievements(user.uid, {
-              streakDays: 1,
-              workoutsCompleted: 1,
-              mealsCompleted: 0,
-              daysWithMeals: 0,
-            });
-            newAchievements.forEach((type) => {
-              const def = ACHIEVEMENT_DEFINITIONS[type];
-              if (!def) return;
-              const toast = document.createElement('div');
-              toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in flex items-center gap-3 rounded-2xl border border-amber-500/30 bg-zinc-900/95 px-4 py-3 shadow-2xl backdrop-blur-xl';
-              toast.innerHTML = `
-                <span class="text-2xl">${def.emoji}</span>
-                <div>
-                  <p class="text-xs font-bold text-amber-400">¡Logro desbloqueado!</p>
-                  <p class="text-sm font-semibold text-zinc-200">${def.title}</p>
-                  <p class="text-xs text-zinc-500">${def.description}</p>
+    // Actualizar authStore
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    loadingScreen.classList.add('hidden');
+    workoutsContent.classList.remove('hidden');
+
+    subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+      if (workouts.length > 0 && workouts[0]) {
+        const w = workouts[0];
+        workoutName.textContent = w.name;
+        workoutDifficulty.textContent = w.difficulty;
+        workoutDescription.textContent = w.description;
+
+        exercisesList.innerHTML = '';
+        if (w.exercises && w.exercises.length > 0) {
+          w.exercises.forEach((ex: any, i: number) => {
+            const div = document.createElement('div');
+            div.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm';
+            div.innerHTML = `
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)]">${i + 1}</span>
+                    <h4 class="font-medium text-[var(--text-primary)]">${ex.name}</h4>
+                  </div>
+                  <div class="mt-2 flex flex-wrap gap-3 text-xs text-[var(--text-tertiary)]">
+                    <span>${ex.sets} series × ${ex.reps} reps</span>
+                    <span>Descanso: ${ex.restTime || '90s'}</span>
+                  </div>
+                  ${ex.description ? `<p class="mt-2 text-xs text-[var(--text-disabled)]">${ex.description}</p>` : ''}
                 </div>
-              `;
-              document.body.appendChild(toast);
-              setTimeout(() => toast.remove(), 5000);
-            });
-          }
-        } catch { /* achievements are optional */ }
+              </div>
+            `;
+            exercisesList.appendChild(div);
+          });
+        }
+
+        workoutCard.classList.remove('hidden');
+        emptyState.classList.add('hidden');
       } else {
-        completeWorkoutBtn.disabled = false;
-        completeWorkoutBtn.innerHTML = `
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          Marcar rutina completada
-        `;
+        workoutCard.classList.add('hidden');
+        emptyState.classList.remove('hidden');
       }
-    };
-  }
+    });
+  });
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    cleanupInit();
-    unsubWorkouts?.();
-    unsubAdherence?.();
+    unsubscribe();
   });
 </script>

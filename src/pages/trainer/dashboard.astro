@@ -147,21 +147,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     renderWorkoutCard,
     renderDietCard,
   } from '@/lib/trainer/trainerUtils';
-  import { logger } from '@/lib/shared/logger';
 
   let unsubClients: (() => void) | null = null;
   let unsubWorkouts: (() => void) | null = null;
   let unsubDiets: (() => void) | null = null;
   let unsubMessages: (() => void) | null = null;
 
-  const unsubInit = requireAuth(async (user) => {
+  requireAuth(async (user) => {
     const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
     initDashboard(user.uid, lang);
   });
 
   // Cleanup subscriptions on page unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
+  window.addEventListener('beforeunload', () => {
     unsubClients?.();
     unsubWorkouts?.();
     unsubDiets?.();
@@ -277,7 +275,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       });
 
     } catch (error) {
-      logger.error('TrainerDashboard', 'Error initializing:', error);
+      console.error('[TrainerDashboard] Error initializing:', error);
       clientsContainer.innerHTML = `
         <div class="rounded-xl border border-red-900/30 bg-[var(--danger-dim)] p-6 text-center backdrop-blur-sm">
           <p class="text-sm text-[var(--danger)]">Error al cargar el dashboard. Recarga la página.</p>

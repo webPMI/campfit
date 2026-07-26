@@ -249,7 +249,6 @@ const altLang = lang === 'es' ? 'en' : 'es';
   import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
   import { db } from '@/lib/firebase';
   import { t } from '@/i18n/client';
-  import { logger } from '@/lib/shared/logger';
 
   // ============================================================
   // State
@@ -406,7 +405,7 @@ const altLang = lang === 'es' ? 'en' : 'es';
       });
       return true;
     } catch (err) {
-      logger.error('Onboarding', 'Error saving:', err);
+      console.error('[Onboarding] Error saving:', err);
       showError(t('onboarding.error'));
       return false;
     }

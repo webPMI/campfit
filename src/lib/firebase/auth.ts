@@ -15,8 +15,6 @@ import {
   type User as FirebaseUser,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
 } from 'firebase/auth';
 
 export {
@@ -27,7 +25,5 @@ export {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
 };
 export type { FirebaseUser };

@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   // ─── Tests E2E centralizados en tests/e2e/ ───────────────────────────────
   testDir: './tests/e2e',
-  testMatch: '**/*.{spec,e2e}.ts',
+  testMatch: '**/*.e2e.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

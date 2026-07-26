@@ -50,11 +50,6 @@ export function renderClientCard(client: TrainerClient, onclick?: string): strin
  * Renderiza una tarjeta de rutina.
  */
 export function renderWorkoutCard(workout: TrainerWorkout): string {
-  const isTemplate = workout.isTemplate || workout.clientId === 'template';
-  const templateBadge = isTemplate
-    ? `<span class="rounded-full bg-purple-500/10 px-2 py-0.5 text-xs font-medium text-purple-400 border border-purple-500/20">✨ Plantilla</span>`
-    : '';
-
   return `
     <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
       <div class="flex items-center justify-between">
@@ -75,11 +70,6 @@ export function renderWorkoutCard(workout: TrainerWorkout): string {
  * Renderiza una tarjeta de dieta.
  */
 export function renderDietCard(diet: TrainerDiet): string {
-  const isTemplate = diet.isTemplate || diet.clientId === 'template';
-  const templateBadge = isTemplate
-    ? `<span class="rounded-full bg-purple-500/10 px-2 py-0.5 text-xs font-medium text-purple-400 border border-purple-500/20">✨ Plantilla</span>`
-    : '';
-
   return `
     <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
       <div class="flex items-center justify-between">

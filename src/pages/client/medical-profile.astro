@@ -197,12 +197,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { initClientPage } from '@/lib/client/clientInit';
+  import { authService } from '@/services/authService';
+  import { setUser } from '@/stores/authStore';
   import { db } from '@/lib/firebase';
   import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
   import { t } from '@/i18n/client';
   import { logger } from '@/lib/shared/logger';
 
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const loadingText = document.getElementById('loadingText')!;
+  const medicalContent = document.getElementById('medicalContent')!;
   const medicalForm = document.getElementById('medicalForm') as HTMLFormElement;
   const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
   const saveBtnText = document.getElementById('saveBtnText')!;
@@ -221,28 +225,51 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const emergencyNameInput = document.getElementById('emergencyNameInput') as HTMLInputElement;
   const emergencyPhoneInput = document.getElementById('emergencyPhoneInput') as HTMLInputElement;
 
-  let currentUid: string | null = null;
+  loadingText.textContent = t('dashboard.loading');
 
-  const cleanupInit = initClientPage({
-    onReady: async (firebaseUser, userData) => {
-      currentUid = firebaseUser.uid;
-
-      // Cargar datos existentes si los hay
-      const mp = userData?.medicalProfile;
-      if (mp) {
-        if (mp.height) heightInput.value = mp.height;
-        if (mp.weight) weightInput.value = mp.weight;
-        if (mp.age) ageInput.value = mp.age;
-        if (mp.gender) genderSelect.value = mp.gender;
-        if (mp.conditions) conditionsInput.value = mp.conditions;
-        if (mp.medications) medicationsInput.value = mp.medications;
-        if (mp.allergies) allergiesInput.value = mp.allergies;
-        if (mp.injuries) injuriesInput.value = mp.injuries;
-        if (mp.surgery) surgeryInput.value = mp.surgery;
-        if (mp.emergencyName) emergencyNameInput.value = mp.emergencyName;
-        if (mp.emergencyPhone) emergencyPhoneInput.value = mp.emergencyPhone;
-      }
+  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = '/login';
+      return;
     }
+
+    // Verificar rol de cliente
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const userData = userDoc.data();
+    if (!userData || userData.role !== 'client') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Actualizar authStore
+    setUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
+    });
+
+    // Cargar datos existentes si los hay
+    const mp = userData.medicalProfile;
+    if (mp) {
+      if (mp.height) heightInput.value = mp.height;
+      if (mp.weight) weightInput.value = mp.weight;
+      if (mp.age) ageInput.value = mp.age;
+      if (mp.gender) genderSelect.value = mp.gender;
+      if (mp.conditions) conditionsInput.value = mp.conditions;
+      if (mp.medications) medicationsInput.value = mp.medications;
+      if (mp.allergies) allergiesInput.value = mp.allergies;
+      if (mp.injuries) injuriesInput.value = mp.injuries;
+      if (mp.surgery) surgeryInput.value = mp.surgery;
+      if (mp.emergencyName) emergencyNameInput.value = mp.emergencyName;
+      if (mp.emergencyPhone) emergencyPhoneInput.value = mp.emergencyPhone;
+    }
+
+    loadingScreen.classList.add('hidden');
+    medicalContent.classList.remove('hidden');
   });
 
   // Guardar perfil médico
@@ -251,15 +278,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     successMessage.classList.add('hidden');
     errorMessage.classList.add('hidden');
 
-    if (!currentUid) {
-      errorMessage.classList.remove('hidden');
-      return;
-    }
-
     saveBtn.disabled = true;
     saveBtnText.textContent = t('client.medical.saving');
 
     try {
+      authService.onAuthChange(() => {});
+      // No podemos obtener el uid fácilmente aquí, usamos el store
+      // En su lugar, obtenemos el usuario actual del auth
+      const { auth } = await import('@/lib/firebase');
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.href = '/login';
+        return;
+      }
+
       const medicalProfile = {
         height: heightInput.value ? parseFloat(heightInput.value) : null,
         weight: weightInput.value ? parseFloat(weightInput.value) : null,
@@ -275,7 +307,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         updatedAt: serverTimestamp(),
       };
 
-      await updateDoc(doc(db, 'users', currentUid), {
+      await updateDoc(doc(db, 'users', currentUser.uid), {
         medicalProfile,
         updatedAt: serverTimestamp(),
       });
@@ -294,6 +326,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    cleanupInit();
+    unsubscribe();
   });
 </script>

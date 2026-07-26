@@ -137,13 +137,9 @@ const clientTranslations = {
 
   let currentUid: string | null = null;
 
-  const unsubInit = requireAdmin(async (user) => {
+  requireAdmin(async (user) => {
     currentUid = user.uid;
     await initSettings(user);
-  });
-
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
   });
 
   function renderProfileEmptyState(

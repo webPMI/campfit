@@ -127,8 +127,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   function redirectByRole(role: string) {
     const routes: Record<string, string> = {
-      admin: '/admin/dashboard',
-      trainer: '/trainer/dashboard',
+      admin: '/dashboard',
+      trainer: '/dashboard',
       client: '/client/dashboard',
     };
     window.location.href = routes[role] || '/client/dashboard';
@@ -137,30 +137,25 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
-    logger.info('Login', 'Formulario de login enviado');
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
     if (!email || !password) {
-      logger.warn('Login', 'Campos vacíos en formulario de login');
       showError(t('error.required'));
       return;
     }
 
     if (!isValidEmail(email)) {
-      logger.warn('Login', `Email inválido: ${email}`);
       showError(t('error.invalid-email'));
       return;
     }
 
     loginBtn.disabled = true;
     loginBtn.innerHTML = `<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> ${t('auth.loading.login')}`;
-    logger.info('Login', `Intentando login con email: ${email}`);
 
     try {
       const user = await authService.loginUser(email, password);
-      logger.info('Login', `Login exitoso para usuario: ${user.uid}, rol: ${user.role}`);
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
@@ -179,85 +174,25 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     } finally {
       loginBtn.disabled = false;
       loginBtn.textContent = t('auth.login.btn');
-      logger.info('Login', 'Botón de login restaurado');
     }
   });
-
-  // Procesar resultado de redirect de Google al cargar la página
-  // Intenta handleRedirectResult primero, y si no hay resultado pero el
-  // usuario está autenticado (por onAuthStateChanged), lo procesa igual.
-  (async () => {
-    try {
-      const user = await authService.handleRedirectResult();
-      if (user) {
-        logger.step('Auth:Google', 1, 1, 'Redirect de Google procesado - usuario autenticado', 'success', {
-          uid: user.uid,
-          role: user.role,
-          email: user.email,
-        });
-        setUser(user);
-        setAuthLoading(false);
-        redirectByRole(user.role);
-      } else {
-        // Si no hay redirect, suscribirse a cambios de auth para detectar
-        // si el usuario ya estaba logueado (ej: recarga de página)
-        authService.onAuthChange((firebaseUser) => {
-          if (firebaseUser) {
-            logger.debug('Auth:Google', 'Usuario ya autenticado detectado por onAuthStateChanged');
-            // Re-check handleRedirectResult por si getRedirectResult resuelve tarde
-            authService.handleRedirectResult().then((redirectUser) => {
-              if (redirectUser) {
-                setUser(redirectUser);
-                setAuthLoading(false);
-                redirectByRole(redirectUser.role);
-              }
-            });
-          } else {
-            setAuthLoading(false);
-          }
-        });
-      }
-    } catch (err: unknown) {
-      const errorObj = err as { code?: string; message?: string };
-      const code = errorObj?.code || 'unknown';
-      logger.error('Auth:Google', 'Error al procesar redirect de Google en login', {
-        code,
-        message: errorObj?.message || 'Sin mensaje',
-      });
-      showError(t('error.google.login'));
-      setAuthLoading(false);
-    }
-  })();
 
   googleBtn.addEventListener('click', async () => {
     hideError();
     googleBtn.disabled = true;
     googleBtn.textContent = t('auth.loading.google');
-    logger.info('Login', 'Botón de Google presionado');
-
-    logger.group('Auth:Google - Login page');
-    logger.step('Auth:Google', 1, 2, 'Redirigiendo a Google para autenticación...', 'pending');
 
     try {
-      await authService.loginWithGoogle();
-      // El navegador redirige a Google - el código no continúa aquí
+      const user = await authService.loginWithGoogle();
+      setUser(user);
+      setAuthLoading(false);
+      redirectByRole(user.role);
     } catch (err: unknown) {
-      const errorObj = err as { code?: string; message?: string };
-      const code = errorObj?.code || 'unknown';
-
-      logger.error('Auth:Google', 'Error al iniciar redirect de Google', {
-        code,
-        message: errorObj?.message || 'Sin mensaje',
-      });
-      logger.step('Auth:Google', 2, 2, 'Error al iniciar redirect de Google', 'error', { code });
-      logger.groupEnd();
-
-      const googleMessages: Record<string, string> = {
-        'auth/unauthorized-domain': 'Este dominio no está autorizado para login con Google. Contacta al administrador.',
-        'auth/operation-not-allowed': 'El login con Google no está habilitado. Contacta al administrador.',
-        'auth/network-request-failed': 'Error de conexión. Verifica tu internet e intenta de nuevo.',
-      };
-      showError(googleMessages[code] || t('error.google.login'));
+      const fbErr = err as FirebaseError;
+      const code = fbErr.code || '';
+      if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
+        showError(t('error.google.login'));
+      }
     } finally {
       googleBtn.disabled = false;
       googleBtn.innerHTML = `
@@ -269,7 +204,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </svg>
         ${t('auth.google.login')}
       `;
-      logger.info('Login', 'Botón de Google restaurado');
     }
   });
 </script>

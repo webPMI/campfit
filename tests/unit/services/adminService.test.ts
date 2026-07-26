@@ -1,4 +1,3 @@
-
 /**
  * Tests unitarios para adminService.
  *
@@ -92,8 +91,8 @@ describe('adminService', () => {
   describe('getAllUsers', () => {
     it('✅ should return all users with correct structure', async () => {
       const mockUsers = [
-        { id: 'user-1', data: () => ({ uid: 'user-1', name: 'Alice', email: 'alice@test.com', role: 'client' }) },
-        { id: 'user-2', data: () => ({ uid: 'user-2', name: 'Bob', email: 'bob@test.com', role: 'trainer' }) },
+        { id: 'user-1', data: () => ({ name: 'Alice', email: 'alice@test.com', role: 'client' }) },
+        { id: 'user-2', data: () => ({ name: 'Bob', email: 'bob@test.com', role: 'trainer' }) },
       ];
       mockFns.getDocs.mockResolvedValue({ docs: mockUsers, forEach: (fn: (d: unknown) => void) => mockUsers.forEach(fn) });
 
@@ -108,7 +107,7 @@ describe('adminService', () => {
 
     it('✅ should handle missing fields gracefully', async () => {
       const mockUsers = [
-        { id: 'user-1', data: () => ({ uid: 'user-1', name: 'Alice' }) },
+        { id: 'user-1', data: () => ({ name: 'Alice' }) },
       ];
       mockFns.getDocs.mockResolvedValue({ docs: mockUsers, forEach: (fn: (d: unknown) => void) => mockUsers.forEach(fn) });
 

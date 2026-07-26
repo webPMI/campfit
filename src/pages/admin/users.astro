@@ -55,7 +55,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 
   <!-- ==================== USER EDIT MODAL ==================== -->
-  <div id="user-modal-overlay" class="fixed inset-0 z-50 hidden theme-bg-primary/60 backdrop-blur-sm">
+  <div id="user-modal-overlay" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm">
     <div class="flex min-h-full items-center justify-center p-4">
       <div class="w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-xl">
         <!-- Modal header -->
@@ -161,7 +161,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 
   <!-- ==================== MEDICAL PROFILE MODAL ==================== -->
-  <div id="medical-modal-overlay" class="fixed inset-0 z-[60] hidden theme-bg-primary/60 backdrop-blur-sm">
+  <div id="medical-modal-overlay" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-sm">
     <div class="flex min-h-full items-center justify-center p-4">
       <div class="w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-xl">
         <div class="flex items-center justify-between">
@@ -184,7 +184,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
-  import { showToast, escapeHtml, formatDate, getRoleBadge, renderEmptyState, renderLoadingState } from '@/lib/shared/ui';
   import {
     subscribeToUsers,
     subscribeToUsersByRole,
@@ -202,7 +201,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { db } from '@/lib/firebase';
   import { sendPasswordResetEmail } from 'firebase/auth';
   import { auth } from '@/lib/firebase';
-  import { logger } from '@/lib/shared/logger';
 
   // === State ===
   let unsubUsers: (() => void) | null = null;
@@ -212,14 +210,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let editingUserId: string | null = null;
   let medicalProfileData: Record<string, unknown> | null = null;
 
-  const unsubInit = requireAdmin(() => {
+  requireAdmin(() => {
     initUsers();
     initEventDelegation();
   });
 
   // Cleanup subscriptions on page unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
+  window.addEventListener('beforeunload', () => {
     unsubUsers?.();
     unsubTrainers?.();
   });
@@ -239,9 +236,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           break;
         case 'close-medical-modal':
           closeMedicalModal();
-          break;
-        case 'open-user-chat':
-          openUserChat();
           break;
         case 'save-user-edit':
           await saveUserEdit();
@@ -454,8 +448,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       showToast({ message: 'Usuario actualizado correctamente', type: 'success' });
       closeUserModal();
     } catch (error) {
-      logger.error('AdminUsers', 'Error saving user:', error);
-      showToast({ message: 'Error al guardar cambios', type: 'error' });
+      console.error('[Admin] Error saving user:', error);
+      showToast({ message: 'Error al guardar los cambios', type: 'error' });
     } finally {
       saveBtn.textContent = 'Guardar Cambios';
       (saveBtn as HTMLButtonElement).disabled = false;
@@ -495,8 +489,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       // Refresh modal
       openUserModal(editingUserId);
     } catch (error) {
-      logger.error('AdminUsers', 'Error toggling block:', error);
-      showToast({ message: 'Error al bloquear/desbloquear usuario', type: 'error' });
+      console.error('[Admin] Error toggling block:', error);
+      showToast({ message: `Error al ${action} al usuario`, type: 'error' });
     }
   }
 
@@ -601,8 +595,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       await sendPasswordResetEmail(auth, user.email);
       showToast({ message: `Email de recuperación enviado a ${user.email}`, type: 'success' });
     } catch (error) {
-      logger.error('AdminUsers', 'Error sending password reset:', error);
-      showToast({ message: 'Error al enviar email de recuperación', type: 'error' });
+      console.error('[Admin] Error sending password reset:', error);
+      showToast({ message: 'Error al enviar el email de recuperación', type: 'error' });
     }
   }
 
@@ -625,14 +619,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       showToast({ message: 'Usuario eliminado correctamente', type: 'success' });
       closeUserModal();
     } catch (error) {
-      logger.error('AdminUsers', 'Error deleting user:', error);
-      showToast({ message: 'Error al eliminar usuario', type: 'error' });
+      console.error('[Admin] Error deleting user:', error);
+      showToast({ message: 'Error al eliminar el usuario', type: 'error' });
     }
-  }
-
-  function openUserChat(): void {
-    if (!editingUserId) return;
-    window.location.href = `/admin/chat?user=${editingUserId}`;
   }
 
   // Role dropdown change handler - show/hide trainer field

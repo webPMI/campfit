@@ -1,6 +1,6 @@
 # 📚 CampFit - Documentación del Proyecto
 
-> **Stack:** Astro 7 + Tailwind CSS 4 + Firebase 11 + Nanostores  
+> **Stack:** Astro 5 + Tailwind CSS 4 + Firebase 11 + Nanostores  
 > **Arquitectura:** Vanilla JS (sin React). SSR con `@astrojs/node` standalone.  
 > **Estado:** En desarrollo activo.
 

@@ -249,7 +249,7 @@ describe('dietService', () => {
         return () => {};
       });
 
-      subscribeToDietHistory('client-123', callback, undefined, onError);
+      subscribeToDietHistory('client-123', callback, onError);
 
       expect(onError).toHaveBeenCalled();
       expect(callback).toHaveBeenCalledWith([]);

@@ -74,19 +74,11 @@ export async function loadProfile(uid: string): Promise<ProfileData | null> {
     if (!docSnap.exists()) return null;
 
     const data = docSnap.data();
-    let role = data.role || 'client';
-    const email = data.email || '';
-
-    if (email.toLowerCase() === 'servicioweb.pmi@gmail.com' && role !== 'admin') {
-      role = 'admin';
-      updateDoc(doc(db, 'users', uid), { role: 'admin' }).catch(() => {});
-    }
-
     const profile: ProfileData = {
       uid: docSnap.id,
       name: data.name || 'Sin nombre',
-      email: email,
-      role: role,
+      email: data.email || '',
+      role: data.role || 'client',
       hasActiveAlert: data.hasActiveAlert ?? false,
       assignedTrainerId: data.assignedTrainerId,
       medicalProfile: data.medicalProfile,

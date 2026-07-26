@@ -179,7 +179,7 @@ describe('workoutService', () => {
         return () => {};
       });
 
-      subscribeToWorkouts('client-123', callback, undefined, onError);
+      subscribeToWorkouts('client-123', callback, onError);
 
       expect(onError).toHaveBeenCalledWith(testError);
       expect(callback).toHaveBeenCalledWith([]);

@@ -61,19 +61,17 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     deleteDiet,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerDiet, Meal } from '@/lib/trainer/trainerUtils';
-  import { logger } from '@/lib/shared/logger';
 
   let unsubClients: (() => void) | null = null;
   let unsubDiets: (() => void) | null = null;
   let allClients: TrainerClient[] = [];
   let allDiets: TrainerDiet[] = [];
 
-  const unsubInit = requireAuth(async (user) => {
+  requireAuth(async (user) => {
     initDiets(user.uid);
   });
 
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
+  window.addEventListener('beforeunload', () => {
     unsubClients?.();
     unsubDiets?.();
   });
@@ -93,7 +91,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     unsubClients = subscribeToClients(trainerId, (clients) => {
       allClients = clients;
       clientFilter.innerHTML = `<option value="">${escapeHtml('Todos los clientes')}</option>` +
-        `<option value="template">✨ Plantillas Reutilizables</option>` +
         clients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
 
       const urlClientId = new URLSearchParams(window.location.search).get('clientId');
@@ -129,7 +126,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     const modal = document.createElement('div');
     modal.id = 'confirm-modal';
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center theme-bg-primary/60 backdrop-blur-sm';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm';
     modal.innerHTML = `
       <div class="mx-4 w-full max-w-sm rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-xl">
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--danger-dim)] mx-auto">
@@ -161,27 +158,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const clientId = clientFilter.value;
 
     let filtered = allDiets;
-    if (clientId === 'template') {
-      filtered = filtered.filter((d) => d.isTemplate || d.clientId === 'template');
-    } else if (clientId) {
-      filtered = filtered.filter((d) => d.clientId === clientId);
-    }
+    if (clientId) filtered = filtered.filter((d) => d.clientId === clientId);
 
     if (filtered.length === 0) {
       container.innerHTML = renderEmptyState(
         ICONS.diets,
-        clientId === 'template' ? 'No tienes plantillas guardadas aún' : (clientId ? 'Este cliente no tiene dietas' : 'No has creado dietas aún'),
+        clientId ? 'Este cliente no tiene dietas' : 'No has creado dietas aún',
       );
       return;
     }
 
     container.innerHTML = filtered
       .map((d) => {
-        const isTemplate = d.isTemplate || d.clientId === 'template';
-        const clientName = isTemplate
-          ? '✨ Plantilla Reutilizable'
-          : allClients.find((c) => c.uid === d.clientId)?.name || 'Sin cliente';
-        const clientTextClass = isTemplate ? 'text-purple-400 font-semibold' : 'text-emerald-400';
+        const clientName = allClients.find((c) => c.uid === d.clientId)?.name || 'Sin cliente';
         const typeLabel = TYPE_LABELS[d.type] || d.type;
         return `
           <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-default)]">
@@ -232,8 +221,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       meals: [] as Meal[],
     };
 
-    const clientOptions = `<option value="template" ${d.clientId === 'template' || d.isTemplate ? 'selected' : ''}>✨ Plantilla Reutilizable (Sin cliente)</option>` +
-      allClients
+    const clientOptions = allClients
       .map((c) => `<option value="${c.uid}" ${c.uid === d.clientId ? 'selected' : ''}>${escapeHtml(c.name)}</option>`)
       .join('');
 
@@ -320,90 +308,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const mealsList = document.getElementById('meals-list')!;
     const mealCountBadge = document.getElementById('meal-count-badge')!;
 
-    // ─── Load Template Button ─────────────────────────────────────────────────
-    const btnLoadTemplate = document.getElementById('btn-load-template-diet');
-    if (btnLoadTemplate) {
-      btnLoadTemplate.addEventListener('click', () => {
-        const templates = allDiets.filter((t) => t.isTemplate || t.clientId === 'template');
-        if (templates.length === 0) {
-          alert('No tienes plantillas guardadas. Crea una dieta y asígnala como "Plantilla Reutilizable".');
-          return;
-        }
-
-        const existing = document.getElementById('template-picker-modal');
-        if (existing) existing.remove();
-
-        const modal = document.createElement('div');
-        modal.id = 'template-picker-modal';
-        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm';
-        modal.innerHTML = `
-          <div class="mx-4 w-full max-w-md rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-base font-semibold text-zinc-200">📋 Seleccionar Plantilla</h3>
-              <button id="btn-close-template-picker" class="text-zinc-500 hover:text-zinc-300 transition-colors">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <p class="text-xs text-zinc-500 mb-4">Las comidas de la plantilla se copiarán al formulario. Podrás modificarlas antes de guardar.</p>
-            <div class="space-y-2 max-h-72 overflow-y-auto">
-              ${templates.map((tpl) => `
-                <button data-template-id="${tpl.id}" class="template-pick-btn w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-3 text-left hover:border-purple-500/40 hover:bg-purple-500/5 transition-all">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm font-medium text-zinc-200">${escapeHtml(tpl.name)}</p>
-                      <p class="text-xs text-zinc-500">${tpl.meals?.length || 0} comidas · ${tpl.totalCalories || 0} kcal · ${tpl.type || 'normal'}</p>
-                    </div>
-                    <svg class="h-4 w-4 text-purple-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                    </svg>
-                  </div>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-        `;
-        document.body.appendChild(modal);
-
-        document.getElementById('btn-close-template-picker')!.addEventListener('click', () => modal.remove());
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-
-        modal.querySelectorAll('.template-pick-btn').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const templateId = btn.getAttribute('data-template-id');
-            const template = allDiets.find((t) => t.id === templateId);
-            if (!template) return;
-
-            // Load meals from template into the editor
-            mealsList.innerHTML = '';
-            if (template.meals && template.meals.length > 0) {
-              template.meals.forEach((meal, i) => {
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = renderMealRow(meal, i);
-                mealsList.appendChild(wrapper.firstElementChild || wrapper);
-              });
-            } else {
-              mealsList.innerHTML = '<p class="text-xs text-zinc-600 py-2">No hay comidas en esta plantilla</p>';
-            }
-            updateMealCount();
-
-            // Pre-fill name if empty
-            const nameInput = document.getElementById('diet-name') as HTMLInputElement;
-            if (!nameInput.value.trim()) {
-              nameInput.value = template.name + ' (copia)';
-            }
-
-            // Set total calories from template
-            const calInput = document.getElementById('diet-calories') as HTMLInputElement;
-            if (calInput) calInput.value = String(template.totalCalories || 0);
-
-            modal.remove();
-          });
-        });
-      });
-    }
-
     function updateMealCount(): void {
       const count = mealsList.querySelectorAll('[data-meal-row]').length;
       mealCountBadge.textContent = `(${count})`;
@@ -446,18 +350,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const mealElements = mealsList.querySelectorAll('[data-meal-row]');
       let total = 0;
       mealElements.forEach((el) => {
-        const calInput = el.querySelector('.meal-cal-input') as HTMLInputElement;
-        const cal = parseInt(calInput?.value || '0') || 0;
+        const inputs = el.querySelectorAll('input');
+        const cal = parseInt((inputs[2] as HTMLInputElement).value) || 0;
         total += cal;
       });
       const calInput = document.getElementById('diet-calories') as HTMLInputElement;
-      if (calInput) calInput.value = String(total);
+      calInput.value = String(total);
     }
 
     // Escuchar cambios en inputs de calorías de comidas para auto-calcular
     mealsList.addEventListener('input', (e) => {
       const target = e.target as HTMLElement;
-      if (target.classList.contains('meal-cal-input')) {
+      if (target.tagName === 'INPUT') {
         calculateTotalCalories();
       }
     });
@@ -468,8 +372,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const type = (document.getElementById('diet-type') as HTMLSelectElement).value as 'normal' | 'advanced';
       const somatotype = (document.getElementById('diet-somatotype') as HTMLSelectElement).value as TrainerDiet['somatotype'] || undefined;
 
+      // Calcular calorías totales desde las comidas
       const mealElements = mealsList.querySelectorAll('[data-meal-row]');
       let totalCalories = 0;
+      mealElements.forEach((el) => {
+        const inputs = el.querySelectorAll('input');
+        totalCalories += parseInt((inputs[2] as HTMLInputElement).value) || 0;
+      });
 
       const nameError = document.getElementById('diet-name-error')!;
       const clientError = document.getElementById('diet-client-error')!;
@@ -487,47 +396,29 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       btnSpinner.classList.remove('hidden');
 
       const meals: Meal[] = Array.from(mealElements).map((el, idx) => {
-        const selectName = el.querySelector('.meal-name-select') as HTMLSelectElement;
-        const inputDesc = el.querySelector('.meal-desc-input') as HTMLInputElement;
-        const inputCal = el.querySelector('.meal-cal-input') as HTMLInputElement;
-        const inputProtein = el.querySelector('.meal-protein-input') as HTMLInputElement;
-        const inputCarbs = el.querySelector('.meal-carbs-input') as HTMLInputElement;
-        const inputFat = el.querySelector('.meal-fat-input') as HTMLInputElement;
-
-        const calories = parseInt(inputCal?.value || '0') || 0;
-        totalCalories += calories;
-
+        const inputs = el.querySelectorAll('input');
         return {
           id: `meal-${Date.now()}-${idx}`,
-          name: (selectName?.value || 'other') as Meal['name'],
-          description: inputDesc?.value || '',
-          calories,
-          protein: parseInt(inputProtein?.value || '0') || 0,
-          carbs: parseInt(inputCarbs?.value || '0') || 0,
-          fat: parseInt(inputFat?.value || '0') || 0,
+          name: (inputs[0] as HTMLInputElement).value as Meal['name'],
+          description: (inputs[1] as HTMLInputElement).value,
+          calories: parseInt((inputs[2] as HTMLInputElement).value) || 0,
+          protein: parseInt((inputs[3] as HTMLInputElement).value) || 0,
+          carbs: parseInt((inputs[4] as HTMLInputElement).value) || 0,
+          fat: parseInt((inputs[5] as HTMLInputElement).value) || 0,
           order: idx + 1,
         };
-      });
-
-      // Si el usuario ingresó manualmente totalCalories en el input global, respetarlo si no hay comidas
-      const manualCalories = parseInt((document.getElementById('diet-calories') as HTMLInputElement).value) || 0;
-      if (meals.length === 0 && manualCalories > 0) {
-        totalCalories = manualCalories;
-      }
+      }).filter((m) => m.name.trim() !== '');
 
       try {
-        const isTemplateFlag = clientId === 'template';
-        const finalClientId = isTemplateFlag ? 'template' : clientId;
         if (isEditing && diet) {
-          await updateDiet(diet.id, { name, clientId: finalClientId, trainerId, type, somatotype, totalCalories, meals, isTemplate: isTemplateFlag });
+          await updateDiet(diet.id, { name, clientId, trainerId, type, somatotype, totalCalories, meals });
         } else {
-          await createDiet({ clientId: finalClientId, trainerId, name, type, somatotype, totalCalories, meals, isTemplate: isTemplateFlag });
+          await createDiet({ clientId, trainerId, name, type, somatotype, totalCalories, meals });
         }
         editor.classList.add('hidden');
         editor.innerHTML = '';
       } catch (error) {
-        logger.error('TrainerDiets', 'Error saving:', error);
-        showToast({ message: 'Error al guardar la dieta', type: 'error' });
+        console.error('[TrainerDiets] Error saving:', error);
       } finally {
         btnSave.disabled = false;
         btnText.classList.remove('hidden');
@@ -535,11 +426,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }
     });
 
-    // Close editor helper
-    (window as any).__closeEditor = () => {
-      editor.classList.add('hidden');
-      editor.innerHTML = '';
-    };
+    // Close editor via event delegation (data-action="close-editor")
   }
 
   function renderMealRow(meal: Meal, index: number): string {

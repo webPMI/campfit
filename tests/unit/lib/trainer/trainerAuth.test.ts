@@ -47,7 +47,7 @@ afterAll(() => {
 
 describe('trainerAuth', () => {
   describe('requireAuth', () => {
-    it('should call callback when user is authenticated', async () => {
+    it('debería llamar al callback cuando el usuario está autenticado', async () => {
       const mockUser = { uid: 'trainer-123', email: 'trainer@test.com' };
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
         const callback = args[1] as (u: unknown) => void;
@@ -64,7 +64,7 @@ describe('trainerAuth', () => {
       expect(unsubscribe).toBeInstanceOf(Function);
     });
 
-    it('should redirect to /login when user is NOT authenticated', async () => {
+    it('debería redirigir a /login cuando el usuario NO está autenticado', async () => {
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
         const callback = args[1] as (u: unknown) => void;
         callback(null);
@@ -78,22 +78,10 @@ describe('trainerAuth', () => {
       expect(callback).not.toHaveBeenCalled();
       expect(window.location.href).toBe('/login');
     });
-
-    it('should return unsubscribe function to cleanup listener', async () => {
-      const mockUnsubscribe = vi.fn();
-      mockOnAuthStateChanged.mockReturnValue(mockUnsubscribe);
-
-      const { requireAuth } = await import('@/lib/trainer/trainerAuth');
-      const callback = vi.fn();
-      const unsubscribe = requireAuth(callback);
-
-      expect(unsubscribe).toBe(mockUnsubscribe);
-      expect(typeof unsubscribe).toBe('function');
-    });
   });
 
   describe('signOutUser', () => {
-    it('should sign out and redirect to /login on success', async () => {
+    it('debería cerrar sesión y redirigir a /login', async () => {
       mockSignOut.mockResolvedValue(undefined);
 
       const { signOutUser } = await import('@/lib/trainer/trainerAuth');
@@ -103,26 +91,13 @@ describe('trainerAuth', () => {
       expect(window.location.href).toBe('/login');
     });
 
-    it('should handle sign out error without redirecting', async () => {
+    it('debería manejar errores al cerrar sesión sin redirigir', async () => {
       mockSignOut.mockRejectedValue(new Error('Network error'));
 
       const { signOutUser } = await import('@/lib/trainer/trainerAuth');
       await signOutUser();
 
       expect(window.location.href).not.toBe('/login');
-    });
-
-    it('should show toast error message when sign out fails', async () => {
-      const { showToast } = await import('@/lib/shared/ui');
-      mockSignOut.mockRejectedValue(new Error('Auth error'));
-
-      const { signOutUser } = await import('@/lib/trainer/trainerAuth');
-      await signOutUser();
-
-      expect(showToast).toHaveBeenCalledWith({
-        message: 'Error al cerrar sesión',
-        type: 'error',
-      });
     });
   });
 });

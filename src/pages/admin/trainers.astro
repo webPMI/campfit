@@ -34,12 +34,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const tr = (key: string): string =>
     (window as any).__ADMIN_TRAINERS_TRANSLATIONS__?.[key] || key;
 
-  const unsubInit = requireAdmin(() => {
+  requireAdmin(() => {
     initTrainers();
-  });
-
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
   });
 
   async function initTrainers(): Promise<void> {
@@ -47,7 +43,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     container.innerHTML = renderLoadingState();
 
-    unsubTrainers = subscribeToUsersByRole('trainer', async (trainers) => {
+    subscribeToUsersByRole('trainer', async (trainers) => {
       if (trainers.length === 0) {
         container.innerHTML = renderEmptyState(ICONS.trainers, tr('admin.no.trainers'));
         return;

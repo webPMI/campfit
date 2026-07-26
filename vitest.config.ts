@@ -9,28 +9,66 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
+
     setupFiles: ['./tests/setup/vitest.ts'],
-    pool: 'threads',
-    poolOptions: {
-      threads: { singleThread: false, minThreads: 2, maxThreads: 4 },
-    },
+
+    // ─── Firebase como dependencias inline ─────────────────────────────────
+    // vitest 4.x necesita que @firebase/firestore y @firebase/auth estén en inline
+    // para que vi.mock('firebase/firestore') y vi.mock('firebase/auth') funcionen
+    // correctamente. Sin inline, vitest no procesa estos módulos y los mocks
+    // no interceptan la cadena de re-export firebase/* → @firebase/*.
     server: {
       deps: {
         inline: [
-          '@firebase/firestore', '@firebase/auth', '@firebase/app',
-          '@firebase/util', '@firebase/logger', 'firebase',
+          '@firebase/firestore',
+          '@firebase/auth',
+          '@firebase/app',
+          '@firebase/util',
+          '@firebase/logger',
+          'firebase',
         ],
       },
     },
-    include: ['tests/unit/**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['node_modules', 'dist', '.astro', 'tests/e2e', 'tests/e2e/**'],
+
+    // ─── Tests centralizados en tests/ ─────────────────────────────────────
+    include: [
+      'tests/unit/**/*.{test,spec}.{ts,tsx}',
+      'tests/integration/**/*.{test,spec}.{ts,tsx}',
+    ],
+    exclude: [
+      'node_modules',
+      'dist',
+      '.astro',
+      'tests/e2e',
+      'tests/e2e/**',
+      'tests/e2e/*.spec.ts',
+      'tests/**/*.spec.ts',
+      'tests/**/*.spec.ts',
+      'tests/e2e/**/*.spec.ts',
+      'tests/e2e/**/*.test.ts',
+    ],
+
+    // ─── Cobertura ─────────────────────────────────────────────────────────
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: './tests/coverage',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['node_modules/', 'dist/', '.astro/', '**/*.d.ts', '**/*.config.*', '**/mockData', 'tests/**'],
+      exclude: [
+        'node_modules/',
+        'dist/',
+        '.astro/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/mockData',
+        'tests/**',
+      ],
     },
+
+    // ─── Alias de módulos ───────────────────────────────────────────────────
+    // NOTA: En vitest 4.x, los alias que empiezan con @ pueden no resolverse
+    // correctamente en test.alias. Los ponemos en resolve.alias para asegurar
+    // que funcionen tanto en producción como en tests.
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@components': path.resolve(__dirname, 'src/components'),
@@ -41,6 +79,8 @@ export default defineConfig({
       '@tests': path.resolve(__dirname, 'tests'),
     },
   },
+
+  // ─── Variables de entorno mock ───────────────────────────────────────────
   define: {
     'import.meta.env.PUBLIC_FIREBASE_API_KEY': JSON.stringify('test-key'),
     'import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN': JSON.stringify('test.firebaseapp.com'),
@@ -54,3 +94,7 @@ export default defineConfig({
     'import.meta.env.PUBLIC_POSTHOG_HOST': JSON.stringify('https://app.posthog.com'),
   },
 });
+
+
+
+

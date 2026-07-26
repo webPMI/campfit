@@ -59,21 +59,10 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
     }
 
     try {
-      const email = (user.email || '').toLowerCase();
-      const isBootstrapAdmin = email === 'servicioweb.pmi@gmail.com' || email === 'sevicioweb.pmi@gmail.com';
+      const docSnap = await getDoc(doc(db, 'users', user.uid));
+      const role = docSnap.data()?.role;
 
-      const userDocRef = doc(db, 'users', user.uid);
-      const docSnap = await getDoc(userDocRef);
-      const data = docSnap.exists() ? docSnap.data() : null;
-      let role = data?.role;
-
-      if (isBootstrapAdmin && role !== 'admin') {
-        role = 'admin';
-        const { setDoc } = await import('firebase/firestore');
-        await setDoc(userDocRef, { role: 'admin', email: user.email, name: user.displayName || 'Admin' }, { merge: true });
-      }
-
-      if (role !== 'admin' && !isBootstrapAdmin) {
+      if (role !== 'admin') {
         logger.warn('AuthGuard', `Usuario ${user.uid} con rol ${role} intentó acceder a ruta de admin`);
         window.location.href = '/dashboard';
         return;
@@ -82,11 +71,6 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
       callback(user);
     } catch (error) {
       logger.error('AuthGuard', 'Error al verificar rol de admin:', error);
-      const email = (user.email || '').toLowerCase();
-      if (email === 'servicioweb.pmi@gmail.com' || email === 'sevicioweb.pmi@gmail.com') {
-        callback(user);
-        return;
-      }
       showToast({ message: 'Error al verificar permisos', type: 'error' });
       window.location.href = '/login';
     }

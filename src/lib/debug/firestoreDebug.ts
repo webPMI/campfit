@@ -349,7 +349,6 @@ async function runTests(uid: string, role: string): Promise<void> {
     }
 
     const start = performance.now();
-    const test = queryTests[i]!;
     try {
       const test = queryTests[i];
       if (!test) continue;

@@ -1,22 +1,6 @@
 ---
-import ThemeToggle from '@/components/ThemeToggle.astro';
-
 export type Language = 'es' | 'en';
 const lang = Astro.params.lang || 'es';
-
-interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
-  url?: string;
-}
-
-const {
-  title = 'CampFit - Asesoría Fitness Online',
-  description = 'Conecta con entrenadores personales de élite, realiza un seguimiento en tiempo real de tus rutinas, macros, y alcanza tus objetivos físicos de forma profesional.',
-  image = '/og-image.jpg',
-  url = Astro.url.href
-} = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -25,25 +9,7 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="keywords" content="fitness, asesoría online, entrenador personal, rutinas, dieta, macros, gimnasio, salud" />
-    <meta name="robots" content="index, follow" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={url} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={image} />
-
+    <title>CampFit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -67,56 +33,6 @@ const {
     <div class="app-shell">
       <slot />
     </div>
-=======
-
-    <!--
-      Anti-flash-of-wrong-theme (AFOWT) script.
-      Must be blocking inline in <head> BEFORE any stylesheets or body content.
-      Sets data-theme + meta theme-color synchronously to prevent flash.
-    -->
-    <script is:inline>
-      (function() {
-        try {
-          var theme = localStorage.getItem('campfit_theme') || 'dark';
-          var root = document.documentElement;
-          root.setAttribute('data-theme', theme);
-          var meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) {
-            meta.setAttribute('content', theme === 'dark' ? '#09090b' : '#fafafa');
-          }
-        } catch(e) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        }
-      })();
-    </script>
-
-    <!-- Meta theme-color: initial value is dark (updated by AFOWT script above if needed) -->
-    <meta name="theme-color" content="#09090b" />
-  </head>
-  <body
-    class="min-h-screen theme-bg-gradient theme-text-primary antialiased"
-    style="font-family: 'Inter', sans-serif;"
-  >
-    <!-- Theme initialization: applies theme to DOM on first client-side load -->
-    <script>
-      import { initTheme } from '@/stores/themeStore';
-      initTheme();
-    </script>
-
-    <!-- Global theme toggle (visible on all pages) -->
-    <div class="fixed top-4 right-4 z-50">
-      <ThemeToggle />
-    </div>
-
-    <slot />
-
-    <!-- Firestore Debug System (Ctrl+Shift+D) - Solo en desarrollo -->
-    {import.meta.env.DEV && (
-      <script>
-        import '@/lib/debug/firestoreDebug';
-      </script>
-    )}
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   </body>
 </html>
 
