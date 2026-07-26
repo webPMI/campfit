@@ -61,39 +61,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     renderDietCard,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient } from '@/lib/trainer/trainerUtils';
-<<<<<<< HEAD
-  import { subscribeToWeeklyAdherence } from '@/lib/client/adherenceService';
-  import { subscribeToAchievements, ACHIEVEMENT_DEFINITIONS } from '@/lib/client/achievementsService';
-=======
-  import { logger } from '@/lib/shared/logger';
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
   let unsubClients: (() => void) | null = null;
   let unsubDetailWorkouts: (() => void) | null = null;
   let unsubDetailDiets: (() => void) | null = null;
   let unsubDetailProgress: (() => void) | null = null;
-  let unsubDetailAdherence: (() => void) | null = null;
-  let unsubDetailAchievements: (() => void) | null = null;
   let allClients: TrainerClient[] = [];
 
-<<<<<<< HEAD
-  const unsubInit = requireAuth(async (user) => {
-=======
-  const unsubscribeAuth = requireAuth(async (user) => {
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
+  requireAuth(async (user) => {
     const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
     initClients(user.uid, lang);
   });
 
-<<<<<<< HEAD
   // Cleanup on unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubInit?.();
-=======
-  // Cleanup on navigation
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribeAuth?.();
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
+  window.addEventListener('beforeunload', () => {
     unsubClients?.();
     cleanupDetailSubscriptions();
   });
@@ -102,13 +83,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     unsubDetailWorkouts?.();
     unsubDetailDiets?.();
     unsubDetailProgress?.();
-    unsubDetailAdherence?.();
-    unsubDetailAchievements?.();
     unsubDetailWorkouts = null;
     unsubDetailDiets = null;
     unsubDetailProgress = null;
-    unsubDetailAdherence = null;
-    unsubDetailAchievements = null;
   }
 
   async function initClients(trainerId: string, lang: string): Promise<void> {
@@ -196,24 +173,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               </svg>
               Nueva Dieta
             </a>
-          </div>
-
-          <!-- Adherence & Achievements -->
-          <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <!-- Adherence Widget -->
-            <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-              <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Adherencia Semanal</p>
-              <div id="detail-adherence" class="space-y-2.5">
-                <div class="flex items-center gap-2"><svg class="h-3.5 w-3.5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg><p class="text-xs text-zinc-500">Cargando...</p></div>
-              </div>
-            </div>
-            <!-- Achievements -->
-            <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-              <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Logros</p>
-              <div id="detail-achievements" class="flex flex-wrap gap-2">
-                <div class="flex items-center gap-2"><svg class="h-3.5 w-3.5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg><p class="text-xs text-zinc-500">Cargando...</p></div>
-              </div>
-            </div>
           </div>
 
           <div class="space-y-6">
@@ -336,7 +295,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           medicalEl.innerHTML = '<p class="text-xs text-[var(--text-disabled)]">Perfil médico no completado</p>';
         }
       } catch (error) {
-        logger.error('TrainerClients', 'Error loading profile:', error);
+        console.error('[TrainerClients] Error loading profile:', error);
         const profileInfo = document.getElementById('client-profile-info')!;
         profileInfo.innerHTML = '<p class="text-xs text-[var(--danger)]">Error al cargar perfil</p>';
       }
@@ -359,50 +318,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         } else {
           el.innerHTML = diets.map((d) => renderDietCard(d)).join('');
         }
-      });
-
-      // Load adherence stats
-      unsubDetailAdherence = subscribeToWeeklyAdherence(clientId, 3, (stats) => {
-        const el = document.getElementById('detail-adherence');
-        if (!el) return;
-        const mealColor = stats.mealAdherencePercent >= 70 ? 'emerald' : stats.mealAdherencePercent >= 40 ? 'amber' : 'red';
-        const workoutPct = Math.min(100, Math.round((stats.daysWithWorkouts / 7) * 100));
-        const workoutColor = workoutPct >= 70 ? 'blue' : workoutPct >= 40 ? 'amber' : 'red';
-        el.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-zinc-500">Comidas</span>
-            <span class="text-xs font-bold text-${mealColor}-400">${stats.mealAdherencePercent}%</span>
-          </div>
-          <div class="h-1.5 overflow-hidden rounded-full bg-zinc-800">
-            <div class="h-full rounded-full bg-${mealColor}-500/60 transition-all duration-700" style="width:${stats.mealAdherencePercent}%"></div>
-          </div>
-          <div class="flex items-center justify-between mt-1">
-            <span class="text-xs text-zinc-500">Entrenos</span>
-            <span class="text-xs font-bold text-${workoutColor}-400">${workoutPct}%</span>
-          </div>
-          <div class="h-1.5 overflow-hidden rounded-full bg-zinc-800">
-            <div class="h-full rounded-full bg-${workoutColor}-500/60 transition-all duration-700" style="width:${workoutPct}%"></div>
-          </div>
-          <div class="mt-2 flex items-center justify-between">
-            <span class="text-[10px] text-zinc-600">${stats.daysWithMeals}/7 días comidas · ${stats.daysWithWorkouts}/7 días entrenos</span>
-            <span class="rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-400">🔥 ${stats.streakDays} ${stats.streakDays === 1 ? 'día' : 'días'}</span>
-          </div>
-        `;
-      });
-
-      // Load achievements
-      unsubDetailAchievements = subscribeToAchievements(clientId, (achievements) => {
-        const el = document.getElementById('detail-achievements');
-        if (!el) return;
-        if (achievements.length === 0) {
-          el.innerHTML = '<p class="text-xs text-zinc-600">Sin logros desbloqueados aún</p>';
-          return;
-        }
-        el.innerHTML = achievements.map((a) => {
-          const def = ACHIEVEMENT_DEFINITIONS[a.type];
-          if (!def) return '';
-          return `<span title="${escapeHtml(def.title)}: ${escapeHtml(def.description)}" class="flex items-center justify-center h-9 w-9 rounded-xl border border-zinc-700/40 bg-zinc-800/60 text-xl hover:scale-110 transition-transform cursor-default">${def.emoji}</span>`;
-        }).join('');
       });
 
       // Load progress
@@ -432,69 +347,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <span class="text-xs text-[var(--text-primary)]">${value}</span>
             </div>`;
           }).join('');
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
         }
-
-        // Separate weight logs for sparkline
-        const weightLogs = logs.filter((l: any) => l.type === 'weight' && l.value?.weight)
-          .sort((a: any, b: any) => {
-            const ta = a.date?.toMillis?.() || (a.date instanceof Date ? a.date.getTime() : 0);
-            const tb = b.date?.toMillis?.() || (b.date instanceof Date ? b.date.getTime() : 0);
-            return ta - tb;
-          })
-          .slice(-10);
-
-        let sparklineHtml = '';
-        if (weightLogs.length >= 2) {
-          const weights = weightLogs.map((l: any) => l.value.weight as number);
-          const minW = Math.min(...weights);
-          const maxW = Math.max(...weights);
-          const range = maxW - minW || 1;
-          const W = 200, H = 40;
-          const pts = weights.map((w, i) => {
-            const x = (i / (weights.length - 1)) * W;
-            const y = H - ((w - minW) / range) * (H - 6) - 3;
-            return `${x},${y}`;
-          }).join(' ');
-          const latestW = weights[weights.length - 1];
-          const prevW = weights[weights.length - 2];
-          const trend = latestW > prevW ? '↑' : latestW < prevW ? '↓' : '→';
-          const trendColor = latestW > prevW ? 'text-red-400' : latestW < prevW ? 'text-emerald-400' : 'text-zinc-400';
-
-          sparklineHtml = `
-            <div class="mb-3">
-              <div class="flex items-center justify-between mb-1">
-                <p class="text-xs font-medium text-zinc-400">Peso (últimas ${weights.length} mediciones)</p>
-                <p class="text-xs font-bold ${trendColor}">${latestW} kg ${trend}</p>
-              </div>
-              <svg viewBox="0 0 200 40" class="w-full h-10 overflow-visible">
-                <polyline points="${pts}" fill="none" stroke="rgb(52 211 153 / 0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="${(weights.length - 1) / (weights.length - 1) * W}" cy="${H - ((weights[weights.length - 1] - minW) / range) * (H - 6) - 3}" r="2.5" fill="rgb(52 211 153)" />
-              </svg>
-              <div class="flex justify-between text-[10px] text-zinc-600 mt-0.5">
-                <span>Mín: ${minW} kg</span>
-                <span>Máx: ${maxW} kg</span>
-              </div>
-            </div>
-          `;
-        }
-
-        const recent = logs.slice(0, 5).map((log: any) => {
-          const date = log.date?.toDate ? formatDate(log.date) : log.date || '-';
-          let value: string;
-          switch (log.type) {
-            case 'weight': value = `${log.value?.weight || '-'} kg`; break;
-            case 'workout': value = log.value?.completed ? '✅ Completado' : '⏳ Pendiente'; break;
-            case 'meal': value = log.value?.completed ? '✅ Completada' : '⏳ Pendiente'; break;
-            default: value = log.value ? JSON.stringify(log.value) : '-';
-          }
-          return `<div class="flex items-center justify-between py-1.5 border-b border-zinc-800/40 last:border-0">
-            <span class="text-xs text-zinc-500">${date}</span>
-            <span class="text-xs text-zinc-200">${value}</span>
-          </div>`;
-        }).join('');
-
-        el.innerHTML = sparklineHtml + recent;
       });
     };
 

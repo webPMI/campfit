@@ -9,74 +9,28 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-
     setupFiles: ['./tests/setup/vitest.ts'],
-    
-    // Optimizaciones de rendimiento
     pool: 'threads',
     poolOptions: {
-      threads: {
-        singleThread: false,
-        minThreads: 2,
-        maxThreads: 4,
-      },
+      threads: { singleThread: false, minThreads: 2, maxThreads: 4 },
     },
-
-    // ─── Firebase como dependencias inline ─────────────────────────────────
-    // vitest 4.x necesita que @firebase/firestore y @firebase/auth estén en inline
-    // para que vi.mock('firebase/firestore') y vi.mock('firebase/auth') funcionen
-    // correctamente. Sin inline, vitest no procesa estos módulos y los mocks
-    // no interceptan la cadena de re-export firebase/* → @firebase/*.
     server: {
       deps: {
         inline: [
-          '@firebase/firestore',
-          '@firebase/auth',
-          '@firebase/app',
-          '@firebase/util',
-          '@firebase/logger',
-          'firebase',
+          '@firebase/firestore', '@firebase/auth', '@firebase/app',
+          '@firebase/util', '@firebase/logger', 'firebase',
         ],
       },
     },
-
-    // ─── Tests centralizados en tests/ ─────────────────────────────────────
-    include: [
-      'tests/unit/**/*.{test,spec}.{ts,tsx}',
-    ],
-    exclude: [
-      'node_modules',
-      'dist',
-      '.astro',
-      'tests/e2e',
-      'tests/e2e/**',
-<<<<<<< HEAD
-      'tests/e2e/*.spec.ts',
-      'tests/**/*.spec.ts',
-      'tests/e2e/**/*.spec.ts',
-      'tests/e2e/**/*.test.ts',
-=======
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
-    ],
-
-    // ─── Cobertura ─────────────────────────────────────────────────────────
+    include: ['tests/unit/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', 'dist', '.astro', 'tests/e2e', 'tests/e2e/**'],
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: './tests/coverage',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '.astro/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mockData',
-        'tests/**',
-      ],
+      exclude: ['node_modules/', 'dist/', '.astro/', '**/*.d.ts', '**/*.config.*', '**/mockData', 'tests/**'],
     },
-
-    // ─── Alias de módulos ───────────────────────────────────────────────────
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@components': path.resolve(__dirname, 'src/components'),
@@ -87,8 +41,6 @@ export default defineConfig({
       '@tests': path.resolve(__dirname, 'tests'),
     },
   },
-
-  // ─── Variables de entorno mock ───────────────────────────────────────────
   define: {
     'import.meta.env.PUBLIC_FIREBASE_API_KEY': JSON.stringify('test-key'),
     'import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN': JSON.stringify('test.firebaseapp.com'),

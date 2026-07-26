@@ -200,7 +200,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const conversationList = document.getElementById('conversation-list')!;
     const searchTerm = (document.getElementById('chat-search') as HTMLInputElement).value.toLowerCase();
 
-<<<<<<< HEAD
     // Calcular el total de mensajes no leídos
     const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
     const trainerBadge = document.getElementById('trainer-chat-badge');
@@ -211,16 +210,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       } else {
         trainerBadge.classList.add('hidden');
       }
-=======
-    if (conversations.length === 0) {
-      conversationList.innerHTML = `
-        <div class="p-6 text-center">
-          <p class="text-xs text-[var(--text-tertiary)]">Sin conversaciones aún</p>
-          <p class="text-xs text-[var(--text-disabled)] mt-1">Los mensajes aparecerán aquí</p>
-        </div>
-      `;
-      return;
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     }
 
     // Merge all assigned clients with existing conversations so trainer can initiate chats

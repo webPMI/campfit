@@ -12,15 +12,9 @@ export interface User {
   hasActiveAlert: boolean;
   assignedTrainerId?: string;
   medicalProfile?: MedicalProfile;
-<<<<<<< HEAD
   lastActivityAt?: Timestamp | null;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
-=======
-  lastActivityAt?: Timestamp | Date | null;
-  createdAt?: Timestamp | Date | null;
-  updatedAt?: Timestamp | Date | null;
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 }
 
 export interface DietaryRestrictions {

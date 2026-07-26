@@ -80,7 +80,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   const faqContainer = document.getElementById('faqContainer')!;
 
-<<<<<<< HEAD
   // FAQ data
   const faqItems = [
     {
@@ -106,11 +105,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   ];
 
   function renderFaqs(): void {
-=======
-  loadingText.textContent = t('dashboard.loading');
-
-  function renderFaqs() {
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     faqContainer.innerHTML = '';
     const faqItems = getFaqs();
     faqItems.forEach((item, index) => {

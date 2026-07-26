@@ -110,14 +110,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-<<<<<<< HEAD
   import { initClientPage } from '@/lib/client/clientInit';
-=======
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   import { subscribeToProgress, registerWeight } from '@/lib/client/progressService';
   import { t } from '@/i18n/client';
   import { showToast } from '@/lib/shared/ui';
@@ -165,7 +158,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   tabWeight.addEventListener('click', () => switchTab('weight'));
   tabPhotos.addEventListener('click', () => switchTab('photos'));
 
-<<<<<<< HEAD
   // ─── State para limpieza ──────────────────────────────────────────────────
   let unsubProgress: (() => void) | null = null;
 
@@ -209,213 +201,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         }
       });
     }
-=======
-  // Drag and drop photo triggers
-  dropZone.addEventListener('click', () => photoInput.click());
-
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('theme-border-focus/50');
-  });
-
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('theme-border-focus/50');
-  });
-
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('theme-border-focus/50');
-    const file = e.dataTransfer?.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      handleFileSelected(file);
-    }
-  });
-
-  photoInput.addEventListener('change', () => {
-    const file = photoInput.files?.[0];
-    if (file) handleFileSelected(file);
-  });
-
-  let selectedImageBase64 = '';
-
-  function handleFileSelected(file: File) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      selectedImageBase64 = e.target?.result as string;
-      photoPreview.src = selectedImageBase64;
-      dropZone.classList.add('hidden');
-      photoPreviewContainer.classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
-  }
-
-  cancelPhotoBtn.addEventListener('click', () => {
-    selectedImageBase64 = '';
-    photoInput.value = '';
-    photoNotes.value = '';
-    photoPreviewContainer.classList.add('hidden');
-    dropZone.classList.remove('hidden');
-  });
-
-  function renderWeightChart(logs: any[]) {
-    if (logs.length === 0) {
-      chartContainer.innerHTML = '<p class="text-xs theme-text-tertiary">Registra tu peso para ver la evolución gráfica</p>';
-      return;
-    }
-
-    const width = 500;
-    const height = 200;
-    const padding = 30;
-
-    // Invertir logs para orden cronológico
-    const chronologicalLogs = [...logs].reverse();
-
-    const weights = chronologicalLogs.map(l => Number(l.value.weight));
-    const minWeight = Math.min(...weights) - 1;
-    const maxWeight = Math.max(...weights) + 1;
-    const weightRange = maxWeight - minWeight || 1;
-
-    const points = chronologicalLogs.map((log, index) => {
-      const x = padding + (index * (width - 2 * padding) / (chronologicalLogs.length - 1 || 1));
-      const y = height - padding - ((Number(log.value.weight) - minWeight) * (height - 2 * padding) / weightRange);
-      const date = (log.date as { toDate?: () => Date })?.toDate?.()?.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) || 'Fecha';
-      return { x, y, weight: log.value.weight, date };
-    });
-
-    let pathD = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) {
-      pathD += ` L ${points[i].x} ${points[i].y}`;
-    }
-
-    let svgHtml = `
-      <svg viewBox="0 0 ${width} ${height}" class="w-full h-full">
-        <defs>
-          <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#34d399" stop-opacity="0.15"/>
-            <stop offset="100%" stop-color="#34d399" stop-opacity="0.0"/>
-          </linearGradient>
-        </defs>
-        <!-- Grilla de fondo -->
-        <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="#27272a" stroke-dasharray="3" />
-        <line x1="${padding}" y1="${(height) / 2}" x2="${width - padding}" y2="${(height) / 2}" stroke="#27272a" stroke-dasharray="3" />
-        <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#27272a" />
-        
-        <!-- Líneas y Relleno -->
-        <path d="${pathD} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z" fill="url(#chartGlow)" />
-        <path d="${pathD}" fill="none" stroke="#34d399" stroke-width="2.5" />
-    `;
-
-    points.forEach((p) => {
-      svgHtml += `
-        <circle cx="${p.x}" cy="${p.y}" r="4" class="fill-emerald-400 stroke-zinc-900 stroke-2 hover:r-6 cursor-pointer transition-all" />
-        <text x="${p.x}" y="${height - 10}" class="text-[9px] fill-zinc-600 font-medium" text-anchor="middle">${p.date}</text>
-        <text x="${p.x}" y="${p.y - 8}" class="text-[9px] fill-zinc-300 font-bold" text-anchor="middle">${p.weight}</text>
-      `;
-    });
-
-    svgHtml += `</svg>`;
-    chartContainer.innerHTML = svgHtml;
-  }
-
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
-    }
-
-    // Verificar rol de cliente
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || userData.role !== 'client') {
-      window.location.href = '/dashboard';
-      return;
-    }
-
-    // Actualizar authStore
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
-
-    loadingScreen.classList.add('hidden');
-    progressContent.classList.remove('hidden');
-
-    // Subscribe to weight logs
-    unsubProgress = subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
-      if (logs.length > 0) {
-        weightHistory.innerHTML = '';
-        logs.forEach((log) => {
-          const w = log.value?.weight;
-          if (w) {
-            const div = document.createElement('div');
-            div.className = 'flex items-center justify-between rounded-lg bg-[var(--surface-4)] px-4 py-3';
-            const date = (log.date && typeof (log.date as { toDate?: () => Date }).toDate === 'function'
-              ? (log.date as { toDate: () => Date }).toDate().toLocaleDateString()
-              : log.date instanceof Date
-                ? log.date.toLocaleDateString()
-                : 'Fecha');
-            div.innerHTML = `
-              <span class="text-sm text-[var(--text-secondary)]">${date}</span>
-              <span class="text-sm font-semibold text-[var(--text-primary)]">${w} ${t('client.stats.kg')}</span>
-            `;
-            weightHistory.appendChild(div);
-          }
-        });
-        renderWeightChart(logs);
-      } else {
-        weightHistory.innerHTML = '<p class="text-sm text-[var(--text-disabled)]">Sin registros de peso aún.</p>';
-      }
-    });
-
-    // Save weight
-    saveWeightBtn.addEventListener('click', async () => {
-      const val = parseFloat(weightInput.value);
-      if (!val || val <= 0) return;
-      try {
-        await registerWeight(firebaseUser.uid, val);
-        weightInput.value = '';
-        showToast({ message: 'Peso registrado con éxito', type: 'success' });
-      } catch (err) {
-        showToast({ message: 'Error al guardar el peso', type: 'error' });
-      }
-    });
-
-    // Save Photo
-    savePhotoBtn.addEventListener('click', async () => {
-      if (!selectedImageBase64) return;
-      savePhotoBtn.setAttribute('disabled', 'true');
-      savePhotoBtn.textContent = 'Subiendo...';
-      try {
-        await addDoc(collection(db, 'progress_logs'), {
-          clientId: firebaseUser.uid,
-          type: 'photo',
-          date: new Date(),
-          value: {
-            imageBase64: selectedImageBase64,
-            notes: photoNotes.value.trim()
-          },
-          createdAt: serverTimestamp()
-        });
-        showToast({ message: 'Foto guardada correctamente', type: 'success' });
-        // Reset form
-        selectedImageBase64 = '';
-        photoInput.value = '';
-        photoNotes.value = '';
-        photoPreviewContainer.classList.add('hidden');
-        dropZone.classList.remove('hidden');
-      } catch (err) {
-        showToast({ message: 'Error al subir la foto', type: 'error' });
-      } finally {
-        savePhotoBtn.removeAttribute('disabled');
-        savePhotoBtn.textContent = 'Guardar foto';
-      }
-    });
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 
   let unsubProgress: (() => void) | null = null;
@@ -423,13 +208,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-<<<<<<< HEAD
     cleanupInit();
     unsubProgress?.();
-=======
-    unsubscribe();
-    unsubProgress?.();
-    unsubPhotos?.();
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 </script>

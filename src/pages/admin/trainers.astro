@@ -34,24 +34,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const tr = (key: string): string =>
     (window as any).__ADMIN_TRAINERS_TRANSLATIONS__?.[key] || key;
 
-<<<<<<< HEAD
   const unsubInit = requireAdmin(() => {
     initTrainers();
   });
 
   document.addEventListener('astro:before-swap', () => {
     unsubInit?.();
-=======
-  let unsubTrainers: (() => void) | null = null;
-
-  requireAdmin(() => {
-    initTrainers();
-  });
-
-  // Cleanup subscription on page unload
-  window.addEventListener('beforeunload', () => {
-    unsubTrainers?.();
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 
   async function initTrainers(): Promise<void> {

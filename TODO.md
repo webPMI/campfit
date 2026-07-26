@@ -16,18 +16,10 @@
 |-----------|-------|-------------|------------|
 | 🔴 CRÍTICO - Código Repetido | 9 | 9 | 0 |
 | 🟡 MEDIO - Código Muerto/No Utilizado | 2 | 2 | 0 |
-<<<<<<< HEAD
 | 🟢 BAJO - Mejoras de Código | 3 | 0 | 3 |
 | 🎨 UI/UX - Notificaciones y Feedback | 5 | 5 | 0 |
 | 🧪 Tests y Calidad | 8 | 4 | 4 |
 | **TOTAL** | **27** | **20** | **7** |
-=======
- | 🟢 BAJO - Mejoras de Código | 3 | 3 | 0 |
- | 🧪 Tests y Calidad | 8 | 8 | 0 |
- | **TOTAL** | **22** | **22** | **0** |
-
-**Estado final:** 22/22 tareas completadas (100%) 🎉
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
 ---
 
@@ -241,11 +233,7 @@ const altLang = lang === 'es' ? 'en' : 'es';
 - Limpiar imports huérfanos
 
 **Prioridad:** 🟡 MEDIA  
-<<<<<<< HEAD
 **Estado:** ✅ Completado (páginas públicas migradas a PublicPageLayout, imports limpiados)
-=======
-**Estado:** ✅ Completado (los imports de `t` y `lang` son necesarios para el template de las páginas públicas)
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
 ---
 

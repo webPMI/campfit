@@ -14,22 +14,11 @@ import { mapDocToUser } from '@/lib/helpers/userMappers';
 
 export const adminService = {
   /**
-<<<<<<< HEAD
    * Obtener todos los usuarios registrados.
    *
    * @param maxResults - Número máximo de usuarios a obtener (default: 100)
    * @returns Lista de usuarios ordenados por fecha de creación descendente
    */
-=======
-    * Obtiene todos los usuarios registrados en la base de datos.
-    * 
-    * @param maxResults - Número máximo de usuarios a obtener (por defecto 100)
-    * @returns Promise que resuelve con un array de usuarios
-    * 
-    * @example
-    * const users = await adminService.getAllUsers(50);
-    */
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   async getAllUsers(maxResults = 100): Promise<User[]> {
     const q = query(
       collection(db, 'users'),
@@ -37,7 +26,6 @@ export const adminService = {
       limit(maxResults),
     );
     const snapshot = await getDocs(q);
-<<<<<<< HEAD
     return snapshot.docs.map((d) => mapDocToUser(d));
   },
 
@@ -47,20 +35,6 @@ export const adminService = {
    * @param role - Rol a filtrar ('admin' | 'trainer' | 'client')
    * @param maxResults - Número máximo de usuarios a obtener (default: 100)
    * @returns Lista de usuarios del rol especificado
-=======
-    return snapshot.docs.map((d) => mapDocToUser(d.data(), 'Sin nombre'));
-  },
-
-  /**
-   * Obtiene usuarios filtrados por su rol.
-   * 
-   * @param role - Rol del usuario a filtrar ('admin', 'trainer', o 'client')
-   * @param maxResults - Número máximo de usuarios a obtener (por defecto 100)
-   * @returns Promise que resuelve con un array de usuarios del rol especificado
-   * 
-   * @example
-   * const trainers = await adminService.getUsersByRole('trainer', 20);
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async getUsersByRole(role: User['role'], maxResults = 100): Promise<User[]> {
     const q = query(
@@ -70,7 +44,6 @@ export const adminService = {
       limit(maxResults),
     );
     const snapshot = await getDocs(q);
-<<<<<<< HEAD
     return snapshot.docs.map((d) => mapDocToUser(d));
   },
 
@@ -79,20 +52,6 @@ export const adminService = {
    *
    * @param uid - ID del usuario
    * @param newRole - Nuevo rol a asignar
-=======
-    return snapshot.docs.map((d) => mapDocToUser(d.data(), 'Sin nombre'));
-  },
-
-  /**
-   * Actualiza el rol de un usuario existente.
-   * 
-   * @param uid - ID único del usuario a actualizar
-   * @param newRole - Nuevo rol a asignar ('admin', 'trainer', o 'client')
-   * @returns Promise que resuelve cuando la actualización se completa
-   * 
-   * @example
-   * await adminService.updateUserRole('user-123', 'trainer');
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async updateUserRole(uid: string, newRole: User['role']): Promise<void> {
     await updateDoc(doc(db, 'users', uid), {
@@ -102,20 +61,9 @@ export const adminService = {
   },
 
   /**
-<<<<<<< HEAD
    * Deshabilitar un usuario (marca hasActiveAlert como true).
    *
    * @param uid - ID del usuario a deshabilitar
-=======
-   * Deshabilita un usuario marcándolo con alerta activa.
-   * No elimina el usuario, solo actualiza su estado.
-   * 
-   * @param uid - ID único del usuario a deshabilitar
-   * @returns Promise que resuelve cuando la actualización se completa
-   * 
-   * @example
-   * await adminService.disableUser('user-123');
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async disableUser(uid: string): Promise<void> {
     await updateDoc(doc(db, 'users', uid), {
@@ -125,23 +73,9 @@ export const adminService = {
   },
 
   /**
-<<<<<<< HEAD
    * Obtener estadísticas del dashboard admin.
    *
    * @returns Objeto con totales de usuarios, trainers, clients y alertas activas
-=======
-   * Obtiene estadísticas generales del dashboard de administración.
-   * 
-   * @returns Promise que resuelve con un objeto con estadísticas de usuarios
-   *   - totalUsers: Total de usuarios registrados
-   *   - totalTrainers: Total de entrenadores
-   *   - totalClients: Total de clientes
-   *   - activeAlerts: Total de usuarios con alerta activa
-   * 
-   * @example
-   * const stats = await adminService.getStats();
-   * console.log(stats.totalUsers, stats.totalTrainers);
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async getStats(): Promise<{ totalUsers: number; totalTrainers: number; totalClients: number; activeAlerts: number }> {
     const snapshot = await getDocs(collection(db, 'users'));

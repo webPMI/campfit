@@ -189,10 +189,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     subscribeToUsers,
     subscribeToUsersByRole,
     renderUserCardExtended,
-<<<<<<< HEAD
     initGlobalActions,
-=======
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     updateUserRole,
     deleteUser,
     toggleUserBlock,
@@ -215,24 +212,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let editingUserId: string | null = null;
   let medicalProfileData: Record<string, unknown> | null = null;
 
-<<<<<<< HEAD
   const unsubInit = requireAdmin(() => {
-=======
-  const unsubscribeAuth = requireAdmin(() => {
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     initUsers();
     initEventDelegation();
   });
 
-<<<<<<< HEAD
   // Cleanup subscriptions on page unload
   document.addEventListener('astro:before-swap', () => {
     unsubInit?.();
-=======
-  // Cleanup subscriptions on page navigation
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribeAuth?.();
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     unsubUsers?.();
     unsubTrainers?.();
   });
@@ -316,10 +303,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       container.innerHTML = filtered.map((user) => renderUserCardExtended(user, true)).join('');
 
-<<<<<<< HEAD
       initGlobalActions('admin');
-=======
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
       // Override edit button to open modal
       document.querySelectorAll('[data-edit-user]').forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -423,11 +407,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     select.value = currentValue;
   }
 
-<<<<<<< HEAD
   // === Modal Actions (replaced window.__* functions) ===
-=======
-  // === Local modal action functions (no longer exposed globally) ===
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   function closeUserModal(): void {
     editingUserId = null;
     medicalProfileData = null;
@@ -650,29 +630,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     }
   }
 
-<<<<<<< HEAD
   function openUserChat(): void {
     if (!editingUserId) return;
     window.location.href = `/admin/chat?user=${editingUserId}`;
   }
-=======
-  // Event delegation for user modal actions
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement;
-    const btn = target.closest('[data-action]') as HTMLElement | null;
-    if (!btn) return;
-    const action = btn.dataset.action;
-    switch (action) {
-      case 'close-user-modal': closeUserModal(); break;
-      case 'close-medical-modal': closeMedicalModal(); break;
-      case 'save-user-edit': saveUserEdit(); break;
-      case 'toggle-block-user': toggleBlockUser(); break;
-      case 'view-medical-profile': viewMedicalProfile(); break;
-      case 'reset-user-password': resetUserPassword(); break;
-      case 'delete-current-user': deleteCurrentUser(); break;
-    }
-  });
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
   // Role dropdown change handler - show/hide trainer field
   document.getElementById('modal-role')?.addEventListener('change', function (this: HTMLSelectElement) {

@@ -63,14 +63,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { authService } from '@/services/authService';
   import { setUser } from '@/stores/authStore';
   import { db } from '@/lib/firebase';
-  import { doc, getDoc, updateDoc } from 'firebase/firestore';
+  import { doc, getDoc } from 'firebase/firestore';
   import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
   import { t } from '@/i18n/client';
-<<<<<<< HEAD
-  import { escapeHtml } from '@/lib/shared/ui';
-=======
-  import { logger } from '@/lib/shared/logger';
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
   const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
@@ -78,13 +73,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const messagesContainer = document.getElementById('messagesContainer')!;
   const chatInput = document.getElementById('chatInput') as HTMLInputElement;
   const sendBtn = document.getElementById('sendBtn') as HTMLButtonElement;
-  const trainerAvatar = document.getElementById('trainerAvatar')!;
-  const trainerName = document.getElementById('trainerName')!;
-  const trainerStatus = document.getElementById('trainerStatus')!;
 
   loadingText.textContent = t('dashboard.loading');
-
-  let unsubMessages: (() => void) | null = null;
 
   const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
     if (!firebaseUser) {
@@ -92,11 +82,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       return;
     }
 
+    // Verificar rol de cliente
     const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
     const userData = userDoc.data();
-    const userEmail = (firebaseUser.email || '').toLowerCase();
-    const isBootstrapAdmin = userEmail === 'servicioweb.pmi@gmail.com' || userEmail === 'sevicioweb.pmi@gmail.com';
-    if (userData && userData.role !== 'client' && userData.role !== 'admin' && userData.role !== 'trainer' && !isBootstrapAdmin) {
+    if (!userData || userData.role !== 'client') {
       window.location.href = '/dashboard';
       return;
     }
@@ -105,32 +94,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     setUser({
       uid: firebaseUser.uid,
       email: firebaseUser.email || '',
-      name: userData?.name || firebaseUser.displayName || 'Usuario',
-      role: userData?.role || 'client',
-      hasActiveAlert: userData?.hasActiveAlert ?? false,
-      assignedTrainerId: userData?.assignedTrainerId,
-      medicalProfile: userData?.medicalProfile,
+      name: userData.name || firebaseUser.displayName || 'Usuario',
+      role: userData.role || 'client',
+      hasActiveAlert: userData.hasActiveAlert ?? false,
+      assignedTrainerId: userData.assignedTrainerId,
+      medicalProfile: userData.medicalProfile,
     });
-
-    // Cargar perfil del entrenador asignado si existe
-    let trainerDisplayName = 'Tu entrenador';
-    const trainerId = userData?.assignedTrainerId || 'admin';
-    if (userData?.assignedTrainerId) {
-      try {
-        const trainerDoc = await getDoc(doc(db, 'users', userData.assignedTrainerId));
-        if (trainerDoc.exists()) {
-          const tData = trainerDoc.data();
-          const nameParts = [tData.firstName, tData.lastName].filter(Boolean).join(' ');
-          trainerDisplayName = tData.name || nameParts || 'Entrenador';
-        }
-      } catch (e) {
-        console.warn('Error al cargar perfil del entrenador:', e);
-      }
-    }
-
-    trainerAvatar.textContent = trainerDisplayName.charAt(0).toUpperCase();
-    trainerName.textContent = trainerDisplayName;
-    trainerStatus.textContent = userData?.assignedTrainerId ? 'Entrenador personal asignado' : 'Soporte general';
 
     loadingScreen.classList.add('hidden');
     chatContent.classList.remove('hidden');
@@ -141,9 +110,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       orderBy('createdAt', 'asc')
     );
 
-<<<<<<< HEAD
-    if (unsubMessages) unsubMessages();
-    unsubMessages = onSnapshot(chatQuery, (snapshot) => {
+    onSnapshot(chatQuery, (snapshot) => {
       messagesContainer.innerHTML = '';
       if (snapshot.empty) {
         messagesContainer.innerHTML =
@@ -151,59 +118,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         return;
       }
 
-      snapshot.docs.forEach((docSnap) => {
-        const msg = docSnap.data();
+      snapshot.docs.forEach((doc) => {
+        const msg = doc.data();
         const isMine = msg.senderId === firebaseUser.uid;
         const time = msg.createdAt && msg.createdAt.toDate
           ? msg.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           : '';
 
-        // Marcar mensajes entrantes no leídos como leídos
-        if (!isMine && !msg.isRead) {
-          updateDoc(doc(db, 'messages', docSnap.id), { isRead: true }).catch(() => {});
-        }
-
-        // Si hay mensajes no leídos, ocultar el badge
-        if (!isMine && !msg.isRead) {
-          const badge = document.getElementById('chat-badge');
-          badge?.classList.add('hidden');
-        }
-
         const div = document.createElement('div');
         div.className = 'flex ' + (isMine ? 'justify-end' : 'justify-start');
 
-<<<<<<< HEAD
-        let bubbleClass = isMine
-          ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-br-md shadow-md shadow-emerald-500/10'
-          : 'bg-zinc-800/90 text-zinc-200 rounded-bl-md border border-zinc-700/40';
-
-        if (msg.type === 'alert') {
-          bubbleClass = isMine
-            ? 'bg-amber-600 text-white rounded-br-md shadow-md border border-amber-400/30'
-            : 'bg-amber-500/10 text-amber-200 border border-amber-500/30 rounded-bl-md';
-        }
-
-        const timeClass = isMine ? 'text-right' : 'text-left';
-
-        const alertIconHtml = msg.type === 'alert' ? `
-          <div class="flex items-center gap-1.5 mb-1 text-xs font-semibold ${isMine ? 'text-amber-100' : 'text-amber-400'}">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-            <span>Llamado de Atención</span>
-          </div>
-        ` : '';
-
-        div.innerHTML = `
-          <div class="max-w-[80%]">
-            <div class="rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${bubbleClass}">
-              ${alertIconHtml}
-              ${escapeHtml(msg.content)}
-            </div>
-            <p class="mt-1 text-[10px] text-zinc-500 ${timeClass}">${time}</p>
-          </div>
-        `;
-=======
         const bubbleClass = isMine
           ? 'bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] text-[var(--text-on-brand)] rounded-br-md'
           : 'bg-[var(--surface-3)] text-[var(--text-primary)] rounded-bl-md';
@@ -217,14 +141,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             '</div>' +
             '<p class="mt-1 text-[10px] text-[var(--text-disabled)] ' + timeClass + '">' + time + '</p>' +
           '</div>';
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
         messagesContainer.appendChild(div);
       });
 
-      setTimeout(() => {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 50);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
     async function handleSend() {
@@ -235,12 +156,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       sendBtn.disabled = true;
 
       try {
-        const participants = [firebaseUser!.uid, trainerId].sort();
+        const trainerId = userData?.assignedTrainerId || 'admin';
 
         await addDoc(collection(db, 'messages'), {
           senderId: firebaseUser!.uid,
           receiverId: trainerId,
-          participants,
+          participants: [firebaseUser!.uid, trainerId],
           content: content,
           type: 'text',
           isRead: false,
@@ -249,7 +170,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
         chatInput.value = '';
       } catch (err) {
-        logger.error('ClientChat', 'Error sending message:', err);
+        console.error('Error sending message:', err);
       } finally {
         chatInput.disabled = false;
         sendBtn.disabled = false;
@@ -266,12 +187,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     });
   });
 
-  let unsubChat: (() => void) | null = null;
-
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    if (unsubMessages) unsubMessages();
     unsubscribe();
-    unsubChat?.();
   });
 </script>

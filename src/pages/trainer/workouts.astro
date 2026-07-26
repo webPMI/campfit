@@ -68,20 +68,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let allClients: TrainerClient[] = [];
   let allWorkouts: TrainerWorkout[] = [];
 
-<<<<<<< HEAD
   const unsubInit = requireAuth(async (user) => {
-=======
-  const unsubscribeAuth = requireAuth(async (user) => {
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     initWorkouts(user.uid);
   });
 
   document.addEventListener('astro:before-swap', () => {
-<<<<<<< HEAD
     unsubInit?.();
-=======
-    unsubscribeAuth?.();
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     unsubClients?.();
     unsubWorkouts?.();
   });
