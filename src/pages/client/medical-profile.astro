@@ -202,6 +202,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { db } from '@/lib/firebase';
   import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
   import { t } from '@/i18n/client';
+  import { logger } from '@/lib/shared/logger';
 
   const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
