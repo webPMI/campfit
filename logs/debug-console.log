@@ -3,3 +3,67 @@
 [DEV SESSION STARTED] 2026-07-26T11:46:07.778Z
 ============================================================
 [2026-07-26T11:46:11.082Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:46:19.815Z
+============================================================
+[2026-07-26T11:46:20.922Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:46:23.372Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:46:25.131Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:46:30.517Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:46:39.895Z
+============================================================
+[2026-07-26T11:46:39.240Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:46:39.897Z] [CLIENT] [LOG] [/admin/users] [vite] server connection lost. Polling for restart...
+[2026-07-26T11:46:41.047Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:46:41.258Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:46:43.086Z
+============================================================
+[2026-07-26T11:46:46.568Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:46:49.120Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:46:51.333Z
+============================================================
+[2026-07-26T11:46:59.979Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:47:05.168Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:47:08.866Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:47:12.124Z
+============================================================
+[2026-07-26T11:47:13.116Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:48:54.079Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:01.532Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:02.856Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:04.369Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:05.462Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:05.759Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-26T11:49:10.358Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:10.653Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-26T11:49:17.324Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:17.747Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:49:24.586Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T11:49:32.072Z
+============================================================
+[2026-07-26T11:49:36.234Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:38.839Z] [CLIENT] [INFO] [/trainer/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:41.370Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:43.869Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:46.494Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T11:49:48.173Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.

@@ -28,33 +28,28 @@ const variantClasses: Record<string, string> = {
     'bg-[var(--surface-1)]',
     'border border-[var(--border-subtle)]',
     'rounded-2xl',
-    'overflow-hidden',
   ].join(' '),
   glass: [
     'glass',
     'rounded-2xl',
-    'overflow-hidden',
   ].join(' '),
   elevated: [
     'bg-[var(--surface-1)]',
     'border border-[var(--border-subtle)]',
     'rounded-2xl',
     'shadow-[var(--shadow-md)]',
-    'overflow-hidden',
   ].join(' '),
   brand: [
     'bg-[var(--brand-gradient-subtle)]',
     'border border-[var(--border-brand)]',
     'rounded-2xl',
     'shadow-[var(--shadow-glow-sm)]',
-    'overflow-hidden',
   ].join(' '),
   interactive: [
     'bg-[var(--surface-1)]',
     'border border-[var(--border-subtle)]',
     'rounded-2xl',
     'transition-all duration-200 ease-out',
-    'overflow-hidden',
     hover ? 'hover:border-[var(--border-brand)] hover:shadow-[var(--shadow-glow-sm)] hover:-translate-y-0.5 cursor-pointer' : '',
   ].join(' '),
 };

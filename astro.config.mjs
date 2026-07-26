@@ -7,6 +7,7 @@ import path from 'node:path';
 /**
  * Plugin de Vite para registrar todas las salidas de consola (browser & server)
  * en un archivo físico `logs/debug-console.log` durante desarrollo.
+ * @returns {import('vite').Plugin}
  */
 function debugFileLoggerPlugin() {
   return {
@@ -25,7 +26,7 @@ function debugFileLoggerPlugin() {
       server.middlewares.use('/api/debug/log', (req, res) => {
         if (req.method === 'POST') {
           let body = '';
-          req.on('data', (chunk) => {
+          req.on('data', (/** @type {Buffer | string} */ chunk) => {
             body += chunk;
           });
           req.on('end', () => {
@@ -34,13 +35,17 @@ function debugFileLoggerPlugin() {
               if (Array.isArray(data.logs)) {
                 const lines =
                   data.logs
-                    .map((entry) => {
-                      const urlStr = entry.url ? ` [${entry.url}]` : '';
-                      const msgStr = Array.isArray(entry.messages)
-                        ? entry.messages.join(' ')
-                        : String(entry.messages);
-                      return `[${entry.timestamp}] [CLIENT] [${entry.level}]${urlStr} ${msgStr}`;
-                    })
+                    .map(
+                      (
+                        /** @type {{ url?: string; messages?: unknown[]; timestamp?: string; level?: string }} */ entry,
+                      ) => {
+                        const urlStr = entry.url ? ` [${entry.url}]` : '';
+                        const msgStr = Array.isArray(entry.messages)
+                          ? entry.messages.join(' ')
+                          : String(entry.messages || '');
+                        return `[${entry.timestamp || ''}] [CLIENT] [${entry.level || 'LOG'}]${urlStr} ${msgStr}`;
+                      },
+                    )
                     .join('\n') + '\n';
 
                 fs.appendFileSync(logFile, lines, 'utf-8');

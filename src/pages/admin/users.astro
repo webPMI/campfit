@@ -40,7 +40,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <input
           id="search-input"
           type="text"
-          placeholder="{t('admin.search')}"
+          placeholder={t('admin.search')}
           class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
         />
       </div>
