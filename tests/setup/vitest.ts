@@ -1,5 +1,3 @@
-import { vi } from 'vitest';
-
 process.env.PUBLIC_FIREBASE_API_KEY = 'test-key';
 process.env.PUBLIC_FIREBASE_AUTH_DOMAIN = 'test.firebaseapp.com';
 process.env.PUBLIC_FIREBASE_PROJECT_ID = 'test-project';
@@ -10,7 +8,3 @@ process.env.PUBLIC_R2_UPLOAD_URL = 'https://test.workers.dev/api/upload-url';
 process.env.PUBLIC_SENTRY_DSN = 'https://test@sentry.io/123';
 process.env.PUBLIC_POSTHOG_KEY = 'phc_test';
 process.env.PUBLIC_POSTHOG_HOST = 'https://app.posthog.com';
-
-vi.mock('@/lib/shared/logger', () => ({
-  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}));

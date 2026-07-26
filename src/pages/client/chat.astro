@@ -60,10 +60,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
+  import { initPage } from '@/lib/shared/initPage';
   import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
   import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
   import { t } from '@/i18n/client';
 
@@ -76,119 +74,92 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   loadingText.textContent = t('dashboard.loading');
 
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
-    }
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser, userData) => {
+      const chatQuery = query(
+        collection(db, 'messages'),
+        where('participants', 'array-contains', firebaseUser.uid),
+        orderBy('createdAt', 'asc')
+      );
 
-    // Verificar rol de cliente
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || (userData.role !== 'client' && userData.role !== 'admin' && userData.role !== 'trainer')) {
-      window.location.href = '/dashboard';
-      return;
-    }
+      onSnapshot(chatQuery, (snapshot) => {
+        messagesContainer.innerHTML = '';
+        if (snapshot.empty) {
+          messagesContainer.innerHTML =
+            '<div class="flex justify-center pt-8"><p class="text-sm text-[var(--text-disabled)]">No hay mensajes aun. Envia un saludo a tu entrenador!</p></div>';
+          return;
+        }
 
-    // Actualizar authStore
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
+        snapshot.docs.forEach((doc) => {
+          const msg = doc.data();
+          const isMine = msg.senderId === firebaseUser.uid;
+          const time = msg.createdAt && msg.createdAt.toDate
+            ? msg.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            : '';
 
-    loadingScreen.classList.add('hidden');
-    chatContent.classList.remove('hidden');
+          const div = document.createElement('div');
+          div.className = 'flex ' + (isMine ? 'justify-end' : 'justify-start');
 
-    const chatQuery = query(
-      collection(db, 'messages'),
-      where('participants', 'array-contains', firebaseUser.uid),
-      orderBy('createdAt', 'asc')
-    );
+          const bubbleClass = isMine
+            ? 'bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] text-[var(--text-on-brand)] rounded-br-md'
+            : 'bg-[var(--surface-3)] text-[var(--text-primary)] rounded-bl-md';
 
-    onSnapshot(chatQuery, (snapshot) => {
-      messagesContainer.innerHTML = '';
-      if (snapshot.empty) {
-        messagesContainer.innerHTML =
-          '<div class="flex justify-center pt-8"><p class="text-sm text-[var(--text-disabled)]">No hay mensajes aun. Envia un saludo a tu entrenador!</p></div>';
-        return;
-      }
+          const timeClass = isMine ? 'text-right' : 'text-left';
 
-      snapshot.docs.forEach((doc) => {
-        const msg = doc.data();
-        const isMine = msg.senderId === firebaseUser.uid;
-        const time = msg.createdAt && msg.createdAt.toDate
-          ? msg.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          : '';
+          div.innerHTML =
+            '<div class="max-w-[80%]">' +
+              '<div class="rounded-2xl px-4 py-2.5 text-sm leading-relaxed ' + bubbleClass + '">' +
+                msg.content +
+              '</div>' +
+              '<p class="mt-1 text-[10px] text-[var(--text-disabled)] ' + timeClass + '">' + time + '</p>' +
+            '</div>';
 
-        const div = document.createElement('div');
-        div.className = 'flex ' + (isMine ? 'justify-end' : 'justify-start');
-
-        const bubbleClass = isMine
-          ? 'bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] text-[var(--text-on-brand)] rounded-br-md'
-          : 'bg-[var(--surface-3)] text-[var(--text-primary)] rounded-bl-md';
-
-        const timeClass = isMine ? 'text-right' : 'text-left';
-
-        div.innerHTML =
-          '<div class="max-w-[80%]">' +
-            '<div class="rounded-2xl px-4 py-2.5 text-sm leading-relaxed ' + bubbleClass + '">' +
-              msg.content +
-            '</div>' +
-            '<p class="mt-1 text-[10px] text-[var(--text-disabled)] ' + timeClass + '">' + time + '</p>' +
-          '</div>';
-
-        messagesContainer.appendChild(div);
-      });
-
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    });
-
-    async function handleSend() {
-      const content = chatInput.value.trim();
-      if (!content) return;
-
-      chatInput.disabled = true;
-      sendBtn.disabled = true;
-
-      try {
-        const trainerId = userData?.assignedTrainerId || 'admin';
-
-        await addDoc(collection(db, 'messages'), {
-          senderId: firebaseUser!.uid,
-          receiverId: trainerId,
-          participants: [firebaseUser!.uid, trainerId],
-          content: content,
-          type: 'text',
-          isRead: false,
-          createdAt: serverTimestamp(),
+          messagesContainer.appendChild(div);
         });
 
-        chatInput.value = '';
-      } catch (err) {
-        console.error('Error sending message:', err);
-      } finally {
-        chatInput.disabled = false;
-        sendBtn.disabled = false;
-        chatInput.focus();
-      }
-    }
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      });
 
-    sendBtn.addEventListener('click', handleSend);
-    chatInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSend();
+      async function handleSend() {
+        const content = chatInput.value.trim();
+        if (!content) return;
+
+        chatInput.disabled = true;
+        sendBtn.disabled = true;
+
+        try {
+          const trainerId = userData?.assignedTrainerId || 'admin';
+
+          await addDoc(collection(db, 'messages'), {
+            senderId: firebaseUser.uid,
+            receiverId: trainerId,
+            participants: [firebaseUser.uid, trainerId],
+            content: content,
+            type: 'text',
+            isRead: false,
+            createdAt: serverTimestamp(),
+          });
+
+          chatInput.value = '';
+        } catch (err) {
+          console.error('Error sending message:', err);
+        } finally {
+          chatInput.disabled = false;
+          sendBtn.disabled = false;
+          chatInput.focus();
+        }
       }
-    });
+
+      sendBtn.addEventListener('click', handleSend);
+      chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSend();
+        }
+      });
+    },
   });
 
-  // Cleanup on page unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
-  });
+  document.addEventListener('astro:before-swap', cleanup);
 </script>

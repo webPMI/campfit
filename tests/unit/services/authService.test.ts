@@ -17,6 +17,10 @@ import {
   TEST_ERRORS,
 } from '../../mocks/firebase';
 
+vi.mock('@/lib/shared/logger', () => ({
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+}));
+
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 
 const {
