@@ -29,30 +29,30 @@
 >
   <div
     id="confirm-modal"
-    class="mx-4 w-full max-w-sm animate-fade-in rounded-2xl border border-zinc-800/60 bg-zinc-900/90 p-6 shadow-2xl backdrop-blur-xl"
+    class="mx-4 w-full max-w-sm animate-fade-in rounded-2xl border border-[var(--border-default)] glass p-6 shadow-2xl backdrop-blur-xl"
   >
     <div class="flex items-start gap-4">
-      <div id="confirm-modal-icon" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20">
-        <svg id="confirm-modal-icon-svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <div id="confirm-modal-icon" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--danger-dim)] border border-[var(--danger)]">
+        <svg id="confirm-modal-icon-svg" class="h-5 w-5 text-[var(--danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
         </svg>
       </div>
       <div class="flex-1">
-        <h3 id="confirm-modal-title" class="text-lg font-semibold text-zinc-100">Confirmar</h3>
-        <p id="confirm-modal-message" class="mt-1 text-sm text-zinc-400">Mensaje</p>
+        <h3 id="confirm-modal-title" class="text-lg font-semibold text-[var(--text-primary)]">Confirmar</h3>
+        <p id="confirm-modal-message" class="mt-1 text-sm text-[var(--text-secondary)]">Mensaje</p>
       </div>
     </div>
 
     <div class="mt-6 flex gap-3">
       <button
         id="confirm-modal-cancel"
-        class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/80 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-all hover:bg-zinc-800"
+        class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
       >
         Cancelar
       </button>
       <button
         id="confirm-modal-confirm"
-        class="flex-1 rounded-xl bg-red-600 hover:bg-red-500 px-4 py-2.5 text-sm font-medium text-white transition-all active:scale-[0.98]"
+        class="flex-1 rounded-xl bg-[var(--danger)] hover:bg-[var(--danger)] px-4 py-2.5 text-sm font-medium text-[var(--text-on-brand)] transition-all active:scale-[0.98]"
       >
         Confirmar
       </button>
@@ -61,13 +61,15 @@
 </div>
 
 <script>
+  import { t } from '@/i18n/client';
+
   /**
    * showConfirm - Muestra un modal de confirmación y retorna una promesa.
    * @param {Object} options
    * @param {string} options.title - Título del modal
    * @param {string} options.message - Mensaje descriptivo
-   * @param {string} [options.confirmText='Confirmar'] - Texto del botón de confirmación
-   * @param {string} [options.cancelText='Cancelar'] - Texto del botón de cancelar
+   * @param {string} [options.confirmText] - Texto del botón de confirmación
+   * @param {string} [options.cancelText] - Texto del botón de cancelar
    * @param {'danger'|'warning'|'info'} [options.variant='danger'] - Variante de color
    * @returns {Promise<boolean>}
    */
@@ -92,19 +94,19 @@
       // Variant styles
       const styles: Record<string, { btn: string; icon: string; bg: string }> = {
         danger: {
-          btn: 'bg-red-600 hover:bg-red-500 text-white',
-          icon: 'text-red-400',
-          bg: 'bg-red-500/10 border-red-500/20',
+          btn: 'bg-[var(--danger)] hover:brightness-105 text-[var(--text-on-brand)]',
+          icon: 'text-[var(--danger)]',
+          bg: 'bg-[var(--danger-dim)] border-[var(--danger)]',
         },
         warning: {
-          btn: 'bg-amber-600 hover:bg-amber-500 text-white',
-          icon: 'text-amber-400',
-          bg: 'bg-amber-500/10 border-amber-500/20',
+          btn: 'bg-[var(--warning)] hover:brightness-105 text-[var(--text-on-brand)]',
+          icon: 'text-[var(--warning)]',
+          bg: 'bg-[var(--warning-dim)] border-[var(--warning)]',
         },
         info: {
-          btn: 'bg-emerald-600 hover:bg-emerald-500 text-white',
-          icon: 'text-emerald-400',
-          bg: 'bg-emerald-500/10 border-emerald-500/20',
+          btn: 'bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-[var(--text-on-brand)]',
+          icon: 'text-[var(--brand)]',
+          bg: 'bg-[var(--brand-dim)] border-[var(--border-brand)]',
         },
       };
 
@@ -113,8 +115,8 @@
       // Set content
       titleEl.textContent = options.title;
       messageEl.textContent = options.message;
-      confirmBtn.textContent = options.confirmText || 'Confirmar';
-      cancelBtn.textContent = options.cancelText || 'Cancelar';
+      confirmBtn.textContent = options.confirmText || t('common.save');
+      cancelBtn.textContent = options.cancelText || t('common.cancel');
 
       // Set variant styles
       confirmBtn.className = `flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-all active:scale-[0.98] ${colors.btn}`;

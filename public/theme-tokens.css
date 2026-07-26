@@ -1,0 +1,125 @@
+/* ============================================================
+ * CAMPFIT DESIGN SYSTEM TOKENS — Global, no scoped
+ * These CSS variables control the entire app's appearance.
+ * Change them here to change the entire theme.
+ * ============================================================ */
+
+:root,
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --surface-0: #09090b;
+    --surface-1: #131316;
+    --surface-2: #18181b;
+    --surface-3: #1f1f24;
+    --surface-4: #27272d;
+    --surface-5: #2f2f36;
+    --surface-glass: oklch(0.15 0.01 260 / 0.6);
+
+    --brand: #10b981;
+    --brand-hover: #34d399;
+    --brand-dim: #065f46;
+    --brand-glow: oklch(0.75 0.2 160 / 0.25);
+    --brand-gradient: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+    --brand-gradient-subtle: linear-gradient(135deg, oklch(0.35 0.08 160) 0%, oklch(0.30 0.06 160) 100%);
+
+    --accent-blue: #3b82f6;
+    --accent-blue-hover: #60a5fa;
+    --accent-blue-dim: #1e3a6f;
+    --accent-purple: #8b5cf6;
+    --accent-purple-hover: #a78bfa;
+    --accent-purple-dim: #2e1a4f;
+    --accent-amber: #f59e0b;
+    --accent-amber-hover: #fbbf24;
+    --accent-amber-dim: #5c3d00;
+
+    --text-primary: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #909099;
+    --text-disabled: #6b6b73;
+    --text-on-brand: #ffffff;
+
+    --border-default: oklch(0.28 0.01 260);
+    --border-subtle: oklch(0.22 0.01 260);
+    --border-strong: oklch(0.35 0.01 260);
+    --border-brand: oklch(0.45 0.12 160 / 0.5);
+
+    --success: #10b981;
+    --success-dim: #064e3b;
+    --warning: #f59e0b;
+    --warning-dim: #5c3d00;
+    --danger: #ef4444;
+    --danger-dim: #581c1c;
+    --info: #3b82f6;
+    --info-dim: #1e3a6f;
+
+    --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.4);
+    --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.5), 0 1px 2px oklch(0 0 0 / 0.4);
+    --shadow-md: 0 4px 6px oklch(0 0 0 / 0.5), 0 2px 4px oklch(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px oklch(0 0 0 / 0.55), 0 4px 6px oklch(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px oklch(0 0 0 / 0.6), 0 8px 10px oklch(0 0 0 / 0.4);
+    --shadow-glow-sm: 0 0 12px var(--brand-glow);
+    --shadow-glow-md: 0 0 24px var(--brand-glow);
+    --shadow-glow-lg: 0 0 40px var(--brand-glow), 0 0 80px oklch(0.75 0.2 160 / 0.12);
+
+    --glass-bg: oklch(0.12 0.01 260 / 0.7);
+    --glass-border: oklch(0.28 0.01 260 / 0.5);
+    --glass-blur: 16px;
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+
+    --surface-0: #fafafa;
+    --surface-1: #ffffff;
+    --surface-2: #f4f4f6;
+    --surface-3: #eaeaed;
+    --surface-4: #dfdfe3;
+    --surface-5: #d4d4d8;
+    --surface-glass: oklch(0.98 0.002 260 / 0.65);
+
+    --brand: #059669;
+    --brand-hover: #047857;
+    --brand-dim: #a7f3d0;
+    --brand-glow: oklch(0.65 0.18 160 / 0.2);
+    --brand-gradient: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+    --brand-gradient-subtle: linear-gradient(135deg, oklch(0.88 0.06 160) 0%, oklch(0.92 0.04 160) 100%);
+
+    --accent-blue: #2563eb;
+    --accent-blue-hover: #1d4ed8;
+    --accent-blue-dim: #dbeafe;
+    --accent-purple: #7c3aed;
+    --accent-purple-hover: #6d28d9;
+    --accent-purple-dim: #ede9fe;
+    --accent-amber: #d97706;
+    --accent-amber-hover: #b45309;
+    --accent-amber-dim: #fef3c7;
+
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    --text-tertiary: #6b6b73;
+    --text-disabled: #787882;
+    --text-on-brand: #fafafa;
+
+    --border-default: oklch(0.85 0.01 260);
+    --border-subtle: oklch(0.92 0.005 260);
+    --border-strong: oklch(0.75 0.01 260);
+    --border-brand: oklch(0.5 0.12 160 / 0.45);
+
+    --success-dim: #d1fae5;
+    --warning-dim: #fef3c7;
+    --danger-dim: #fee2e2;
+    --info-dim: #dbeafe;
+
+    --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.04);
+    --shadow-md: 0 4px 6px oklch(0 0 0 / 0.06), 0 2px 4px oklch(0 0 0 / 0.04);
+    --shadow-lg: 0 10px 15px oklch(0 0 0 / 0.08), 0 4px 6px oklch(0 0 0 / 0.03);
+    --shadow-xl: 0 20px 25px oklch(0 0 0 / 0.1), 0 8px 10px oklch(0 0 0 / 0.04);
+    --shadow-glow-sm: 0 0 12px var(--brand-glow);
+    --shadow-glow-md: 0 0 20px var(--brand-glow);
+    --shadow-glow-lg: 0 0 36px var(--brand-glow);
+
+    --glass-bg: oklch(0.99 0.002 260 / 0.75);
+    --glass-border: oklch(0.85 0.01 260 / 0.6);
+}

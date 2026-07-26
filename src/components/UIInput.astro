@@ -1,0 +1,131 @@
+---
+export interface Props {
+  /** Tipo de input */
+  type?: 'text' | 'email' | 'password' | 'number' | 'search' | 'tel' | 'url';
+  /** Label descriptivo */
+  label?: string;
+  /** Placeholder */
+  placeholder?: string;
+  /** Mensaje de error */
+  error?: string;
+  /** Mensaje de ayuda */
+  hint?: string;
+  /** Icono a la izquierda (SVG string) */
+  icon?: string;
+  /** Icono clickeable a la derecha (ej: toggle password) */
+  iconRight?: string;
+  /** Callback para el icono derecho */
+  iconRightAction?: string;
+  /** Valor */
+  value?: string;
+  /** Name del input */
+  name?: string;
+  /** Required */
+  required?: boolean;
+  /** Deshabilitado */
+  disabled?: boolean;
+  /** Autocomplete */
+  autocomplete?: string;
+  /** Clases adicionales */
+  class?: string;
+  /** ID del input */
+  id?: string;
+}
+
+const {
+  type = 'text',
+  label,
+  placeholder,
+  error,
+  hint,
+  icon,
+  iconRight,
+  iconRightAction,
+  value = '',
+  name,
+  required = false,
+  disabled = false,
+  autocomplete,
+  id,
+} = Astro.props;
+
+const inputId = id || name || label?.toLowerCase().replace(/\s+/g, '-') || crypto.randomUUID();
+const errorId = `${inputId}-error`;
+const hintId = `${inputId}-hint`;
+
+const wrapperClasses = [
+  'relative rounded-xl transition-all duration-200',
+  'bg-[var(--surface-2)]',
+  'border',
+  error ? 'border-[var(--danger)] shadow-[0_0_0_3px_var(--danger-dim)]' : 'border-[var(--border-default)]',
+  'focus-within:border-[var(--brand)] focus-within:shadow-[0_0_0_3px_var(--brand-dim)]',
+  disabled ? 'opacity-50 pointer-events-none' : '',
+  Astro.props.class ?? '',
+].join(' ');
+---
+
+<div>
+  {label && (
+    <label for={inputId} class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5 ml-1">
+      {label}
+      {required && <span class="text-[var(--danger)] ml-0.5">*</span>}
+    </label>
+  )}
+
+  <div class={wrapperClasses}>
+    {icon && (
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none">
+        {icon}
+      </span>
+    )}
+
+    <input
+      type={type}
+      id={inputId}
+      name={name}
+      value={value}
+      placeholder={placeholder}
+      required={required}
+      disabled={disabled}
+      autocomplete={autocomplete}
+      aria-invalid={error ? 'true' : 'false'}
+      aria-describedby={[error ? errorId : '', hint ? hintId : ''].filter(Boolean).join(' ') || undefined}
+      class={[
+        'w-full h-11 bg-transparent text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]',
+        'text-sm outline-none',
+        'transition-colors duration-200',
+        icon ? 'pl-10 pr-3' : iconRight ? 'pl-3 pr-10' : 'px-3',
+        'rounded-xl',
+      ].join(' ')}
+    />
+
+    {iconRight && (
+      <button
+        type="button"
+        class="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-lg text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-4)] transition-colors"
+        onclick={iconRightAction}
+        tabindex="-1"
+      >
+        {iconRight}
+      </button>
+    )}
+  </div>
+
+  {error && (
+    <p id={errorId} class="mt-1.5 ml-1 text-xs text-[var(--danger)] flex items-center gap-1">
+      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      {error}
+    </p>
+  )}
+
+  {hint && !error && (
+    <p id={hintId} class="mt-1.5 ml-1 text-xs text-[var(--text-tertiary)]">
+      {hint}
+    </p>
+  )}
+</div>
+</write_to_file>

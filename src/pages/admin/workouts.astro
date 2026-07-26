@@ -12,39 +12,102 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">{t('admin.workouts')}</h1>
-          <p class="mt-1 text-sm theme-text-tertiary">
-            <span id="workout-count" class="theme-text-brand font-medium">0</span> {t('admin.workouts.total')}
-          </p>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Supervisión global de rutinas de entrenamiento</p>
         </div>
-        <button id="btn-create-workout" class="rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-2 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all active:scale-95">
-          <svg class="h-4 w-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Nueva Rutina
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Total rutinas</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Activas esta semana</p>
+          <p id="stat-active" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Ejercicios totales</p>
+          <p id="stat-exercises" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Tasa de completado</p>
+          <p id="stat-completion" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre de rutina o cliente..."
+          class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
+        />
+        <select
+          id="filterTrainer"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)]"
+        >
+          <option value="all">{t('trainer.filter.all')}</option>
+        </select>
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
+        >
+          Actualizar
         </button>
       </div>
 
-      <!-- Workout Editor -->
-      <div id="workout-editor" class="hidden mt-8"></div>
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-48 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-32 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-28 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-44 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-36 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <!-- Filter by client -->
-      <div class="mt-6">
-        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-          <option value="">Filtrar por alumno</option>
-        </select>
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+          <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-[var(--text-secondary)]">No hay rutinas registradas</h3>
+        <p class="mt-1 text-sm text-[var(--text-disabled)]">Los entrenadores aún no han creado rutinas de entrenamiento</p>
       </div>
 
       <!-- Workouts List -->
-      <div id="workouts-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border theme-border theme-surface-secondary p-6 text-center backdrop-blur-sm">
-          <div class="flex items-center justify-center gap-3">
-            <svg class="h-5 w-5 animate-spin theme-text-brand" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <p class="text-sm theme-text-tertiary">{t('admin.loading')}</p>
-          </div>
-        </div>
+      <div id="workoutsList" class="mt-6 hidden space-y-3"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] px-4 py-3 text-sm text-[var(--danger)] backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-[var(--danger)]/70 hover:text-[var(--danger)]">&times;</button>
       </div>
     </div>
   </div>
@@ -53,433 +116,203 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
   import { db } from '@/lib/firebase';
-  import { collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore';
-  import { subscribeToUsersByRole, renderEmptyState, escapeHtml, ICONS } from '@/lib/admin/adminUtils';
-  import { showToast } from '@/lib/shared/ui';
+  import {
+    collection, getDocs, doc, getDoc,
+    query, orderBy, limit,
+    type Timestamp,
+  } from 'firebase/firestore';
+  import { formatDate } from '@/lib/shared/ui';
   import { logger } from '@/lib/shared/logger';
 
-  interface Exercise {
+  requireAdmin(() => {
+    loadWorkouts();
+  });
+
+  interface WorkoutItem {
     id: string;
     name: string;
-    sets: number;
-    reps: number;
-    restTime: string;
-    videoUrl?: string;
-    description?: string;
-    order: number;
-    dayOfWeek: number;
-  }
-
-  interface Workout {
-    id: string;
-    clientId: string;
     trainerId: string;
-    name: string;
-    difficulty: string;
-    description: string;
-    exercises: Exercise[];
+    trainerName: string;
+    clientId?: string;
+    clientName?: string;
+    exercises: Array<{ name: string; completed: boolean }>;
+    createdAt: Timestamp | null;
+    updatedAt: Timestamp | null;
   }
 
-  interface Client {
-    uid: string;
-    name: string;
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const workoutsList = document.getElementById('workoutsList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const filterTrainer = document.getElementById('filterTrainer') as HTMLSelectElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allWorkouts: WorkoutItem[] = [];
+  let trainers: Array<{ uid: string; name: string }> = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('admin/workouts', msg);
   }
 
-  let unsubClients: (() => void) | null = null;
-  let unsubWorkouts: (() => void) | null = null;
-  let allClients: Client[] = [];
-  let allWorkouts: Workout[] = [];
-
-  const unsubscribeAuth = requireAdmin(() => {
-    initWorkouts();
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
   });
 
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribeAuth?.();
-    unsubClients?.();
-    unsubWorkouts?.();
-  });
-
-  async function initWorkouts(): Promise<void> {
-    const container = document.getElementById('workouts-container')!;
-    const editor = document.getElementById('workout-editor')!;
-    const btnCreate = document.getElementById('btn-create-workout')!;
-    const clientFilter = document.getElementById('client-filter') as HTMLSelectElement;
-    const workoutCount = document.getElementById('workout-count')!;
-
-    // Subscribe to all clients
-    unsubClients = subscribeToUsersByRole('client', (clients) => {
-      allClients = clients.map(c => ({ uid: c.uid, name: c.name }));
-      clientFilter.innerHTML = '<option value="">Todos los alumnos</option>' +
-        allClients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
-    });
-
-    // Subscribe to all workouts in the system
-    const workoutsQuery = query(collection(db, 'workouts'), orderBy('createdAt', 'desc'));
-    unsubWorkouts = onSnapshot(workoutsQuery, (snapshot) => {
-      allWorkouts = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Workout[];
-      workoutCount.textContent = String(allWorkouts.length);
-      applyFilters();
-    }, (error) => {
-      logger.error('AdminWorkouts', 'Error al suscribirse a rutinas:', error);
-      showToast({ message: 'Error al cargar rutinas', type: 'error' });
-    });
-
-    clientFilter.addEventListener('change', () => applyFilters());
-
-    btnCreate.addEventListener('click', () => {
-      showEditor(null);
-    });
-
-    // Event delegation: handle edit/delete clicks via data attributes
-    container.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const editBtn = target.closest('[data-action="edit-workout"]') as HTMLElement | null;
-      const deleteBtn = target.closest('[data-action="delete-workout"]') as HTMLElement | null;
-      if (editBtn) {
-        const id = editBtn.dataset.id!;
-        const workout = allWorkouts.find((w) => w.id === id);
-        if (workout) showEditor(workout);
-      } else if (deleteBtn) {
-        showDeleteConfirm(deleteBtn.dataset.id!);
-      }
-    });
+  function updateStats(workouts: WorkoutItem[]): void {
+    document.getElementById('stat-total')!.textContent = String(workouts.length);
+    const totalExercises = workouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0);
+    document.getElementById('stat-exercises')!.textContent = String(totalExercises);
+    const allExercises = workouts.flatMap(w => w.exercises || []);
+    const completed = allExercises.filter(e => e.completed).length;
+    const pct = allExercises.length > 0 ? Math.round((completed / allExercises.length) * 100) : 0;
+    document.getElementById('stat-completion')!.textContent = `${pct}%`;
+    document.getElementById('stat-active')!.textContent = String(workouts.length);
   }
 
-  function showDeleteConfirm(id: string): void {
-    const existing = document.getElementById('confirm-modal');
-    if (existing) existing.remove();
-
-    const modal = document.createElement('div');
-    modal.id = 'confirm-modal';
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center theme-bg-primary/60 backdrop-blur-sm';
-    modal.innerHTML = `
-      <div class="mx-4 w-full max-w-sm rounded-2xl border theme-border-strong theme-surface/95 p-6 shadow-2xl backdrop-blur-xl">
-        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mx-auto">
-          <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-          </svg>
-        </div>
-        <h3 class="text-center text-lg font-semibold theme-text-primary">Eliminar rutina</h3>
-        <p class="mt-2 text-center text-sm theme-text-tertiary">¿Estás seguro? Esta acción no se puede deshacer y el alumno ya no podrá ver esta rutina.</p>
-        <div class="mt-6 flex gap-3">
-          <button id="btn-cancel-delete" class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary/80 px-4 py-2.5 text-sm font-medium theme-text-secondary hover:theme-surface-active/80 transition-all">Cancelar</button>
-          <button id="btn-confirm-delete" class="flex-1 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all">Eliminar</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    document.getElementById('btn-cancel-delete')!.addEventListener('click', () => modal.remove());
-    document.getElementById('btn-confirm-delete')!.addEventListener('click', async () => {
-      modal.remove();
-      try {
-        await deleteDoc(doc(db, 'workouts', id));
-        showToast({ message: 'Rutina eliminada correctamente', type: 'success' });
-      } catch (err) {
-        showToast({ message: 'Error al eliminar rutina', type: 'error' });
-      }
-    });
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-  }
-
-  function applyFilters(): void {
-    const container = document.getElementById('workouts-container')!;
-    const clientFilter = document.getElementById('client-filter') as HTMLSelectElement;
-    const clientId = clientFilter.value;
-
-    let filtered = allWorkouts;
-    if (clientId) filtered = filtered.filter((w) => w.clientId === clientId);
-
-    if (filtered.length === 0) {
-      container.innerHTML = renderEmptyState(
-        ICONS.workouts,
-        clientId ? 'Este alumno no tiene rutinas asignadas' : 'No hay rutinas registradas en la plataforma',
-      );
+  function renderWorkouts(workouts: WorkoutItem[]): void {
+    workoutsList.innerHTML = '';
+    if (workouts.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      workoutsList.classList.add('hidden');
       return;
     }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    workoutsList.classList.remove('hidden');
 
-    const difficultyLabels: Record<string, string> = { easy: 'Fácil', medium: 'Intermedio', hard: 'Avanzado', custom: 'Personalizado' };
+    workouts.forEach(workout => {
+      const completed = workout.exercises?.filter(e => e.completed).length || 0;
+      const total = workout.exercises?.length || 0;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const timestamp = workout.updatedAt || workout.createdAt;
 
-    container.innerHTML = filtered
-      .map((w) => {
-        const clientName = allClients.find((c) => c.uid === w.clientId)?.name || 'Sin asignar';
-        return `
-          <div class="rounded-xl border theme-border theme-surface-secondary p-4 backdrop-blur-sm transition-all hover:theme-border-strong/60">
-            <div class="flex items-center justify-between">
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-medium theme-text-primary">${escapeHtml(w.name)}</p>
-                <p class="text-xs theme-text-tertiary mt-0.5">
-                  <span class="theme-text-brand">Alumno: ${escapeHtml(clientName)}</span>
-                  <span class="theme-text-tertiary mx-1">·</span>
-                  ${w.exercises?.length || 0} ejercicios
-                  <span class="theme-text-tertiary mx-1">·</span>
-                  ${difficultyLabels[w.difficulty] || w.difficulty}
-                </p>
-              </div>
-              <div class="flex items-center gap-2 shrink-0 ml-4">
-                <button data-action="edit-workout" data-id="${w.id}" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-2.5 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">
-                  <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                  </svg>
-                </button>
-                <button data-action="delete-workout" data-id="${w.id}" class="rounded-lg border border-red-900/30 bg-red-500/10 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
-                  <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg>
-                </button>
-              </div>
+      const card = document.createElement('div');
+      card.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)]';
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--info-dim)]">
+              <svg class="h-5 w-5 text-[var(--info)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-[var(--text-primary)]">${workout.name}</h3>
+              ${workout.clientName ? `<p class="text-xs text-[var(--text-tertiary)]">Cliente: ${workout.clientName}</p>` : ''}
+              <p class="text-xs text-[var(--text-disabled)]">Entrenador: ${workout.trainerName} &middot; ${formatDate(timestamp)}</p>
             </div>
           </div>
-        `;
-      })
-      .join('');
+          <span class="rounded-full px-2.5 py-1 text-xs font-medium ${pct === 100 ? 'bg-[var(--brand-dim)] text-[var(--brand)]' : 'bg-[var(--warning-dim)] text-[var(--warning)]'}">${pct}%</span>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 overflow-hidden rounded-full bg-[var(--surface-3)]">
+            <div class="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all" style="width: ${pct}%"></div>
+          </div>
+          <p class="mt-2 text-xs text-[var(--text-disabled)]">${completed}/${total} ejercicios completados</p>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          ${(workout.exercises || []).map(e => `<span class="rounded-md px-2 py-0.5 text-xs ${e.completed ? 'bg-[var(--brand-dim)] text-[var(--brand)]' : 'bg-[var(--surface-3)] text-[var(--text-tertiary)]'}">${e.name}</span>`).join('')}
+        </div>
+      `;
+      workoutsList.appendChild(card);
+    });
   }
 
-  function showEditor(workout: Workout | null): void {
-    const editor = document.getElementById('workout-editor')!;
-    const isEditing = !!workout;
-    editor.classList.remove('hidden');
-    editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function filterWorkouts(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    const trainerFilter = filterTrainer.value;
 
-    const w = workout || {
-      id: '',
-      clientId: '',
-      trainerId: 'admin',
-      name: '',
-      difficulty: 'medium',
-      description: '',
-      exercises: [] as Exercise[],
-    };
-
-    const clientOptions = allClients
-      .map((c) => `<option value="${c.uid}" ${c.uid === w.clientId ? 'selected' : ''}>${escapeHtml(c.name)}</option>`)
-      .join('');
-
-    const dayOptions = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
-      .map((day, i) => `<option value="${i + 1}">${day}</option>`).join('');
-
-    editor.innerHTML = `
-      <div class="rounded-xl border theme-border theme-surface-secondary p-5 backdrop-blur-sm mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold theme-text-primary">${isEditing ? 'Editar Rutina' : 'Nueva Rutina'}</h2>
-          <button id="btn-close-editor" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-3 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
-        </div>
-
-        <div class="space-y-4">
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Nombre de la rutina</label>
-              <input id="workout-name" type="text" value="${escapeHtml(w.name)}" placeholder="Ej: Fuerza Maxima" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-              <p id="workout-name-error" class="mt-1 hidden text-xs text-red-400">El nombre es obligatorio</p>
-            </div>
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Alumno</label>
-              <select id="workout-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-                <option value="">Seleccionar alumno</option>
-                ${clientOptions}
-              </select>
-              <p id="workout-client-error" class="mt-1 hidden text-xs text-red-400">Debes seleccionar un alumno</p>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Dificultad</label>
-              <select id="workout-difficulty" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-                <option value="easy" ${w.difficulty === 'easy' ? 'selected' : ''}>Fácil</option>
-                <option value="medium" ${w.difficulty === 'medium' ? 'selected' : ''}>Intermedio</option>
-                <option value="hard" ${w.difficulty === 'hard' ? 'selected' : ''}>Avanzado</option>
-                <option value="custom" ${w.difficulty === 'custom' ? 'selected' : ''}>Personalizado</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Día de la semana asignado</label>
-              <select id="workout-default-day" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-                ${dayOptions}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs theme-text-tertiary mb-1">Descripción</label>
-            <textarea id="workout-desc" rows="2" placeholder="Notas adicionales de la rutina..." class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">${escapeHtml(w.description || '')}</textarea>
-          </div>
-
-          <!-- Exercises -->
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <label class="text-xs theme-text-tertiary">Ejercicios <span id="exercise-count-badge" class="theme-text-tertiary">(${w.exercises.length})</span></label>
-              <button id="btn-add-exercise" class="text-xs theme-text-brand hover:text-emerald-300 transition-colors">
-                + Agregar ejercicio
-              </button>
-            </div>
-            <div id="exercises-list" class="space-y-2">
-              ${w.exercises.length === 0
-                ? '<p class="text-xs theme-text-tertiary py-2">No hay ejercicios agregados</p>'
-                : w.exercises.map((ex, i) => renderExerciseRow(ex, i, dayOptions)).join('')
-              }
-            </div>
-          </div>
-
-          <button id="btn-save-workout" class="w-full rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-3 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all active:scale-[0.99] disabled:opacity-50">
-            <span id="save-btn-text">${isEditing ? 'Guardar Cambios' : 'Crear Rutina'}</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('btn-close-editor')!.addEventListener('click', () => closeEditor());
-
-    let exerciseCounter = w.exercises.length;
-    const exercisesList = document.getElementById('exercises-list')!;
-    const exerciseCountBadge = document.getElementById('exercise-count-badge')!;
-
-    function updateExerciseCount(): void {
-      const count = exercisesList.querySelectorAll('[data-exercise-row]').length;
-      exerciseCountBadge.textContent = `(${count})`;
+    let filtered = allWorkouts;
+    if (searchTerm) {
+      filtered = filtered.filter(w =>
+        w.name.toLowerCase().includes(searchTerm) ||
+        (w.clientName && w.clientName.toLowerCase().includes(searchTerm)) ||
+        w.trainerName.toLowerCase().includes(searchTerm)
+      );
     }
+    if (trainerFilter !== 'all') {
+      filtered = filtered.filter(w => w.trainerId === trainerFilter);
+    }
+    renderWorkouts(filtered);
+  }
 
-    document.getElementById('btn-add-exercise')!.addEventListener('click', () => {
-      exerciseCounter++;
-      const newEx: Exercise = {
-        id: `ex-${Date.now()}-${exerciseCounter}`,
-        name: '',
-        sets: 3,
-        reps: 10,
-        restTime: '60s',
-        order: exerciseCounter,
-        dayOfWeek: 1,
-      };
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = renderExerciseRow(newEx, exerciseCounter - 1, dayOptions);
-      if (exercisesList.querySelector('p.theme-text-tertiary')) {
-        exercisesList.innerHTML = '';
-      }
-      exercisesList.appendChild(wrapper.firstElementChild || wrapper);
-      updateExerciseCount();
-    });
+  searchInput.addEventListener('input', filterWorkouts);
+  filterTrainer.addEventListener('change', filterWorkouts);
 
-    exercisesList.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('[data-remove-exercise]')) {
-        const row = target.closest('[data-exercise-row]');
-        if (row) {
-          row.remove();
-          updateExerciseCount();
+  async function loadWorkouts(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    workoutsList.classList.add('hidden');
+
+    try {
+      // Load trainers for filter
+      const trainersSnap = await getDocs(collection(db, 'users'));
+      trainers = [];
+      trainersSnap.forEach(d => {
+        const data = d.data();
+        if (data.role === 'trainer') {
+          trainers.push({ uid: d.id, name: data.name || data.email || d.id });
         }
-      }
-    });
+      });
+      // Populate filter dropdown
+      filterTrainer.innerHTML = '<option value="all">Todos los entrenadores</option>';
+      trainers.forEach(tr => {
+        filterTrainer.innerHTML += `<option value="${tr.uid}">${tr.name}</option>`;
+      });
 
-    document.getElementById('btn-save-workout')!.addEventListener('click', async () => {
-      const name = (document.getElementById('workout-name') as HTMLInputElement).value.trim();
-      const clientId = (document.getElementById('workout-client') as HTMLSelectElement).value;
-      const difficulty = (document.getElementById('workout-difficulty') as HTMLSelectElement).value;
-      const description = (document.getElementById('workout-desc') as HTMLTextAreaElement).value.trim();
-      const nameError = document.getElementById('workout-name-error')!;
-      const clientError = document.getElementById('workout-client-error')!;
-      const btnSave = document.getElementById('btn-save-workout') as HTMLButtonElement;
+      // Load workouts
+      const workoutsRef = collection(db, 'workouts');
+      const q = query(workoutsRef, orderBy('updatedAt', 'desc'), limit(200));
+      const snap = await getDocs(q);
 
-      let hasError = false;
-      if (!name) { nameError.classList.remove('hidden'); hasError = true; } else { nameError.classList.add('hidden'); }
-      if (!clientId) { clientError.classList.remove('hidden'); hasError = true; } else { clientError.classList.add('hidden'); }
-      if (hasError) return;
-
-      btnSave.disabled = true;
-      btnSave.textContent = 'Guardando...';
-
-      const exerciseElements = exercisesList.querySelectorAll('[data-exercise-row]');
-      const exercises: Exercise[] = Array.from(exerciseElements).map((el, idx) => {
-        const inputs = el.querySelectorAll('input, select');
+      const workoutPromises = snap.docs.map(async (workoutDoc) => {
+        const data = workoutDoc.data();
+        const trainerDoc = trainers.find(t => t.uid === data.trainerId);
+        let clientName = '';
+        if (data.clientId) {
+          try {
+            const clientSnap = await getDoc(doc(db, 'users', data.clientId));
+            if (clientSnap.exists()) {
+              clientName = clientSnap.data().name || clientSnap.data().email || '';
+            }
+          } catch { /* ignore */ }
+        }
         return {
-          id: `ex-${Date.now()}-${idx}`,
-          name: (inputs[0] as HTMLInputElement).value,
-          sets: parseInt((inputs[1] as HTMLInputElement).value) || 3,
-          reps: parseInt((inputs[2] as HTMLInputElement).value) || 10,
-          restTime: (inputs[3] as HTMLInputElement).value || '60s',
-          description: (inputs[4] as HTMLInputElement)?.value || '',
-          order: idx + 1,
-          dayOfWeek: parseInt((inputs[5] as HTMLSelectElement)?.value) || 1,
-        };
-      }).filter((ex) => ex.name.trim() !== '');
+          id: workoutDoc.id,
+          name: data.name || 'Sin nombre',
+          trainerId: data.trainerId || '',
+          trainerName: trainerDoc?.name || 'Desconocido',
+          clientId: data.clientId || undefined,
+          clientName,
+          exercises: data.exercises || [],
+          createdAt: data.createdAt || null,
+          updatedAt: data.updatedAt || data.createdAt || null,
+        } satisfies WorkoutItem;
+      });
 
-      try {
-        if (isEditing && workout) {
-          await updateDoc(doc(db, 'workouts', workout.id), {
-            name,
-            clientId,
-            difficulty,
-            description,
-            exercises,
-            updatedAt: serverTimestamp()
-          });
-          showToast({ message: 'Rutina actualizada con éxito', type: 'success' });
-        } else {
-          await addDoc(collection(db, 'workouts'), {
-            name,
-            clientId,
-            trainerId: 'admin',
-            difficulty,
-            description,
-            exercises,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-          });
-          showToast({ message: 'Rutina creada con éxito', type: 'success' });
-        }
-        closeEditor();
-      } catch (error) {
-        logger.error('AdminWorkouts', 'Error al guardar rutina:', error);
-        showToast({ message: 'Error al guardar la rutina', type: 'error' });
-      } finally {
-        btnSave.disabled = false;
-        btnSave.textContent = isEditing ? 'Guardar Cambios' : 'Crear Rutina';
-      }
-    });
-
-    function closeEditor() {
-      editor.classList.add('hidden');
-      editor.innerHTML = '';
+      allWorkouts = await Promise.all(workoutPromises);
+      updateStats(allWorkouts);
+      renderWorkouts(allWorkouts);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error al cargar rutinas: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'Error al cargar las rutinas. Intenta de nuevo.';
     }
   }
 
-  function renderExerciseRow(exercise: Exercise, index: number, dayOptions: string): string {
-    return `
-      <div data-exercise-row class="rounded-xl border theme-border theme-surface-secondary p-3 backdrop-blur-sm">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="text-xs theme-text-tertiary font-medium w-5">#${index + 1}</span>
-          <input type="text" value="${escapeHtml(exercise.name)}" placeholder="Nombre del ejercicio" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-          <select class="w-24 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-            ${dayOptions}
-          </select>
-          <button data-remove-exercise class="rounded-lg border border-red-900/30 bg-red-500/10 px-2 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-1.5">
-            <label class="text-[10px] theme-text-tertiary">Series</label>
-            <input type="number" value="${exercise.sets}" min="1" max="20" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-          </div>
-          <div class="flex items-center gap-1.5">
-            <label class="text-[10px] theme-text-tertiary">Reps</label>
-            <input type="number" value="${exercise.reps}" min="1" max="100" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-          </div>
-          <div class="flex items-center gap-1.5">
-            <label class="text-[10px] theme-text-tertiary">Descanso</label>
-            <input type="text" value="${exercise.restTime}" placeholder="60s" class="w-16 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-          </div>
-          <div class="flex-1 flex items-center gap-1.5">
-            <label class="text-[10px] theme-text-tertiary">Notas</label>
-            <input type="text" value="${escapeHtml(exercise.description || '')}" placeholder="Opcional" class="flex-1 min-w-0 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-          </div>
-        </div>
-      </div>
-    `;
-  }
+  refreshBtn.addEventListener('click', loadWorkouts);
+
+  // Auto-refresh every 60s
+  const interval = setInterval(loadWorkouts, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
 </script>

@@ -1,0 +1,37 @@
+---
+/**
+ * UIDivider - Theme-aware separator/divider.
+ * Supports horizontal/vertical, with optional label.
+ */
+export interface Props {
+  /** Orientación */
+  orientation?: 'horizontal' | 'vertical';
+  /** Texto centrado opcional */
+  label?: string;
+  /** Variante de color */
+  variant?: 'default' | 'brand' | 'strong';
+  /** Clases adicionales */
+  class?: string;
+}
+
+const { orientation = 'horizontal', label, variant = 'default' } = Astro.props;
+
+const variantStyles: Record<string, string> = {
+  default: 'border-[var(--border-subtle)]',
+  brand: 'border-[var(--border-brand)]',
+  strong: 'border-[var(--border-default)]',
+};
+---
+
+{
+  orientation === 'horizontal' ? (
+    <div class={['flex items-center gap-3', Astro.props.class ?? ''].join(' ')}>
+      <div class={['flex-1 border-t', variantStyles[variant]].join(' ')}></div>
+      {label && <span class="text-xs font-medium text-[var(--text-tertiary)] shrink-0">{label}</span>}
+      <div class={['flex-1 border-t', variantStyles[variant]].join(' ')}></div>
+    </div>
+  ) : (
+    <div class={['self-stretch border-l', variantStyles[variant], Astro.props.class ?? ''].join(' ')} />
+  )
+}
+</write_to_file>

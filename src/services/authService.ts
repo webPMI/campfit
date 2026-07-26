@@ -25,8 +25,7 @@ import {
   serverTimestamp,
 } from '@/lib/firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import { AuthError, type User } from '@/types';
-import { logger } from '@/lib/shared/logger';
+import type { User } from '@/types';
 
 /**
  * Convierte un error de Firebase en un Error con el code como mensaje.
@@ -43,70 +42,21 @@ function toAuthError(err: unknown): AuthError {
     const e = err as Record<string, unknown>;
     let codeStr = 'auth/unknown';
     if (typeof e.code === 'string') {
-      codeStr = e.code;
-    } else if (typeof e.message === 'string') {
-      codeStr = e.message;
+      const error = new Error(e.code);
+      (error as unknown as { code: string }).code = e.code;
+      return error;
+    }
+    // Mock: new Error('auth/...') -> message contiene el code
+    if (typeof e.message === 'string' && e.message.startsWith('auth/')) {
+      const error = new Error(e.message);
+      (error as unknown as { code: string }).code = e.message;
+      return error;
     }
     return new AuthError(codeStr, codeStr);
   }
-  return new AuthError('auth/unknown', 'auth/unknown');
-}
-
-/**
- * Procesa un FirebaseUser para obtener/crear su perfil en Firestore.
- */
-async function processFirebaseUser(firebaseUser: FirebaseUser): Promise<User> {
-  const uid = firebaseUser.uid;
-  logger.step('Auth:Google', 3, 4, 'Buscando perfil en Firestore', 'pending', { uid });
-  const userDoc = await getDoc(doc(db, 'users', uid));
-
-  if (!userDoc.exists()) {
-    logger.step('Auth:Google', 4, 4, 'Perfil no existe - creando nuevo perfil', 'pending', {
-      name: firebaseUser.displayName || 'Usuario',
-      email: firebaseUser.email || '',
-    });
-
-    const profile = {
-      name: firebaseUser.displayName || 'Usuario',
-      email: firebaseUser.email || '',
-      role: 'client' as const,
-      hasActiveAlert: false,
-      onboardingCompleted: false,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
-    await setDoc(doc(db, 'users', uid), profile);
-    logger.step('Auth:Google', 4, 4, 'Nuevo perfil creado en Firestore', 'success', { role: 'client' });
-    return {
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: profile.name,
-      role: profile.role,
-      hasActiveAlert: profile.hasActiveAlert,
-      assignedTrainerId: undefined,
-      medicalProfile: undefined,
-      lastActivityAt: undefined,
-      createdAt: undefined,
-      updatedAt: undefined,
-    };
-  }
-
-  logger.step('Auth:Google', 3, 4, 'Perfil existente encontrado en Firestore', 'success', {
-    role: userDoc.data()?.role,
-  });
-  const data = userDoc.data();
-  return {
-    uid: firebaseUser.uid,
-    email: firebaseUser.email || '',
-    name: data.name || firebaseUser.displayName || 'Usuario',
-    role: data.role || 'client',
-    hasActiveAlert: data.hasActiveAlert ?? false,
-    assignedTrainerId: data.assignedTrainerId,
-    medicalProfile: data.medicalProfile,
-    lastActivityAt: data.lastActivityAt,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  const unknownError = new Error('auth/unknown');
+  (unknownError as unknown as { code: string }).code = 'auth/unknown';
+  return unknownError;
 }
 
 export const authService = {

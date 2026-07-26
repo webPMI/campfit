@@ -12,39 +12,93 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">{t('admin.diets')}</h1>
-          <p class="mt-1 text-sm theme-text-tertiary">
-            <span id="diet-count" class="text-orange-400 font-medium">0</span> {t('admin.diets.total')}
-          </p>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Supervisión global de planes nutricionales</p>
         </div>
-        <button id="btn-create-diet" class="rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-2 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all active:scale-95">
-          <svg class="h-4 w-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Nueva Dieta
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Total dietas</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Activas hoy</p>
+          <p id="stat-active" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Comidas totales</p>
+          <p id="stat-meals" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Adherencia media</p>
+          <p id="stat-adherence" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre de dieta o cliente..."
+          class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
+        />
+        <select
+          id="filterTrainer"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)]"
+        >
+          <option value="all">{t('trainer.filter.all')}</option>
+        </select>
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
+        >
+          Actualizar
         </button>
       </div>
 
-      <!-- Diet Editor -->
-      <div id="diet-editor" class="hidden mt-8"></div>
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-48 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-32 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-28 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <!-- Filter by client -->
-      <div class="mt-6">
-        <select id="client-filter" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-          <option value="">Filtrar por alumno</option>
-        </select>
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+          <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-[var(--text-secondary)]">No hay dietas registradas</h3>
+        <p class="mt-1 text-sm text-[var(--text-disabled)]">Los entrenadores aún no han creado planes nutricionales</p>
       </div>
 
       <!-- Diets List -->
-      <div id="diets-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border theme-border theme-surface-secondary p-6 text-center backdrop-blur-sm">
-          <div class="flex items-center justify-center gap-3">
-            <svg class="h-5 w-5 animate-spin theme-text-brand" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <p class="text-sm theme-text-tertiary">{t('admin.loading')}</p>
-          </div>
-        </div>
+      <div id="dietsList" class="mt-6 hidden space-y-3"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] px-4 py-3 text-sm text-[var(--danger)] backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-[var(--danger)]/70 hover:text-[var(--danger)]">&times;</button>
       </div>
     </div>
   </div>
@@ -53,492 +107,203 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
   import { db } from '@/lib/firebase';
-  import { collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore';
-  import { subscribeToUsersByRole, renderEmptyState, escapeHtml, ICONS } from '@/lib/admin/adminUtils';
-  import { showToast } from '@/lib/shared/ui';
+  import {
+    collection, getDocs, doc, getDoc,
+    query, orderBy, limit,
+    type Timestamp,
+  } from 'firebase/firestore';
+  import { formatDate } from '@/lib/shared/ui';
   import { logger } from '@/lib/shared/logger';
 
-  interface Meal {
-    id: string;
-    name: 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other';
-    description: string;
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    order: number;
-  }
+  requireAdmin(() => {
+    loadDiets();
+  });
 
-  interface Diet {
+  interface DietItem {
     id: string;
-    clientId: string;
+    name: string;
     trainerId: string;
-    name: string;
-    type: 'normal' | 'advanced';
-    somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph';
+    trainerName: string;
+    clientId?: string;
+    clientName?: string;
+    meals: Array<{ name: string; calories: number; completed?: boolean }>;
     totalCalories: number;
-    meals: Meal[];
+    createdAt: Timestamp | null;
+    updatedAt: Timestamp | null;
   }
 
-  interface Client {
-    uid: string;
-    name: string;
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const dietsList = document.getElementById('dietsList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const filterTrainer = document.getElementById('filterTrainer') as HTMLSelectElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allDiets: DietItem[] = [];
+  let trainers: Array<{ uid: string; name: string }> = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('admin/diets', msg);
   }
 
-  let unsubClients: (() => void) | null = null;
-  let unsubDiets: (() => void) | null = null;
-  let allClients: Client[] = [];
-  let allDiets: Diet[] = [];
-
-  const unsubscribeAuth = requireAdmin(() => {
-    initDiets();
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
   });
 
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribeAuth?.();
-    unsubClients?.();
-    unsubDiets?.();
-  });
-
-  const TYPE_LABELS: Record<string, string> = {
-    normal: 'Normal',
-    advanced: 'Avanzada',
-  };
-
-  const SOMATOTYPE_LABELS: Record<string, string> = {
-    ectomorph: 'Ectomorfo',
-    mesomorph: 'Mesomorfo',
-    endomorph: 'Endomorfo',
-  };
-
-  async function initDiets(): Promise<void> {
-    const container = document.getElementById('diets-container')!;
-    const editor = document.getElementById('diet-editor')!;
-    const btnCreate = document.getElementById('btn-create-diet')!;
-    const clientFilter = document.getElementById('client-filter') as HTMLSelectElement;
-    const dietCount = document.getElementById('diet-count')!;
-
-    // Subscribe to all clients
-    unsubClients = subscribeToUsersByRole('client', (clients) => {
-      allClients = clients.map(c => ({ uid: c.uid, name: c.name }));
-      clientFilter.innerHTML = '<option value="">Todos los alumnos</option>' +
-        allClients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
-    });
-
-    // Subscribe to all diets in the system
-    const dietsQuery = query(collection(db, 'diets'), orderBy('createdAt', 'desc'));
-    unsubDiets = onSnapshot(dietsQuery, (snapshot) => {
-      allDiets = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Diet[];
-      dietCount.textContent = String(allDiets.length);
-      applyFilters();
-    }, (error) => {
-      logger.error('AdminDiets', 'Error al suscribirse a dietas:', error);
-      showToast({ message: 'Error al cargar dietas', type: 'error' });
-    });
-
-    clientFilter.addEventListener('change', () => applyFilters());
-
-    btnCreate.addEventListener('click', () => {
-      showEditor(null);
-    });
-
-    // Event delegation: handle edit/delete clicks via data attributes
-    container.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const editBtn = target.closest('[data-action="edit-diet"]') as HTMLElement | null;
-      const deleteBtn = target.closest('[data-action="delete-diet"]') as HTMLElement | null;
-      if (editBtn) {
-        const id = editBtn.dataset.id!;
-        const diet = allDiets.find((d) => d.id === id);
-        if (diet) showEditor(diet);
-      } else if (deleteBtn) {
-        showDeleteConfirm(deleteBtn.dataset.id!);
-      }
-    });
+  function updateStats(diets: DietItem[]): void {
+    document.getElementById('stat-total')!.textContent = String(diets.length);
+    document.getElementById('stat-active')!.textContent = String(diets.length);
+    const totalMeals = diets.reduce((sum, d) => sum + (d.meals?.length || 0), 0);
+    document.getElementById('stat-meals')!.textContent = String(totalMeals);
+    const allMeals = diets.flatMap(d => d.meals || []);
+    const completed = allMeals.filter(m => m.completed).length;
+    const pct = allMeals.length > 0 ? Math.round((completed / allMeals.length) * 100) : 0;
+    document.getElementById('stat-adherence')!.textContent = `${pct}%`;
   }
 
-  function showDeleteConfirm(id: string): void {
-    const existing = document.getElementById('confirm-modal');
-    if (existing) existing.remove();
-
-    const modal = document.createElement('div');
-    modal.id = 'confirm-modal';
-    modal.className = 'fixed inset-0 z-50 flex items-center justify-center theme-bg-primary/60 backdrop-blur-sm';
-    modal.innerHTML = `
-      <div class="mx-4 w-full max-w-sm rounded-2xl border theme-border-strong theme-surface/95 p-6 shadow-2xl backdrop-blur-xl">
-        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mx-auto">
-          <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-          </svg>
-        </div>
-        <h3 class="text-center text-lg font-semibold theme-text-primary">Eliminar dieta</h3>
-        <p class="mt-2 text-center text-sm theme-text-tertiary">¿Estás seguro? Esta acción no se puede deshacer y el alumno perderá su plan nutricional asignado.</p>
-        <div class="mt-6 flex gap-3">
-          <button id="btn-cancel-delete" class="flex-1 rounded-xl border theme-border-strong theme-surface-secondary/80 px-4 py-2.5 text-sm font-medium theme-text-secondary hover:theme-surface-active/80 transition-all">Cancelar</button>
-          <button id="btn-confirm-delete" class="flex-1 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all">Eliminar</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    document.getElementById('btn-cancel-delete')!.addEventListener('click', () => modal.remove());
-    document.getElementById('btn-confirm-delete')!.addEventListener('click', async () => {
-      modal.remove();
-      try {
-        await deleteDoc(doc(db, 'diets', id));
-        showToast({ message: 'Dieta eliminada correctamente', type: 'success' });
-      } catch (err) {
-        showToast({ message: 'Error al eliminar dieta', type: 'error' });
-      }
-    });
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-  }
-
-  function applyFilters(): void {
-    const container = document.getElementById('diets-container')!;
-    const clientFilter = document.getElementById('client-filter') as HTMLSelectElement;
-    const clientId = clientFilter.value;
-
-    let filtered = allDiets;
-    if (clientId) filtered = filtered.filter((d) => d.clientId === clientId);
-
-    if (filtered.length === 0) {
-      container.innerHTML = renderEmptyState(
-        ICONS.diets,
-        clientId ? 'Este alumno no tiene dietas asignadas' : 'No hay planes nutricionales registrados en la plataforma',
-      );
+  function renderDiets(diets: DietItem[]): void {
+    dietsList.innerHTML = '';
+    if (diets.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      dietsList.classList.add('hidden');
       return;
     }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    dietsList.classList.remove('hidden');
 
-    container.innerHTML = filtered
-      .map((d) => {
-        const clientName = allClients.find((c) => c.uid === d.clientId)?.name || 'Sin asignar';
-        const somato = d.somatotype ? `<span class="text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-md text-[10px]">${SOMATOTYPE_LABELS[d.somatotype] || d.somatotype}</span>` : '';
-        return `
-          <div class="rounded-xl border theme-border theme-surface-secondary p-4 backdrop-blur-sm transition-all hover:theme-border-strong/60">
-            <div class="flex items-center justify-between">
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <p class="text-sm font-medium theme-text-primary">${escapeHtml(d.name)}</p>
-                  ${somato}
-                </div>
-                <p class="text-xs theme-text-tertiary mt-1">
-                  <span class="theme-text-brand">Alumno: ${escapeHtml(clientName)}</span>
-                  <span class="theme-text-tertiary mx-1">·</span>
-                  ${d.meals?.length || 0} comidas
-                  <span class="theme-text-tertiary mx-1">·</span>
-                  ${d.totalCalories} kcal
-                  <span class="theme-text-tertiary mx-1">·</span>
-                  ${TYPE_LABELS[d.type] || d.type}
-                </p>
-              </div>
-              <div class="flex items-center gap-2 shrink-0 ml-4">
-                <button data-action="edit-diet" data-id="${d.id}" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-2.5 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">
-                  <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                  </svg>
-                </button>
-                <button data-action="delete-diet" data-id="${d.id}" class="rounded-lg border border-red-900/30 bg-red-500/10 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
-                  <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg>
-                </button>
-              </div>
+    diets.forEach(diet => {
+      const completed = diet.meals?.filter(m => m.completed).length || 0;
+      const total = diet.meals?.length || 0;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const timestamp = diet.updatedAt || diet.createdAt;
+
+      const card = document.createElement('div');
+      card.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)]';
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--brand-dim)]">
+              <svg class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-[var(--text-primary)]">${diet.name}</h3>
+              ${diet.clientName ? `<p class="text-xs text-[var(--text-tertiary)]">Cliente: ${diet.clientName}</p>` : ''}
+              <p class="text-xs text-[var(--text-disabled)]">Entrenador: ${diet.trainerName} &middot; ${formatDate(timestamp)} &middot; ${diet.totalCalories || 0} kcal</p>
             </div>
           </div>
-        `;
-      })
-      .join('');
+          <span class="rounded-full px-2.5 py-1 text-xs font-medium ${pct === 100 ? 'bg-[var(--brand-dim)] text-[var(--brand)]' : 'bg-[var(--warning-dim)] text-[var(--warning)]'}">${pct}%</span>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 overflow-hidden rounded-full bg-[var(--surface-3)]">
+            <div class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all" style="width: ${pct}%"></div>
+          </div>
+          <p class="mt-2 text-xs text-[var(--text-disabled)]">${completed}/${total} comidas completadas</p>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          ${(diet.meals || []).map(m => `<span class="rounded-md px-2 py-0.5 text-xs ${m.completed ? 'bg-[var(--brand-dim)] text-[var(--brand)]' : 'bg-[var(--surface-3)] text-[var(--text-tertiary)]'}">${m.name} (${m.calories} kcal)</span>`).join('')}
+        </div>
+      `;
+      dietsList.appendChild(card);
+    });
   }
 
-  function showEditor(diet: Diet | null): void {
-    const editor = document.getElementById('diet-editor')!;
-    const isEditing = !!diet;
-    editor.classList.remove('hidden');
-    editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function filterDiets(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    const trainerFilter = filterTrainer.value;
 
-    const d = diet || {
-      id: '',
-      clientId: '',
-      trainerId: 'admin',
-      name: '',
-      type: 'normal',
-      somatotype: '',
-      totalCalories: 0,
-      meals: [] as Meal[],
-    };
-
-    const clientOptions = allClients
-      .map((c) => `<option value="${c.uid}" ${c.uid === d.clientId ? 'selected' : ''}>${escapeHtml(c.name)}</option>`)
-      .join('');
-
-    editor.innerHTML = `
-      <div class="rounded-xl border theme-border theme-surface-secondary p-5 backdrop-blur-sm mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold theme-text-primary">${isEditing ? 'Editar Dieta' : 'Nueva Dieta'}</h2>
-          <button id="btn-close-editor" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-3 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
-        </div>
-
-        <div class="space-y-4">
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Nombre de la dieta</label>
-              <input id="diet-name" type="text" value="${escapeHtml(d.name)}" placeholder="Ej: Dieta de Volumen" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-              <p id="diet-name-error" class="mt-1 hidden text-xs text-red-400">El nombre es obligatorio</p>
-            </div>
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Alumno</label>
-              <select id="diet-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-                <option value="">Seleccionar alumno</option>
-                ${clientOptions}
-              </select>
-              <p id="diet-client-error" class="mt-1 hidden text-xs text-red-400">Debes seleccionar un alumno</p>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Tipo</label>
-              <select id="diet-type" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-                <option value="normal" ${d.type === 'normal' ? 'selected' : ''}>Normal</option>
-                <option value="advanced" ${d.type === 'advanced' ? 'selected' : ''}>Avanzada</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Somatotipo</label>
-              <select id="diet-somatotype" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-                <option value="">No especificado</option>
-                <option value="ectomorph" ${d.somatotype === 'ectomorph' ? 'selected' : ''}>Ectomorfo</option>
-                <option value="mesomorph" ${d.somatotype === 'mesomorph' ? 'selected' : ''}>Mesomorfo</option>
-                <option value="endomorph" ${d.somatotype === 'endomorph' ? 'selected' : ''}>Endomorfo</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs theme-text-tertiary mb-1">Calorías Totales <span id="cal-auto-badge" class="theme-text-brand/70 text-[10px]">(auto)</span></label>
-              <input id="diet-calories" type="number" readonly value="${d.totalCalories || 0}" placeholder="Calculado de comidas" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary placeholder-theme-text-tertiary focus:outline-none cursor-not-allowed" />
-            </div>
-          </div>
-
-          <!-- Meals -->
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <label class="text-xs theme-text-tertiary">Comidas <span id="meal-count-badge" class="theme-text-tertiary">(${d.meals.length})</span></label>
-              <button id="btn-add-meal" class="text-xs theme-text-brand hover:text-emerald-300 transition-colors">
-                + Agregar comida
-              </button>
-            </div>
-            <div id="meals-list" class="space-y-2">
-              ${d.meals.length === 0
-                ? '<p class="text-xs theme-text-tertiary py-2">No hay comidas agregadas</p>'
-                : d.meals.map((meal, i) => renderMealRow(meal, i)).join('')
-              }
-            </div>
-          </div>
-
-          <button id="btn-save-diet" class="w-full rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-3 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all active:scale-[0.99] disabled:opacity-50">
-            <span id="save-btn-text">${isEditing ? 'Guardar Cambios' : 'Crear Dieta'}</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('btn-close-editor')!.addEventListener('click', () => closeEditor());
-
-    const mealsList = document.getElementById('meals-list')!;
-    const mealCountBadge = document.getElementById('meal-count-badge')!;
-
-    function updateMealCount(): void {
-      const count = mealsList.querySelectorAll('[data-meal-row]').length;
-      mealCountBadge.textContent = `(${count})`;
+    let filtered = allDiets;
+    if (searchTerm) {
+      filtered = filtered.filter(d =>
+        d.name.toLowerCase().includes(searchTerm) ||
+        (d.clientName && d.clientName.toLowerCase().includes(searchTerm)) ||
+        d.trainerName.toLowerCase().includes(searchTerm)
+      );
     }
+    if (trainerFilter !== 'all') {
+      filtered = filtered.filter(d => d.trainerId === trainerFilter);
+    }
+    renderDiets(filtered);
+  }
 
-    document.getElementById('btn-add-meal')!.addEventListener('click', () => {
-      const newMeal: Meal = {
-        id: `meal-${Date.now()}`,
-        name: 'other',
-        description: '',
-        calories: 0,
-        protein: 0,
-        carbs: 0,
-        fat: 0,
-        order: mealsList.querySelectorAll('[data-meal-row]').length + 1,
-      };
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = renderMealRow(newMeal, mealsList.querySelectorAll('[data-meal-row]').length);
-      if (mealsList.querySelector('p.theme-text-tertiary')) {
-        mealsList.innerHTML = '';
-      }
-      mealsList.appendChild(wrapper.firstElementChild || wrapper);
-      updateMealCount();
-    });
+  searchInput.addEventListener('input', filterDiets);
+  filterTrainer.addEventListener('change', filterDiets);
 
-    mealsList.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('[data-remove-meal]')) {
-        const row = target.closest('[data-meal-row]');
-        if (row) {
-          row.remove();
-          updateMealCount();
-          calculateTotalCalories();
+  async function loadDiets(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    dietsList.classList.add('hidden');
+
+    try {
+      const trainersSnap = await getDocs(collection(db, 'users'));
+      trainers = [];
+      trainersSnap.forEach(d => {
+        const data = d.data();
+        if (data.role === 'trainer') {
+          trainers.push({ uid: d.id, name: data.name || data.email || d.id });
         }
-      }
-    });
-
-    function calculateTotalCalories(): void {
-      const mealElements = mealsList.querySelectorAll('[data-meal-row]');
-      let total = 0;
-      mealElements.forEach((el) => {
-        const inputs = el.querySelectorAll('input');
-        const cal = parseInt((inputs[1] as HTMLInputElement).value) || 0;
-        total += cal;
       });
-      const calInput = document.getElementById('diet-calories') as HTMLInputElement;
-      calInput.value = String(total);
-    }
-
-    mealsList.addEventListener('input', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT') {
-        // Si cambia proteína, carbohidratos o grasas, podemos recalcular calorías
-        // O si cambian las calorías directamente, las recalculamos.
-        const row = target.closest('[data-meal-row]') as HTMLElement;
-        if (row) {
-          const inputs = row.querySelectorAll('input');
-          const p = parseInt((inputs[2] as HTMLInputElement).value) || 0;
-          const c = parseInt((inputs[3] as HTMLInputElement).value) || 0;
-          const g = parseInt((inputs[4] as HTMLInputElement).value) || 0;
-          const calculatedCal = p * 4 + c * 4 + g * 9;
-          if (calculatedCal > 0) {
-            (inputs[1] as HTMLInputElement).value = String(calculatedCal);
-          }
-        }
-        calculateTotalCalories();
-      }
-    });
-
-    document.getElementById('btn-save-diet')!.addEventListener('click', async () => {
-      const name = (document.getElementById('diet-name') as HTMLInputElement).value.trim();
-      const clientId = (document.getElementById('diet-client') as HTMLSelectElement).value;
-      const type = (document.getElementById('diet-type') as HTMLSelectElement).value as 'normal' | 'advanced';
-      const somatotype = (document.getElementById('diet-somatotype') as HTMLSelectElement).value as Diet['somatotype'] || undefined;
-
-      const mealElements = mealsList.querySelectorAll('[data-meal-row]');
-      let totalCalories = 0;
-      mealElements.forEach((el) => {
-        const inputs = el.querySelectorAll('input');
-        totalCalories += parseInt((inputs[1] as HTMLInputElement).value) || 0;
+      filterTrainer.innerHTML = '<option value="all">Todos los entrenadores</option>';
+      trainers.forEach(tr => {
+        filterTrainer.innerHTML += `<option value="${tr.uid}">${tr.name}</option>`;
       });
 
-      const nameError = document.getElementById('diet-name-error')!;
-      const clientError = document.getElementById('diet-client-error')!;
-      const btnSave = document.getElementById('btn-save-diet') as HTMLButtonElement;
+      const dietsRef = collection(db, 'diets');
+      const q = query(dietsRef, orderBy('updatedAt', 'desc'), limit(200));
+      const snap = await getDocs(q);
 
-      let hasError = false;
-      if (!name) { nameError.classList.remove('hidden'); hasError = true; } else { nameError.classList.add('hidden'); }
-      if (!clientId) { clientError.classList.remove('hidden'); hasError = true; } else { clientError.classList.add('hidden'); }
-      if (hasError) return;
-
-      btnSave.disabled = true;
-      btnSave.textContent = 'Guardando...';
-
-      const meals: Meal[] = Array.from(mealElements).map((el, idx) => {
-        const select = el.querySelector('select') as HTMLSelectElement;
-        const inputs = el.querySelectorAll('input');
+      const dietPromises = snap.docs.map(async (dietDoc) => {
+        const data = dietDoc.data();
+        const trainerDoc = trainers.find(t => t.uid === data.trainerId);
+        let clientName = '';
+        if (data.clientId) {
+          try {
+            const clientSnap = await getDoc(doc(db, 'users', data.clientId));
+            if (clientSnap.exists()) {
+              clientName = clientSnap.data().name || clientSnap.data().email || '';
+            }
+          } catch { /* ignore */ }
+        }
         return {
-          id: `meal-${Date.now()}-${idx}`,
-          name: select.value as Meal['name'],
-          description: (inputs[0] as HTMLInputElement).value,
-          calories: parseInt((inputs[1] as HTMLInputElement).value) || 0,
-          protein: parseInt((inputs[2] as HTMLInputElement).value) || 0,
-          carbs: parseInt((inputs[3] as HTMLInputElement).value) || 0,
-          fat: parseInt((inputs[4] as HTMLInputElement).value) || 0,
-          order: idx + 1,
-        };
-      }).filter((m) => m.description.trim() !== '');
+          id: dietDoc.id,
+          name: data.name || 'Sin nombre',
+          trainerId: data.trainerId || '',
+          trainerName: trainerDoc?.name || 'Desconocido',
+          clientId: data.clientId || undefined,
+          clientName,
+          meals: data.meals || [],
+          totalCalories: data.totalCalories || 0,
+          createdAt: data.createdAt || null,
+          updatedAt: data.updatedAt || data.createdAt || null,
+        } satisfies DietItem;
+      });
 
-      try {
-        if (isEditing && diet) {
-          await updateDoc(doc(db, 'diets', diet.id), {
-            name,
-            clientId,
-            type,
-            somatotype: somatotype || null,
-            totalCalories,
-            meals,
-            updatedAt: serverTimestamp()
-          });
-          showToast({ message: 'Dieta actualizada con éxito', type: 'success' });
-        } else {
-          await addDoc(collection(db, 'diets'), {
-            name,
-            clientId,
-            trainerId: 'admin',
-            type,
-            somatotype: somatotype || null,
-            totalCalories,
-            meals,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-          });
-          showToast({ message: 'Dieta creada con éxito', type: 'success' });
-        }
-        closeEditor();
-      } catch (error) {
-        logger.error('AdminDiets', 'Error al guardar dieta:', error);
-        showToast({ message: 'Error al guardar la dieta', type: 'error' });
-      } finally {
-        btnSave.disabled = false;
-        btnSave.textContent = isEditing ? 'Guardar Cambios' : 'Crear Dieta';
-      }
-    });
-
-    function closeEditor() {
-      editor.classList.add('hidden');
-      editor.innerHTML = '';
+      allDiets = await Promise.all(dietPromises);
+      updateStats(allDiets);
+      renderDiets(allDiets);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error al cargar dietas: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'Error al cargar las dietas. Intenta de nuevo.';
     }
   }
 
-  function renderMealRow(meal: Meal, index: number): string {
-    return `
-      <div data-meal-row class="rounded-xl border theme-border theme-surface-secondary p-3 backdrop-blur-sm">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="text-xs theme-text-tertiary font-medium w-5">#${index + 1}</span>
-          <select class="flex-1 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-            <option value="breakfast" ${meal.name === 'breakfast' ? 'selected' : ''}>Desayuno</option>
-            <option value="lunch" ${meal.name === 'lunch' ? 'selected' : ''}>Almuerzo</option>
-            <option value="snack" ${meal.name === 'snack' ? 'selected' : ''}>Snack</option>
-            <option value="dinner" ${meal.name === 'dinner' ? 'selected' : ''}>Cena</option>
-            <option value="other" ${meal.name === 'other' ? 'selected' : ''}>Otro</option>
-          </select>
-          <button data-remove-meal class="rounded-lg border border-red-900/30 bg-red-500/10 px-2 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition-all">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <input type="text" value="${escapeHtml(meal.description)}" placeholder="Descripción (Ej: 150g pechuga de pollo, 100g arroz)" class="flex-1 min-w-[200px] rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
-          <div class="flex items-center gap-1">
-            <label class="text-[10px] theme-text-tertiary">Cal</label>
-            <input type="number" value="${meal.calories || ''}" placeholder="0" class="w-14 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Calorías" />
-          </div>
-          <div class="flex items-center gap-1">
-            <label class="text-[10px] theme-text-tertiary">Prot</label>
-            <input type="number" value="${meal.protein || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Proteínas" />
-          </div>
-          <div class="flex items-center gap-1">
-            <label class="text-[10px] theme-text-tertiary">Carbs</label>
-            <input type="number" value="${meal.carbs || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Carbohidratos" />
-          </div>
-          <div class="flex items-center gap-1">
-            <label class="text-[10px] theme-text-tertiary">Grasas</label>
-            <input type="number" value="${meal.fat || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Grasas" />
-          </div>
-        </div>
-      </div>
-    `;
-  }
+  refreshBtn.addEventListener('click', loadDiets);
+
+  loadDiets();
+
+  const interval = setInterval(loadDiets, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
 </script>

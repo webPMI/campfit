@@ -1,5 +1,7 @@
 ---
 import PublicPageLayout from '@/layouts/PublicPageLayout.astro';
+import UICard from '@/components/UICard.astro';
+import UILogoIcon from '@/components/UILogoIcon.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
@@ -7,26 +9,24 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 ---
 
 <PublicPageLayout currentPath="/register">
-  <div class="w-full max-w-sm animate-fade-in">
+  <div class="w-full max-w-sm animate-fade-in-scale">
     <!-- Logo -->
     <div class="mb-8 text-center">
-      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20">
-        <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-        </svg>
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] shadow-[var(--shadow-glow-md)]">
+        <UILogoIcon size="h-7 w-7" class="text-[var(--text-on-brand)]" />
       </div>
-      <h1 class="text-2xl font-bold tracking-tight">{t('app.name')}</h1>
-      <p class="mt-1 text-sm text-zinc-500">{t('app.tagline')}</p>
+      <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">{t('app.name')}</h1>
+      <p class="mt-1 text-sm font-medium text-[var(--text-secondary)]">{t('app.tagline')}</p>
     </div>
 
     <!-- Card -->
-    <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-8 backdrop-blur-xl">
-      <h2 class="mb-8 text-center text-lg font-semibold">{t('auth.register.title')}</h2>
+    <UICard variant="elevated" padding="md" class="animate-pulse-glow">
+      <h2 class="mb-8 text-center text-lg font-semibold text-[var(--text-primary)]">{t('auth.register.title')}</h2>
 
       <!-- Botón Google -->
       <button
         id="googleBtn"
-        class="group flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-6 py-3 text-sm font-medium text-zinc-300 transition-all hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
+        class="group flex w-full items-center justify-center gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-6 py-3 text-sm font-medium text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] active:scale-[0.98]"
       >
         <svg class="h-5 w-5" viewBox="0 0 24 24">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -39,74 +39,74 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       <!-- Separador -->
       <div class="my-6 flex items-center gap-3">
-        <div class="flex-1 border-t border-zinc-800" />
-        <span class="text-xs font-medium uppercase tracking-wider text-zinc-600">{t('auth.or')}</span>
-        <div class="flex-1 border-t border-zinc-800" />
+        <div class="flex-1 border-t border-[var(--border-subtle)]" />
+        <span class="text-xs font-medium uppercase tracking-wider text-[var(--text-tertiary)]">{t('auth.or')}</span>
+        <div class="flex-1 border-t border-[var(--border-subtle)]" />
       </div>
 
       <!-- Formulario Email -->
       <form id="registerForm" class="flex flex-col gap-5">
         <div>
-          <label for="name" class="mb-1.5 block text-sm font-medium text-zinc-400">{t('auth.name')}</label>
+          <label for="name" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t('auth.name')}</label>
           <input
             id="name"
             type="text"
             placeholder={t('auth.name.placeholder')}
             required
             autocomplete="name"
-            class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800 focus:ring-2 focus:ring-emerald-500/10"
+            class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all duration-200 focus:border-[var(--brand)] focus:bg-[var(--surface-3)] focus:shadow-[0_0_0_3px_var(--brand-dim)]"
           />
-          <p id="nameError" class="mt-1 hidden text-xs text-red-400"></p>
+          <p id="nameError" class="mt-1 hidden text-xs text-[var(--danger)]"></p>
         </div>
 
         <div>
-          <label for="email" class="mb-1.5 block text-sm font-medium text-zinc-400">{t('auth.email')}</label>
+          <label for="email" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t('auth.email')}</label>
           <input
             id="email"
             type="email"
             placeholder={t('auth.email.placeholder')}
             required
             autocomplete="email"
-            class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800 focus:ring-2 focus:ring-emerald-500/10"
+            class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all duration-200 focus:border-[var(--brand)] focus:bg-[var(--surface-3)] focus:shadow-[0_0_0_3px_var(--brand-dim)]"
           />
-          <p id="emailError" class="mt-1 hidden text-xs text-red-400"></p>
+          <p id="emailError" class="mt-1 hidden text-xs text-[var(--danger)]"></p>
         </div>
 
         <div>
-          <label for="password" class="mb-1.5 block text-sm font-medium text-zinc-400">{t('auth.password')}</label>
+          <label for="password" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t('auth.password')}</label>
           <input
             id="password"
             type="password"
-            placeholder={t('auth.password.min')}
+            placeholder={t('auth.password.placeholder')}
             required
-            minlength="8"
+            minlength="6"
             autocomplete="new-password"
-            class="w-full rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800 focus:ring-2 focus:ring-emerald-500/10"
+            class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all duration-200 focus:border-[var(--brand)] focus:bg-[var(--surface-3)] focus:shadow-[0_0_0_3px_var(--brand-dim)]"
           />
-          <p id="passwordError" class="mt-1 hidden text-xs text-red-400"></p>
+          <p id="passwordError" class="mt-1 hidden text-xs text-[var(--danger)]"></p>
         </div>
 
         <button
           id="registerBtn"
           type="submit"
-          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 hover:shadow-emerald-500/30 active:scale-[0.98]"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
         >
           {t('auth.register.btn')}
         </button>
       </form>
 
       <!-- Error -->
-      <div id="errorMsg" class="mt-5 hidden items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+      <div id="errorMsg" class="mt-5 hidden items-center gap-2 rounded-xl bg-[var(--danger-dim)] border border-[var(--danger)] px-4 py-3 text-sm text-[var(--danger)]">
         <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
         </svg>
         <span id="errorText"></span>
       </div>
-    </div>
+    </UICard>
 
-    <p class="mt-8 text-center text-sm text-zinc-600">
+    <p class="mt-8 text-center text-sm text-[var(--text-tertiary)]">
       {t('auth.has.account')}
-      <a href={`/login?lang=${lang}`} class="font-medium text-emerald-400 transition-colors hover:text-emerald-300">{t('auth.login.link')}</a>
+      <a href={`/login?lang=${lang}`} class="font-medium text-[var(--brand)] transition-colors duration-200 hover:text-[var(--brand-hover)]">{t('auth.login.link')}</a>
     </p>
   </div>
 </PublicPageLayout>
@@ -114,9 +114,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <script>
   import { authService } from '@/services/authService';
   import { setUser, setAuthLoading } from '@/stores/authStore';
-  import { isValidEmail, isValidName, isValidPassword } from '@/lib/validators';
-  import { getStoredLanguage, t } from '@/i18n/client';
-  import { logger } from '@/lib/shared/logger';
+  import { isValidEmail, isValidPassword, isValidName } from '@/lib/validators';
+  import { t } from '@/i18n/client';
+  import type { FirebaseError } from 'firebase/app';
 
   const nameInput = document.getElementById('name') as HTMLInputElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -154,7 +154,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   }
 
   function redirectByRole(role: string) {
-    // New clients go to onboarding, existing roles go to their dashboard
     if (role === 'client') {
       window.location.href = '/onboarding';
       return;
@@ -176,7 +175,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    // Validación en cliente
     let hasError = false;
 
     const nameValidation = isValidName(name);
@@ -215,9 +213,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       setAuthLoading(false);
       redirectByRole(user.role);
     } catch (err: unknown) {
-      const fbErr = err as { code?: string; message?: string };
-      const code = fbErr.code || '';
-      logger.error('Register', `Error en registro para email: ${email}`, { code, message: fbErr.message });
+      const fbErr = err as FirebaseError & { message?: string };
+      const code = fbErr.code || fbErr.message || '';
       const messages: Record<string, string> = {
         'auth/email-already-in-use': t('error.email-in-use'),
         'auth/invalid-email': t('error.invalid-email'),
@@ -322,3 +319,4 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     }
   });
 </script>
+</write_to_file>

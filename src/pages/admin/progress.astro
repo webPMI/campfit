@@ -8,47 +8,100 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <AdminLayout>
   <div class="mx-auto max-w-4xl px-4 py-8">
-    <div class="animate-fade-in space-y-6">
-      <div>
-        <h1 class="text-2xl font-bold">Monitoreo de Progreso de Alumnos</h1>
-        <p class="mt-1 text-sm theme-text-tertiary">Audita el progreso físico, peso y fotos de evolución de cualquier alumno</p>
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">Visor de Progreso</h1>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Monitorización global del progreso de todos los clientes</p>
+        </div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
       </div>
 
-      <!-- Selector de alumno -->
-      <div class="card-glow rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
-        <label class="block text-xs font-semibold theme-text-secondary mb-2">Selecciona un alumno para revisar:</label>
-        <select id="client-select" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-3 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
-          <option value="">Selecciona un alumno</option>
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Clientes con datos</p>
+          <p id="stat-clients" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Registros totales</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Última semana</p>
+          <p id="stat-week" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con fotos</p>
+          <p id="stat-photos" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre de cliente o tipo de progreso..."
+          class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
+        />
+        <select
+          id="filterType"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)]"
+        >
+          <option value="all">Todos los tipos</option>
+          <option value="weight">Peso</option>
+          <option value="photo">Fotos</option>
+          <option value="measurement">Medidas</option>
         </select>
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
+        >
+          Actualizar
+        </button>
       </div>
 
-      <!-- Detail View (hidden by default) -->
-      <div id="progress-view" class="hidden space-y-6">
-        <!-- SVG Chart -->
-        <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
-          <h3 class="text-sm font-semibold theme-text-secondary mb-4">Evolución de Peso (últimos 30 días)</h3>
-          <div id="chartContainer" class="flex h-56 w-full items-center justify-center rounded-xl theme-bg-primary/20 p-2">
-            <p class="text-xs theme-text-tertiary">Selecciona un alumno para graficar</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <!-- Weight History -->
-          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
-            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Historial de peso</h3>
-            <div id="weightHistory" class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-              <p class="text-sm theme-text-tertiary">Sin registros de peso aún.</p>
-            </div>
-          </div>
-
-          <!-- Evolutionary Photos -->
-          <div class="rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
-            <h3 class="text-sm font-semibold theme-text-secondary mb-4">Fotos de evolución</h3>
-            <div id="photoGallery" class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
-              <p class="col-span-2 text-sm theme-text-tertiary">Sin fotos de evolución física.</p>
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-48 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-32 rounded bg-[var(--surface-3)]"></div>
             </div>
           </div>
         </div>
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-40 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-28 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+          <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-[var(--text-secondary)]">No hay datos de progreso</h3>
+        <p class="mt-1 text-sm text-[var(--text-disabled)]">Los clientes aún no han registrado datos de progreso</p>
+      </div>
+
+      <!-- Progress List -->
+      <div id="progressList" class="mt-6 hidden space-y-3"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] px-4 py-3 text-sm text-[var(--danger)] backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-[var(--danger)]/70 hover:text-[var(--danger)]">&times;</button>
       </div>
     </div>
   </div>
@@ -56,187 +109,203 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
-  import { subscribeToUsersByRole } from '@/lib/admin/adminUtils';
-  import { subscribeToClientProgress } from '@/lib/trainer/trainerUtils';
-  import { escapeHtml, getUserInitial } from '@/lib/shared/ui';
   import { db } from '@/lib/firebase';
-  import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+  import {
+    collection, getDocs,
+    query, orderBy, limit,
+    type Timestamp,
+  } from 'firebase/firestore';
+  import { formatDate } from '@/lib/shared/ui';
   import { logger } from '@/lib/shared/logger';
 
-  interface Client {
-    uid: string;
-    name: string;
-  }
-
-  let unsubClients: (() => void) | null = null;
-  let unsubProgress: (() => void) | null = null;
-  let allClients: Client[] = [];
-
-  const unsubscribeAuth = requireAdmin(() => {
-    initProgressViewer();
+  requireAdmin(() => {
+    loadProgress();
   });
 
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribeAuth?.();
-    unsubClients?.();
-    unsubProgress?.();
+  interface ProgressItem {
+    id: string;
+    clientId: string;
+    clientName: string;
+    type: string;
+    value: Record<string, unknown>;
+    hasPhoto: boolean;
+    note: string;
+    createdAt: Timestamp | null;
+  }
+
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const progressList = document.getElementById('progressList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const filterType = document.getElementById('filterType') as HTMLSelectElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allProgress: ProgressItem[] = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('admin/progress', msg);
+  }
+
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
   });
 
-  async function initProgressViewer(): Promise<void> {
-    const clientSelect = document.getElementById('client-select') as HTMLSelectElement;
-    const progressView = document.getElementById('progress-view')!;
-
-    // Subscribe to all clients
-    unsubClients = subscribeToUsersByRole('client', (clients) => {
-      allClients = clients.map(c => ({ uid: c.uid, name: c.name }));
-      clientSelect.innerHTML = '<option value="">Seleccionar alumno</option>' +
-        allClients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
-    });
-
-    clientSelect.addEventListener('change', () => {
-      const clientId = clientSelect.value;
-      if (!clientId) {
-        progressView.classList.add('hidden');
-        if (unsubProgress) unsubProgress();
-        return;
-      }
-
-      progressView.classList.remove('hidden');
-      loadClientProgress(clientId);
-    });
+  function updateStats(items: ProgressItem[]): void {
+    const uniqueClients = new Set(items.map(i => i.clientId));
+    document.getElementById('stat-clients')!.textContent = String(uniqueClients.size);
+    document.getElementById('stat-total')!.textContent = String(items.length);
+    document.getElementById('stat-week')!.textContent = String(items.length);
+    const withPhotos = items.filter(i => i.hasPhoto).length;
+    document.getElementById('stat-photos')!.textContent = String(withPhotos);
   }
 
-  function loadClientProgress(clientId: string) {
-    const chartContainer = document.getElementById('chartContainer')!;
-    const weightHistory = document.getElementById('weightHistory')!;
-    const photoGallery = document.getElementById('photoGallery')!;
-
-    if (unsubProgress) unsubProgress();
-
-    unsubProgress = subscribeToClientProgress(clientId, (logs) => {
-      const weightLogs = logs.filter(l => l.weight !== undefined);
-      // Las fotos en progress_logs tienen type === 'photo' (o podemos filtrar por notas/imagen si no tienen campo directo)
-      // Pero subscribeToClientProgress mapea campos genéricos del doc.
-      // Modificamos para filtrar logs de peso y fotos.
-      // logs tiene el array crudo de progress_logs
-    });
-
-    // Para soportar más flexibilidad (peso y fotos), hacemos la suscripción directa a progress_logs en Firestore
-    // Esto asegura que cargue tanto 'weight' como 'photo' del alumno
-    const q = query(
-      collection(db, 'progress_logs'),
-      where('clientId', '==', clientId),
-      orderBy('date', 'desc')
-    );
-
-    if (unsubProgress) unsubProgress();
-
-    unsubProgress = onSnapshot(q, (snapshot) => {
-      const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
-      const weightLogs = logs.filter(l => l.type === 'weight' || (l.value && l.value.weight !== undefined));
-      const photoLogs = logs.filter(l => l.type === 'photo' || (l.value && l.value.imageBase64 !== undefined));
-
-      // 1. Render weight history
-      if (weightLogs.length > 0) {
-        weightHistory.innerHTML = '';
-        weightLogs.forEach((log) => {
-          const w = log.value?.weight || log.weight;
-          const date = log.date?.toDate?.()?.toLocaleDateString() || 'Fecha';
-          const div = document.createElement('div');
-          div.className = 'flex items-center justify-between rounded-lg theme-surface-secondary/30 px-4 py-3';
-          div.innerHTML = `
-            <span class="text-sm theme-text-secondary">${date}</span>
-            <span class="text-sm font-semibold theme-text-primary">${w} kg</span>
-          `;
-          weightHistory.appendChild(div);
-        });
-        renderWeightChart(weightLogs);
-      } else {
-        weightHistory.innerHTML = '<p class="text-sm theme-text-tertiary">Sin registros de peso aún.</p>';
-        chartContainer.innerHTML = '<p class="text-xs theme-text-tertiary">Sin datos de peso para graficar</p>';
-      }
-
-      // 2. Render photo evolution
-      if (photoLogs.length > 0) {
-        photoGallery.innerHTML = '';
-        photoLogs.forEach((log) => {
-          const base64 = log.value?.imageBase64 || log.imageBase64;
-          const notes = log.value?.notes || log.notes || '';
-          const date = log.date?.toDate?.()?.toLocaleDateString() || 'Fecha';
-          if (base64) {
-            const div = document.createElement('div');
-            div.className = 'rounded-xl overflow-hidden border theme-border theme-surface-secondary p-2 backdrop-blur-sm';
-            div.innerHTML = `
-              <img src="${base64}" class="w-full h-32 object-cover rounded-lg" />
-              <div class="mt-2 px-1">
-                <p class="text-[10px] theme-text-tertiary">${date}</p>
-                ${notes ? `<p class="text-xs theme-text-secondary truncate mt-0.5">${notes}</p>` : ''}
-              </div>
-            `;
-            photoGallery.appendChild(div);
-          }
-        });
-      } else {
-        photoGallery.innerHTML = '<p class="col-span-2 text-sm theme-text-tertiary">Sin fotos cargadas aún.</p>';
-      }
-    }, (error) => {
-      logger.error('AdminProgress', 'Error al cargar progreso del alumno:', error);
-    });
-  }
-
-  function renderWeightChart(logs: any[]) {
-    const chartContainer = document.getElementById('chartContainer')!;
-    const width = 500;
-    const height = 200;
-    const padding = 30;
-
-    // Invertir logs para orden cronológico
-    const chronologicalLogs = [...logs].reverse();
-
-    const weights = chronologicalLogs.map(l => Number(l.value?.weight || l.weight));
-    const minWeight = Math.min(...weights) - 1;
-    const maxWeight = Math.max(...weights) + 1;
-    const weightRange = maxWeight - minWeight || 1;
-
-    const points = chronologicalLogs.map((log, index) => {
-      const x = padding + (index * (width - 2 * padding) / (chronologicalLogs.length - 1 || 1));
-      const y = height - padding - ((Number(log.value?.weight || log.weight) - minWeight) * (height - 2 * padding) / weightRange);
-      const date = log.date?.toDate?.()?.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) || 'Fecha';
-      return { x, y, weight: log.value?.weight || log.weight, date };
-    });
-
-    let pathD = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) {
-      pathD += ` L ${points[i].x} ${points[i].y}`;
+  function formatValue(item: ProgressItem): string {
+    if (item.type === 'weight' && item.value?.weight !== undefined) {
+      return `${item.value.weight} kg`;
     }
-
-    let svgHtml = `
-      <svg viewBox="0 0 ${width} ${height}" class="w-full h-full">
-        <defs>
-          <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#34d399" stop-opacity="0.15"/>
-            <stop offset="100%" stop-color="#34d399" stop-opacity="0.0"/>
-          </linearGradient>
-        </defs>
-        <!-- Grilla de fondo -->
-        <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="#27272a" stroke-dasharray="3" />
-        <line x1="${padding}" y1="${(height) / 2}" x2="${width - padding}" y2="${(height) / 2}" stroke="#27272a" stroke-dasharray="3" />
-        <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#27272a" />
-        
-        <!-- Líneas y Relleno -->
-        <path d="${pathD} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z" fill="url(#chartGlow)" />
-        <path d="${pathD}" fill="none" stroke="#34d399" stroke-width="2.5" />
-    `;
-
-    points.forEach((p) => {
-      svgHtml += `
-        <circle cx="${p.x}" cy="${p.y}" r="4" class="fill-emerald-400 stroke-zinc-900 stroke-2 hover:r-6 cursor-pointer transition-all" />
-        <text x="${p.x}" y="${height - 10}" class="text-[9px] fill-zinc-600 font-medium" text-anchor="middle">${p.date}</text>
-        <text x="${p.x}" y="${p.y - 8}" class="text-[9px] fill-zinc-300 font-bold" text-anchor="middle">${p.weight}</text>
-      `;
-    });
-
-    svgHtml += `</svg>`;
-    chartContainer.innerHTML = svgHtml;
+    if (item.type === 'measurement') {
+      const parts: string[] = [];
+      if (item.value?.chest) parts.push(`Pecho: ${item.value.chest}cm`);
+      if (item.value?.waist) parts.push(`Cintura: ${item.value.waist}cm`);
+      if (item.value?.arms) parts.push(`Brazos: ${item.value.arms}cm`);
+      return parts.join(' | ') || 'Sin medidas';
+    }
+    if (item.type === 'photo') return `📸 ${item.note || 'Foto de progreso'}`;
+    return JSON.stringify(item.value);
   }
+
+  function getTypeBadge(type: string): string {
+    const badges: Record<string, string> = {
+      weight: 'bg-[var(--info-dim)] text-[var(--info)]',
+      photo: 'bg-[var(--accent-purple-dim)] text-[var(--accent-purple)]',
+      measurement: 'bg-[var(--brand-dim)] text-[var(--brand)]',
+    };
+    return badges[type] || 'bg-[var(--surface-3)] text-[var(--text-tertiary)]';
+  }
+
+  function getTypeIcon(type: string): string {
+    const icons: Record<string, string> = {
+      weight: '⚖️',
+      photo: '📸',
+      measurement: '📏',
+    };
+    return icons[type] || '📊';
+  }
+
+  function renderProgress(items: ProgressItem[]): void {
+    progressList.innerHTML = '';
+    if (items.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      progressList.classList.add('hidden');
+      return;
+    }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    progressList.classList.remove('hidden');
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)]';
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg text-lg">
+              ${getTypeIcon(item.type)}
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-[var(--text-primary)]">${item.clientName}</h3>
+                <span class="rounded-full px-2 py-0.5 text-xs font-medium ${getTypeBadge(item.type)}">${item.type}</span>
+              </div>
+              <p class="mt-0.5 text-sm text-[var(--text-secondary)]">${formatValue(item)}</p>
+              <p class="mt-1 text-xs text-[var(--text-disabled)]">${formatDate(item.createdAt)}</p>
+            </div>
+          </div>
+          ${item.hasPhoto ? '<span class="rounded-lg bg-[var(--accent-purple-dim)] px-2 py-1 text-xs text-[var(--accent-purple)]">📸 Foto</span>' : ''}
+        </div>
+        ${item.note && item.type !== 'photo' ? `<p class="mt-3 text-sm text-[var(--text-tertiary)] border-t border-[var(--border-subtle)] pt-3">📝 ${item.note}</p>` : ''}
+      `;
+      progressList.appendChild(card);
+    });
+  }
+
+  function filterProgress(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    const typeFilter = filterType.value;
+
+    let filtered = allProgress;
+    if (searchTerm) {
+      filtered = filtered.filter(p =>
+        p.clientName.toLowerCase().includes(searchTerm) ||
+        p.type.toLowerCase().includes(searchTerm) ||
+        (p.note && p.note.toLowerCase().includes(searchTerm))
+      );
+    }
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(p => p.type === typeFilter);
+    }
+    renderProgress(filtered);
+  }
+
+  searchInput.addEventListener('input', filterProgress);
+  filterType.addEventListener('change', filterProgress);
+
+  async function loadProgress(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    progressList.classList.add('hidden');
+
+    try {
+      const clientsSnap = await getDocs(collection(db, 'users'));
+      const clientMap = new Map<string, string>();
+      clientsSnap.forEach(d => {
+        const data = d.data();
+        if (data.role === 'client') {
+          clientMap.set(d.id, data.name || data.email || d.id);
+        }
+      });
+
+      const progressRef = collection(db, 'progress_logs');
+      const q = query(progressRef, orderBy('createdAt', 'desc'), limit(500));
+      const snap = await getDocs(q);
+
+      allProgress = snap.docs.map(pDoc => {
+        const data = pDoc.data();
+        return {
+          id: pDoc.id,
+          clientId: data.clientId || data.userId || '',
+          clientName: clientMap.get(data.clientId || data.userId) || 'Desconocido',
+          type: data.type || 'weight',
+          value: data.value || {},
+          hasPhoto: !!data.photoUrl || !!data.photoURL || data.type === 'photo',
+          note: data.note || data.notes || '',
+          createdAt: data.createdAt || null,
+        } satisfies ProgressItem;
+      });
+
+      updateStats(allProgress);
+      renderProgress(allProgress);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error al cargar progreso: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'Error al cargar los datos. Intenta de nuevo.';
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadProgress);
+
+  loadProgress();
+
+  const interval = setInterval(loadProgress, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
 </script>

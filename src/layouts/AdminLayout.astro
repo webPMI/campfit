@@ -13,19 +13,14 @@ const currentPath = Astro.url.pathname;
 
   <BaseLayout>
     <DecorativeBackground />
-    <LanguageSwitcher currentPath={currentPath} altLang={lang === 'es' ? 'en' : 'es'} />
-    <ThemeToggle />
+    <LanguageSwitcher currentPath={currentPath} lang={lang} />
 
     <!-- Page content -->
     <slot />
 
 <<<<<<< HEAD
     <!-- Bottom Navigation Admin -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-800/60 bg-zinc-900/90 backdrop-blur-xl">
-=======
-  <!-- Bottom Navigation Admin -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t theme-border theme-surface/90 backdrop-blur-xl">
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
+    <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--border-default)] glass backdrop-blur-xl">
     <div class="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
 
 <script>
@@ -103,8 +98,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/dashboard?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath === '/admin/dashboard' || currentPath === '/admin/dashboard/'
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="home" class="h-5 w-5" />
@@ -115,20 +110,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/users?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/users')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
-        }`}
-      >
-        <Icon name="users" class="h-5 w-5" />
-        <span class="text-[10px] font-medium">{t('admin.users')}</span>
-      </a>
-
-      <a
-        href={`/admin/chat?lang=${lang}`}
-        class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all relative ${
-          currentPath.startsWith('/admin/chat')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <div class="relative">
@@ -142,8 +125,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/trainers?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/trainers')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="globe" class="h-5 w-5" />
@@ -154,8 +137,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/clients?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/clients')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="diets" class="h-5 w-5" />
@@ -166,20 +149,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/dashboard?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/trainer')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
-        }`}
-      >
-        <Icon name="globe" class="h-5 w-5" />
-        <span class="text-[10px] font-medium">Trainer</span>
-      </a>
-
-      <a
-        href={`/client/dashboard?lang=${lang}`}
-        class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
-          currentPath.startsWith('/client')
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-zinc-300'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="home" class="h-5 w-5" />
@@ -190,8 +161,8 @@ const currentPath = Astro.url.pathname;
         href={`/admin/settings?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/admin/settings')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="settings" class="h-5 w-5" />

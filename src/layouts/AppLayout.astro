@@ -1,0 +1,130 @@
+---
+/**
+ * AppLayout - Unified application shell for authenticated pages.
+ * Replaces AdminLayout, ClientLayout, TrainerLayout duplication.
+ * Theme-aware with glass morphism nav, decorative background, and theme switcher.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import UIThemeSwitcher from '@/components/UIThemeSwitcher.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+export interface NavItem {
+  label: string;
+  href: string;
+  icon: string;
+  badge?: string;
+  active?: boolean;
+}
+
+export interface Props {
+  /** Título de la página */
+  title: string;
+  /** Subtítulo opcional */
+  subtitle?: string;
+  /** Items de navegación inferior */
+  navItems: NavItem[];
+  /** Ruta actual para marcar item activo */
+  currentPath?: string;
+  /** Rol del usuario (para roles específicos) */
+  role?: 'admin' | 'trainer' | 'client';
+}
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const altLang = lang === 'es' ? 'en' : 'es';
+const { title, subtitle, navItems = [], currentPath = Astro.url.pathname, role = 'client' } = Astro.props;
+
+function isActive(item: { href: string; active?: boolean }): boolean {
+  if (item.active) return true;
+  if (!currentPath) return false;
+  const hrefNormalized = item.href.replace(/\/$/, '');
+  const pathNormalized = currentPath.replace(/\/$/, '');
+  return pathNormalized === hrefNormalized || pathNormalized.startsWith(hrefNormalized + '/');
+}
+
+// Role-specific accent color for header glow
+const roleAccent: Record<string, string> = {
+  admin: 'via-[var(--accent-purple)]',
+  trainer: 'via-[var(--info)]',
+  client: 'via-[var(--brand)]',
+};
+---
+
+<BaseLayout>
+  <!-- Decorative background -->
+  <div class="pointer-events-none fixed inset-0 overflow-hidden">
+    <div class="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-[var(--brand)] opacity-[0.03] blur-3xl"></div>
+    <div class="absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-[var(--brand)] opacity-[0.02] blur-3xl"></div>
+  </div>
+
+  <!-- Top Header Bar -->
+  <header class="sticky top-0 z-40">
+    <div class="absolute inset-0 glass border-b border-[var(--border-subtle)]"></div>
+    <div class={['absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent', roleAccent[role] || 'via-[var(--brand)]', 'to-transparent opacity-30'].join(' ')}></div>
+    <div class="relative flex items-center h-14 px-4 gap-2">
+      <div class="flex-1 min-w-0">
+        <h1 class="text-base font-semibold text-[var(--text-primary)] truncate">{title}</h1>
+        {subtitle && <p class="text-xs text-[var(--text-tertiary)] truncate mt-0.5">{subtitle}</p>}
+      </div>
+      <div class="flex items-center gap-1 shrink-0">
+        <a
+          href={`${currentPath}${currentPath.includes('?') ? '&' : '?'}lang=${altLang}`}
+          class="h-9 px-2.5 rounded-xl flex items-center gap-1 text-xs font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-all duration-200"
+        >
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" /></svg>
+          {altLang === 'en' ? 'EN' : 'ES'}
+        </a>
+        <UIThemeSwitcher />
+        <slot name="header-actions" />
+      </div>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <main class="px-4 py-6 animate-fade-in">
+    <slot />
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
+    <div class="absolute inset-0 glass border-t border-[var(--border-subtle)]"></div>
+    <div class="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[var(--brand)] to-transparent opacity-40"></div>
+    <div class="relative flex items-center justify-around h-16 px-2">
+      {navItems.map((item) => {
+        const active = isActive(item);
+        return (
+          <a
+            href={item.href}
+            class={[
+              'relative flex flex-col items-center justify-center gap-0.5 min-w-[3.5rem] h-full px-1',
+              'transition-all duration-200 ease-out group',
+              active ? 'text-[var(--brand)]' : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]',
+            ].join(' ')}
+            aria-label={item.label}
+            aria-current={active ? 'page' : undefined}
+          >
+            {active && (
+              <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-[3px] rounded-full bg-[var(--brand)] shadow-[0_0_8px_var(--brand-glow)]"></span>
+            )}
+            <span class={['relative flex items-center justify-center w-7 h-7 transition-transform duration-200', active ? 'scale-110' : 'group-hover:scale-105'].join(' ')}>
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width={active ? '2.5' : '2'} stroke-linecap="round" stroke-linejoin="round">
+                {item.icon}
+              </svg>
+              {item.badge && (
+                <span class="absolute -top-1 -right-2 min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold leading-none bg-[var(--danger)] text-[var(--text-on-brand)] shadow-[var(--shadow-sm)] px-1">{item.badge}</span>
+              )}
+            </span>
+            <span class={['text-[10px] font-medium leading-tight transition-all duration-200', active ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'].join(' ')}>{item.label}</span>
+          </a>
+        );
+      })}
+    </div>
+  </nav>
+</BaseLayout>
+
+<style>
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+</style>
+</write_to_file>

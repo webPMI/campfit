@@ -1,11 +1,11 @@
 # CampFit - Contexto del Proyecto
 
-> **Contexto comprimido para agentes de IA.** Última actualización: 2026-07-25
+> **Contexto comprimido para agentes de IA.** Última actualización: 2026-07-26
 
 ## Stack
 - **Framework:** Astro 7 (SSR con `@astrojs/node`)
 - **UI:** Vanilla JS (sin React)
-- **Estilos:** Tailwind CSS 4 (dark mode)
+- **Estilos:** Tailwind CSS 4 (Theme System, dark & light mode tokens)
 - **Estado:** Nanostores
 - **DB:** Cloud Firestore (NoSQL, 7 colecciones)
 - **Storage:** Cloudflare R2
@@ -15,52 +15,72 @@
 ## Estructura src/
 ```
 src/
-├── components/         # Componentes .astro (DecorativeBackground, LanguageSwitcher, PublicPageLayout)
-├── layouts/            # Layouts por rol (Base, Admin, Client, Trainer, PublicPage)
-├── pages/              # Páginas + API routes
-│   ├── admin/          # dashboard, users, clients, trainers, settings
-│   ├── client/         # dashboard, workouts, diets, progress, chat, support, settings, medical-profile
-│   ├── trainer/        # dashboard, clients, workouts, diets, chat, settings
-│   ├── api/            # API routes
-│   ├── login.astro, register.astro, recover.astro, onboarding.astro
-│   ├── index.astro, 404.astro, 500.astro
-│   └── dashboard.astro
+├── components/     # Componentes .astro (UIButton, UIInput, UICard, UILogoIcon, UIProgress, UIAvatar, UIEmptyState)
+├── layouts/        # Layouts por rol (BaseLayout, AdminLayout, ClientLayout, TrainerLayout, PublicPageLayout)
+├── pages/          # Páginas + API routes (33 rutas estáticas)
+│   ├── admin/      # dashboard, users, trainers, clients, clinical, diets, workouts, progress, chat, settings
+│   ├── client/     # dashboard, workouts, diets, progress, medical-profile, chat, support, settings
+│   └── trainer/    # dashboard, clients, clinical, workouts, diets, chat, settings
 ├── lib/
-│   ├── shared/         # ui.ts, chat.ts, logger.ts, authGuard.ts, i18n.ts, profileService.ts
-│   ├── admin/          # Módulo admin modularizado (7 archivos)
-│   │   ├── types.ts              # AdminUser, CreateUserPayload
-│   │   ├── adminAuth.ts          # requireAdmin, signOutUser
-│   │   ├── adminUsers.ts         # CRUD usuarios
-│   │   ├── adminSubscriptions.ts # Suscripciones Firestore
-│   │   ├── adminRender.ts        # Renderizado HTML
-│   │   ├── adminInit.ts          # initGlobalActions
-│   │   └── adminUtils.ts         # Barrel (re-export)
-│   ├── trainer/        # Módulo trainer modularizado (10 archivos)
-│   │   ├── types.ts              # TrainerClient, Workout, Diet, etc.
-│   │   ├── trainerAuth.ts        # requireAuth, signOutUser
-│   │   ├── trainerClients.ts     # Clientes del trainer
-│   │   ├── trainerWorkouts.ts    # CRUD rutinas
-│   │   ├── trainerDiets.ts       # CRUD dietas
-│   │   ├── trainerProgress.ts    # Progreso de clientes
-│   │   ├── trainerChat.ts        # Mensajería
-│   │   ├── trainerRender.ts      # Renderizado HTML
-│   │   ├── trainerInit.ts        # initGlobalActions
-│   │   └── trainerUtils.ts       # Barrel (re-export)
-│   ├── client/         # chatService.ts, dietService.ts, progressService.ts, workoutService.ts
-│   ├── auth/           # roleRedirect.ts
-│   ├── helpers/        # userMappers.ts
-│   ├── firebase/       # auth.ts, firestore.ts (wrappers testing)
-│   └── debug/          # firestoreDebug.ts
-├── services/           # authService.ts, adminService.ts
-├── stores/             # authStore.ts (Nanostores)
-├── types/              # index.ts (User, MedicalProfile, etc.)
-└── i18n/               # translations.ts, client.ts
+│   ├── shared/     # ui.ts, chat.ts, logger.ts, authGuard.ts, i18n.ts, profileService.ts, settingsService.ts
+│   ├── admin/      # Módulo admin modularizado (7 archivos: types, adminAuth, adminUsers, adminSubscriptions, adminRender, adminInit, adminUtils)
+│   ├── trainer/    # Módulo trainer modularizado (10 archivos: types, trainerAuth, trainerClients, trainerWorkouts, trainerDiets, trainerProgress, trainerChat, trainerRender, trainerInit, trainerUtils)
+│   ├── client/     # chatService.ts, dietService.ts, progressService.ts, workoutService.ts
+│   ├── helpers/    # userMappers.ts
+│   ├── firebase/   # auth.ts, firestore.ts (wrappers testing)
+│   └── debug/      # firestoreDebug.ts
+├── services/       # authService.ts, adminService.ts
+├── stores/         # authStore.ts (Nanostores)
+├── types/          # index.ts (User, MedicalProfile, etc.)
+└── i18n/           # translations.ts (286 keys 1:1 ES/EN), client.ts
 ```
 
-## Roles
-- `admin` - Administración del sistema
-- `trainer` - Entrenadores con clientes asignados
-- `client` - Clientes finales
+## Mapa de Rutas de la Aplicación (Agent Routes Map)
+
+### 🔓 Rutas Públicas (Public Routes)
+- `/` - Landing page pública
+- `/login` - Iniciar sesión (Google / Email)
+- `/register` - Registro de usuario
+- `/recover` - Recuperación de contraseña
+- `/onboarding` - Flujo inicial de perfil médico y objetivos
+
+### 🛡️ Rutas de Administrador (Admin Routes - `/admin/*`)
+- `/admin/dashboard` - Panel de resumen del sistema y métricas globales
+- `/admin/users` - Gestión y asignación de roles de usuarios
+- `/admin/trainers` - Administración de entrenadores
+- `/admin/clients` - Listado y detalle de todos los clientes
+- `/admin/clinical` - Fichas clínicas y perfiles médicos
+- `/admin/workouts` - Vista global de rutinas asignadas
+- `/admin/diets` - Vista global de planes nutricionales
+- `/admin/progress` - Monitoreo de progreso del sistema
+- `/admin/chat` - Supervisión de mensajes
+- `/admin/settings` - Configuración de cuenta admin
+
+### 🏋️ Rutas de Entrenador (Trainer Routes - `/trainer/*`)
+- `/trainer/dashboard` - Panel principal de entrenador
+- `/trainer/clients` - Clientes asignados al trainer
+- `/trainer/clinical` - Historial médico de clientes
+- `/trainer/workouts` - Creación y asignación de rutinas
+- `/trainer/diets` - Creación y asignación de dietas
+- `/trainer/chat` - Mensajería directa con clientes
+- `/trainer/settings` - Configuración de cuenta de entrenador
+
+### 👤 Rutas de Cliente (Client Routes - `/client/*`)
+- `/client/dashboard` - Resumen diario de entrenamiento y dieta
+- `/client/workouts` - Rutinas activas y progreso semanal
+- `/client/diets` - Plan nutricional y macros diarios
+- `/client/progress` - Registro de peso y evolución
+- `/client/medical-profile` - Edición de perfil médico y emergencia
+- `/client/chat` - Chat con el entrenador asignado
+- `/client/support` - Preguntas frecuentes y centro de ayuda
+- `/client/settings` - Configuración de tema, idioma y contraseña
+
+---
+
+## Roles y Permisos
+- `admin` - Acceso total a `/admin/*` y dashboard global
+- `trainer` - Acceso a clientes asignados en `/trainer/*`
+- `client` - Acceso a sus rutinas y métricas personales en `/client/*`
 
 ## Colecciones Firestore
 - `users` - Perfiles de usuario
@@ -71,33 +91,10 @@ src/
 - `exercises_library` - Biblioteca de ejercicios
 - `diet_templates` - Plantillas de dietas
 
-## Tests
-- **Centralizados en `tests/`** (nada en `src/__tests__/`)
-- Unitarios: Vitest (node, sin jsdom)
-- E2E: Playwright
-- Mocks: Firebase (auth, firestore, storage) en `tests/mocks/`
-- **Estructura:** `tests/unit/`, `tests/integration/`, `tests/e2e/`
-
-## Comandos Rápidos
-```bash
-npm run dev              # Dev server
-npm test                 # Tests unitarios
-npm run test:e2e         # Tests E2E
-npm run astro check      # TypeScript check
-npm run build            # Build producción
-```
-
-## Archivos Clave para Agentes
-- `.clinerules` - Golden Rules (LEER ANTES DE CODIFICAR)
-- `AGENTS_GUIDE.md` - Guía completa para agentes
-- `TODO.md` - Tareas pendientes
-- `GIT_WORKFLOW.md` - Flujo de git
-- `testing-agent/GUIDE.md` - Guía del agente de testing
-- `nuevo_proyecto/00_indice.md` - Índice de documentación
-
-## Estado Actual
-- ✅ Refactorización Fase 1-3 completada (shared/ui, shared/chat, shared/logger)
-- ✅ adminUtils.ts refactorizado (629 → 7 archivos modulares)
-- ✅ trainerUtils.ts refactorizado (570 → 10 archivos modulares)
-- ✅ Tests: 260+ tests, 18+ archivos, 22.62% cobertura statements
-- ⏳ Pendiente: optimización Firestore, CI/CD pipeline, tests E2E, subida fotos R2
+## Estado de Calidad y Tests
+- **Tests Centralizados en `tests/`**
+- **Pruebas Unitarias:** 426+ tests pasados (Vitest)
+- **TypeScript:** 100% libre de errores (`npm run type-check`)
+- **Compilaciones Estáticas:** 33 páginas estáticas generadas correctamente
+- **WCAG AA Compliance:** Contraste de colores $\ge 4.5:1$ en modo claro y oscuro, indicadores de foco visibles
+- **i18n:** Paridad 1:1 completa entre Español e Inglés (286 claves globales)

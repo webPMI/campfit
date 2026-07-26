@@ -13,21 +13,7 @@ const currentPath = Astro.url.pathname;
 
   <BaseLayout>
     <DecorativeBackground />
-    <LanguageSwitcher currentPath={currentPath} altLang={lang === 'es' ? 'en' : 'es'} />
-    <ThemeToggle />
-
-    <!-- Admin Trainer Preview Switcher Bar -->
-    <div id="trainer-admin-preview-banner" class="hidden fixed top-3 left-3 z-50">
-      <a
-        href={`/admin/dashboard?lang=${lang}`}
-        class="inline-flex items-center gap-2 rounded-xl border border-purple-500/30 bg-purple-950/80 px-3 py-1.5 text-xs font-medium text-purple-300 backdrop-blur-md shadow-lg transition-all hover:bg-purple-900/80 active:scale-95"
-      >
-        <span class="flex h-2 w-2 rounded-full bg-purple-400 animate-pulse"></span>
-        <span>👑 Modo Trainer (Admin)</span>
-        <span class="text-zinc-400">|</span>
-        <span class="text-purple-200 underline">Volver al Admin</span>
-      </a>
-    </div>
+    <LanguageSwitcher currentPath={currentPath} lang={lang} />
 
     <!-- Page content -->
     <slot />
@@ -115,18 +101,14 @@ const currentPath = Astro.url.pathname;
 </script>
 
     <!-- Bottom Navigation Trainer -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-800/60 bg-zinc-900/90 backdrop-blur-xl">
-=======
-  <!-- Bottom Navigation Trainer -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t theme-border theme-surface/90 backdrop-blur-xl">
->>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
+  <nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--border-default)] glass backdrop-blur-xl">
     <div class="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
       <a
         href={`/trainer/dashboard?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath === '/trainer/dashboard' || currentPath === '/trainer/dashboard/'
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="home" class="h-5 w-5" />
@@ -137,8 +119,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/clients?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/trainer/clients')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="users" class="h-5 w-5" />
@@ -149,8 +131,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/workouts?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/trainer/workouts')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="workouts" class="h-5 w-5" />
@@ -161,8 +143,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/diets?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/trainer/diets')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="diets" class="h-5 w-5" />
@@ -173,8 +155,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/chat?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all relative ${
           currentPath.startsWith('/trainer/chat')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <div class="relative">
@@ -188,8 +170,8 @@ const currentPath = Astro.url.pathname;
         href={`/trainer/settings?lang=${lang}`}
         class={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
           currentPath.startsWith('/trainer/settings')
-            ? 'theme-text-brand'
-            : 'theme-text-tertiary hover:theme-text-secondary'
+            ? 'text-[var(--brand)]'
+            : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         }`}
       >
         <Icon name="settings" class="h-5 w-5" />

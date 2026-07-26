@@ -1,5 +1,6 @@
 /**
  * Funciones de renderizado de componentes HTML para el panel de entrenador.
+ * Theme-aware: utiliza CSS variables para adaptarse a dark/light mode.
  *
  * @module trainerRender
  */
@@ -16,10 +17,12 @@ export function renderClientCard(client: TrainerClient, onclick?: string): strin
   const hasAlert = client.hasActiveAlert;
   const initial = getUserInitial(name);
   const isAdmin = client.role === 'admin';
-  const avatarBg = isAdmin ? 'bg-purple-500/10 text-purple-400' : 'bg-emerald-500/10 text-emerald-400';
+  const avatarBg = isAdmin
+    ? 'bg-[var(--accent-purple-dim)] bg-purple-500/10 text-[var(--accent-purple)]'
+    : 'bg-[var(--brand-dim)] bg-emerald-500/10 text-[var(--brand)]';
 
   return `
-    <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60 ${onclick ? 'cursor-pointer hover:bg-zinc-800/40' : ''}"
+    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)] ${onclick ? 'cursor-pointer hover:bg-[var(--surface-2)]' : ''}"
          ${onclick ? `onclick="${onclick}"` : ''}>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3 min-w-0">
@@ -28,14 +31,14 @@ export function renderClientCard(client: TrainerClient, onclick?: string): strin
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <p class="text-sm font-medium text-zinc-200 truncate">${escapeHtml(name)}</p>
-              ${hasAlert ? '<span class="h-2 w-2 rounded-full bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
-              ${isAdmin ? '<span class="rounded-full bg-purple-500/10 px-1.5 py-0.5 text-[10px] font-medium text-purple-400 border border-purple-500/20">Admin</span>' : ''}
+              <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(name)}</p>
+              ${hasAlert ? '<span class="h-2 w-2 rounded-full bg-[var(--danger)] bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
+              ${isAdmin ? '<span class="rounded-full bg-[var(--accent-purple-dim)] bg-purple-500/10 px-1.5 py-0.5 text-[10px] font-medium text-[var(--accent-purple)] border border-[var(--accent-purple)] border-opacity-30">Admin</span>' : ''}
             </div>
-            <p class="text-xs text-zinc-500 truncate">${escapeHtml(email)}</p>
+            <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(email)}</p>
           </div>
         </div>
-        <svg class="h-4 w-4 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="h-4 w-4 text-[var(--text-tertiary)] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
       </div>
@@ -53,20 +56,17 @@ export function renderWorkoutCard(workout: TrainerWorkout): string {
     : '';
 
   return `
-    <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
+    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
       <div class="flex items-center justify-between">
         <div>
-          <div class="flex items-center gap-2">
-            <p class="text-sm font-medium text-zinc-200">${escapeHtml(workout.name)}</p>
-            ${templateBadge}
-          </div>
-          <p class="text-xs text-zinc-500">${workout.exercises?.length || 0} ejercicios · ${workout.difficulty || 'custom'}</p>
+          <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(workout.name)}</p>
+          <p class="text-xs text-[var(--text-tertiary)]">${workout.exercises?.length || 0} ejercicios · ${workout.difficulty || 'custom'}</p>
         </div>
         <div class="flex items-center gap-2">
-          <span class="rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400 border border-blue-500/20">${workout.exercises?.length || 0} ej.</span>
+          <span class="rounded-full bg-[var(--info-dim)] px-2 py-0.5 text-xs font-medium text-[var(--info)] border border-[var(--info)] border-opacity-30">${workout.exercises?.length || 0} ej.</span>
         </div>
       </div>
-      <div class="mt-2 text-xs text-zinc-600">${workout.description ? escapeHtml(workout.description.substring(0, 80)) + (workout.description.length > 80 ? '...' : '') : ''}</div>
+      <div class="mt-2 text-xs text-[var(--text-secondary)]">${workout.description ? escapeHtml(workout.description.substring(0, 80)) + (workout.description.length > 80 ? '...' : '') : ''}</div>
     </div>
   `;
 }
@@ -81,20 +81,17 @@ export function renderDietCard(diet: TrainerDiet): string {
     : '';
 
   return `
-    <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
+    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
       <div class="flex items-center justify-between">
         <div>
-          <div class="flex items-center gap-2">
-            <p class="text-sm font-medium text-zinc-200">${escapeHtml(diet.name)}</p>
-            ${templateBadge}
-          </div>
-          <p class="text-xs text-zinc-500">${diet.meals?.length || 0} comidas · ${diet.totalCalories || 0} kcal</p>
+          <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(diet.name)}</p>
+          <p class="text-xs text-[var(--text-tertiary)]">${diet.meals?.length || 0} comidas · ${diet.totalCalories || 0} kcal</p>
         </div>
         <div class="flex items-center gap-2">
-          <span class="rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-medium text-orange-400 border border-orange-500/20">${diet.totalCalories || 0} kcal</span>
+          <span class="rounded-full bg-[var(--warning-dim)] px-2 py-0.5 text-xs font-medium text-[var(--warning)] border border-[var(--warning)] border-opacity-30">${diet.totalCalories || 0} kcal</span>
         </div>
       </div>
-      <div class="mt-2 text-xs text-zinc-600">Tipo: ${diet.type || 'normal'}</div>
+      <div class="mt-2 text-xs text-[var(--text-secondary)]">Tipo: ${diet.type || 'normal'}</div>
     </div>
   `;
 }
@@ -110,8 +107,8 @@ export function renderMessageBubble(
 ): string {
   const align = isOwn ? 'ml-auto' : 'mr-auto';
   const bg = isOwn
-    ? 'bg-emerald-500/20 border-emerald-500/20'
-    : 'bg-zinc-800/60 border-zinc-700/40';
+    ? 'bg-[var(--brand-dim)] bg-emerald-500/20 border-[var(--border-brand)] text-[var(--text-primary)]'
+    : 'bg-[var(--surface-2)] bg-zinc-800/60 border-[var(--border-subtle)] text-[var(--text-primary)]';
   const rounded = isOwn
     ? 'rounded-2xl rounded-br-sm'
     : 'rounded-2xl rounded-bl-sm';
@@ -119,7 +116,7 @@ export function renderMessageBubble(
 
   const alertBadge =
     message.type === 'alert'
-      ? `<div class="mt-1 flex items-center gap-1 text-xs text-red-400">
+      ? `<div class="mt-1 flex items-center gap-1 text-xs text-[var(--danger)] text-red-400">
            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
            </svg>
@@ -129,11 +126,11 @@ export function renderMessageBubble(
 
   return `
     <div class="max-w-[80%] ${align}">
-      ${isFirstOfBlock && !isOwn ? `<p class="mb-1 text-xs text-zinc-500">${escapeHtml(showSenderName)}</p>` : ''}
+      ${isFirstOfBlock && !isOwn ? `<p class="mb-1 text-xs text-[var(--text-tertiary)]">${escapeHtml(showSenderName)}</p>` : ''}
       <div class="border px-4 py-2.5 ${bg} ${rounded}">
-        <p class="text-sm text-zinc-200">${escapeHtml(message.content)}</p>
+        <p class="text-sm text-[var(--text-primary)]">${escapeHtml(message.content)}</p>
         ${alertBadge}
-        <p class="mt-1 text-right text-[10px] text-zinc-500">${time}</p>
+        <p class="mt-1 text-right text-[10px] text-[var(--text-tertiary)]">${time}</p>
       </div>
     </div>
   `;

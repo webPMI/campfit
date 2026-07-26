@@ -1,0 +1,94 @@
+---
+/**
+ * UIProgress - Theme-aware progress bar component.
+ * Supports percentage display, color variants, and animated transitions.
+ */
+export interface Props {
+  /** Valor actual */
+  value?: number;
+  /** Valor máximo */
+  max?: number;
+  /** Mostrar porcentaje */
+  showPercentage?: boolean;
+  /** Label descriptivo */
+  label?: string;
+  /** Variante de color */
+  variant?: 'brand' | 'success' | 'warning' | 'danger' | 'info' | 'purple';
+  /** Tamaño (altura de la barra) */
+  size?: 'sm' | 'md' | 'lg';
+  /** Animación al montar */
+  animated?: boolean;
+  /** Clases adicionales */
+  class?: string;
+}
+
+const {
+  value = 0,
+  max = 100,
+  showPercentage = false,
+  label,
+  variant = 'brand',
+  size = 'md',
+  animated = true,
+} = Astro.props;
+
+const pct = Math.min(100, Math.max(0, Math.round((value / max) * 100)));
+
+const sizeHeights: Record<string, string> = {
+  sm: 'h-1',
+  md: 'h-2',
+  lg: 'h-3',
+};
+
+const variantColors: Record<string, string> = {
+  brand: 'bg-gradient-to-r from-[var(--brand)] to-emerald-400',
+  success: 'bg-[var(--success)]',
+  warning: 'bg-[var(--warning)]',
+  danger: 'bg-[var(--danger)]',
+  info: 'bg-[var(--info)]',
+  purple: 'bg-[var(--accent-purple)]',
+};
+
+const variantGlows: Record<string, string> = {
+  brand: 'shadow-[0_0_8px_var(--brand-glow)]',
+  success: 'shadow-[0_0_6px_var(--success)]',
+  warning: 'shadow-[0_0_6px_var(--warning)]',
+  danger: 'shadow-[0_0_6px_var(--danger)]',
+  info: 'shadow-[0_0_6px_var(--info)]',
+  purple: 'shadow-[0_0_6px_var(--accent-purple)]',
+};
+---
+
+<div class={Astro.props.class ?? ''}>
+  {(label || showPercentage) && (
+    <div class="mb-1.5 flex items-center justify-between">
+      {label && <span class="text-xs font-medium text-[var(--text-secondary)]">{label}</span>}
+      {showPercentage && <span class="text-xs font-semibold text-[var(--text-primary)] tabular-nums">{pct}%</span>}
+    </div>
+  )}
+  <div class={['w-full rounded-full bg-[var(--surface-3)] overflow-hidden', sizeHeights[size]].join(' ')}>
+    <div
+      class={[
+        'h-full rounded-full',
+        variantColors[variant],
+        variantGlows[variant],
+        animated ? 'transition-all duration-700 ease-out' : '',
+      ].join(' ')}
+      style={`width: ${animated ? '0%' : `${pct}%`}`}
+      data-progress={pct}
+    ></div>
+  </div>
+</div>
+
+<script>
+  // Animate progress bar on mount
+  document.querySelectorAll('[data-progress]').forEach((el) => {
+    const target = el.getAttribute('data-progress');
+    if (target) {
+      requestAnimationFrame(() => {
+        (el as HTMLElement).style.width = target + '%';
+      });
+    }
+  });
+</script>
+</write_to_file>

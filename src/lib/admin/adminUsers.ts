@@ -8,19 +8,12 @@
 import { auth, db } from '@/lib/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import {
-  collection,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
   doc,
   setDoc,
   updateDoc,
   getDoc,
-  getDocs,
   deleteDoc,
   serverTimestamp,
-  type Unsubscribe,
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { showToast } from '@/lib/shared/ui';

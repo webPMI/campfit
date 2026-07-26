@@ -158,26 +158,26 @@ describe('shared/ui', () => {
   describe('getRoleBadge', () => {
     it('debería devolver badge para admin', () => {
       const badge = getRoleBadge('admin');
-      expect(badge.label).toBe('Administrador');
-      expect(badge.class).toContain('purple');
+      expect(badge.label).toBe('Admin');
+      expect(badge.class).toContain('accent-purple');
     });
 
     it('debería devolver badge para trainer', () => {
       const badge = getRoleBadge('trainer');
-      expect(badge.label).toBe('Entrenador');
-      expect(badge.class).toContain('blue');
+      expect(badge.label).toBe('Trainer');
+      expect(badge.class).toContain('info');
     });
 
     it('debería devolver badge para client', () => {
       const badge = getRoleBadge('client');
-      expect(badge.label).toBe('Cliente');
-      expect(badge.class).toContain('emerald');
+      expect(badge.label).toBe('Client');
+      expect(badge.class).toContain('brand');
     });
 
     it('debería devolver badge genérico para roles desconocidos', () => {
       const badge = getRoleBadge('unknown');
       expect(badge.label).toBe('unknown');
-      expect(badge.class).toContain('zinc');
+      expect(badge.class).toContain('surface-3');
     });
   });
 
@@ -186,7 +186,7 @@ describe('shared/ui', () => {
       const html = renderEmptyState(ICONS.users, 'No hay usuarios');
       expect(html).toContain(ICONS.users);
       expect(html).toContain('No hay usuarios');
-      expect(html).toContain('rounded-xl');
+      expect(html).toContain('rounded-2xl');
     });
   });
 
@@ -212,7 +212,7 @@ describe('shared/ui', () => {
       showToast({ message: 'Guardado exitoso', type: 'success' });
       const toast = document.getElementById('app-toast');
       expect(toast).not.toBeNull();
-      expect(toast?.textContent).toBe('Guardado exitoso');
+      expect(toast?.textContent?.trim()).toBe('Guardado exitoso');
     });
 
     it('debería usar el id personalizado', () => {
@@ -225,25 +225,29 @@ describe('shared/ui', () => {
       showToast({ message: 'Segundo', type: 'info' });
       const toasts = document.querySelectorAll('#app-toast');
       expect(toasts.length).toBe(1);
-      expect(toasts[0]?.textContent).toBe('Segundo');
+      expect(toasts[0]?.textContent?.trim()).toBe('Segundo');
     });
 
     it('debería aplicar la clase de color correcta según el tipo', () => {
       showToast({ message: 'Error', type: 'error' });
       const toast = document.getElementById('app-toast');
-      expect(toast?.className).toContain('border-red-500');
+      expect(toast).not.toBeNull();
+      const innerSpan = toast?.querySelector('span');
+      expect(innerSpan?.className).toContain('danger');
     });
 
     it('debería aplicar position top cuando se especifica', () => {
       showToast({ message: 'Top toast', type: 'info', position: 'top' });
       const toast = document.getElementById('app-toast');
-      expect(toast?.className).toContain('top-24');
+      expect(toast).not.toBeNull();
+      expect(toast?.style.cssText).toContain('top');
     });
 
     it('debería aplicar position bottom por defecto', () => {
       showToast({ message: 'Bottom toast', type: 'info' });
       const toast = document.getElementById('app-toast');
-      expect(toast?.className).toContain('bottom-24');
+      expect(toast).not.toBeNull();
+      expect(toast?.style.cssText).toContain('bottom');
     });
   });
 });

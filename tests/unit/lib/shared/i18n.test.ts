@@ -99,8 +99,7 @@ describe('shared/i18n', () => {
 
     it('debería hacer fallback a español si el idioma no tiene la key', () => {
       const t = getT('en');
-      // 'onboarding.finish' existe en español pero no en inglés en translations.ts
-      expect(t('onboarding.finish')).toBe('Finalizar');
+      expect(t('test.only_in_es')).toBe('Solo en Español');
     });
   });
 

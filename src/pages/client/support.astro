@@ -10,23 +10,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   <!-- Loading -->
   <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
     <div class="text-center animate-fade-in">
-      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 theme-border-strong border-t-emerald-400"></div>
-      <p id="loadingText" class="mt-4 text-sm theme-text-tertiary">{t('dashboard.loading')}</p>
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t('dashboard.loading')}</p>
     </div>
   </div>
 
   <!-- Support Content -->
   <div id="supportContent" class="hidden">
     <!-- Header -->
-    <header class="border-b theme-border theme-surface/50 backdrop-blur-xl">
+    <header class="border-b border-[var(--border-default)] bg-[var(--surface-1)]/50 backdrop-blur-xl">
       <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
         <div class="flex items-center gap-3">
-          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20">
-            <svg class="h-5 w-5 theme-text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] shadow-lg shadow-[var(--shadow-glow-sm)]">
+            <svg class="h-5 w-5 text-[var(--text-on-brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
             </svg>
           </div>
-          <h1 class="text-lg font-bold theme-text-brand">{t('client.support.title')}</h1>
+          <h1 class="text-lg font-bold text-[var(--brand)]">{t('client.support.title')}</h1>
         </div>
       </div>
     </header>
@@ -36,33 +36,33 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="animate-fade-in space-y-6">
         <!-- Description -->
         <div>
-          <h2 class="text-xl font-bold theme-text-primary">{t('client.support.title')}</h2>
-          <p class="mt-1 text-sm theme-text-tertiary">{t('client.support.desc')}</p>
+          <h2 class="text-xl font-bold text-[var(--text-primary)]">{t('client.support.title')}</h2>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.support.desc')}</p>
         </div>
 
         <!-- FAQ Section -->
         <div>
-          <h3 class="mb-4 text-sm font-semibold theme-text-secondary uppercase tracking-wider">{t('client.support.faq')}</h3>
+          <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('client.support.faq')}</h3>
           <div class="space-y-3" id="faqContainer">
             <!-- FAQ items will be rendered by JS -->
           </div>
         </div>
 
         <!-- Support Chat Option -->
-        <div class="card-glow rounded-2xl border theme-border theme-surface p-6 backdrop-blur-xl">
+        <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
           <div class="flex items-center gap-4">
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl theme-brand/10">
-              <svg class="h-6 w-6 theme-text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-dim)]">
+              <svg class="h-6 w-6 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
               </svg>
             </div>
             <div class="flex-1">
-              <h4 class="text-sm font-semibold theme-text-primary">{t('client.support.chat')}</h4>
-              <p class="mt-1 text-xs theme-text-tertiary">{t('client.support.chat.desc')}</p>
+              <h4 class="text-sm font-semibold text-[var(--text-primary)]">{t('client.support.chat')}</h4>
+              <p class="mt-1 text-xs text-[var(--text-tertiary)]">{t('client.support.chat.desc')}</p>
             </div>
             <a
               href={`/client/chat?lang=${lang}`}
-              class="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-medium theme-text-primary shadow-lg shadow-emerald-500/20 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+              class="shrink-0 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-5 py-2.5 text-sm font-medium text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]"
             >
               {t('client.support.chat')}
             </a>
@@ -115,21 +115,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const faqItems = getFaqs();
     faqItems.forEach((item, index) => {
       const faqEl = document.createElement('div');
-      faqEl.className = 'faq-item rounded-xl border theme-border theme-surface-secondary backdrop-blur-sm overflow-hidden transition-all duration-200';
+      faqEl.className = 'faq-item rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] backdrop-blur-sm overflow-hidden transition-all duration-200';
 
       faqEl.innerHTML = `
         <button
-          class="faq-question flex w-full items-center justify-between px-5 py-4 text-left transition-all hover:theme-surface-secondary/30"
+          class="faq-question flex w-full items-center justify-between px-5 py-4 text-left transition-all hover:bg-[var(--surface-4)]"
           data-index="${index}"
         >
-          <span class="text-sm font-medium theme-text-primary pr-4">${item.question}</span>
-          <svg class="faq-chevron h-5 w-5 shrink-0 theme-text-tertiary transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <span class="text-sm font-medium text-[var(--text-primary)] pr-4">${item.question}</span>
+          <svg class="faq-chevron h-5 w-5 shrink-0 text-[var(--text-tertiary)] transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
           </svg>
         </button>
         <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="px-5 pb-4 pt-0">
-            <p class="text-sm theme-text-secondary leading-relaxed">${item.answer}</p>
+            <p class="text-sm text-[var(--text-secondary)] leading-relaxed">${item.answer}</p>
           </div>
         </div>
       `;
