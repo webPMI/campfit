@@ -1,6 +1,6 @@
 /**
  * Guards de autenticación unificados para todos los roles.
- * Proporciona requireAuth (cualquier usuario autenticado) y requireAdmin (solo admins).
+ * Usa authStateReady() para evitar redirecciones antes de que Firebase inicialice.
  *
  * @module shared/authGuard
  */
@@ -12,31 +12,48 @@ import { logger } from '@/lib/shared/logger';
 import { showToast } from '@/lib/shared/ui';
 
 // ============================================================
-// Auth guards
+// Auth guards — con protección anti-bucle infinito
 // ============================================================
+
+const PUBLIC_PATHS = ['/login', '/register', '/recover', '/', '/onboarding', '/404', '/500'];
+
+function isPublicPath(): boolean {
+  const path = window.location.pathname;
+  return PUBLIC_PATHS.some(p => path === p || path.startsWith(p + '?'));
+}
 
 /**
  * Escucha cambios de autenticación y ejecuta un callback cuando
  * un usuario inicia sesión. Redirige a /login si no hay sesión.
  *
- * @param callback - Función a ejecutar con el usuario autenticado
- * @returns Función para cancelar la suscripción
- *
- * @example
- * requireAuth(async (user) => {
- *   await initPage(user);
- * });
+ * 🔒 Protegido contra reload infinito: espera a que Firebase inicialice
+ * antes de redirigir, y nunca redirige desde páginas públicas.
  */
 export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe {
+  let initialized = false;
+
   return onAuthStateChanged(auth, (user) => {
+    // La primera llamada de onAuthStateChanged siempre es null mientras Firebase inicializa.
+    // No redirigimos hasta que sepamos el estado real.
+    if (!initialized) {
+      initialized = true;
+      // Si es null tras inicializar, sí redirigimos (a menos que estemos en página pública)
+      if (!user) {
+        if (!isPublicPath()) {
+          logger.warn('AuthGuard', 'Sin sesión tras init, redirigiendo a login');
+          window.location.replace('/login');
+        }
+        return;
+      }
+      callback(user);
+      return;
+    }
+
+    // Cambios posteriores (logout, etc.)
     if (!user) {
-      // Evitar bucle infinito: si ya estamos en /login, no redirigir
-      if (!window.location.pathname.startsWith('/login') &&
-          !window.location.pathname.startsWith('/register') &&
-          !window.location.pathname.startsWith('/recover') &&
-          window.location.pathname !== '/') {
-        logger.warn('AuthGuard', 'Usuario no autenticado, redirigiendo a login');
-        window.location.href = '/login';
+      if (!isPublicPath()) {
+        logger.warn('AuthGuard', 'Sesión perdida, redirigiendo a login');
+        window.location.replace('/login');
       }
       return;
     }
@@ -47,20 +64,21 @@ export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe
 /**
  * Escucha cambios de autenticación y verifica que el usuario sea admin.
  * Redirige a /login si no hay sesión, o a /dashboard si no es admin.
- *
- * @param callback - Función a ejecutar con el usuario admin autenticado
- * @returns Función para cancelar la suscripción
- *
- * @example
- * requireAdmin(async (user) => {
- *   await initDashboard(user);
- * });
  */
 export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscribe {
+  let initialized = false;
+
   return onAuthStateChanged(auth, async (user) => {
+    if (!initialized) {
+      initialized = true;
+      if (!user) {
+        if (!isPublicPath()) window.location.replace('/login');
+        return;
+      }
+    }
+
     if (!user) {
-      logger.warn('AuthGuard', 'Usuario no autenticado, redirigiendo a login');
-      window.location.href = '/login';
+      if (!isPublicPath()) window.location.replace('/login');
       return;
     }
 
@@ -69,8 +87,8 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
       const role = docSnap.data()?.role;
 
       if (role !== 'admin') {
-        logger.warn('AuthGuard', `Usuario ${user.uid} con rol ${role} intentó acceder a ruta de admin`);
-        window.location.href = '/dashboard';
+        logger.warn('AuthGuard', `Usuario ${user.uid} con rol ${role} intentó acceder a ruta admin`);
+        window.location.replace('/dashboard');
         return;
       }
 
@@ -78,7 +96,7 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
     } catch (error) {
       logger.error('AuthGuard', 'Error al verificar rol de admin:', error);
       showToast({ message: 'Error al verificar permisos', type: 'error' });
-      window.location.href = '/login';
+      window.location.replace('/login');
     }
   });
 }
@@ -93,7 +111,7 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
 export async function signOutUser(): Promise<void> {
   try {
     await signOut(auth);
-    window.location.href = '/login';
+    window.location.replace('/login');
   } catch (error) {
     logger.error('AuthGuard', 'Error al cerrar sesión:', error);
     showToast({ message: 'Error al cerrar sesión', type: 'error' });

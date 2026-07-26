@@ -105,10 +105,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { initPage } from '@/lib/shared/initPage';
   import { subscribeToDiets, subscribeToDietHistory, subscribeToTodayMeals, registerMealComplete } from '@/lib/client/dietService';
   import { t } from '@/i18n/client';
 
@@ -167,33 +164,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   // ─── Init ────────────────────────────────────────────────────────────────────
   loadingText.textContent = t('dashboard.loading');
 
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
-    }
-
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || (userData.role !== 'client' && userData.role !== 'admin' && userData.role !== 'trainer')) {
-      window.location.href = '/dashboard';
-      return;
-    }
-
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
-
-    loadingScreen.classList.add('hidden');
-    dietsContent.classList.remove('hidden');
-
-    const clientId = firebaseUser.uid;
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser) => {
+      const clientId = firebaseUser.uid;
 
     // Suscribirse a la dieta actual (última)
     unsubDiets = subscribeToDiets(clientId, (diets) => {
@@ -218,7 +192,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       showHistory(clientId);
     });
 
-    btnBackCurrent.addEventListener('click', () => {
+      btnBackCurrent.addEventListener('click', () => {
       historyView.classList.add('hidden');
       dietCard.classList.remove('hidden');
       btnHistory.classList.remove('hidden');
@@ -227,6 +201,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         unsubHistory = null;
       }
     });
+    },
   });
 
   // ─── Render current diet ─────────────────────────────────────────────────────
@@ -429,7 +404,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
+    cleanup();
     unsubDiets?.();
     unsubHistory?.();
     unsubTodayMeals?.();

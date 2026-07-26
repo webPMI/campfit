@@ -64,10 +64,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
-  import { authService } from '@/services/authService';
-  import { setUser } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { initPage } from '@/lib/shared/initPage';
   import { subscribeToWorkouts } from '@/lib/client/workoutService';
   import { t } from '@/i18n/client';
 
@@ -84,35 +81,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   loadingText.textContent = t('dashboard.loading');
 
-  const unsubscribe = authService.onAuthChange(async (firebaseUser) => {
-    if (!firebaseUser) {
-      window.location.href = '/login';
-      return;
-    }
-
-    // Verificar rol de cliente
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-    const userData = userDoc.data();
-    if (!userData || (userData.role !== 'client' && userData.role !== 'admin' && userData.role !== 'trainer')) {
-      window.location.href = '/dashboard';
-      return;
-    }
-
-    // Actualizar authStore
-    setUser({
-      uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: userData.name || firebaseUser.displayName || 'Usuario',
-      role: userData.role || 'client',
-      hasActiveAlert: userData.hasActiveAlert ?? false,
-      assignedTrainerId: userData.assignedTrainerId,
-      medicalProfile: userData.medicalProfile,
-    });
-
-    loadingScreen.classList.add('hidden');
-    workoutsContent.classList.remove('hidden');
-
-    subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser) => {
+      subscribeToWorkouts(firebaseUser.uid, (workouts) => {
       if (workouts.length > 0 && workouts[0]) {
         const w = workouts[0];
         workoutName.textContent = w.name;
@@ -150,10 +122,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         emptyState.classList.remove('hidden');
       }
     });
+    },
   });
 
-  // Cleanup on page unload
-  document.addEventListener('astro:before-swap', () => {
-    unsubscribe();
-  });
+  document.addEventListener('astro:before-swap', cleanup);
 </script>

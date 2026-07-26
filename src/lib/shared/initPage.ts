@@ -1,17 +1,16 @@
 /**
  * Módulo de inicialización genérico para páginas de cualquier rol.
- * Versión generalizada de `initClientPage()` que funciona para
- * admin, trainer y client.
+ * Una sola lectura de Firestore por sesión (cache en sessionStorage).
+ * Sin estado de módulo compartido — cada llamada a initPage() es independiente.
  *
  * Uso:
  *   import { initPage } from '@/lib/shared/initPage';
  *
- *   initPage({
- *     onReady: async (user, userData) => {
- *       // Código específico de la página
- *     },
- *     allowedRoles: ['admin', 'trainer'],
+ *   const cleanup = initPage({
+ *     allowedRoles: ['admin', 'trainer', 'client'],
+ *     onReady: async (user, userData) => { ... },
  *   });
+ *   document.addEventListener('astro:before-swap', cleanup);
  */
 
 import { authService } from '@/services/authService';
@@ -27,32 +26,27 @@ export interface InitPageOptions {
     onError?: (error: Error) => void;
     /** Timeout en ms para la carga inicial (default: 15000 = 15s) */
     timeoutMs?: number;
-    /** Roles permitidos para acceder a la página (default: ['admin', 'trainer', 'client']) */
+    /** Roles permitidos para acceder a la página */
     allowedRoles?: string[];
 }
 
-/** Estado compartido para prevenir múltiples inicializaciones */
-let isInitializing = false;
-let currentUnsubscribe: (() => void) | null = null;
+// ─── Cache de userData en sessionStorage ─────────────────────────────────────
+const USER_CACHE_KEY = 'cf_user_v1';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
 
-// ─── Cache de userData por sesión ───────────────────────────────────────────
-// Evita múltiples lecturas de Firestore al navegar entre páginas
-const USER_CACHE_KEY = 'campfit_user_cache';
-
-function getCachedUserData(uid: string): any | null {
+export function getCachedUserData(uid: string): any | null {
     try {
         const raw = sessionStorage.getItem(USER_CACHE_KEY);
         if (!raw) return null;
         const cached = JSON.parse(raw);
-        // El cache es válido si corresponde al mismo uid y tiene menos de 5 min
-        if (cached.uid === uid && Date.now() - cached.ts < 5 * 60 * 1000) {
+        if (cached.uid === uid && Date.now() - cached.ts < CACHE_TTL_MS) {
             return cached.data;
         }
     } catch { /* ignore */ }
     return null;
 }
 
-function setCachedUserData(uid: string, data: any): void {
+export function setCachedUserData(uid: string, data: any): void {
     try {
         sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid, data, ts: Date.now() }));
     } catch { /* ignore */ }
@@ -62,9 +56,13 @@ export function clearUserCache(): void {
     try { sessionStorage.removeItem(USER_CACHE_KEY); } catch { /* ignore */ }
 }
 
-/**
- * Crea un elemento de error visual con createElement (sin innerHTML inseguro).
- */
+// ─── Destinos de redirección por rol ─────────────────────────────────────────
+const ROLE_DASHBOARDS: Record<string, string> = {
+    admin: '/admin/dashboard',
+    trainer: '/trainer/dashboard',
+    client: '/client/dashboard',
+};
+
 function createErrorElement(title: string, message: string): HTMLElement {
     const container = document.createElement('div');
     container.className = 'mt-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400 backdrop-blur-sm max-w-md mx-auto';
@@ -107,91 +105,73 @@ function createErrorElement(title: string, message: string): HTMLElement {
 
 /**
  * Inicializa una página con autenticación y verificación de rol.
- * Versión genérica que reemplaza requireAdmin/requireAuth y proporciona
- * timeout de seguridad, manejo de errores visual, y cleanup automático.
- * Usa cache de sessionStorage para evitar lecturas repetidas de Firestore.
+ * - Una sola lectura de Firestore por sesión (cache 5 min)
+ * - Sin estado de módulo — cada llamada es independiente
+ * - Redirige directamente al dashboard del rol (sin pasar por /dashboard)
  *
  * @param options - Opciones de inicialización
- * @returns Función de limpieza para usar en astro:before-swap
+ * @returns Función de limpieza para usar en `astro:before-swap`
  */
 export function initPage(options: InitPageOptions): () => void {
     const { onReady, onError, timeoutMs = 15000, allowedRoles } = options;
 
-    // Prevenir inicialización duplicada
-    if (isInitializing) {
-        logger.warn('InitPage', 'Ya hay una inicialización en curso, saltando...');
-        return () => { };
-    }
-    isInitializing = true;
+    // Estado LOCAL a esta invocación — sin compartir entre páginas
+    let unsubscribe: (() => void) | null = null;
+    let done = false;
+    let redirecting = false;
 
     // Timeout de seguridad
     const timeoutId = setTimeout(() => {
-        if (isInitializing) {
+        if (!done) {
             logger.error('InitPage', 'Timeout de inicialización alcanzado');
-            const loadingScreens = document.querySelectorAll('#loadingScreen');
-            loadingScreens.forEach((screen) => {
-                screen.appendChild(
+            const screens = document.querySelectorAll('#loadingScreen');
+            screens.forEach((s) =>
+                s.appendChild(
                     createErrorElement(
                         'Error de conexión',
-                        'No se pudo cargar la página. Verifica tu conexión a internet e intenta de nuevo.',
+                        'No se pudo cargar la página. Verifica tu conexión e intenta de nuevo.',
                     ),
-                );
-            });
-            isInitializing = false;
-            if (onError) onError(new Error('Timeout de inicialización'));
+                ),
+            );
+            if (onError) onError(new Error('Timeout'));
         }
     }, timeoutMs);
 
-    // Limpiar listener anterior si existe
-    if (currentUnsubscribe) {
-        currentUnsubscribe();
-    }
-
-    // Guard: sólo ejecutamos el callback una vez por montaje
-    let hasRun = false;
-
-    currentUnsubscribe = authService.onAuthChange(async (firebaseUser) => {
+    unsubscribe = authService.onAuthChange(async (firebaseUser) => {
+        // Ignorar re-fires después de que ya procesamos o estamos redirigiendo
+        if (done || redirecting) return;
         clearTimeout(timeoutId);
 
         if (!firebaseUser) {
-            isInitializing = false;
-            if (!window.location.pathname.startsWith('/login') &&
-                !window.location.pathname.startsWith('/register')) {
+            redirecting = true;
+            const path = window.location.pathname;
+            if (!path.startsWith('/login') && !path.startsWith('/register')) {
                 window.location.href = '/login';
             }
             return;
         }
 
-        // Evitar re-ejecución si ya corrimos el callback
-        if (hasRun) return;
-        hasRun = true;
-
         try {
-            // Intentar usar cache antes de leer Firestore
+            // Leer de cache o Firestore (una sola vez por sesión)
             let userData = getCachedUserData(firebaseUser.uid);
             if (!userData) {
-                const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-                userData = userDoc.data() || {};
+                const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
+                userData = snap.data() || {};
                 setCachedUserData(firebaseUser.uid, userData);
             }
 
-            // Resolver rol (con fallback para bootstrap admins)
-            const userEmail = (firebaseUser.email || '').toLowerCase();
-            const isBootstrapAdmin =
-                userEmail === 'servicioweb.pmi@gmail.com' ||
-                userEmail === 'sevicioweb.pmi@gmail.com';
-            const userRole = userData.role || (isBootstrapAdmin ? 'admin' : 'client');
+            // Resolver rol con fallback para bootstrap admins
+            const email = (firebaseUser.email || '').toLowerCase();
+            const isBootstrap =
+                email === 'servicioweb.pmi@gmail.com' ||
+                email === 'sevicioweb.pmi@gmail.com';
+            const userRole = (userData.role as string) || (isBootstrap ? 'admin' : 'client');
 
-            // Verificar rol si se especificaron roles permitidos
+            // Verificar acceso — redirigir al dashboard propio, no a /dashboard genérico
             if (allowedRoles && !allowedRoles.includes(userRole)) {
-                isInitializing = false;
-                // Redirigir al dashboard correcto según el rol, no a /dashboard (genera bucle)
-                const roleMap: Record<string, string> = {
-                    admin: '/admin/dashboard',
-                    trainer: '/trainer/dashboard',
-                    client: '/client/dashboard',
-                };
-                const target = roleMap[userRole] || '/login';
+                redirecting = true;
+                const target = ROLE_DASHBOARDS[userRole] || '/login';
+                logger.warn('InitPage', `Rol "${userRole}" no permitido en esta página, redirigiendo a ${target}`);
                 if (window.location.pathname !== target) {
                     window.location.href = target;
                 }
@@ -202,51 +182,39 @@ export function initPage(options: InitPageOptions): () => void {
             setUser({
                 uid: firebaseUser.uid,
                 email: firebaseUser.email || '',
-                name: userData?.name || firebaseUser.displayName || 'Usuario',
+                name: userData.name || firebaseUser.displayName || 'Usuario',
                 role: userRole,
-                hasActiveAlert: userData?.hasActiveAlert ?? false,
-                assignedTrainerId: userData?.assignedTrainerId,
-                medicalProfile: userData?.medicalProfile,
+                hasActiveAlert: userData.hasActiveAlert ?? false,
+                assignedTrainerId: userData.assignedTrainerId,
+                medicalProfile: userData.medicalProfile,
             });
 
-            // Ocultar loading screen y mostrar contenido
-            const loadingScreens = document.querySelectorAll('#loadingScreen');
-            loadingScreens.forEach((screen) => screen.classList.add('hidden'));
+            // Mostrar contenido
+            document.querySelectorAll('#loadingScreen').forEach((el) => el.classList.add('hidden'));
+            document.querySelectorAll('[id$="Content"]').forEach((el) => el.classList.remove('hidden'));
 
-            const contentSections = document.querySelectorAll('[id$="Content"]');
-            contentSections.forEach((section) => section.classList.remove('hidden'));
-
-            isInitializing = false;
-
-            // Ejecutar callback específico de la página
+            done = true;
             await onReady(firebaseUser, userData);
         } catch (error) {
-            isInitializing = false;
+            done = true;
             logger.error('InitPage', 'Error en inicialización:', error);
-
-            // Mostrar error visual
-            const loadingScreens = document.querySelectorAll('#loadingScreen');
-            loadingScreens.forEach((screen) => {
-                screen.appendChild(
-                    createErrorElement(
-                        'Error al cargar',
-                        'Ocurrió un error al cargar la página. Intenta recargar.',
-                    ),
-                );
-            });
-
+            document.querySelectorAll('#loadingScreen').forEach((s) =>
+                s.appendChild(
+                    createErrorElement('Error al cargar', 'Ocurrió un error al cargar la página. Intenta recargar.'),
+                ),
+            );
             if (onError) onError(error instanceof Error ? error : new Error(String(error)));
         }
     });
 
-    // Devolver función de limpieza
+    // Función de limpieza — llamar en astro:before-swap
     return () => {
         clearTimeout(timeoutId);
-        if (currentUnsubscribe) {
-            currentUnsubscribe();
-            currentUnsubscribe = null;
+        done = true;
+        redirecting = false;
+        if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
         }
-        isInitializing = false;
-        hasRun = false;
     };
 }
