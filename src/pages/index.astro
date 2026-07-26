@@ -50,7 +50,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     </UICard>
 
     <!-- Features -->
-    <div class="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div id="features" class="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
       <div style="animation-delay: 0.1s" class="animate-slide-up">
         <UICard variant="interactive" padding="sm" class="text-left h-full">
           <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-dim)]">
@@ -88,5 +88,4 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       </div>
     </div>
   </div>
-</PublicPageLayout>
-</write_to_file>
+</PublicPageLayout>
