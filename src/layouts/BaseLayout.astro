@@ -21,6 +21,14 @@ const lang = Astro.params.lang || 'es';
         document.documentElement.setAttribute('data-theme', saved);
         document.documentElement.style.colorScheme = saved;
       })();
+      (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        if (langParam === 'es' || langParam === 'en') {
+          localStorage.setItem('campfit_lang', langParam);
+          document.documentElement.lang = langParam;
+        }
+      })();
     </script>
     <div class="app-shell">
       <slot />
@@ -72,7 +80,7 @@ const lang = Astro.params.lang || 'es';
     --text-secondary: #a1a1aa;
     --text-tertiary: #909099;
     --text-disabled: #6b6b73;
-    --text-on-brand: #022c22;
+    --text-on-brand: #ffffff;
 
     --border-default: oklch(0.28 0.01 260);
     --border-subtle: oklch(0.22 0.01 260);
@@ -201,6 +209,8 @@ const lang = Astro.params.lang || 'es';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  *, *::before, *::after { box-sizing: border-box; }
 
   body {
     background-color: var(--surface-0);

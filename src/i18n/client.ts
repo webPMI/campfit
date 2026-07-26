@@ -19,7 +19,6 @@ export function toggleLanguage(): Language {
   return next;
 }
 
-// Mapa de traducciones para el cliente (solo las que se usan en JS)
 const clientTranslations: Record<Language, Record<string, string>> = {
   es: {
     // Auth
@@ -28,12 +27,10 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'auth.login.btn': 'Iniciar Sesión',
     'auth.register.btn': 'Crear Cuenta',
     'auth.loading.login': 'Entrando...',
-    // Admin
-    'admin.no.clients': 'Sin clientes registrados',
-    'admin.no.trainers': 'Sin entrenadores registrados',
-
     'auth.loading.register': 'Creando cuenta...',
     'auth.loading.google': 'Conectando...',
+
+    // Errors
     'error.required': 'Completa todos los campos',
     'error.password.length': 'La contraseña debe tener al menos 6 caracteres',
     'error.invalid-credential': 'Email o contraseña incorrectos',
@@ -49,10 +46,16 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'error.google.register': 'Error al registrarse con Google',
     'error.default.login': 'Error al iniciar sesión',
     'error.default.register': 'Error al registrarse',
+    'error.unknown': 'Error desconocido',
+    'error.loading': 'Error al cargar datos',
 
     // Dashboard
     'dashboard.loading': 'Verificando sesión...',
     'dashboard.logout': 'Cerrar Sesión',
+
+    // App
+    'app.name': 'CampFit',
+    'app.tagline': 'Tu entrenador personal',
 
     // Client Dashboard
     'client.greeting': '¡Hola',
@@ -73,8 +76,6 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'client.no.workout': 'Sin rutina asignada',
     'client.no.diet': 'Sin dieta asignada',
     'client.no.weight': 'Sin registros',
-    'app.name': 'CampFit',
-    'app.tagline': 'Tu entrenador personal',
 
     // Medical
     'client.medical.save': 'Guardar Perfil',
@@ -97,6 +98,50 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'client.support.faq.chat.answer': 'Usa la sección Chat para enviar mensajes directos a tu entrenador. Te responderá en horario de atención.',
     'client.support.faq.medical': '¿Para qué sirve el perfil médico?',
     'client.support.faq.medical.answer': 'El perfil médico ayuda a tu entrenador a conocer tu estado de salud y adaptar los planes de entrenamiento y nutrición a tus necesidades.',
+
+    // Admin
+    'admin.no.clients': 'Sin clientes registrados',
+    'admin.no.trainers': 'Sin entrenadores registrados',
+
+    // === Common UI strings (used across multiple pages) ===
+    'common.loading': 'Cargando...',
+    'common.updated': 'Actualizado',
+    'common.refresh': 'Actualizar',
+    'common.search': 'Buscar...',
+    'common.cancel': 'Cancelar',
+    'common.save': 'Guardar',
+    'common.saveChanges': 'Guardar Cambios',
+    'common.saving': 'Guardando...',
+    'common.delete': 'Eliminar',
+    'common.edit': 'Editar',
+    'common.create': 'Crear',
+    'common.noResults': 'Sin resultados',
+    'common.noData': 'Sin datos',
+    'common.error': 'Error',
+    'common.total': 'Total',
+    'common.active': 'Activas',
+    'common.inactive': 'Inactivas',
+    'common.all': 'Todos',
+    'common.name': 'Nombre',
+    'common.email': 'Email',
+    'common.role': 'Rol',
+    'common.trainer': 'Entrenador',
+    'common.client': 'Cliente',
+    'common.type': 'Tipo',
+    'common.weight': 'Peso',
+    'common.photo': 'Foto',
+    'common.allergens': 'Alérgenos',
+    'common.dietaryRestrictions': 'Restricciones alimentarias',
+    'common.intolerances': 'Intolerancias',
+    'common.severity.mild': 'Leve',
+    'common.severity.moderate': 'Moderada',
+    'common.severity.severe': 'Severa',
+    'common.bloodType': 'Grupo sanguíneo',
+    'common.emergency': 'Emergencia',
+    'common.medicalProfile': 'Perfil Médico',
+    'common.noMedicalProfile': 'Perfil médico no completado',
+    'common.withData': 'Con datos clínicos',
+    'common.withoutData': 'Sin datos',
   },
   en: {
     // Auth
@@ -105,12 +150,10 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'auth.login.btn': 'Sign In',
     'auth.register.btn': 'Create Account',
     'auth.loading.login': 'Signing in...',
-    // Admin
-    'admin.no.clients': 'No registered clients',
-    'admin.no.trainers': 'No registered trainers',
-
     'auth.loading.register': 'Creating account...',
     'auth.loading.google': 'Connecting...',
+
+    // Errors
     'error.required': 'Please fill in all fields',
     'error.password.length': 'Password must be at least 6 characters',
     'error.invalid-credential': 'Invalid email or password',
@@ -126,10 +169,16 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'error.google.register': 'Error signing up with Google',
     'error.default.login': 'Error signing in',
     'error.default.register': 'Error signing up',
+    'error.unknown': 'Unknown error',
+    'error.loading': 'Error loading data',
 
     // Dashboard
     'dashboard.loading': 'Verifying session...',
     'dashboard.logout': 'Sign Out',
+
+    // App
+    'app.name': 'CampFit',
+    'app.tagline': 'Your personal trainer',
 
     // Client Dashboard
     'client.greeting': 'Hello',
@@ -150,8 +199,6 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'client.no.workout': 'No workout assigned',
     'client.no.diet': 'No diet assigned',
     'client.no.weight': 'No records',
-    'app.name': 'CampFit',
-    'app.tagline': 'Your personal trainer',
 
     // Medical
     'client.medical.save': 'Save Profile',
@@ -174,6 +221,50 @@ const clientTranslations: Record<Language, Record<string, string>> = {
     'client.support.faq.chat.answer': 'Use the Chat section to send direct messages to your trainer. They will respond during business hours.',
     'client.support.faq.medical': 'What is the medical profile for?',
     'client.support.faq.medical.answer': 'The medical profile helps your trainer understand your health status and adapt training and nutrition plans to your needs.',
+
+    // Admin
+    'admin.no.clients': 'No registered clients',
+    'admin.no.trainers': 'No registered trainers',
+
+    // === Common UI strings ===
+    'common.loading': 'Loading...',
+    'common.updated': 'Updated',
+    'common.refresh': 'Refresh',
+    'common.search': 'Search...',
+    'common.cancel': 'Cancel',
+    'common.save': 'Save',
+    'common.saveChanges': 'Save Changes',
+    'common.saving': 'Saving...',
+    'common.delete': 'Delete',
+    'common.edit': 'Edit',
+    'common.create': 'Create',
+    'common.noResults': 'No results',
+    'common.noData': 'No data',
+    'common.error': 'Error',
+    'common.total': 'Total',
+    'common.active': 'Active',
+    'common.inactive': 'Inactive',
+    'common.all': 'All',
+    'common.name': 'Name',
+    'common.email': 'Email',
+    'common.role': 'Role',
+    'common.trainer': 'Trainer',
+    'common.client': 'Client',
+    'common.type': 'Type',
+    'common.weight': 'Weight',
+    'common.photo': 'Photo',
+    'common.allergens': 'Allergens',
+    'common.dietaryRestrictions': 'Dietary Restrictions',
+    'common.intolerances': 'Intolerances',
+    'common.severity.mild': 'Mild',
+    'common.severity.moderate': 'Moderate',
+    'common.severity.severe': 'Severe',
+    'common.bloodType': 'Blood Type',
+    'common.emergency': 'Emergency',
+    'common.medicalProfile': 'Medical Profile',
+    'common.noMedicalProfile': 'Medical profile not completed',
+    'common.withData': 'With clinical data',
+    'common.withoutData': 'No data',
   },
 };
 
