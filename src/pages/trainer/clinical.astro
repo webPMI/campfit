@@ -295,8 +295,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
       const userData = userDoc.data();
-      if (!userData || userData.role !== 'trainer') {
-        window.location.href = '/dashboard';
+      if (!userData || (userData.role !== 'trainer' && userData.role !== 'admin')) {
+        window.location.href = '/trainer/dashboard';
         return;
       }
 

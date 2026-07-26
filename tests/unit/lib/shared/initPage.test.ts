@@ -46,7 +46,7 @@ describe('initPage', () => {
         initPage({ onReady: vi.fn(), allowedRoles: ['admin'] });
         const cb = capturedCallback.get();
         await cb!({ uid: 'c1', email: 'c@c.com' });
-        expect(window.location.href).toBe('/dashboard');
+        expect(window.location.href).toBe('/client/dashboard');
         window.location.href = orig;
     });
 });

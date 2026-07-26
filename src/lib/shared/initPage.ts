@@ -165,7 +165,7 @@ export function initPage(options: InitPageOptions): () => void {
             const isBootstrap =
                 email === 'servicioweb.pmi@gmail.com' ||
                 email === 'sevicioweb.pmi@gmail.com';
-            const userRole = (userData.role as string) || (isBootstrap ? 'admin' : 'client');
+            const userRole = ((userData.role as string) || (isBootstrap ? 'admin' : 'client')) as 'admin' | 'trainer' | 'client';
 
             // Verificar acceso — redirigir al dashboard propio, no a /dashboard genérico
             if (allowedRoles && !allowedRoles.includes(userRole)) {

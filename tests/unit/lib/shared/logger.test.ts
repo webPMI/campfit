@@ -71,7 +71,7 @@ describe('logger', () => {
 
   describe('en producción (DEV=false)', () => {
     beforeEach(() => {
-      vi.stubEnv('DEV', 'false');
+      vi.stubEnv('DEV', false as any);
     });
 
     afterEach(() => {

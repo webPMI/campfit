@@ -45,7 +45,8 @@ export function logFirestoreData(
     // Solo activo en modo desarrollo
     if (!import.meta.env.DEV) return;
 
-    const timestamp = new Date().toISOString().split('T')[1].slice(0, 12);
+    const ISOString = new Date().toISOString();
+    const timestamp = (ISOString.split('T')[1] || '').slice(0, 12);
     const emoji = collectionIcons[collection] || '📦';
     const count = Array.isArray(data) ? data.length : (data ? 1 : 0);
 

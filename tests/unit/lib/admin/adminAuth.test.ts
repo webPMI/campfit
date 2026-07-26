@@ -18,6 +18,15 @@ vi.mock('firebase/auth', () => ({
 
 vi.mock('@/lib/firebase', () => ({
   auth: mockAuth,
+  db: {},
+}));
+
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(),
+  getDoc: vi.fn().mockResolvedValue({
+    exists: () => true,
+    data: () => ({ role: 'admin' }),
+  }),
 }));
 
 vi.mock('@/lib/shared/logger', () => ({
@@ -33,7 +42,7 @@ const originalLocation = window.location;
 beforeEach(() => {
   vi.clearAllMocks();
   Object.defineProperty(window, 'location', {
-    value: { href: '' },
+    value: { href: '', replace: vi.fn((url: string) => { (window.location as any).href = url; }) },
     writable: true,
   });
 });
@@ -51,14 +60,14 @@ describe('adminAuth', () => {
       const mockUser = { uid: 'admin-123', email: 'admin@test.com' };
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
         const callback = args[1] as (u: unknown) => void;
-        callback(null); // primera llamada (initialized = true)
-        callback(mockUser); // segunda llamada (auth confirmada)
+        callback(mockUser);
         return vi.fn();
       }) as never);
 
       const { requireAdmin } = await import('@/lib/admin/adminAuth');
       const callback = vi.fn();
       const unsubscribe = requireAdmin(callback);
+      await new Promise(resolve => setTimeout(resolve, 10));
 
       expect(mockOnAuthStateChanged).toHaveBeenCalledWith(mockAuth, expect.any(Function));
       expect(callback).toHaveBeenCalledWith(mockUser);
