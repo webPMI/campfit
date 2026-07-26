@@ -12,20 +12,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">{t('trainer.chat')}</h1>
-          <p class="mt-1 text-sm text-zinc-500">{t('trainer.chat.desc')}</p>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('trainer.chat.desc')}</p>
         </div>
       </div>
 
       <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <!-- Conversation List -->
         <div class="lg:col-span-1">
-          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 backdrop-blur-sm overflow-hidden">
-            <div class="border-b border-zinc-800/40 p-3">
-              <input id="chat-search" type="text" placeholder="Buscar conversaciones..." class="w-full rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-3 py-2 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] backdrop-blur-sm overflow-hidden">
+            <div class="border-b border-[var(--border-subtle)] p-3">
+              <input id="chat-search" type="text" placeholder="Buscar conversaciones..." class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]" />
             </div>
             <div id="conversation-list" class="divide-y divide-zinc-800/40 max-h-[70vh] overflow-y-auto">
               <div class="p-6 text-center">
-                <p class="text-xs text-zinc-500">Cargando...</p>
+                <p class="text-xs text-[var(--text-tertiary)]">Cargando...</p>
               </div>
             </div>
           </div>
@@ -33,33 +33,33 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
         <!-- Chat View -->
         <div class="lg:col-span-2">
-          <div id="chat-view" class="hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 backdrop-blur-sm overflow-hidden flex flex-col" style="height: min(70vh, 600px);">
+          <div id="chat-view" class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] backdrop-blur-sm overflow-hidden flex flex-col" style="height: min(70vh, 600px);">
             <!-- Chat Header -->
-            <div id="chat-header" class="flex items-center gap-3 border-b border-zinc-800/40 p-4">
-              <div class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-medium text-emerald-400">?</div>
+            <div id="chat-header" class="flex items-center gap-3 border-b border-[var(--border-subtle)] p-4">
+              <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-dim)] text-sm font-medium text-[var(--brand)]">?</div>
               <div>
-                <p class="text-sm font-medium text-zinc-200">Selecciona un chat</p>
-                <p class="text-xs text-zinc-500">Inicia una conversación</p>
+                <p class="text-sm font-medium text-[var(--text-primary)]">Selecciona un chat</p>
+                <p class="text-xs text-[var(--text-tertiary)]">Inicia una conversación</p>
               </div>
             </div>
 
             <!-- Messages -->
             <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-3">
               <div class="flex h-full items-center justify-center">
-                <p class="text-sm text-zinc-600">Selecciona un cliente para chatear</p>
+                <p class="text-sm text-[var(--text-disabled)]">Selecciona un cliente para chatear</p>
               </div>
             </div>
 
             <!-- Input -->
-            <div class="border-t border-zinc-800/40 p-3">
+            <div class="border-t border-[var(--border-subtle)] p-3">
               <div class="flex items-center gap-2">
-                <input id="chat-input" type="text" placeholder="Escribe un mensaje..." class="flex-1 rounded-xl border border-zinc-800/40 bg-zinc-800/60 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
-                <button id="btn-send-message" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2.5 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                <input id="chat-input" type="text" placeholder="Escribe un mensaje..." class="flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]" />
+                <button id="btn-send-message" class="rounded-xl bg-[var(--brand-dim)] border border-[var(--border-brand)] px-4 py-2.5 text-sm font-medium text-[var(--brand)] hover:bg-[var(--brand-dim)] transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                   </svg>
                 </button>
-                <button id="btn-send-alert" class="rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed" title="Enviar llamado de atención" disabled>
+                <button id="btn-send-alert" class="rounded-xl bg-[var(--danger-dim)] border border-[var(--danger)] px-3 py-2.5 text-sm font-medium text-[var(--danger)] hover:bg-[var(--danger-dim)] transition-all disabled:opacity-40 disabled:cursor-not-allowed" title="Enviar llamado de atención" disabled>
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                   </svg>
@@ -69,13 +69,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </div>
 
           <!-- Empty State -->
-          <div id="chat-empty" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm flex flex-col items-center justify-center" style="height: min(70vh, 600px);">
-            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-800/50">
-              <svg class="h-7 w-7 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <div id="chat-empty" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-8 text-center backdrop-blur-sm flex flex-col items-center justify-center" style="height: min(70vh, 600px);">
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+              <svg class="h-7 w-7 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
               </svg>
             </div>
-            <p class="text-sm text-zinc-500">Selecciona una conversación de la lista para comenzar a chatear</p>
+            <p class="text-sm text-[var(--text-tertiary)]">Selecciona una conversación de la lista para comenzar a chatear</p>
           </div>
         </div>
       </div>
@@ -202,8 +202,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     if (conversations.length === 0) {
       conversationList.innerHTML = `
         <div class="p-6 text-center">
-          <p class="text-xs text-zinc-500">Sin conversaciones aún</p>
-          <p class="text-xs text-zinc-600 mt-1">Los mensajes aparecerán aquí</p>
+          <p class="text-xs text-[var(--text-tertiary)]">Sin conversaciones aún</p>
+          <p class="text-xs text-[var(--text-disabled)] mt-1">Los mensajes aparecerán aquí</p>
         </div>
       `;
       return;
@@ -217,7 +217,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     });
 
     if (displayItems.length === 0) {
-      conversationList.innerHTML = `<div class="p-6 text-center"><p class="text-xs text-zinc-500">Sin resultados</p></div>`;
+      conversationList.innerHTML = `<div class="p-6 text-center"><p class="text-xs text-[var(--text-tertiary)]">Sin resultados</p></div>`;
       return;
     }
 
@@ -232,21 +232,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         const isSelected = selectedClient?.uid === c.clientId;
 
         return `
-          <div class="flex items-center gap-3 p-3 cursor-pointer transition-all hover:bg-zinc-800/40 ${isSelected ? 'bg-zinc-800/40' : ''}" onclick="window.__selectConversation('${c.clientId}')">
+          <div class="flex items-center gap-3 p-3 cursor-pointer transition-all hover:bg-[var(--surface-3)] ${isSelected ? 'bg-[var(--surface-3)]' : ''}" onclick="window.__selectConversation('${c.clientId}')">
             <div class="relative shrink-0">
-              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-medium text-emerald-400">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-dim)] text-sm font-medium text-[var(--brand)]">
                 ${initial}
               </div>
-              ${hasAlert ? '<div class="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-500 animate-pulse border-2 border-zinc-900"></div>' : ''}
+              ${hasAlert ? '<div class="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-500 animate-pulse border-2 border-[var(--surface-2)]"></div>' : ''}
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between">
-                <p class="text-sm font-medium text-zinc-200 truncate">${escapeHtml(name)}</p>
-                <span class="text-[10px] text-zinc-600 shrink-0 ml-2">${time}</span>
+                <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(name)}</p>
+                <span class="text-[10px] text-[var(--text-disabled)] shrink-0 ml-2">${time}</span>
               </div>
               <div class="flex items-center justify-between mt-0.5">
-                <p class="text-xs text-zinc-500 truncate">${escapeHtml(lastMsg.substring(0, 40))}${lastMsg.length > 40 ? '...' : ''}</p>
-                ${c.unread > 0 ? `<span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-bold text-white shrink-0 ml-2">${c.unread}</span>` : ''}
+                <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(lastMsg.substring(0, 40))}${lastMsg.length > 40 ? '...' : ''}</p>
+                ${c.unread > 0 ? `<span class="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--brand)] text-[9px] font-bold text-white shrink-0 ml-2">${c.unread}</span>` : ''}
               </div>
             </div>
           </div>
@@ -277,12 +277,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     // Update header
     chatHeader.innerHTML = `
-      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-medium text-emerald-400">
+      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-dim)] text-sm font-medium text-[var(--brand)]">
         ${getUserInitial(client.name)}
       </div>
       <div>
-        <p class="text-sm font-medium text-zinc-200">${escapeHtml(client.name)}</p>
-        <p class="text-xs text-zinc-500">${escapeHtml(client.email)}</p>
+        <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(client.name)}</p>
+        <p class="text-xs text-[var(--text-tertiary)]">${escapeHtml(client.email)}</p>
       </div>
     `;
 
@@ -295,7 +295,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       if (messages.length === 0) {
         messagesContainer.innerHTML = `
           <div class="flex h-full items-center justify-center">
-            <p class="text-sm text-zinc-600">No hay mensajes aún. ¡Envía el primero!</p>
+            <p class="text-sm text-[var(--text-disabled)]">No hay mensajes aún. ¡Envía el primero!</p>
           </div>
         `;
         return;

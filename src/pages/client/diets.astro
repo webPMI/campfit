@@ -9,8 +9,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 <ClientLayout>
   <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
     <div class="text-center animate-fade-in">
-      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-emerald-400"></div>
-      <p id="loadingText" class="mt-4 text-sm text-zinc-500">{t('dashboard.loading')}</p>
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t('dashboard.loading')}</p>
     </div>
   </div>
 
@@ -21,10 +21,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-xl font-bold">{t('client.nav.diets')}</h2>
-            <p class="mt-1 text-sm text-zinc-500">Sigue tu plan de alimentación personalizado</p>
+            <p class="mt-1 text-sm text-[var(--text-tertiary)]">Sigue tu plan de alimentación personalizado</p>
           </div>
           <!-- Historial button -->
-          <button id="btn-history" class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-3 py-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all hidden">
+          <button id="btn-history" class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all hidden">
             <svg class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
@@ -33,27 +33,27 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
 
         <!-- Diet Adherence Bar -->
-        <div id="adherence-bar" class="hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
+        <div id="adherence-bar" class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
           <div class="flex items-center justify-between mb-2">
-            <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Progreso del día</p>
-            <p id="adherence-text" class="text-xs text-emerald-400 font-medium">0%</p>
+            <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Progreso del día</p>
+            <p id="adherence-text" class="text-xs text-[var(--brand)] font-medium">0%</p>
           </div>
-          <div class="h-2 overflow-hidden rounded-full bg-zinc-800">
-            <div id="adherence-fill" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+          <div class="h-2 overflow-hidden rounded-full bg-[var(--surface-3)]">
+            <div id="adherence-fill" class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500" style="width: 0%"></div>
           </div>
         </div>
 
         <!-- Diet Card -->
-        <div id="dietCard" class="hidden card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-6 backdrop-blur-xl">
+        <div id="dietCard" class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 id="dietName" class="text-lg font-bold text-zinc-100"></h3>
+              <h3 id="dietName" class="text-lg font-bold text-[var(--text-primary)]"></h3>
               <div class="flex items-center gap-2 mt-1">
-                <span id="dietType" class="inline-block rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400"></span>
-                <span id="dietSomatotype" class="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 hidden"></span>
+                <span id="dietType" class="inline-block rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-medium text-[var(--brand)]"></span>
+                <span id="dietSomatotype" class="inline-block rounded-full bg-[var(--info-dim)] px-3 py-1 text-xs font-medium text-[var(--info)] hidden"></span>
               </div>
             </div>
-            <p id="dietCalories" class="text-sm text-zinc-500"></p>
+            <p id="dietCalories" class="text-sm text-[var(--text-tertiary)]"></p>
           </div>
 
           <div class="space-y-3" id="mealsList">
@@ -61,13 +61,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </div>
 
           <!-- Totals -->
-          <div id="mealTotals" class="mt-6 rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4">
-            <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Totales del día</p>
+          <div id="mealTotals" class="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4">
+            <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Totales del día</p>
             <div class="mt-2 flex flex-wrap gap-4 text-sm">
-              <span class="text-zinc-300">Cal: <strong id="totalCal" class="text-emerald-400">0</strong></span>
-              <span class="text-zinc-300">P: <strong id="totalProtein" class="text-emerald-400">0</strong>g</span>
-              <span class="text-zinc-300">C: <strong id="totalCarbs" class="text-emerald-400">0</strong>g</span>
-              <span class="text-zinc-300">G: <strong id="totalFat" class="text-emerald-400">0</strong>g</span>
+              <span class="text-[var(--text-secondary)]">Cal: <strong id="totalCal" class="text-[var(--brand)]">0</strong></span>
+              <span class="text-[var(--text-secondary)]">P: <strong id="totalProtein" class="text-[var(--brand)]">0</strong>g</span>
+              <span class="text-[var(--text-secondary)]">C: <strong id="totalCarbs" class="text-[var(--brand)]">0</strong>g</span>
+              <span class="text-[var(--text-secondary)]">G: <strong id="totalFat" class="text-[var(--brand)]">0</strong>g</span>
             </div>
           </div>
         </div>
@@ -75,8 +75,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <!-- History View -->
         <div id="historyView" class="hidden space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Historial de dietas</h3>
-            <button id="btn-back-current" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">
+            <h3 class="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Historial de dietas</h3>
+            <button id="btn-back-current" class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">
               <svg class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
               </svg>
@@ -87,14 +87,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
 
         <!-- Empty State -->
-        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800/60 bg-zinc-900/40 p-12 text-center">
-          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
-            <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+            <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
             </svg>
           </div>
-          <h3 class="mt-4 text-lg font-semibold text-zinc-400">{t('client.no.diet')}</h3>
-          <p class="mt-2 text-sm text-zinc-600">Tu entrenador asignará un plan nutricional personalizado.</p>
+          <h3 class="mt-4 text-lg font-semibold text-[var(--text-secondary)]">{t('client.no.diet')}</h3>
+          <p class="mt-2 text-sm text-[var(--text-disabled)]">Tu entrenador asignará un plan nutricional personalizado.</p>
         </div>
       </div>
     </main>
@@ -147,9 +147,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   // ─── Toast helper ────────────────────────────────────────────────────────────
   function showToast(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
     const colors = {
-      success: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
-      error: 'border-red-500/30 bg-red-500/10 text-red-400',
-      info: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+      success: 'border-emerald-500/30 bg-[var(--brand-dim)] text-[var(--brand)]',
+      error: 'border-red-500/30 bg-[var(--danger-dim)] text-[var(--danger)]',
+      info: 'border-blue-500/30 bg-[var(--info-dim)] text-[var(--info)]',
     };
     toast.className = `fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-6 py-3 text-sm font-medium backdrop-blur-xl shadow-2xl animate-slide-up ${colors[type]}`;
     toast.textContent = message;
@@ -262,24 +262,24 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         sumF += meal.fat || 0;
 
         const div = document.createElement('div');
-        div.className = 'rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm transition-all';
+        div.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm transition-all';
         div.id = `meal-${meal.id}`;
         div.innerHTML = `
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-2">
-                <h4 class="font-medium text-zinc-200 capitalize">${getMealLabel(meal.name)}</h4>
-                <span class="text-[10px] text-zinc-600">#${meal.order || ''}</span>
+                <h4 class="font-medium text-[var(--text-primary)] capitalize">${getMealLabel(meal.name)}</h4>
+                <span class="text-[10px] text-[var(--text-disabled)]">#${meal.order || ''}</span>
               </div>
-              ${meal.description ? `<p class="mt-1 text-xs text-zinc-600">${escapeHtml(meal.description)}</p>` : ''}
-              <div class="mt-2 flex flex-wrap gap-3 text-xs text-zinc-500">
+              ${meal.description ? `<p class="mt-1 text-xs text-[var(--text-disabled)]">${escapeHtml(meal.description)}</p>` : ''}
+              <div class="mt-2 flex flex-wrap gap-3 text-xs text-[var(--text-tertiary)]">
                 <span>Cal: ${meal.calories || 0}</span>
                 <span>P: ${meal.protein || 0}g</span>
                 <span>C: ${meal.carbs || 0}g</span>
                 <span>G: ${meal.fat || 0}g</span>
               </div>
             </div>
-            <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-3 rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-2.5 py-1.5 text-xs text-zinc-500 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+            <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-3 rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-2.5 py-1.5 text-xs text-[var(--text-tertiary)] hover:text-[var(--brand)] hover:border-emerald-500/30 transition-all">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
@@ -321,10 +321,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           // Marcar visualmente
           const row = btn.closest('[class*="rounded-xl"]');
           if (row) {
-            row.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
+            row.classList.add('border-emerald-500/30', 'bg-[var(--brand-dim)]');
           }
           btn.innerHTML = `
-            <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
           `;
@@ -354,11 +354,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     completedIds.forEach((mealId) => {
       const mealRow = document.getElementById(`meal-${mealId}`);
       if (mealRow) {
-        mealRow.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
+        mealRow.classList.add('border-emerald-500/30', 'bg-[var(--brand-dim)]');
         const btn = mealRow.querySelector('.btn-complete') as HTMLButtonElement;
         if (btn) {
           btn.innerHTML = `
-            <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
           `;
@@ -379,7 +379,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     unsubHistory = subscribeToDietHistory(clientId, (diets) => {
       if (diets.length === 0) {
-        historyList.innerHTML = '<p class="text-xs text-zinc-600 py-4 text-center">No hay dietas en el historial</p>';
+        historyList.innerHTML = '<p class="text-xs text-[var(--text-disabled)] py-4 text-center">No hay dietas en el historial</p>';
         return;
       }
 
@@ -389,18 +389,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           ? d.createdAt.toDate().toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })
           : 'Fecha desconocida';
         return `
-          <div class="rounded-xl border ${isCurrent ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-zinc-800/40 bg-zinc-900/40'} p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
+          <div class="rounded-xl border ${isCurrent ? 'border-emerald-500/30 bg-[var(--brand-dim)]' : 'border-[var(--border-subtle)] bg-[var(--surface-2)]'} p-4 backdrop-blur-sm transition-all hover:border-[var(--border-default)]">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-zinc-200">${escapeHtml(d.name)}</p>
-                <p class="text-xs text-zinc-500 mt-0.5">
+                <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(d.name)}</p>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">
                   ${d.meals?.length || 0} comidas · ${d.totalCalories || 0} kcal
-                  ${isCurrent ? '<span class="text-emerald-400 ml-2">● Actual</span>' : ''}
+                  ${isCurrent ? '<span class="text-[var(--brand)] ml-2">● Actual</span>' : ''}
                 </p>
               </div>
               <div class="text-right">
-                <p class="text-xs text-zinc-500">${dateStr}</p>
-                <p class="text-[10px] text-zinc-600 mt-0.5">${d.type === 'advanced' ? 'Avanzada' : 'Normal'}</p>
+                <p class="text-xs text-[var(--text-tertiary)]">${dateStr}</p>
+                <p class="text-[10px] text-[var(--text-disabled)] mt-0.5">${d.type === 'advanced' ? 'Avanzada' : 'Normal'}</p>
               </div>
             </div>
           </div>

@@ -12,44 +12,44 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">Panel Clínico</h1>
-          <p class="mt-1 text-sm text-zinc-500">Supervisión de datos médicos, intolerancias y condiciones de todos los clientes</p>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Supervisión de datos médicos, intolerancias y condiciones de todos los clientes</p>
         </div>
-        <div id="last-update" class="text-xs text-zinc-600">Actualizado: --</div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
       </div>
 
       <!-- Stats Row -->
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Con alergias</p>
-          <p id="stat-allergies" class="mt-1 text-2xl font-bold text-yellow-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con alergias</p>
+          <p id="stat-allergies" class="mt-1 text-2xl font-bold text-[var(--warning)]">-</p>
         </div>
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Con intolerancias</p>
-          <p id="stat-intolerances" class="mt-1 text-2xl font-bold text-red-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con intolerancias</p>
+          <p id="stat-intolerances" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
         </div>
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Con lesiones</p>
-          <p id="stat-injuries" class="mt-1 text-2xl font-bold text-orange-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con lesiones</p>
+          <p id="stat-injuries" class="mt-1 text-2xl font-bold text-[var(--warning)]">-</p>
         </div>
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Con medicación</p>
-          <p id="stat-medications" class="mt-1 text-2xl font-bold text-blue-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con medicación</p>
+          <p id="stat-medications" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
       </div>
 
       <!-- Second stats row -->
       <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Gluten-free</p>
-          <p id="stat-gluten" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Gluten-free</p>
+          <p id="stat-gluten" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Lactose-free</p>
-          <p id="stat-lactose" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Lactose-free</p>
+          <p id="stat-lactose" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
-        <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-4 backdrop-blur-sm">
-          <p class="text-xs text-zinc-500">Veganos/Vegetarianos</p>
-          <p id="stat-vegan" class="mt-1 text-2xl font-bold text-emerald-400">-</p>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Veganos/Vegetarianos</p>
+          <p id="stat-vegan" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
       </div>
 
@@ -59,11 +59,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           type="text"
           id="searchInput"
           placeholder="Buscar por nombre, condición, alergia o intolerancia..."
-          class="flex-1 rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-500 outline-none transition-all focus:border-emerald-500/50 focus:bg-zinc-800"
+          class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
         />
         <button
           id="refreshBtn"
-          class="rounded-xl border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-300 transition-all hover:border-zinc-600 hover:text-white"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-white"
         >
           Actualizar
         </button>
@@ -71,44 +71,44 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       <!-- Loading State -->
       <div id="loadingState" class="mt-6 space-y-4">
-        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
           <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-full bg-zinc-800"></div>
+            <div class="h-10 w-10 rounded-full bg-[var(--surface-3)]"></div>
             <div class="flex-1 space-y-2">
-              <div class="h-4 w-36 rounded bg-zinc-800"></div>
-              <div class="h-3 w-56 rounded bg-zinc-800/60"></div>
+              <div class="h-4 w-36 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-56 rounded bg-[var(--surface-3)]"></div>
             </div>
           </div>
         </div>
-        <div class="animate-pulse rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-5">
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
           <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-full bg-zinc-800"></div>
+            <div class="h-10 w-10 rounded-full bg-[var(--surface-3)]"></div>
             <div class="flex-1 space-y-2">
-              <div class="h-4 w-28 rounded bg-zinc-800"></div>
-              <div class="h-3 w-48 rounded bg-zinc-800/60"></div>
+              <div class="h-4 w-28 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-48 rounded bg-[var(--surface-3)]"></div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div id="emptyState" class="mt-6 hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-12 text-center">
-        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
-          <svg class="h-8 w-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+          <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-zinc-400">No hay clientes con datos clínicos</h3>
-        <p class="mt-1 text-sm text-zinc-600">Los clientes aún no han completado sus perfiles médicos</p>
+        <h3 class="text-lg font-medium text-[var(--text-secondary)]">No hay clientes con datos clínicos</h3>
+        <p class="mt-1 text-sm text-[var(--text-disabled)]">Los clientes aún no han completado sus perfiles médicos</p>
       </div>
 
       <!-- Clinical Cards -->
       <div id="clinicalList" class="mt-6 hidden space-y-4"></div>
 
       <!-- Error Toast -->
-      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 backdrop-blur-xl">
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] px-4 py-3 text-sm text-[var(--danger)] backdrop-blur-xl">
         <span id="errorMessage"></span>
-        <button id="dismissError" class="ml-3 text-red-400/70 hover:text-red-400">&times;</button>
+        <button id="dismissError" class="ml-3 text-[var(--danger)]/70 hover:text-[var(--danger)]">&times;</button>
       </div>
     </div>
   </div>
@@ -176,11 +176,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   function severityBadge(s: string): string {
     const map: Record<string, string> = {
-      mild: 'bg-yellow-500/10 text-yellow-400',
-      moderate: 'bg-orange-500/10 text-orange-400',
-      severe: 'bg-red-500/10 text-red-400',
+      mild: 'bg-[var(--warning-dim)] text-[var(--warning)]',
+      moderate: 'bg-[var(--warning-dim)] text-[var(--warning)]',
+      severe: 'bg-[var(--danger-dim)] text-[var(--danger)]',
     };
-    return map[s] || 'bg-zinc-800 text-zinc-500';
+    return map[s] || 'bg-[var(--surface-3)] text-[var(--text-tertiary)]';
   }
 
   function updateStats(): void {
@@ -210,50 +210,50 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const hasData = mp && (mp.allergies || mp.conditions || mp.injuries || mp.medications || (mp.intolerances?.length || 0) > 0);
 
       const card = document.createElement('div');
-      card.className = `rounded-xl border p-5 backdrop-blur-sm transition-all hover:border-zinc-700/60 ${hasData ? 'border-yellow-500/20 bg-yellow-500/5' : 'border-zinc-800/40 bg-zinc-900/40'}`;
+      card.className = `rounded-xl border p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)] ${hasData ? 'border-[var(--warning)] bg-[var(--warning-dim)]' : 'border-[var(--border-subtle)] bg-[var(--surface-2)]'}`;
       card.innerHTML = `
         <div class="flex items-start justify-between mb-3">
           <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-semibold">${(c.name || '?')[0]?.toUpperCase()}</div>
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface-3)] text-sm font-semibold">${(c.name || '?')[0]?.toUpperCase()}</div>
             <div>
-              <h3 class="font-semibold text-zinc-200">${c.name}</h3>
-              <p class="text-xs text-zinc-500">${c.email}${c.trainerName ? ` · Trainer: ${c.trainerName}` : ''}</p>
+              <h3 class="font-semibold text-[var(--text-primary)]">${c.name}</h3>
+              <p class="text-xs text-[var(--text-tertiary)]">${c.email}${c.trainerName ? ` · Trainer: ${c.trainerName}` : ''}</p>
             </div>
           </div>
-          ${hasData ? '<span class="rounded-full bg-yellow-500/10 px-2 py-1 text-xs text-yellow-400">Datos clínicos</span>' : '<span class="rounded-full bg-zinc-800 px-2 py-1 text-xs text-zinc-600">Sin datos</span>'}
+          ${hasData ? '<span class="rounded-full bg-[var(--warning-dim)] px-2 py-1 text-xs text-[var(--warning)]">Datos clínicos</span>' : '<span class="rounded-full bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-disabled)]">Sin datos</span>'}
         </div>
 
         ${mp ? `
         <div class="grid grid-cols-2 gap-2 text-sm">
-          ${mp.bloodType ? `<div class="rounded-lg bg-zinc-800/50 px-3 py-1.5"><span class="text-zinc-500">Sangre:</span> <span class="text-zinc-300">${mp.bloodType}</span></div>` : ''}
-          ${mp.gender ? `<div class="rounded-lg bg-zinc-800/50 px-3 py-1.5"><span class="text-zinc-500">Sexo:</span> <span class="text-zinc-300">${mp.gender === 'male' ? '♂' : mp.gender === 'female' ? '♀' : '⚧'}</span></div>` : ''}
-          ${mp.height ? `<div class="rounded-lg bg-zinc-800/50 px-3 py-1.5"><span class="text-zinc-500">Altura:</span> <span class="text-zinc-300">${mp.height} cm</span></div>` : ''}
-          ${mp.weight ? `<div class="rounded-lg bg-zinc-800/50 px-3 py-1.5"><span class="text-zinc-500">Peso:</span> <span class="text-zinc-300">${mp.weight} kg</span></div>` : ''}
-          ${mp.age ? `<div class="rounded-lg bg-zinc-800/50 px-3 py-1.5"><span class="text-zinc-500">Edad:</span> <span class="text-zinc-300">${mp.age}</span></div>` : ''}
-          ${mp.experience ? `<div class="rounded-lg bg-zinc-800/50 px-3 py-1.5"><span class="text-zinc-500">Exp:</span> <span class="text-zinc-300 capitalize">${mp.experience}</span></div>` : ''}
+          ${mp.bloodType ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">Sangre:</span> <span class="text-[var(--text-secondary)]">${mp.bloodType}</span></div>` : ''}
+          ${mp.gender ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">Sexo:</span> <span class="text-[var(--text-secondary)]">${mp.gender === 'male' ? '♂' : mp.gender === 'female' ? '♀' : '⚧'}</span></div>` : ''}
+          ${mp.height ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">Altura:</span> <span class="text-[var(--text-secondary)]">${mp.height} cm</span></div>` : ''}
+          ${mp.weight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">Peso:</span> <span class="text-[var(--text-secondary)]">${mp.weight} kg</span></div>` : ''}
+          ${mp.age ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">Edad:</span> <span class="text-[var(--text-secondary)]">${mp.age}</span></div>` : ''}
+          ${mp.experience ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">Exp:</span> <span class="text-[var(--text-secondary)] capitalize">${mp.experience}</span></div>` : ''}
         </div>
 
         ${mp.dietaryRestrictions ? `
-        <div class="mt-3 border-t border-zinc-800/40 pt-3">
-          <p class="text-xs font-medium text-zinc-500 mb-2">Restricciones alimentarias</p>
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">Restricciones alimentarias</p>
           <div class="flex flex-wrap gap-1.5">
-            ${mp.dietaryRestrictions.glutenFree ? '<span class="rounded-md bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-400">🌾 Sin gluten</span>' : ''}
-            ${mp.dietaryRestrictions.lactoseFree ? '<span class="rounded-md bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-400">🥛 Sin lactosa</span>' : ''}
-            ${mp.dietaryRestrictions.vegan ? '<span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400">🌱 Vegano</span>' : ''}
-            ${mp.dietaryRestrictions.vegetarian ? '<span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400">🥬 Vegetariano</span>' : ''}
-            ${mp.dietaryRestrictions.nutFree ? '<span class="rounded-md bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-400">🥜 Sin frutos secos</span>' : ''}
-            ${mp.dietaryRestrictions.shellfishFree ? '<span class="rounded-md bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-400">🦐 Sin mariscos</span>' : ''}
-            ${(mp.dietaryRestrictions.other || []).map(o => `<span class="rounded-md bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">${o}</span>`).join('')}
+            ${mp.dietaryRestrictions.glutenFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🌾 Sin gluten</span>' : ''}
+            ${mp.dietaryRestrictions.lactoseFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🥛 Sin lactosa</span>' : ''}
+            ${mp.dietaryRestrictions.vegan ? '<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">🌱 Vegano</span>' : ''}
+            ${mp.dietaryRestrictions.vegetarian ? '<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">🥬 Vegetariano</span>' : ''}
+            ${mp.dietaryRestrictions.nutFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🥜 Sin frutos secos</span>' : ''}
+            ${mp.dietaryRestrictions.shellfishFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🦐 Sin mariscos</span>' : ''}
+            ${(mp.dietaryRestrictions.other || []).map(o => `<span class="rounded-md bg-[var(--surface-3)] px-2 py-0.5 text-xs text-[var(--text-secondary)]">${o}</span>`).join('')}
           </div>
         </div>` : ''}
 
         ${(mp.intolerances?.length || 0) > 0 ? `
-        <div class="mt-3 border-t border-zinc-800/40 pt-3">
-          <p class="text-xs font-medium text-zinc-500 mb-2">Intolerancias</p>
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">Intolerancias</p>
           <div class="space-y-1">
             ${(mp.intolerances || []).map(i => `
-              <div class="flex items-center justify-between rounded-lg bg-zinc-800/50 px-3 py-1.5">
-                <span class="text-sm text-zinc-300">${i.substance}</span>
+              <div class="flex items-center justify-between rounded-lg bg-[var(--surface-4)] px-3 py-1.5">
+                <span class="text-sm text-[var(--text-secondary)]">${i.substance}</span>
                 <div class="flex items-center gap-2">
                   <span class="rounded-full px-2 py-0.5 text-xs font-medium ${severityBadge(i.severity)}">${i.severity === 'mild' ? 'Leve' : i.severity === 'moderate' ? 'Moderada' : 'Severa'}</span>
                 </div>
@@ -262,18 +262,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </div>
         </div>` : ''}
 
-        ${mp.allergies ? `<div class="mt-2 rounded-lg bg-zinc-800/50 px-3 py-2"><span class="text-xs text-zinc-500">Alergias:</span> <span class="text-sm text-red-300">${mp.allergies}</span></div>` : ''}
-        ${mp.conditions ? `<div class="mt-1 rounded-lg bg-zinc-800/50 px-3 py-2"><span class="text-xs text-zinc-500">Condiciones:</span> <span class="text-sm text-orange-300">${mp.conditions}</span></div>` : ''}
-        ${mp.medications ? `<div class="mt-1 rounded-lg bg-zinc-800/50 px-3 py-2"><span class="text-xs text-zinc-500">Medicación:</span> <span class="text-sm text-blue-300">${mp.medications}</span></div>` : ''}
-        ${mp.injuries ? `<div class="mt-1 rounded-lg bg-zinc-800/50 px-3 py-2"><span class="text-xs text-zinc-500">Lesiones:</span> <span class="text-sm text-orange-300">${mp.injuries}</span></div>` : ''}
-        ${mp.surgery ? `<div class="mt-1 rounded-lg bg-zinc-800/50 px-3 py-2"><span class="text-xs text-zinc-500">Cirugías:</span> <span class="text-sm text-zinc-300">${mp.surgery}</span></div>` : ''}
+        ${mp.allergies ? `<div class="mt-2 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">Alergias:</span> <span class="text-sm text-[var(--danger)]">${mp.allergies}</span></div>` : ''}
+        ${mp.conditions ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">Condiciones:</span> <span class="text-sm text-[var(--warning)]">${mp.conditions}</span></div>` : ''}
+        ${mp.medications ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">Medicación:</span> <span class="text-sm text-blue-300">${mp.medications}</span></div>` : ''}
+        ${mp.injuries ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">Lesiones:</span> <span class="text-sm text-[var(--warning)]">${mp.injuries}</span></div>` : ''}
+        ${mp.surgery ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">Cirugías:</span> <span class="text-sm text-[var(--text-secondary)]">${mp.surgery}</span></div>` : ''}
 
         ${mp.emergencyName || mp.emergencyPhone ? `
-        <div class="mt-3 border-t border-zinc-800/40 pt-3">
-          <p class="text-xs font-medium text-zinc-500 mb-1">🚨 Emergencia</p>
-          <p class="text-sm text-zinc-300">${mp.emergencyName || '-'} · ${mp.emergencyPhone || '-'}</p>
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-1">🚨 Emergencia</p>
+          <p class="text-sm text-[var(--text-secondary)]">${mp.emergencyName || '-'} · ${mp.emergencyPhone || '-'}</p>
         </div>` : ''}
-        ` : '<p class="text-sm text-zinc-600 italic">Perfil médico no completado</p>'}
+        ` : '<p class="text-sm text-[var(--text-disabled)] italic">Perfil médico no completado</p>'}
       `;
       clinicalList.appendChild(card);
     });

@@ -1,0 +1,330 @@
+---
+import TrainerLayout from '@/layouts/TrainerLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<TrainerLayout>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold">Ficha Clínica de Clientes</h1>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Datos médicos, intolerancias y condiciones de tus clientes asignados</p>
+        </div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Mis clientes</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con datos clínicos</p>
+          <p id="stat-clinical" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con intolerancias</p>
+          <p id="stat-intolerances" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Con restricciones</p>
+          <p id="stat-restrictions" class="mt-1 text-2xl font-bold text-[var(--warning)]">-</p>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre, condición, alergia..."
+          class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
+        />
+        <button
+          id="refreshBtn"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-white"
+        >
+          Actualizar
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="mt-6 space-y-4">
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-36 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-48 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+        <div class="animate-pulse rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-[var(--surface-3)]"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 w-28 rounded bg-[var(--surface-3)]"></div>
+              <div class="h-3 w-40 rounded bg-[var(--surface-3)]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="mt-6 hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+          <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-[var(--text-secondary)]">No tienes clientes asignados</h3>
+        <p class="mt-1 text-sm text-[var(--text-disabled)]">Un administrador debe asignarte clientes primero</p>
+      </div>
+
+      <!-- Clinical Cards -->
+      <div id="clinicalList" class="mt-6 hidden space-y-4"></div>
+
+      <!-- Error Toast -->
+      <div id="errorToast" class="fixed bottom-4 right-4 hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] px-4 py-3 text-sm text-[var(--danger)] backdrop-blur-xl">
+        <span id="errorMessage"></span>
+        <button id="dismissError" class="ml-3 text-[var(--danger)]/70 hover:text-[var(--danger)]">&times;</button>
+      </div>
+    </div>
+  </div>
+</TrainerLayout>
+
+<script>
+  import { db, auth } from '@/lib/firebase';
+  import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
+  import { logger } from '@/lib/shared/logger';
+
+  interface ClinicalClient {
+    uid: string;
+    name: string;
+    email: string;
+    medicalProfile: {
+      height?: number;
+      weight?: number;
+      age?: number;
+      gender?: string;
+      bloodType?: string;
+      allergies?: string;
+      conditions?: string;
+      medications?: string;
+      injuries?: string;
+      surgery?: string;
+      dietaryRestrictions?: {
+        glutenFree?: boolean;
+        lactoseFree?: boolean;
+        vegan?: boolean;
+        vegetarian?: boolean;
+        nutFree?: boolean;
+        shellfishFree?: boolean;
+        other?: string[];
+      };
+      intolerances?: Array<{ substance: string; severity: string; symptoms: string }>;
+      goals?: string[];
+      experience?: string;
+      emergencyName?: string;
+      emergencyPhone?: string;
+    } | null;
+  }
+
+  const loadingState = document.getElementById('loadingState')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const clinicalList = document.getElementById('clinicalList')!;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const refreshBtn = document.getElementById('refreshBtn')!;
+  const lastUpdate = document.getElementById('last-update')!;
+  const errorToast = document.getElementById('errorToast')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const dismissError = document.getElementById('dismissError')!;
+
+  let allClients: ClinicalClient[] = [];
+
+  function showError(msg: string): void {
+    errorMessage.textContent = msg;
+    errorToast.classList.remove('hidden');
+    logger.error('trainer/clinical', msg);
+  }
+
+  dismissError.addEventListener('click', () => {
+    errorToast.classList.add('hidden');
+  });
+
+  function severityBadge(s: string): string {
+    const map: Record<string, string> = {
+      mild: 'bg-[var(--warning-dim)] text-[var(--warning)]',
+      moderate: 'bg-[var(--warning-dim)] text-[var(--warning)]',
+      severe: 'bg-[var(--danger-dim)] text-[var(--danger)]',
+    };
+    return map[s] || 'bg-[var(--surface-3)] text-[var(--text-tertiary)]';
+  }
+
+  function updateStats(): void {
+    document.getElementById('stat-total')!.textContent = String(allClients.length);
+    document.getElementById('stat-clinical')!.textContent = String(allClients.filter(c => c.medicalProfile && (c.medicalProfile.allergies || c.medicalProfile.conditions || c.medicalProfile.medications)).length);
+    document.getElementById('stat-intolerances')!.textContent = String(allClients.filter(c => (c.medicalProfile?.intolerances?.length || 0) > 0).length);
+    document.getElementById('stat-restrictions')!.textContent = String(allClients.filter(c => c.medicalProfile?.dietaryRestrictions && (c.medicalProfile.dietaryRestrictions.glutenFree || c.medicalProfile.dietaryRestrictions.lactoseFree || c.medicalProfile.dietaryRestrictions.nutFree)).length);
+  }
+
+  function renderClients(clients: ClinicalClient[]): void {
+    clinicalList.innerHTML = '';
+    if (clients.length === 0) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      clinicalList.classList.add('hidden');
+      return;
+    }
+    loadingState.classList.add('hidden');
+    emptyState.classList.add('hidden');
+    clinicalList.classList.remove('hidden');
+
+    clients.forEach(c => {
+      const mp = c.medicalProfile;
+      const hasIntolerances = (mp?.intolerances?.length || 0) > 0;
+      const hasRestrictions = mp?.dietaryRestrictions?.glutenFree || mp?.dietaryRestrictions?.lactoseFree || mp?.dietaryRestrictions?.nutFree || mp?.dietaryRestrictions?.shellfishFree;
+
+      const card = document.createElement('div');
+      card.className = `rounded-xl border p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)] ${hasIntolerances ? 'border-[var(--danger)] bg-[var(--danger-dim)]' : hasRestrictions ? 'border-[var(--warning)] bg-[var(--warning-dim)]' : mp ? 'border-[var(--border-brand)] bg-[var(--brand-dim)]' : 'border-[var(--border-subtle)] bg-[var(--surface-2)]'}`;
+      card.innerHTML = `
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface-3)] text-sm font-semibold">${(c.name || '?')[0]?.toUpperCase()}</div>
+            <div>
+              <h3 class="font-semibold text-[var(--text-primary)]">${c.name}</h3>
+              <p class="text-xs text-[var(--text-tertiary)]">${c.email}</p>
+            </div>
+          </div>
+          ${hasIntolerances ? '<span class="rounded-full bg-[var(--danger-dim)] px-2 py-1 text-xs text-[var(--danger)]">⚠️ Intolerancias</span>' : hasRestrictions ? '<span class="rounded-full bg-[var(--warning-dim)] px-2 py-1 text-xs text-[var(--warning)]">Restricciones</span>' : mp ? '<span class="rounded-full bg-[var(--brand-dim)] px-2 py-1 text-xs text-[var(--brand)]">OK</span>' : '<span class="rounded-full bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-disabled)]">Sin datos</span>'}
+        </div>
+
+        ${mp ? `
+        <div class="grid grid-cols-2 gap-2 text-sm">
+          ${mp.bloodType ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🩸</span> <span class="text-[var(--text-secondary)]">${mp.bloodType}</span></div>` : ''}
+          ${mp.gender ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚧</span> <span class="text-[var(--text-secondary)]">${mp.gender === 'male' ? 'Masculino' : mp.gender === 'female' ? 'Femenino' : 'Otro'}</span></div>` : ''}
+          ${mp.height ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">📏</span> <span class="text-[var(--text-secondary)]">${mp.height} cm</span></div>` : ''}
+          ${mp.weight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚖️</span> <span class="text-[var(--text-secondary)]">${mp.weight} kg</span></div>` : ''}
+          ${mp.age ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🎂</span> <span class="text-[var(--text-secondary)]">${mp.age} años</span></div>` : ''}
+          ${mp.experience ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">💪</span> <span class="text-[var(--text-secondary)] capitalize">${mp.experience}</span></div>` : ''}
+        </div>
+
+        ${hasRestrictions ? `
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">🍽️ Restricciones alimentarias</p>
+          <div class="flex flex-wrap gap-1.5">
+            ${mp!.dietaryRestrictions!.glutenFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🌾 Sin gluten</span>' : ''}
+            ${mp!.dietaryRestrictions!.lactoseFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🥛 Sin lactosa</span>' : ''}
+            ${mp!.dietaryRestrictions!.vegan ? '<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">🌱 Vegano</span>' : ''}
+            ${mp!.dietaryRestrictions!.vegetarian ? '<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">🥬 Vegetariano</span>' : ''}
+            ${mp!.dietaryRestrictions!.nutFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🥜 Sin frutos secos</span>' : ''}
+            ${mp!.dietaryRestrictions!.shellfishFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🦐 Sin mariscos</span>' : ''}
+            ${(mp!.dietaryRestrictions!.other || []).map(o => `<span class="rounded-md bg-[var(--surface-3)] px-2 py-0.5 text-xs text-[var(--text-secondary)]">${o}</span>`).join('')}
+          </div>
+        </div>` : ''}
+
+        ${(mp!.intolerances || []).length > 0 ? `
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">⚠️ Intolerancias</p>
+          <div class="space-y-1">
+            ${(mp!.intolerances || []).map(i => `
+              <div class="flex items-center justify-between rounded-lg bg-[var(--surface-4)] px-3 py-1.5">
+                <span class="text-sm text-[var(--text-secondary)]">${i.substance}</span>
+                <span class="rounded-full px-2 py-0.5 text-xs font-medium ${severityBadge(i.severity)}">${i.severity === 'mild' ? 'Leve' : i.severity === 'moderate' ? 'Moderada' : 'Severa'}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>` : ''}
+
+        ${mp!.allergies ? `<div class="mt-2 rounded-lg bg-[var(--danger-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🤧 Alergias:</span> <span class="text-sm text-[var(--danger)]">${mp!.allergies}</span></div>` : ''}
+        ${mp!.conditions ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🏥 Condiciones:</span> <span class="text-sm text-[var(--warning)]">${mp!.conditions}</span></div>` : ''}
+        ${mp!.medications ? `<div class="mt-1 rounded-lg bg-blue-500/5 px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">💊 Medicación:</span> <span class="text-sm text-blue-300">${mp!.medications}</span></div>` : ''}
+        ${mp!.injuries ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🤕 Lesiones:</span> <span class="text-sm text-[var(--warning)]">${mp!.injuries}</span></div>` : ''}
+        ${mp!.surgery ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🏨 Cirugías:</span> <span class="text-sm text-[var(--text-secondary)]">${mp!.surgery}</span></div>` : ''}
+
+        ${mp!.goals && mp!.goals.length > 0 ? `
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">🎯 Objetivos</p>
+          <div class="flex flex-wrap gap-1.5">${mp!.goals.map(g => `<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">${g}</span>`).join('')}</div>
+        </div>` : ''}
+
+        ${mp!.emergencyName || mp!.emergencyPhone ? `
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-1">🚨 Emergencia</p>
+          <p class="text-sm text-[var(--text-secondary)]">${mp!.emergencyName || '-'} · ${mp!.emergencyPhone || '-'}</p>
+        </div>` : ''}
+        ` : '<p class="text-sm text-[var(--text-disabled)] italic">⚠️ Este cliente no ha completado su perfil médico</p>'}
+      `;
+      clinicalList.appendChild(card);
+    });
+  }
+
+  function filterClients(): void {
+    const searchTerm = searchInput.value.toLowerCase();
+    let filtered = allClients;
+    if (searchTerm) {
+      filtered = filtered.filter(c =>
+        c.name.toLowerCase().includes(searchTerm) ||
+        c.email.toLowerCase().includes(searchTerm) ||
+        (c.medicalProfile?.allergies || '').toLowerCase().includes(searchTerm) ||
+        (c.medicalProfile?.conditions || '').toLowerCase().includes(searchTerm) ||
+        (c.medicalProfile?.intolerances || []).some(i => i.substance.toLowerCase().includes(searchTerm))
+      );
+    }
+    renderClients(filtered);
+  }
+
+  searchInput.addEventListener('input', filterClients);
+
+  async function loadClinical(): Promise<void> {
+    loadingState.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    clinicalList.classList.add('hidden');
+
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.href = '/login';
+        return;
+      }
+
+      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+      const userData = userDoc.data();
+      if (!userData || userData.role !== 'trainer') {
+        window.location.href = '/dashboard';
+        return;
+      }
+
+      // Load assigned clients
+      const clientsSnap = await getDocs(query(collection(db, 'users'), where('assignedTrainerId', '==', currentUser.uid)));
+      allClients = clientsSnap.docs.map(doc => {
+        const data = doc.data();
+        return {
+          uid: doc.id,
+          name: data.name || data.email || doc.id,
+          email: data.email || '',
+          medicalProfile: data.medicalProfile || null,
+        };
+      });
+
+      updateStats();
+      renderClients(allClients);
+      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      showError(`Error: ${msg}`);
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadClinical);
+  loadClinical();
+  const interval = setInterval(loadClinical, 60000);
+  document.addEventListener('astro:before-swap', () => clearInterval(interval));
+</script>
