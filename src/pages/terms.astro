@@ -1,0 +1,41 @@
+---
+import PublicPageLayout from '@/layouts/PublicPageLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const currentPath = Astro.url.pathname;
+---
+
+<PublicPageLayout currentPath={currentPath}>
+  <div class="mx-auto max-w-2xl px-4 py-16">
+    <div class="animate-fade-in space-y-8">
+      <div>
+        <h1 class="text-3xl font-bold">Términos y Condiciones</h1>
+        <p class="mt-2 text-[var(--text-tertiary)]">Última actualización: Julio 2026</p>
+      </div>
+
+      <div class="space-y-6 text-[var(--text-secondary)]">
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)] mb-3">1. Aceptación de los términos</h2>
+          <p>Al usar CampFit, aceptas estos términos. Si no estás de acuerdo, no utilices el servicio.</p>
+        </div>
+
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)] mb-3">2. Servicio</h2>
+          <p>CampFit es una plataforma de entrenamiento personalizado y seguimiento nutricional. No sustituye el consejo médico profesional. Consulta siempre a un médico antes de comenzar cualquier programa de ejercicio o dieta.</p>
+        </div>
+
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)] mb-3">3. Cuenta de usuario</h2>
+          <p>Eres responsable de mantener la confidencialidad de tu cuenta. No compartas tus credenciales. CampFit se reserva el derecho de suspender cuentas que violen estos términos.</p>
+        </div>
+
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)] mb-3">4. Limitación de responsabilidad</h2>
+          <p>CampFit no se hace responsable de lesiones, daños o pérdidas derivadas del uso de la plataforma. El usuario asume todos los riesgos asociados con la actividad física.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</PublicPageLayout>

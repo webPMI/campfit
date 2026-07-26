@@ -2106,3 +2106,124 @@ FirebaseError: Missing or insufficient permissions.
 ============================================================
 [DEV SESSION STARTED] 2026-07-26T13:38:51.762Z
 ============================================================
+[2026-07-26T13:39:23.749Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:28.524Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:28.967Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-26T13:39:34.224Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:34.622Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-26T13:39:42.493Z] [CLIENT] [INFO] [/admin] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:51.597Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:51.854Z] [CLIENT] [WARN] [/admin/users] [AuthGuard] Usuario ZrQNPnAPmmWBtStSNU3Rr83Asin2 con rol client intentó acceder a ruta de admin
+[2026-07-26T13:39:51.915Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:52.215Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:39:52.618Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-26T13:40:09.730Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:10.062Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:10.392Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:10.716Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:11.078Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:11.400Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:11.725Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:12.057Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:12.376Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:12.674Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:12.981Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:13.289Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:13.589Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:13.903Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:14.203Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:14.496Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:14.840Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:15.132Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:15.423Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:15.715Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:16.012Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:16.122Z] [CLIENT] [INFO] [/admin] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:16.311Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:16.479Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:16.643Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:16.854Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:22.687Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:26.367Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:28.254Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:28.273Z] [CLIENT] [WARN] [/admin/users] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T13:40:28.330Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T13:40:30.619Z
+============================================================
+[2026-07-26T13:40:32.493Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:32.820Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:33.171Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:33.471Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:33.798Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:34.114Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:34.414Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:34.776Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:35.122Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:35.428Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:35.736Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:36.040Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:36.349Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:36.643Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:36.993Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:37.307Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:37.623Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:37.924Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:38.240Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:38.551Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:38.855Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:39.148Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:39.467Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:39.754Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:40.041Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:40.332Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:40.630Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:40.939Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:41.221Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:41.524Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:41.808Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:42.095Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:42.383Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:42.689Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:42.988Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:43.306Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:43.609Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:43.944Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:44.227Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:44.585Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:44.876Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:45.177Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:45.463Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:45.775Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:46.131Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:46.418Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:46.726Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:47.017Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:47.329Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:47.621Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:47.908Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:48.203Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:48.503Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:48.789Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:49.092Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:49.381Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:49.689Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:49.979Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:50.297Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:50.598Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:50.886Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:40:51.467Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:41:01.539Z] [CLIENT] [INFO] [/admin/config] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:41:05.179Z] [CLIENT] [INFO] [/admin/c] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:41:08.792Z] [CLIENT] [INFO] [/admin/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:43:26.347Z] [CLIENT] [INFO] [/admin/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:43:27.266Z] [CLIENT] [INFO] [/admin/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T13:43:32.327Z] [CLIENT] [INFO] [/admin/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T13:43:36.968Z
+============================================================
