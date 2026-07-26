@@ -4995,3 +4995,30 @@ FirebaseError: Missing or insufficient permissions.
 ============================================================
 [DEV SESSION STARTED] 2026-07-26T20:20:58.973Z
 ============================================================
+[2026-07-26T20:21:29.925Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:15.316Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:15.515Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:22:15.554Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:39.201Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:39.379Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:22:39.448Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:42.704Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:45.933Z] [CLIENT] [INFO] [/onboarding] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:49.202Z] [CLIENT] [INFO] [/onboarding] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:22:55.566Z] [CLIENT] [INFO] [/onboarding] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:23:13.230Z
+============================================================
+[2026-07-26T20:23:23.343Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:23:23.528Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:23:23.572Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:24:17.835Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:25:32.748Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:25:45.961Z
+============================================================

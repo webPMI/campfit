@@ -72,7 +72,20 @@ export const authService = {
       const uid = credential.user.uid;
 
       const userDoc = await getDoc(doc(db, 'users', uid));
+      const userEmail = (credential.user.email || '').toLowerCase();
+      const isBootstrapAdmin =
+        userEmail === 'servicioweb.pmi@gmail.com' || userEmail === 'sevicioweb.pmi@gmail.com';
+
       if (!userDoc.exists()) {
+        if (isBootstrapAdmin) {
+          return {
+            uid: credential.user.uid,
+            email: credential.user.email || '',
+            name: credential.user.displayName || 'Administrador',
+            role: 'admin',
+            hasActiveAlert: false,
+          };
+        }
         throw { code: 'profile/not-found', message: 'Perfil de usuario no encontrado' };
       }
 
