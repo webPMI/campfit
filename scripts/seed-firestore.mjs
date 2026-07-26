@@ -19,11 +19,11 @@ const EMULATOR_HOST = process.env.FIREBASE_EMULATOR_HOST || 'localhost:8080';
 
 const SEED_CONFIG = {
     admins: 1,
-    trainers: 3,
-    clientsPerTrainer: 5,
-    workoutsPerClient: 3,
-    dietsPerClient: 2,
-    progressLogsPerClient: 8,
+    trainers: 5,
+    clientsPerTrainer: 6,
+    workoutsPerClient: 4,
+    dietsPerClient: 3,
+    progressLogsPerClient: 12,
     forceClean: false,
 };
 
