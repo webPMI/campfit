@@ -24,7 +24,7 @@ const altLang = lang === 'es' ? 'en' : 'es';
     </div>
 
     <!-- 🌐 Selector de tema e idioma (esquina superior derecha) -->
-    <div class="fixed right-4 top-4 z-50 flex items-center gap-2">
+    <div class="fixed right-4 top-4 z-30 flex items-center gap-2">
       <UIThemeSwitcher />
       <a href={`${currentPath}?lang=${altLang}`} class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] backdrop-blur-sm transition-all duration-200 hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] active:scale-95">
         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3"/></svg>
@@ -42,9 +42,13 @@ const altLang = lang === 'es' ? 'en' : 'es';
           </div>
           CampFit
         </a>
-        <div class="flex items-center gap-3">
-          <a href={`/login?lang=${lang}`} class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Iniciar Sesión</a>
-          <a href={`/register?lang=${lang}`} class="rounded-lg bg-[var(--brand)] px-3 py-1.5 text-sm font-medium text-[var(--text-on-brand)] hover:bg-[var(--brand-hover)] transition-colors">Registrarse</a>
+        <!-- 🔘 Nav dinámica: cambia según estado de autenticación -->
+        <div id="navActions" class="flex items-center gap-3">
+          <!-- Por defecto: botones para no autenticados -->
+          <a id="navLogin" href={`/login?lang=${lang}`} class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Iniciar Sesión</a>
+          <a id="navRegister" href={`/register?lang=${lang}`} class="rounded-lg bg-[var(--brand)] px-3 py-1.5 text-sm font-medium text-[var(--text-on-brand)] hover:bg-[var(--brand-hover)] transition-colors">Registrarse</a>
+          <!-- Para usuarios logeados (oculto por defecto) -->
+          <a id="navDashboard" href="/client/dashboard" class="hidden rounded-lg bg-[var(--brand)] px-3 py-1.5 text-sm font-medium text-[var(--text-on-brand)] hover:bg-[var(--brand-hover)] transition-colors">Dashboard</a>
         </div>
       </div>
     </nav>
@@ -53,4 +57,29 @@ const altLang = lang === 'es' ? 'en' : 'es';
       <slot />
     </main>
   </div>
+
+  <!-- 🟢 Helper centralizado de sesión (singleton, sin duplicar peticiones) -->
+  <script>
+    import { onSessionReady } from '@/lib/auth/sessionHelper';
+
+    const navLogin = document.getElementById('navLogin');
+    const navRegister = document.getElementById('navRegister');
+    const navDashboard = document.getElementById('navDashboard');
+
+    onSessionReady((ctx) => {
+      if (!ctx.user) {
+        // ❌ No hay sesión: mostrar Login/Register
+        navLogin?.classList.remove('hidden');
+        navRegister?.classList.remove('hidden');
+        navDashboard?.classList.add('hidden');
+        return;
+      }
+
+      // ✅ Hay sesión: mostrar Dashboard con la ruta correcta según el rol
+      navLogin?.classList.add('hidden');
+      navRegister?.classList.add('hidden');
+      navDashboard?.classList.remove('hidden');
+      navDashboard?.setAttribute('href', ctx.dashboardPath);
+    });
+  </script>
 </BaseLayout>

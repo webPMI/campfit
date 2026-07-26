@@ -135,26 +135,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   }
 
   // Si ya hay sesión activa, redirigir al dashboard correspondiente
-  import { auth } from '@/lib/firebase';
-  import { onAuthStateChanged } from 'firebase/auth';
-  import { doc, getDoc } from 'firebase/firestore';
-  import { db } from '@/lib/firebase';
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      try {
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        if (snap.exists()) {
-          redirectByRole(snap.data().role || 'client');
-        } else {
-          // Sin documento en Firestore: detectar bootstrap admin por email
-          const email = (user.email || '').toLowerCase();
-          const isBootstrap =
-            email === 'servicioweb.pmi@gmail.com' ||
-            email === 'sevicioweb.pmi@gmail.com';
-          redirectByRole(isBootstrap ? 'admin' : 'client');
-        }
-      } catch { /* ignore */ }
-    }
+  import { onSessionReady, redirectToDashboard } from '@/lib/auth/sessionHelper';
+  onSessionReady((ctx) => {
+    if (ctx.user) redirectToDashboard(ctx.role);
   });
 
   loginForm.addEventListener('submit', async (e) => {

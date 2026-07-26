@@ -14,7 +14,7 @@ const { currentPath, lang } = Astro.props;
 const opposite = lang === 'es' ? 'en' : 'es';
 ---
 
-<div class="fixed right-4 top-4 z-50">
+<div class="fixed right-4 top-4 z-30">
   <a
     id="lang-switcher-btn"
     href={`${currentPath}?lang=${opposite}`}

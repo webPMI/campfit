@@ -30,8 +30,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         {t('hero.description')}
       </p>
 
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+      <!-- 🔘 Botones dinámicos: cambian según si hay sesión -->
+      <div id="heroButtons" class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+        <!-- Por defecto: botones para no autenticados -->
         <a
+          id="ctaRegister"
           href={`/register?lang=${lang}`}
           class="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 active:scale-[0.98]"
         >
@@ -41,18 +44,29 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </svg>
         </a>
         <a
+          id="ctaLogin"
           href={`/login?lang=${lang}`}
           class="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-6 py-3 text-sm font-medium text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] active:scale-[0.98]"
         >
           {t('hero.login')}
-          
         </a>
-        hola 
+
+        <!-- 🏠 Botón para usuarios logeados (oculto por defecto, se muestra con JS) -->
+        <a
+          id="ctaDashboard"
+          href="/client/dashboard"
+          class="hidden group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 active:scale-[0.98]"
+        >
+          Ir al Dashboard
+          <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
       </div>
     </UICard>
 
     <!-- Features -->
-    <div id="features" class="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div class="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
       <div style="animation-delay: 0.1s" class="animate-slide-up">
         <UICard variant="interactive" padding="sm" class="text-left h-full">
           <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-dim)]">
@@ -91,3 +105,28 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     </div>
   </div>
 </PublicPageLayout>
+
+<script>
+  // 🔍 Usa el helper centralizado de sesión (singleton)
+  import { onSessionReady } from '@/lib/auth/sessionHelper';
+
+  const ctaRegister = document.getElementById('ctaRegister')!;
+  const ctaLogin = document.getElementById('ctaLogin')!;
+  const ctaDashboard = document.getElementById('ctaDashboard')!;
+
+  onSessionReady((ctx) => {
+    if (!ctx.user) {
+      ctaRegister.style.display = '';
+      ctaLogin.style.display = '';
+      ctaDashboard.classList.add('hidden');
+      return;
+    }
+    ctaRegister.style.display = 'none';
+    ctaLogin.style.display = 'none';
+    ctaDashboard.classList.remove('hidden');
+    ctaDashboard.setAttribute('href', ctx.dashboardPath);
+  });
+</script>
++++++++ REPLACE<parameter>diff</parameter>
+<parameter>path</parameter>
+<parameter>src/pages/index.astro</parameter>

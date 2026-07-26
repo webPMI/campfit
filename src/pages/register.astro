@@ -117,19 +117,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { isValidEmail, isValidPassword, isValidName } from '@/lib/validators';
   import { t } from '@/i18n/client';
   import type { FirebaseError } from 'firebase/app';
-  import { getAuth, onAuthStateChanged } from 'firebase/auth';
-  import { getFirestore, doc, getDoc } from 'firebase/firestore';
-
-  // Detectar si ya hay sesion -> redirigir
-  onAuthStateChanged(getAuth(), async (u) => {
-    if (u) {
-      const snap = await getDoc(doc(getFirestore(), 'users', u.uid));
-      if (snap.exists()) {
-        const role = snap.data().role || 'client';
-        const routes: Record<string, string> = { admin: '/admin/dashboard', trainer: '/trainer/dashboard', client: '/client/dashboard' };
-        window.location.href = routes[role] || '/client/dashboard';
-      }
-    }
+  import { onSessionReady, redirectToDashboard } from '@/lib/auth/sessionHelper';
+  onSessionReady((ctx) => {
+    if (ctx.user) redirectToDashboard(ctx.role);
   });
 
   const nameInput = document.getElementById('name') as HTMLInputElement;
