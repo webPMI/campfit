@@ -61,13 +61,15 @@
 </div>
 
 <script>
+  import { t } from '@/i18n/client';
+
   /**
    * showConfirm - Muestra un modal de confirmación y retorna una promesa.
    * @param {Object} options
    * @param {string} options.title - Título del modal
    * @param {string} options.message - Mensaje descriptivo
-   * @param {string} [options.confirmText='Confirmar'] - Texto del botón de confirmación
-   * @param {string} [options.cancelText='Cancelar'] - Texto del botón de cancelar
+   * @param {string} [options.confirmText] - Texto del botón de confirmación
+   * @param {string} [options.cancelText] - Texto del botón de cancelar
    * @param {'danger'|'warning'|'info'} [options.variant='danger'] - Variante de color
    * @returns {Promise<boolean>}
    */
@@ -113,8 +115,8 @@
       // Set content
       titleEl.textContent = options.title;
       messageEl.textContent = options.message;
-      confirmBtn.textContent = options.confirmText || 'Confirmar';
-      cancelBtn.textContent = options.cancelText || 'Cancelar';
+      confirmBtn.textContent = options.confirmText || t('common.save');
+      cancelBtn.textContent = options.cancelText || t('common.cancel');
 
       // Set variant styles
       confirmBtn.className = `flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-all active:scale-[0.98] ${colors.btn}`;
