@@ -113,6 +113,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const ctaRegister = document.getElementById('ctaRegister')!;
   const ctaLogin = document.getElementById('ctaLogin')!;
   const ctaDashboard = document.getElementById('ctaDashboard')!;
+  
 
   onSessionReady((ctx) => {
     if (!ctx.user) {
@@ -124,6 +125,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     ctaRegister.style.display = 'none';
     ctaLogin.style.display = 'none';
     ctaDashboard.classList.remove('hidden');
+    ctaDashboard.textContent = ctx.dashboardLabel;
     ctaDashboard.setAttribute('href', ctx.dashboardPath);
   });
 </script>

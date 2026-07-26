@@ -67,6 +67,9 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
   let callbackFired = false; // evita ejecutar el callback más de una vez
 
   return onAuthStateChanged(auth, async (user) => {
+    // Primera llamada: Firebase está inicializando — no tomar acción
+    if (!initialized) { initialized = true; return; }
+
     if (!user) {
       if (!isPublicPath()) window.location.replace('/login');
       return;
@@ -92,7 +95,7 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
         // Redirigir al dashboard correcto según el rol real
         const target =
           effectiveRole === 'trainer' ? '/trainer/dashboard' :
-          effectiveRole === 'client'  ? '/client/dashboard'  : '/login';
+            effectiveRole === 'client' ? '/client/dashboard' : '/login';
         window.location.replace(target);
         return;
       }

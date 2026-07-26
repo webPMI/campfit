@@ -23,6 +23,10 @@ export interface SessionContext {
   role: string | null;
   /** Ruta del dashboard según el rol */
   dashboardPath: string;
+  /** Texto amigable para el botón de dashboard según el rol */
+  dashboardLabel: string;
+  /** Nombre del usuario (display name o email) */
+  userName: string | null;
 }
 
 // 🗺️ Mapa de roles → rutas
@@ -30,6 +34,13 @@ const ROLE_ROUTES: Record<string, string> = {
   admin: '/admin/dashboard',
   trainer: '/trainer/dashboard',
   client: '/client/dashboard',
+};
+
+// 🏷️ Etiquetas amigables para el botón de dashboard según el rol
+const DASHBOARD_LABELS: Record<string, string> = {
+  admin: 'Panel Admin',
+  trainer: 'Panel Trainer',
+  client: 'Mi Progreso',
 };
 
 // 🧠 Cache interno: solo se resuelve una vez
@@ -43,7 +54,7 @@ let listeners: Array<(ctx: SessionContext) => void> = [];
  */
 async function resolveSession(user: FirebaseUser | null): Promise<SessionContext> {
   if (!user) {
-    return { user: null, role: null, dashboardPath: '/login' };
+    return { user: null, role: null, dashboardPath: '/login', dashboardLabel: '', userName: null };
   }
 
   // Si ya tenemos cache y el mismo uid, devolver cache
@@ -54,16 +65,21 @@ async function resolveSession(user: FirebaseUser | null): Promise<SessionContext
   try {
     const snap = await getDoc(doc(db, 'users', user.uid));
     const role = snap.exists() ? (snap.data().role || 'client') : 'client';
+    const name = snap.exists() ? (snap.data().name || user.displayName || user.email || 'Usuario') : (user.displayName || user.email || 'Usuario');
     cachedSession = {
       user,
       role,
       dashboardPath: ROLE_ROUTES[role] || '/client/dashboard',
+      dashboardLabel: DASHBOARD_LABELS[role] || 'Mi Panel',
+      userName: name,
     };
   } catch {
     cachedSession = {
       user,
       role: 'client',
       dashboardPath: '/client/dashboard',
+      dashboardLabel: 'Mi Progreso',
+      userName: user.displayName || user.email || 'Usuario',
     };
   }
 

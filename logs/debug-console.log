@@ -4327,3 +4327,671 @@ FirebaseError: Missing or insufficient permissions.
 ============================================================
 [DEV SESSION STARTED] 2026-07-26T20:03:37.036Z
 ============================================================
+[2026-07-26T20:04:18.981Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:06.405Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:06.872Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:06.955Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:07.366Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:07.570Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:07.614Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:07.969Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:08.179Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:08.212Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:08.580Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:08.772Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:08.818Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:09.179Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:09.434Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:09.470Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:09.797Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:09.994Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:10.049Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:10.399Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:10.589Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:10.632Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:10.948Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:11.145Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:11.180Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:11.498Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:11.693Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:11.731Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:12.153Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:12.343Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:12.534Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:12.587Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:12.906Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:13.106Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:13.179Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:13.511Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:13.706Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:13.738Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:14.076Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:14.264Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:14.297Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:14.629Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:14.815Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:14.852Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:15.168Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:15.369Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:15.404Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:15.728Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:15.929Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:15.966Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:16.298Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:16.496Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:16.530Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:16.863Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:17.065Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:17.112Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:17.465Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:17.643Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:17.684Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:17.995Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:18.166Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:18.203Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:18.963Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:19.157Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:19.191Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:19.518Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:19.973Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:20.009Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:20.341Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:20.541Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:20.582Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:20.912Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:21.107Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:21.142Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:21.462Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:21.647Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:21.683Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:22.006Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:22.193Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:22.232Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:22.564Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:22.753Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:22.791Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:23.113Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:23.309Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:23.345Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:23.697Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:23.883Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:23.917Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:24.261Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:24.445Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:24.481Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:24.819Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:25.016Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:25.054Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:25.431Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:25.645Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:25.681Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:26.019Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:26.231Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:26.267Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:26.579Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:26.759Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:26.795Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:27.105Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:27.302Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:27.336Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:27.695Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:27.880Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:27.916Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:28.234Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:28.427Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:28.462Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:28.811Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:28.985Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:29.019Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:29.328Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:29.523Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:29.561Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:29.942Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:30.178Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:30.212Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:30.929Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:31.125Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:31.160Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:31.465Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:31.656Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:31.691Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:31.997Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:32.187Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:32.224Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:32.559Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:32.731Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:32.767Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:33.398Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:33.593Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:33.632Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:33.945Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:34.133Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:34.181Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:34.528Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:34.709Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:34.745Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:35.353Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:35.544Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:35.580Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:35.916Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:36.109Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:36.144Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:36.461Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:36.647Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:36.683Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:37.031Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:37.223Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:37.255Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:37.651Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:37.838Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:37.871Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:38.180Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:38.389Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:38.422Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:38.762Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:38.952Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:38.985Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:39.344Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:39.525Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:39.562Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:39.868Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:40.091Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:40.182Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:40.611Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:40.820Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:40.887Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:41.218Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:41.396Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:41.434Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:41.782Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:41.985Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:42.028Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:42.374Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:42.565Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:42.602Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:42.927Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:43.127Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:43.167Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:43.517Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:43.722Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:43.763Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:44.100Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:44.283Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:44.320Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:44.637Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:44.813Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:44.852Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:45.202Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:45.549Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:45.762Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:45.822Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:46.166Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:46.358Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:46.393Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:46.783Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:46.975Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:47.011Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:47.333Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:47.538Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:47.578Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:47.928Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:48.116Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:48.160Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:48.455Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:48.653Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:48.825Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:49.184Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:49.385Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:49.430Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:49.783Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:49.992Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:50.084Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:50.519Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:50.718Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:50.763Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:51.167Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:51.342Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:51.386Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:51.850Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:52.033Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:52.106Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:52.454Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:52.676Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:52.736Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:53.094Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:53.287Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:53.321Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:53.653Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:53.845Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:53.880Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:54.264Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:54.471Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:54.510Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:54.846Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:55.033Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:55.069Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:55.393Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:55.587Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:55.624Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:10:56.041Z
+============================================================
+[2026-07-26T20:10:55.959Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:56.164Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:56.211Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:56.581Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:56.779Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:56.824Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:57.146Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:57.504Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:57.547Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:57.893Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:58.078Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:58.125Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:58.464Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:58.653Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:58.700Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:59.103Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:59.311Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:59.352Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:59.704Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:10:59.898Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:10:59.942Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:11:00.281Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:11:00.457Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:11:00.499Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:11:16.271Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:11:16.909Z
+============================================================
+[2026-07-26T20:11:27.111Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:11:30.090Z
+============================================================
+[2026-07-26T20:12:02.449Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:10.447Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:14.389Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:14.754Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:14.933Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:12:14.969Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:15.313Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:15.510Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:12:15.551Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:15.865Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:16.038Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:12:16.074Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:16.377Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:12:16.488Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:13:33.558Z
+============================================================
+[2026-07-26T20:13:50.770Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:37.053Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:38.854Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:39.724Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:40.356Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:40.853Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:41.110Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:41.331Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:41.567Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:41.762Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:41.997Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:42.206Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:42.564Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:15:42.768Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:16:00.156Z
+============================================================
+[2026-07-26T20:18:56.480Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:01.009Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:19:08.249Z
+============================================================
+[2026-07-26T20:19:24.573Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:24.952Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:24.989Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:25.302Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:25.477Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:25.531Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:25.904Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:26.088Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:26.127Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:26.454Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:26.670Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:26.705Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:27.036Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:27.232Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:27.291Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:27.631Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:27.808Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:27.845Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:28.156Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:28.343Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:28.378Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:28.691Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:28.875Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:28.909Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:29.223Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:29.393Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:29.429Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:29.769Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:29.942Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:29.980Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:30.304Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:30.477Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:30.512Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:30.923Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:31.108Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:31.144Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:31.459Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:31.641Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:31.677Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:32.029Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:32.199Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:32.234Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:32.548Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:32.742Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:32.779Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:33.131Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:33.312Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:33.347Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:33.651Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:33.815Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:33.851Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:34.182Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:34.359Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:34.394Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:34.698Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:34.870Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:34.908Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:35.230Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:35.398Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:35.436Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:35.763Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:35.926Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:35.963Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:36.280Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:36.452Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:36.486Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:36.851Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:37.018Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:37.055Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:37.380Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:37.553Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:37.590Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:37.949Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:38.122Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:38.161Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:38.483Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:38.683Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:38.717Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:39.050Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:39.222Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:39.258Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:39.573Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:39.736Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:39.779Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:40.103Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:40.267Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:40.313Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:40.648Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:40.821Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:40.858Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:41.171Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:41.344Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:41.405Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:41.849Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:42.032Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:42.069Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:42.436Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:42.620Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:42.672Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:43.012Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:43.183Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:43.222Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:43.536Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:43.708Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:43.745Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:44.051Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:44.237Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:44.296Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:44.685Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:44.867Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:44.903Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:45.235Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:45.407Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:45.448Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:45.752Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:45.916Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:45.955Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:46.307Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:46.497Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:46.554Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:46.884Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:47.058Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:47.098Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:47.413Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:47.585Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:47.634Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:47.966Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:48.135Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:48.190Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:48.524Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:48.709Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:48.759Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:49.072Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:49.253Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:49.301Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:49.637Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:49.822Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:49.872Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:50.192Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:50.376Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:50.419Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:50.729Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:50.908Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:50.948Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:51.271Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:51.443Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:51.491Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:51.803Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:51.974Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:52.014Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:52.317Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:52.482Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:52.521Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:52.850Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:53.018Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:53.065Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:53.401Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:53.572Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:53.614Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:54.084Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:54.250Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:54.294Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:55.687Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:55.853Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:56.049Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:56.186Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:56.352Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:56.517Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:56.695Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:56.868Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:57.043Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:57.221Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:57.393Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:57.588Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:57.751Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:57.926Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:58.107Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:58.270Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:19:58.380Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:58.656Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:19:58.839Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:20:02.790Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:20:48.961Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:20:49.233Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:20:49.288Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:20:49.931Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:20:55.006Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T20:20:55.176Z] [CLIENT] [WARN] [/client/dashboard] [InitPage] Rol "admin
+" no permitido en esta página, redirigiendo a /login
+[2026-07-26T20:20:55.241Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T20:20:58.973Z
+============================================================

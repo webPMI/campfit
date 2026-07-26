@@ -68,17 +68,17 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
     onSessionReady((ctx) => {
       if (!ctx.user) {
-        // ❌ No hay sesión: mostrar Login/Register
         navLogin?.classList.remove('hidden');
         navRegister?.classList.remove('hidden');
         navDashboard?.classList.add('hidden');
         return;
       }
 
-      // ✅ Hay sesión: mostrar Dashboard con la ruta correcta según el rol
+      // ✅ Hay sesión: mostrar botón con texto según el rol
       navLogin?.classList.add('hidden');
       navRegister?.classList.add('hidden');
       navDashboard?.classList.remove('hidden');
+      navDashboard!.textContent = ctx.dashboardLabel; // "Panel Admin" | "Panel Trainer" | "Mi Progreso"
       navDashboard?.setAttribute('href', ctx.dashboardPath);
     });
   </script>

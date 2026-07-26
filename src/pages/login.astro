@@ -134,11 +134,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     window.location.href = routes[role] || '/client/dashboard';
   }
 
-  // Si ya hay sesión activa, redirigir al dashboard correspondiente
-  import { onSessionReady, redirectToDashboard } from '@/lib/auth/sessionHelper';
-  onSessionReady((ctx) => {
-    if (ctx.user) redirectToDashboard(ctx.role);
-  });
+  // Nota: No redirigimos automáticamente al cargar /login para evitar loops con el guard de dashboard.
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

@@ -117,10 +117,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { isValidEmail, isValidPassword, isValidName } from '@/lib/validators';
   import { t } from '@/i18n/client';
   import type { FirebaseError } from 'firebase/app';
-  import { onSessionReady, redirectToDashboard } from '@/lib/auth/sessionHelper';
-  onSessionReady((ctx) => {
-    if (ctx.user) redirectToDashboard(ctx.role);
-  });
+  // Nota: No redirigimos automáticamente al cargar /register para evitar loops con el guard de dashboard.
 
   const nameInput = document.getElementById('name') as HTMLInputElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
