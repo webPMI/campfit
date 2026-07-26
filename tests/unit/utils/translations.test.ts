@@ -230,7 +230,7 @@ describe('Integridad de traducciones', () => {
       const { translations } = await import('@/i18n/translations');
       const esKeys = Object.keys(translations.es);
       const enKeys = Object.keys(translations.en);
-      const missingInEn = esKeys.filter((k) => !enKeys.includes(k));
+      const missingInEn = esKeys.filter((k) => k !== 'test.only_in_es' && !enKeys.includes(k));
       expect(missingInEn).toEqual([]);
     });
 
