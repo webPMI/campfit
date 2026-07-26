@@ -31,3 +31,21 @@ pnpm-debug.log*
 
 # vscode settings (personal)
 .vscode/
+
+# agent lock files
+scripts/.agent-lock
+scripts/.mcp-lock
+.mcp.json.bak
+
+# playwright output
+tests/e2e-report/
+test-results/
+
+# coverage output
+tests/coverage/
+coverage/
+
+# environment files
+.env.local
+.env.development
+.env.test

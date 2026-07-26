@@ -116,6 +116,7 @@ import {
   sendPasswordReset,
   changePassword,
 } from '../../../src/lib/shared/profileService';
+import { getUserInitial, getRoleBadge } from '../../../src/lib/shared/ui';
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
@@ -271,5 +272,56 @@ describe('profileService', () => {
       expect(result).toEqual({ success: false, message: 'Error al cambiar la contraseña' });
     });
   });
+<<<<<<< HEAD
+
+  // ── getUserInitial ────────────────────────────────────────────────────
+
+  describe('getUserInitial', () => {
+    it('✅ should return first letter of name', () => {
+      expect(getUserInitial('Juan')).toBe('J');
+    });
+
+    it('✅ should return uppercase letter', () => {
+      expect(getUserInitial('maría')).toBe('M');
+    });
+
+    it('✅ should return ? for empty name', () => {
+      expect(getUserInitial('')).toBe('?');
+    });
+
+    it('✅ should return ? for undefined', () => {
+      expect(getUserInitial(undefined as unknown as string)).toBe('?');
+    });
+  });
+
+  // ── getRoleBadge ────────────────────────────────────────────────────
+
+  describe('getRoleBadge', () => {
+    it('✅ should return admin badge class', () => {
+      const result = getRoleBadge('admin');
+      expect(result).toHaveProperty('class');
+      expect(result.class).toContain('bg-purple');
+    });
+
+    it('✅ should return trainer badge class', () => {
+      const result = getRoleBadge('trainer');
+      expect(result).toHaveProperty('class');
+      expect(result.class).toContain('bg-blue');
+    });
+
+    it('✅ should return client badge class', () => {
+      const result = getRoleBadge('client');
+      expect(result).toHaveProperty('class');
+      expect(result.class).toContain('bg-emerald');
+    });
+
+    it('✅ should return default badge class for unknown role', () => {
+      const result = getRoleBadge('unknown');
+      expect(result).toHaveProperty('class');
+      expect(result.class).toContain('bg-zinc');
+    });
+  });
+=======
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 });
 

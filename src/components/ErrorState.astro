@@ -1,0 +1,22 @@
+﻿---
+export interface Props {
+  title?: string;
+  message?: string;
+  retryText?: string;
+  retryHref?: string;
+}
+
+const { title = 'Error', message = 'Ha ocurrido un error inesperado', retryText = 'Intentar de nuevo', retryHref } = Astro.props;
+---
+<div class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="mb-4 text-red-500">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  </div>
+  <h3 class="text-lg font-medium text-red-600 dark:text-red-400">{title}</h3>
+  <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{message}</p>
+  {retryHref && (
+    <a href={retryHref} class="mt-4 inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors">
+      {retryText}
+    </a>
+  )}
+</div>

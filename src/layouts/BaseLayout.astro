@@ -47,6 +47,20 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<<<<<<< HEAD
+  </head>
+  <body class="min-h-screen antialiased" style="font-family: 'Inter', sans-serif;">
+    <script>
+      // Apply theme immediately to prevent flash
+      (function() {
+        const theme = localStorage.getItem('campfit_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <div class="pb-20">
+      <slot />
+    </div>
+=======
 
     <!--
       Anti-flash-of-wrong-theme (AFOWT) script.
@@ -95,8 +109,14 @@ const {
         import '@/lib/debug/firestoreDebug';
       </script>
     )}
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   </body>
 </html>
+
+<!-- Firestore Debug System (Ctrl+Shift+D) -->
+<script>
+  import '@/lib/debug/firestoreDebug';
+</script>
 
 <style>
   @import "tailwindcss";
@@ -113,6 +133,22 @@ const {
     --color-emerald-500: #10b981;
     --color-emerald-900: #064e3b;
   }
+
+  /* ─── Dark mode (default) ──────────────────────────────────── */
+  [data-theme="dark"] body {
+    background: linear-gradient(to bottom right, #09090b, #18181b, #09090b);
+    color: #f4f4f5;
+  }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #27272a; }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+  /* ─── Light mode ───────────────────────────────────────────── */
+  [data-theme="light"] body {
+    background: linear-gradient(to bottom right, #f4f4f5, #ffffff, #f4f4f5);
+    color: #18181b;
+  }
+  [data-theme="light"] ::-webkit-scrollbar-thumb { background: #d4d4d8; }
+  [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
 
   /* Animaciones personalizadas */
   @keyframes fadeIn {
@@ -138,6 +174,14 @@ const {
     animation: pulse-glow 3s ease-in-out infinite;
   }
 
+<<<<<<< HEAD
+  /* Scrollbar personalizada */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { }
+</style>
+=======
   /* Scrollbar personalizada — usamos las variables CSS del tema */
   ::-webkit-scrollbar {
     width: 6px;
@@ -153,3 +197,4 @@ const {
     background: var(--color-scrollbar-thumb-hover);
   }
 </style>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a

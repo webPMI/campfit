@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+# CampFit - Sistema de Agentes Especializados
+=======
 # CampFit - Guía para Agentes IA
 
 ## 🚀 Comandos Rápidos
@@ -136,13 +139,58 @@ Si haces `git pull` y hay conflictos:
 - `src/components/ThemeToggle.astro` - Botón toggle tema
 
 ## Development
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
-When starting the dev server, use background mode:
+> **Este archivo es el punto de entrada para agentes IA.**
 
+---
+
+## Sistema de Agentes
+
+CampFit tiene un sistema de **9 agentes especializados** con roles fijos, cada uno con su propio contexto, reglas, checklist y backlog de tareas.
+
+### 🎯 Registro Maestro
+**`agents/__master.md`** — LEER PRIMERO. Contiene:
+- Lista completa de todos los agentes disponibles
+- Cómo delegar tareas entre agentes
+- Estado general del proyecto
+- Estructura del sistema
+
+### 👤 Agentes Disponibles
+
+| # | Agente | Área | Directorio |
+|---|--------|------|------------|
+| 1 | **Planner** | Coordinación, roadmap | `agents/planner-agent/` |
+| 2 | **Theme** | UI/UX, Design System | `agents/theme-agent/` |
+| 3 | **Language** | i18n, traducciones ES/EN | `language-agent/` |
+| 4 | **Testing** | Tests, cobertura | `testing-agent/` |
+| 5 | **Client** | Módulo cliente | `agents/client-agent/` |
+| 6 | **Admin** | Módulo admin | `agents/admin-agent/` |
+| 7 | **Trainer** | Módulo trainer | `agents/trainer-agent/` |
+| 8 | **Auth** | Autenticación, roles | `agents/auth-agent/` |
+| 9 | **Infra** | Firebase, scripts, CI/CD | `agents/infra-agent/` |
+
+### 📋 Quick Start para Agentes
+
+```bash
+# 1. Leer registro maestro
+cat agents/__master.md
+
+# 2. Leer guía de tu rol
+cat agents/[tu-rol]/GUIDE.md
+
+# 3. Revisar tareas pendientes
+cat agents/[tu-rol]/TASKS.md
 ```
-astro dev --background
-```
 
+<<<<<<< HEAD
+### 📚 Documentación de Referencia
+- `AGENTS_GUIDE.md` — Guía completa del harness
+- `CONTEXT.md` — Contexto del proyecto
+- `TODO.md` — TODO centralizado
+- `.clinerules` — Golden Rules
+- `GIT_WORKFLOW.md` — Flujo de git
+=======
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
 ## Documentation
@@ -157,3 +205,4 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a

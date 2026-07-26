@@ -1,8 +1,8 @@
 # CampFit 2.0 - Cline Rules
 
 ## Stack
-- Framework: Astro 5 (SSR + islands)
-- UI: Astro components + Alpine.js / vanilla JS (sin React)
+- Framework: Astro 7 (SSR con @astrojs/node)
+- UI: Vanilla JS (sin React)
 - Styles: Tailwind CSS 4 (dark mode default)
 - State: Nanostores
 - Database: Cloud Firestore (NoSQL)
@@ -15,48 +15,38 @@
 ```
 campfit-astro/
 ├── src/               # 📁 Código fuente (sin tests)
-│   ├── components/    # Componentes .astro
-│   ├── layouts/       # Layouts .astro
-│   ├── pages/         # Páginas y API routes
-│   │   ├── login.astro
-│   │   ├── register.astro
-│   │   ├── recover.astro
-│   │   ├── dashboard.astro
-│   │   ├── index.astro
-│   │   └── admin/
-
-│   │       ├── dashboard.astro   # Panel admin con estadísticas reales
-│   │       ├── users.astro       # Lista de usuarios con roles
-│   │       ├── trainers.astro    # Lista de entrenadores
-│   │       ├── clients.astro     # Lista de clientes
-│   │       └── settings.astro    # Configuración del sistema
-│   ├── lib/           # Utilidades y helpers
-│   │   ├── firebase.ts
-│   │   ├── validators.ts      # Validación de formularios (pure functions)
-│   │   ├── routeGuards.ts     # Protección de rutas por rol
-│   │   └── client/            # Servicios del lado cliente
-│   ├── services/      # Servicios (Firebase, etc.)
-│   │   ├── authService.ts     # Auth centralizado (login, register, Google, recover)
-│   │   └── adminService.ts    # Admin: CRUD usuarios, estadísticas
-│   ├── stores/        # Nanostores
-│   │   └── authStore.ts       # $user, $authLoading, $authError, $isAuthenticated, etc.
-
-│   ├── types/         # Tipos globales
-│   │   └── index.ts           # User, MedicalProfile, LoginForm, RegisterForm, AuthError
-│   └── i18n/          # Internacionalización
-│       ├── translations.ts    # ES/EN traducciones
-│       └── client.ts          # Cliente i18n con persistencia localStorage
+│   ├── components/    # Componentes .astro (ConfirmModal, DecorativeBackground, LanguageSwitcher, Skeleton)
+│   ├── layouts/       # Layouts (BaseLayout, AdminLayout, ClientLayout, TrainerLayout, PublicPageLayout)
+│   ├── pages/         # Páginas + API routes
+│   │   ├── login.astro / register.astro / recover.astro / dashboard.astro / index.astro
+│   │   ├── onboarding.astro / 404.astro / 500.astro
+│   │   ├── admin/     # dashboard, users, clients, trainers, chat, settings
+│   │   ├── client/    # dashboard, workouts, diets, progress, chat, support, settings, medical-profile
+│   │   ├── trainer/   # dashboard, clients, workouts, diets, chat, settings
+│   │   └── api/       # API routes
+│   ├── lib/           # Servicios y utilidades modulares
+│   │   ├── firebase.ts / routeGuards.ts / validators.ts
+│   │   ├── shared/    # ui, chat, logger, authGuard, i18n, profileService
+│   │   ├── admin/     # adminAuth, adminUsers, adminSubscriptions, adminRender, adminInit, adminUtils barrel
+│   │   ├── trainer/   # trainerAuth, trainerClients, trainerWorkouts, trainerDiets, trainerProgress, trainerChat, trainerRender, trainerInit, trainerUtils barrel
+│   │   ├── client/    # chatService, dietService, progressService, workoutService, onboardingService, achievementsService, adherenceService, calendarService
+│   │   ├── auth/      # roleRedirect
+│   │   ├── helpers/   # userMappers
+│   │   ├── firebase/  # auth, firestore (wrappers testing)
+│   │   └── debug/     # firestoreDebug
+│   ├── services/      # authService, adminService
+│   ├── stores/        # authStore (Nanostores)
+│   ├── types/         # index (User, MedicalProfile, AuthError, etc.)
+│   └── i18n/          # translations, client, index, types
 ├── tests/             # 📁 TESTS CENTRALIZADOS
 │   ├── setup/         # Setup global (mocks Firebase)
 │   ├── mocks/         # Factories de datos mock
 │   ├── unit/          # Tests unitarios (Vitest)
-│   │   ├── services/
-│   │   ├── stores/
-│   │   └── utils/
-│   ├── integration/   # Tests de integración (Vitest + Firebase Emulator)
+│   ├── integration/   # Tests de integración
 │   └── e2e/           # Tests E2E (Playwright)
-├── vitest.config.ts   # ⚙️ Apunta a tests/
-├── playwright.config.ts # ⚙️ Apunta a tests/e2e/
+├── agents/            # Sistema de agentes especializados (ver abajo)
+├── vitest.config.ts
+├── playwright.config.ts
 └── package.json
 ```
 
@@ -120,3 +110,7 @@ Before implementing, read:
 > 📌 **Integraciones (Firebase, R2, Capacitor, Workers, CI/CD, Sentry, PostHog):** Ver `11_integraciones_operaciones.md`
 > 📌 **Instrucciones para agentes IA:** Ver `14_agent_instructions.md`
 > 📌 **Protocolo de documentación:** Ver `18_protocolo_documentacion.md`
+
+## Agent System
+CampFit tiene **9 agentes especializados** con roles fijos. Ver `agents/__master.md` para el registro maestro.
+Cada agente tiene su directorio con GUIDE.md, RULES.md, CHECKLIST.md y TASKS.md.

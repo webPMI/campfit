@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
-// https://astro.build/config
 export default defineConfig({
   output: 'static',
   vite: {
@@ -13,7 +12,14 @@ export default defineConfig({
         '@': path.resolve('./src'),
       },
     },
+    server: {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'unsafe-none',
+        'Cross-Origin-Embedder-Policy': 'unsafe-none',
+      },
+    },
+    css: {
+      transformer: 'lightningcss',
+    },
   },
 });
-
-

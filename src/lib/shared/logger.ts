@@ -40,7 +40,7 @@ export const logger = {
   },
 
   /**
-   * Log de advertencia (solo en desarrollo).
+   * Log de advertencia (siempre se registra).
    * @param module - Nombre del módulo
    * @param message - Mensaje descriptivo
    * @param args - Argumentos adicionales para contexto

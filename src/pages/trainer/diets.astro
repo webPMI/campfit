@@ -52,15 +52,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, renderEmptyState } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToDietsByTrainer,
     createDiet,
     updateDiet,
     deleteDiet,
-    ICONS,
-    renderEmptyState,
-    escapeHtml,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerDiet, Meal } from '@/lib/trainer/trainerUtils';
   import { logger } from '@/lib/shared/logger';
@@ -70,12 +68,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let allClients: TrainerClient[] = [];
   let allDiets: TrainerDiet[] = [];
 
+<<<<<<< HEAD
+  const unsubInit = requireAuth(async (user) => {
+=======
   const unsubscribeAuth = requireAuth(async (user) => {
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     initDiets(user.uid);
   });
 
   document.addEventListener('astro:before-swap', () => {
+<<<<<<< HEAD
+    unsubInit?.();
+=======
     unsubscribeAuth?.();
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     unsubClients?.();
     unsubDiets?.();
   });
@@ -95,6 +101,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     unsubClients = subscribeToClients(trainerId, (clients) => {
       allClients = clients;
       clientFilter.innerHTML = `<option value="">${escapeHtml('Todos los clientes')}</option>` +
+        `<option value="template">✨ Plantillas Reutilizables</option>` +
         clients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
 
       const urlClientId = new URLSearchParams(window.location.search).get('clientId');
@@ -162,36 +169,59 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const clientId = clientFilter.value;
 
     let filtered = allDiets;
-    if (clientId) filtered = filtered.filter((d) => d.clientId === clientId);
+    if (clientId === 'template') {
+      filtered = filtered.filter((d) => d.isTemplate || d.clientId === 'template');
+    } else if (clientId) {
+      filtered = filtered.filter((d) => d.clientId === clientId);
+    }
 
     if (filtered.length === 0) {
       container.innerHTML = renderEmptyState(
         ICONS.diets,
-        clientId ? 'Este cliente no tiene dietas' : 'No has creado dietas aún',
+        clientId === 'template' ? 'No tienes plantillas guardadas aún' : (clientId ? 'Este cliente no tiene dietas' : 'No has creado dietas aún'),
       );
       return;
     }
 
     container.innerHTML = filtered
       .map((d) => {
-        const clientName = allClients.find((c) => c.uid === d.clientId)?.name || 'Sin cliente';
+        const isTemplate = d.isTemplate || d.clientId === 'template';
+        const clientName = isTemplate
+          ? '✨ Plantilla Reutilizable'
+          : allClients.find((c) => c.uid === d.clientId)?.name || 'Sin cliente';
+        const clientTextClass = isTemplate ? 'text-purple-400 font-semibold' : 'text-emerald-400';
         const typeLabel = TYPE_LABELS[d.type] || d.type;
         return `
           <div class="rounded-xl border theme-border theme-surface-secondary p-4 backdrop-blur-sm transition-all hover:theme-border-strong/60">
             <div class="flex items-center justify-between">
               <div class="min-w-0 flex-1">
+<<<<<<< HEAD
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-medium text-zinc-200">${escapeHtml(d.name)}</p>
+                  ${isTemplate ? '<span class="rounded-full bg-purple-500/10 px-2 py-0.5 text-[10px] font-medium text-purple-400 border border-purple-500/20">✨ Plantilla</span>' : ''}
+                </div>
+                <p class="text-xs text-zinc-500 mt-0.5">
+                  <span class="${clientTextClass}">${escapeHtml(clientName)}</span>
+                  <span class="text-zinc-600 mx-1">·</span>
+=======
                 <p class="text-sm font-medium theme-text-primary">${escapeHtml(d.name)}</p>
                 <p class="text-xs theme-text-tertiary mt-0.5">
                   <span class="theme-text-brand">${escapeHtml(clientName)}</span>
                   <span class="theme-text-tertiary mx-1">·</span>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
                   ${d.meals?.length || 0} comidas
                   <span class="theme-text-tertiary mx-1">·</span>
                   ${typeLabel}
                 </p>
               </div>
               <div class="flex items-center gap-2 shrink-0 ml-4">
+<<<<<<< HEAD
+                <span class="rounded-full bg-orange-500/10 px-2.5 py-0.5 text-xs font-medium text-orange-400 border border-orange-500/20">${d.totalCalories || 0} kcal</span>
+                <button onclick="window.__editDiet('${d.id}')" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">
+=======
                 <span class="rounded-full bg-orange-500/10 px-2.5 py-0.5 text-xs font-medium text-orange-400 border border-orange-500/20">${d.totalCalories || 0}</span>
                 <button onclick="window.__editDiet('${d.id}')" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-2.5 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
                   <svg class="h-3.5 w-3.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                   </svg>
@@ -225,15 +255,28 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       meals: [] as Meal[],
     };
 
-    const clientOptions = allClients
+    const clientOptions = `<option value="template" ${d.clientId === 'template' || d.isTemplate ? 'selected' : ''}>✨ Plantilla Reutilizable (Sin cliente)</option>` +
+      allClients
       .map((c) => `<option value="${c.uid}" ${c.uid === d.clientId ? 'selected' : ''}>${escapeHtml(c.name)}</option>`)
       .join('');
 
     editor.innerHTML = `
+<<<<<<< HEAD
+      <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/60 p-5 backdrop-blur-sm">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-semibold text-zinc-200">${isEditing ? 'Editar Dieta' : 'Nueva Dieta'}</h2>
+            <button id="btn-load-template-diet" type="button" class="rounded-lg border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-medium text-purple-300 hover:bg-purple-500/20 transition-all flex items-center gap-1.5">
+              📋 Cargar desde Plantilla
+            </button>
+          </div>
+          <button onclick="window.__closeEditor()" class="rounded-lg border border-zinc-700/50 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-all">Cancelar</button>
+=======
       <div class="rounded-xl border theme-border theme-surface-secondary p-5 backdrop-blur-sm">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold theme-text-primary">${isEditing ? 'Editar Dieta' : 'Nueva Dieta'}</h2>
           <button onclick="window.__closeEditor()" class="rounded-lg border theme-border-strong theme-surface-secondary/80 px-3 py-1.5 text-xs theme-text-secondary hover:theme-text-primary transition-all">Cancelar</button>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
         </div>
 
         <div class="space-y-4">
@@ -312,6 +355,90 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const mealsList = document.getElementById('meals-list')!;
     const mealCountBadge = document.getElementById('meal-count-badge')!;
 
+    // ─── Load Template Button ─────────────────────────────────────────────────
+    const btnLoadTemplate = document.getElementById('btn-load-template-diet');
+    if (btnLoadTemplate) {
+      btnLoadTemplate.addEventListener('click', () => {
+        const templates = allDiets.filter((t) => t.isTemplate || t.clientId === 'template');
+        if (templates.length === 0) {
+          alert('No tienes plantillas guardadas. Crea una dieta y asígnala como "Plantilla Reutilizable".');
+          return;
+        }
+
+        const existing = document.getElementById('template-picker-modal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'template-picker-modal';
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm';
+        modal.innerHTML = `
+          <div class="mx-4 w-full max-w-md rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-semibold text-zinc-200">📋 Seleccionar Plantilla</h3>
+              <button id="btn-close-template-picker" class="text-zinc-500 hover:text-zinc-300 transition-colors">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p class="text-xs text-zinc-500 mb-4">Las comidas de la plantilla se copiarán al formulario. Podrás modificarlas antes de guardar.</p>
+            <div class="space-y-2 max-h-72 overflow-y-auto">
+              ${templates.map((tpl) => `
+                <button data-template-id="${tpl.id}" class="template-pick-btn w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-3 text-left hover:border-purple-500/40 hover:bg-purple-500/5 transition-all">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm font-medium text-zinc-200">${escapeHtml(tpl.name)}</p>
+                      <p class="text-xs text-zinc-500">${tpl.meals?.length || 0} comidas · ${tpl.totalCalories || 0} kcal · ${tpl.type || 'normal'}</p>
+                    </div>
+                    <svg class="h-4 w-4 text-purple-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </div>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        document.getElementById('btn-close-template-picker')!.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+        modal.querySelectorAll('.template-pick-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const templateId = btn.getAttribute('data-template-id');
+            const template = allDiets.find((t) => t.id === templateId);
+            if (!template) return;
+
+            // Load meals from template into the editor
+            mealsList.innerHTML = '';
+            if (template.meals && template.meals.length > 0) {
+              template.meals.forEach((meal, i) => {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = renderMealRow(meal, i);
+                mealsList.appendChild(wrapper.firstElementChild || wrapper);
+              });
+            } else {
+              mealsList.innerHTML = '<p class="text-xs text-zinc-600 py-2">No hay comidas en esta plantilla</p>';
+            }
+            updateMealCount();
+
+            // Pre-fill name if empty
+            const nameInput = document.getElementById('diet-name') as HTMLInputElement;
+            if (!nameInput.value.trim()) {
+              nameInput.value = template.name + ' (copia)';
+            }
+
+            // Set total calories from template
+            const calInput = document.getElementById('diet-calories') as HTMLInputElement;
+            if (calInput) calInput.value = String(template.totalCalories || 0);
+
+            modal.remove();
+          });
+        });
+      });
+    }
+
     function updateMealCount(): void {
       const count = mealsList.querySelectorAll('[data-meal-row]').length;
       mealCountBadge.textContent = `(${count})`;
@@ -354,18 +481,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const mealElements = mealsList.querySelectorAll('[data-meal-row]');
       let total = 0;
       mealElements.forEach((el) => {
-        const inputs = el.querySelectorAll('input');
-        const cal = parseInt((inputs[2] as HTMLInputElement).value) || 0;
+        const calInput = el.querySelector('.meal-cal-input') as HTMLInputElement;
+        const cal = parseInt(calInput?.value || '0') || 0;
         total += cal;
       });
       const calInput = document.getElementById('diet-calories') as HTMLInputElement;
-      calInput.value = String(total);
+      if (calInput) calInput.value = String(total);
     }
 
     // Escuchar cambios en inputs de calorías de comidas para auto-calcular
     mealsList.addEventListener('input', (e) => {
       const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT') {
+      if (target.classList.contains('meal-cal-input')) {
         calculateTotalCalories();
       }
     });
@@ -376,13 +503,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const type = (document.getElementById('diet-type') as HTMLSelectElement).value as 'normal' | 'advanced';
       const somatotype = (document.getElementById('diet-somatotype') as HTMLSelectElement).value as TrainerDiet['somatotype'] || undefined;
 
-      // Calcular calorías totales desde las comidas
       const mealElements = mealsList.querySelectorAll('[data-meal-row]');
       let totalCalories = 0;
-      mealElements.forEach((el) => {
-        const inputs = el.querySelectorAll('input');
-        totalCalories += parseInt((inputs[2] as HTMLInputElement).value) || 0;
-      });
 
       const nameError = document.getElementById('diet-name-error')!;
       const clientError = document.getElementById('diet-client-error')!;
@@ -400,24 +522,41 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       btnSpinner.classList.remove('hidden');
 
       const meals: Meal[] = Array.from(mealElements).map((el, idx) => {
-        const inputs = el.querySelectorAll('input');
+        const selectName = el.querySelector('.meal-name-select') as HTMLSelectElement;
+        const inputDesc = el.querySelector('.meal-desc-input') as HTMLInputElement;
+        const inputCal = el.querySelector('.meal-cal-input') as HTMLInputElement;
+        const inputProtein = el.querySelector('.meal-protein-input') as HTMLInputElement;
+        const inputCarbs = el.querySelector('.meal-carbs-input') as HTMLInputElement;
+        const inputFat = el.querySelector('.meal-fat-input') as HTMLInputElement;
+
+        const calories = parseInt(inputCal?.value || '0') || 0;
+        totalCalories += calories;
+
         return {
           id: `meal-${Date.now()}-${idx}`,
-          name: (inputs[0] as HTMLInputElement).value as Meal['name'],
-          description: (inputs[1] as HTMLInputElement).value,
-          calories: parseInt((inputs[2] as HTMLInputElement).value) || 0,
-          protein: parseInt((inputs[3] as HTMLInputElement).value) || 0,
-          carbs: parseInt((inputs[4] as HTMLInputElement).value) || 0,
-          fat: parseInt((inputs[5] as HTMLInputElement).value) || 0,
+          name: (selectName?.value || 'other') as Meal['name'],
+          description: inputDesc?.value || '',
+          calories,
+          protein: parseInt(inputProtein?.value || '0') || 0,
+          carbs: parseInt(inputCarbs?.value || '0') || 0,
+          fat: parseInt(inputFat?.value || '0') || 0,
           order: idx + 1,
         };
-      }).filter((m) => m.name.trim() !== '');
+      });
+
+      // Si el usuario ingresó manualmente totalCalories en el input global, respetarlo si no hay comidas
+      const manualCalories = parseInt((document.getElementById('diet-calories') as HTMLInputElement).value) || 0;
+      if (meals.length === 0 && manualCalories > 0) {
+        totalCalories = manualCalories;
+      }
 
       try {
+        const isTemplateFlag = clientId === 'template';
+        const finalClientId = isTemplateFlag ? 'template' : clientId;
         if (isEditing && diet) {
-          await updateDiet(diet.id, { name, clientId, trainerId, type, somatotype, totalCalories, meals });
+          await updateDiet(diet.id, { name, clientId: finalClientId, trainerId, type, somatotype, totalCalories, meals, isTemplate: isTemplateFlag });
         } else {
-          await createDiet({ clientId, trainerId, name, type, somatotype, totalCalories, meals });
+          await createDiet({ clientId: finalClientId, trainerId, name, type, somatotype, totalCalories, meals, isTemplate: isTemplateFlag });
         }
         editor.classList.add('hidden');
         editor.innerHTML = '';
@@ -431,6 +570,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }
     });
 
+    // Close editor helper
     (window as any).__closeEditor = () => {
       editor.classList.add('hidden');
       editor.innerHTML = '';
@@ -441,8 +581,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     return `
       <div data-meal-row class="rounded-xl border theme-border theme-surface-secondary p-3 backdrop-blur-sm">
         <div class="flex items-center gap-2 mb-2">
+<<<<<<< HEAD
+          <span class="text-xs text-zinc-600 font-medium w-5">#${index + 1}</span>
+          <select class="meal-name-select flex-1 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500/50">
+=======
           <span class="text-xs theme-text-tertiary font-medium w-5">#${index + 1}</span>
           <select class="flex-1 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
             <option value="breakfast" ${meal.name === 'breakfast' ? 'selected' : ''}>Desayuno</option>
             <option value="lunch" ${meal.name === 'lunch' ? 'selected' : ''}>Almuerzo</option>
             <option value="snack" ${meal.name === 'snack' ? 'selected' : ''}>Snack</option>
@@ -456,6 +601,24 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </button>
         </div>
         <div class="flex items-center gap-2">
+<<<<<<< HEAD
+          <input type="text" class="meal-desc-input flex-1 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2.5 py-1.5 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" value="${escapeHtml(meal.description || '')}" placeholder="Descripción" />
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">Cal</label>
+            <input type="number" class="meal-cal-input w-14 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" value="${meal.calories || ''}" placeholder="0" title="Calorías" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">P</label>
+            <input type="number" class="meal-protein-input w-12 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" value="${meal.protein || ''}" placeholder="0" title="Proteínas" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">C</label>
+            <input type="number" class="meal-carbs-input w-12 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" value="${meal.carbs || ''}" placeholder="0" title="Carbohidratos" />
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="text-[10px] text-zinc-600">G</label>
+            <input type="number" class="meal-fat-input w-12 rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-2 py-1.5 text-xs text-zinc-200 text-center focus:outline-none focus:border-emerald-500/50" value="${meal.fat || ''}" placeholder="0" title="Grasas" />
+=======
           <input type="text" value="${escapeHtml(meal.description)}" placeholder="Descripción" class="flex-1 rounded-lg border theme-border theme-surface-secondary/60 px-2.5 py-1.5 text-xs theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
           <div class="flex items-center gap-1">
             <label class="text-[10px] theme-text-tertiary">Cal</label>
@@ -472,6 +635,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <div class="flex items-center gap-1">
             <label class="text-[10px] theme-text-tertiary">G</label>
             <input type="number" value="${meal.fat || ''}" placeholder="0" class="w-12 rounded-lg border theme-border theme-surface-secondary/60 px-2 py-1.5 text-xs theme-text-primary text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/10" title="Grasas" />
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
           </div>
         </div>
       </div>

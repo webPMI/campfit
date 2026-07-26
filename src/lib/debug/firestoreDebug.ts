@@ -351,6 +351,11 @@ async function runTests(uid: string, role: string): Promise<void> {
     const start = performance.now();
     const test = queryTests[i]!;
     try {
+<<<<<<< HEAD
+      const test = queryTests[i];
+      if (!test) continue;
+=======
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
       const result = await test.run();
       const duration = Math.round(performance.now() - start);
 
@@ -378,7 +383,13 @@ async function runTests(uid: string, role: string): Promise<void> {
         testEl.appendChild(errorDiv);
       }
 
+<<<<<<< HEAD
+      if (test) {
+        results.push({ name: test.name, ...result, duration });
+      }
+=======
       results.push({ name: test.name, ...result, duration });
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     } catch (err: unknown) {
       const duration = Math.round(performance.now() - start);
       const errorMsg = err instanceof Error ? err.message : String(err);
@@ -391,7 +402,12 @@ async function runTests(uid: string, role: string): Promise<void> {
       errorDiv.className = 'error-detail';
       errorDiv.textContent = errorMsg;
       testEl.appendChild(errorDiv);
+<<<<<<< HEAD
+      const failedTest = queryTests[i];
+      results.push({ name: failedTest?.name || 'unknown', ok: false, count: 0, error: errorMsg, duration });
+=======
       results.push({ name: test.name, ok: false, count: 0, error: errorMsg, duration });
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     }
   }
 

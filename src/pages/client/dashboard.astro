@@ -175,7 +175,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
         <!-- Quick Actions -->
         <div>
+<<<<<<< HEAD
+          <h3 class="mb-3 text-sm font-semibold text-zinc-400 uppercase tracking-wider">{t('client.quick.actions')}</h3>
+=======
           <h3 class="mb-3 text-sm font-semibold theme-text-secondary uppercase tracking-wider">Acciones rápidas</h3>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
           <div class="grid grid-cols-2 gap-3">
             <a
               href={`/client/workouts?lang=${lang}`}
@@ -227,26 +231,62 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
           </div>
         </div>
+
+        <!-- Weekly Adherence Widget -->
+        <div id="adherenceWidget" class="hidden">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Adherencia Semanal</h3>
+            <span id="adherenceStreak" class="flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-400">🔥 0 días</span>
+          </div>
+          <div class="card-glow rounded-2xl border border-zinc-800/60 bg-zinc-900/80 p-5 backdrop-blur-xl">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <!-- Meal adherence -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <p class="text-xs text-zinc-500">Comidas completadas</p>
+                  <span id="adherenceMealPct" class="text-xs font-bold text-emerald-400">0%</span>
+                </div>
+                <div class="h-2 overflow-hidden rounded-full bg-zinc-800">
+                  <div id="adherenceMealBar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-700" style="width:0%"></div>
+                </div>
+                <p class="mt-1.5 text-[10px] text-zinc-600"><span id="adherenceMealDays">0</span>/7 días activos esta semana</p>
+              </div>
+              <!-- Workout adherence -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <p class="text-xs text-zinc-500">Entrenamientos completados</p>
+                  <span id="adherenceWorkoutCount" class="text-xs font-bold text-blue-400">0</span>
+                </div>
+                <div class="h-2 overflow-hidden rounded-full bg-zinc-800">
+                  <div id="adherenceWorkoutBar" class="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-700" style="width:0%"></div>
+                </div>
+                <p class="mt-1.5 text-[10px] text-zinc-600"><span id="adherenceWorkoutDays">0</span>/7 días activos esta semana</p>
+              </div>
+              <!-- Overall message -->
+              <div class="flex flex-col justify-center items-center text-center rounded-xl bg-zinc-800/40 p-3">
+                <p id="adherenceMessage" class="text-xs font-medium text-zinc-300">¡Sigue así!</p>
+                <p class="mt-1 text-[10px] text-zinc-600">Basado en los últimos 7 días</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
 </ClientLayout>
 
 <script>
+  import { initClientPage } from '@/lib/client/clientInit';
+  import { setAuthLoading } from '@/stores/authStore';
   import { authService } from '@/services/authService';
-  import { setUser, setAuthLoading } from '@/stores/authStore';
-  import { db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
   import { subscribeToWorkouts } from '@/lib/client/workoutService';
   import { subscribeToDiets, subscribeToTodayMeals } from '@/lib/client/dietService';
   import { subscribeToProgress } from '@/lib/client/progressService';
+  import { subscribeToWeeklyAdherence } from '@/lib/client/adherenceService';
   import { t } from '@/i18n/client';
 
-  const loadingScreen = document.getElementById('loadingScreen')!;
-  const dashboardContent = document.getElementById('dashboardContent')!;
   const greeting = document.getElementById('greeting')!;
   const logoutBtn = document.getElementById('logoutBtn')!;
-
   const workoutProgress = document.getElementById('workoutProgress')!;
   const workoutBar = document.getElementById('workoutBar')!;
   const dietAdherence = document.getElementById('dietAdherence')!;
@@ -256,6 +296,104 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const avgRpe = document.getElementById('avgRpe')!;
   const activeDays = document.getElementById('activeDays')!;
 
+<<<<<<< HEAD
+  // ─── State para limpieza ──────────────────────────────────────────────────
+  let unsubWorkouts: (() => void) | null = null;
+  let unsubDiets: (() => void) | null = null;
+  let unsubTodayMeals: (() => void) | null = null;
+  let unsubProgress: (() => void) | null = null;
+  let unsubAdherence: (() => void) | null = null;
+  let currentMealsCount = 0;
+
+  const cleanupInit = initClientPage({
+    onReady: async (firebaseUser, userData) => {
+      const userName = userData?.name || firebaseUser.displayName || firebaseUser.email || 'Usuario';
+      greeting.textContent = `${t('client.greeting')}, ${userName}! 👋`;
+
+      // Suscribirse a streams en tiempo real
+      unsubWorkouts = subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+        if (workouts.length > 0 && workouts[0]) {
+          const workout = workouts[0];
+          const completed = workout.exercises?.filter((ex: any) => ex.completed)?.length || 0;
+          const total = workout.exercises?.length || 0;
+          const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+          workoutProgress.textContent = `${pct}%`;
+          workoutBar.style.width = `${pct}%`;
+        } else {
+          workoutProgress.textContent = t('client.no.workout');
+          workoutBar.style.width = '0%';
+        }
+      });
+
+      unsubDiets = subscribeToDiets(firebaseUser.uid, (diets) => {
+        if (diets.length > 0 && diets[0]) {
+          const diet = diets[0];
+          currentMealsCount = diet.meals?.length || 0;
+          todayCalories.textContent = `${diet.totalCalories || '--'} ${t('client.stats.kcal')}`;
+
+          if (!unsubTodayMeals) {
+            unsubTodayMeals = subscribeToTodayMeals(firebaseUser.uid, (completedIds) => {
+              const pct = currentMealsCount > 0
+                ? Math.round((completedIds.length / currentMealsCount) * 100)
+                : 0;
+              dietAdherence.textContent = `${pct}%`;
+              dietBar.style.width = `${pct}%`;
+            });
+          }
+        } else {
+          dietAdherence.textContent = t('client.no.diet');
+          dietBar.style.width = '0%';
+          todayCalories.textContent = `-- ${t('client.stats.kcal')}`;
+        }
+      });
+
+      unsubProgress = subscribeToProgress(firebaseUser.uid, 'weight', (logs) => {
+        if (logs.length > 0 && logs[0]) {
+          const latest = logs[0];
+          const w = latest.value?.weight;
+          lastWeight.textContent = w ? `${w} ${t('client.stats.kg')}` : t('client.no.weight');
+        } else {
+          lastWeight.textContent = t('client.no.weight');
+        }
+      }, 1);
+
+      // Stats simuladas
+      avgRpe.textContent = '--';
+      activeDays.textContent = '--';
+
+      // ─── Weekly Adherence Widget ──────────────────────────────────────────
+      const adherenceWidget = document.getElementById('adherenceWidget')!;
+      const adherenceStreak = document.getElementById('adherenceStreak')!;
+      const adherenceMealPct = document.getElementById('adherenceMealPct')!;
+      const adherenceMealBar = document.getElementById('adherenceMealBar') as HTMLDivElement;
+      const adherenceMealDays = document.getElementById('adherenceMealDays')!;
+      const adherenceWorkoutCount = document.getElementById('adherenceWorkoutCount')!;
+      const adherenceWorkoutBar = document.getElementById('adherenceWorkoutBar') as HTMLDivElement;
+      const adherenceWorkoutDays = document.getElementById('adherenceWorkoutDays')!;
+      const adherenceMessage = document.getElementById('adherenceMessage')!;
+
+      unsubAdherence = subscribeToWeeklyAdherence(firebaseUser.uid, currentMealsCount || 3, (stats) => {
+        adherenceWidget.classList.remove('hidden');
+        adherenceStreak.textContent = `🔥 ${stats.streakDays} ${stats.streakDays === 1 ? 'día' : 'días'}`;
+        adherenceMealPct.textContent = `${stats.mealAdherencePercent}%`;
+        adherenceMealBar.style.width = `${stats.mealAdherencePercent}%`;
+        adherenceMealDays.textContent = String(stats.daysWithMeals);
+        adherenceWorkoutCount.textContent = String(stats.workoutsCompleted);
+        const workoutPct = Math.min(100, Math.round((stats.daysWithWorkouts / 7) * 100));
+        adherenceWorkoutBar.style.width = `${workoutPct}%`;
+        adherenceWorkoutDays.textContent = String(stats.daysWithWorkouts);
+
+        const overall = Math.round((stats.mealAdherencePercent + workoutPct) / 2);
+        if (overall >= 80) adherenceMessage.textContent = '🏆 ¡Excelente semana!';
+        else if (overall >= 50) adherenceMessage.textContent = '💪 ¡Buen ritmo!';
+        else if (overall >= 20) adherenceMessage.textContent = '📈 ¡Sigue mejorando!';
+        else adherenceMessage.textContent = '🎯 ¡Empieza hoy!';
+      });
+    },
+    onError: () => {
+      // El error visual ya lo maneja clientInit
+    }
+=======
   let currentMealsCount = 0;
   let unsubTodayMeals: (() => void) | null = null;
   let unsubWorkouts: (() => void) | null = null;
@@ -348,6 +486,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     // Stats simuladas (se actualizarán con datos reales después)
     avgRpe.textContent = '--';
     activeDays.textContent = '--';
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 
   logoutBtn.addEventListener('click', async () => {
@@ -362,10 +501,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
+<<<<<<< HEAD
+    cleanupInit();
+    unsubWorkouts?.();
+    unsubDiets?.();
+    unsubTodayMeals?.();
+    unsubProgress?.();
+    unsubAdherence?.();
+=======
     unsubscribe();
     unsubTodayMeals?.();
     unsubWorkouts?.();
     unsubDiets?.();
     unsubProgress?.();
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 </script>

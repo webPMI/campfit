@@ -6,13 +6,8 @@ const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
 const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
 ---
 
-<!-- NOTE: The i18n logic is duplicated here because the page uses `t` in the script section.
-     The PublicPageLayout handles the layout-level i18n (language switcher),
-     but the page still needs `t` for the form content. -->
-
-<PublicPageLayout>
-  <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12">
-    <div class="w-full max-w-sm animate-fade-in">
+<PublicPageLayout currentPath="/login">
+  <div class="w-full max-w-sm animate-fade-in">
       <!-- Logo -->
       <div class="mb-8 text-center">
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20">
@@ -101,7 +96,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         {t('auth.no.account')}
         <a href={`/register?lang=${lang}`} class="font-medium theme-text-brand transition-colors hover:text-emerald-300">{t('auth.create.link')}</a>
       </p>
-    </div>
   </div>
 </PublicPageLayout>
 
@@ -133,8 +127,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   function redirectByRole(role: string) {
     const routes: Record<string, string> = {
-      admin: '/dashboard',
-      trainer: '/dashboard',
+      admin: '/admin/dashboard',
+      trainer: '/trainer/dashboard',
       client: '/client/dashboard',
     };
     window.location.href = routes[role] || '/client/dashboard';
@@ -143,30 +137,37 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
+    logger.info('Login', 'Formulario de login enviado');
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
     if (!email || !password) {
+      logger.warn('Login', 'Campos vacíos en formulario de login');
       showError(t('error.required'));
       return;
     }
 
     if (!isValidEmail(email)) {
+      logger.warn('Login', `Email inválido: ${email}`);
       showError(t('error.invalid-email'));
       return;
     }
 
     loginBtn.disabled = true;
     loginBtn.innerHTML = `<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> ${t('auth.loading.login')}`;
+    logger.info('Login', `Intentando login con email: ${email}`);
 
     try {
       const user = await authService.loginUser(email, password);
+      logger.info('Login', `Login exitoso para usuario: ${user.uid}, rol: ${user.role}`);
       setUser(user);
       setAuthLoading(false);
       redirectByRole(user.role);
-    } catch (err: any) {
-      const code = err.code || '';
+    } catch (err: unknown) {
+      const fbErr = err as { code?: string; message?: string };
+      const code = fbErr.code || '';
+      logger.error('Login', `Error en login para email: ${email}`, { code, message: fbErr.message });
       const messages: Record<string, string> = {
         'auth/invalid-credential': t('error.invalid-credential'),
         'auth/user-not-found': t('error.user-not-found'),
@@ -179,6 +180,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     } finally {
       loginBtn.disabled = false;
       loginBtn.textContent = t('auth.login.btn');
+      logger.info('Login', 'Botón de login restaurado');
     }
   });
 
@@ -232,6 +234,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     hideError();
     googleBtn.disabled = true;
     googleBtn.textContent = t('auth.loading.google');
+    logger.info('Login', 'Botón de Google presionado');
 
     logger.group('Auth:Google - Login page');
     logger.step('Auth:Google', 1, 2, 'Redirigiendo a Google para autenticación...', 'pending');
@@ -256,6 +259,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         'auth/network-request-failed': 'Error de conexión. Verifica tu internet e intenta de nuevo.',
       };
       showError(googleMessages[code] || t('error.google.login'));
+    } finally {
       googleBtn.disabled = false;
       googleBtn.innerHTML = `
         <svg class="h-5 w-5" viewBox="0 0 24 24">
@@ -266,6 +270,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </svg>
         ${t('auth.google.login')}
       `;
+      logger.info('Login', 'Botón de Google restaurado');
     }
   });
 </script>

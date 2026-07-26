@@ -25,9 +25,32 @@ import {
   serverTimestamp,
 } from '@/lib/firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import type { User, AuthError } from '@/types';
-import { mapFirebaseUserToUser } from '@/lib/helpers/userMappers';
+import { AuthError, type User } from '@/types';
 import { logger } from '@/lib/shared/logger';
+
+/**
+ * Convierte un error de Firebase en un Error con el code como mensaje.
+ * Los tests y el UI esperan el code string (ej: 'auth/invalid-credential').
+ *
+ * Firebase Auth real lanza errores con `error.code` (ej: 'auth/invalid-credential').
+ * Los mocks pueden tener el code en `message` (new Error('auth/...')).
+ *
+ * @param err - Error capturado (puede tener code y/o message)
+ * @returns Error con el code de Firebase como mensaje
+ */
+function toAuthError(err: unknown): AuthError {
+  if (err && typeof err === 'object') {
+    const e = err as Record<string, unknown>;
+    let codeStr = 'auth/unknown';
+    if (typeof e.code === 'string') {
+      codeStr = e.code;
+    } else if (typeof e.message === 'string') {
+      codeStr = e.message;
+    }
+    return new AuthError(codeStr, codeStr);
+  }
+  return new AuthError('auth/unknown', 'auth/unknown');
+}
 
 /**
  * Procesa un FirebaseUser para obtener/crear su perfil en Firestore.
@@ -54,13 +77,36 @@ async function processFirebaseUser(firebaseUser: FirebaseUser): Promise<User> {
     };
     await setDoc(doc(db, 'users', uid), profile);
     logger.step('Auth:Google', 4, 4, 'Nuevo perfil creado en Firestore', 'success', { role: 'client' });
-    return mapFirebaseUserToUser(firebaseUser, profile);
+    return {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || '',
+      name: profile.name,
+      role: profile.role,
+      hasActiveAlert: profile.hasActiveAlert,
+      assignedTrainerId: undefined,
+      medicalProfile: undefined,
+      lastActivityAt: undefined,
+      createdAt: undefined,
+      updatedAt: undefined,
+    };
   }
 
   logger.step('Auth:Google', 3, 4, 'Perfil existente encontrado en Firestore', 'success', {
     role: userDoc.data()?.role,
   });
-  return mapFirebaseUserToUser(firebaseUser, userDoc.data());
+  const data = userDoc.data();
+  return {
+    uid: firebaseUser.uid,
+    email: firebaseUser.email || '',
+    name: data.name || firebaseUser.displayName || 'Usuario',
+    role: data.role || 'client',
+    hasActiveAlert: data.hasActiveAlert ?? false,
+    assignedTrainerId: data.assignedTrainerId,
+    medicalProfile: data.medicalProfile,
+    lastActivityAt: data.lastActivityAt,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+  };
 }
 
 export const authService = {
@@ -71,24 +117,38 @@ export const authService = {
     logger.group('loginUser');
     logger.step('Auth', 1, 3, 'Autenticando con email y password', 'pending', { email });
 
-    const credential = await signInWithEmailAndPassword(auth, email, password);
-    const uid = credential.user.uid;
-    logger.step('Auth', 2, 3, 'Usuario autenticado en Firebase Auth', 'success', { uid });
+    try {
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const uid = credential.user.uid;
+      logger.step('Auth', 2, 3, 'Usuario autenticado en Firebase Auth', 'success', { uid });
+      logger.info('Auth', `Login exitoso en Firebase Auth para uid: ${uid}`);
 
-    const userDoc = await getDoc(doc(db, 'users', uid));
-    if (!userDoc.exists()) {
-      logger.step('Auth', 3, 3, 'Perfil no encontrado en Firestore', 'error');
-      logger.groupEnd();
-      const error: AuthError = {
-        code: 'user-not-found',
-        message: 'Perfil de usuario no encontrado',
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (!userDoc.exists()) {
+        logger.warn('Auth', `Perfil no encontrado en Firestore para uid: ${uid}`);
+        throw new AuthError('profile/not-found', 'Perfil de usuario no encontrado');
+      }
+
+      const userData = userDoc.data();
+      logger.info('Auth', `Perfil encontrado en Firestore para uid: ${uid}, rol: ${userData.role}`);
+
+      return {
+        uid: credential.user.uid,
+        email: credential.user.email || '',
+        name: userData.name || credential.user.displayName || 'Usuario',
+        role: userData.role || 'client',
+        hasActiveAlert: userData.hasActiveAlert ?? false,
+        assignedTrainerId: userData.assignedTrainerId,
+        medicalProfile: userData.medicalProfile,
+        lastActivityAt: userData.lastActivityAt,
+        createdAt: userData.createdAt,
+        updatedAt: userData.updatedAt,
       };
-      throw error;
+    } catch (err) {
+      const authErr = toAuthError(err);
+      logger.error('Auth', `Error en login para email: ${email}`, { code: authErr.code, message: authErr.message });
+      throw authErr;
     }
-
-    logger.step('Auth', 3, 3, 'Perfil encontrado en Firestore', 'success', { role: userDoc.data()?.role });
-    logger.groupEnd();
-    return mapFirebaseUserToUser(credential.user, userDoc.data());
   },
 
   /**
@@ -98,24 +158,41 @@ export const authService = {
     logger.group('registerUser');
     logger.step('Auth', 1, 3, 'Creando usuario en Firebase Auth', 'pending', { email });
 
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
-    const uid = credential.user.uid;
-    logger.step('Auth', 2, 3, 'Usuario creado en Firebase Auth', 'success', { uid });
+    try {
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = credential.user.uid;
+      logger.step('Auth', 2, 3, 'Usuario creado en Firebase Auth', 'success', { uid });
+      logger.info('Auth', `Usuario creado en Firebase Auth: ${uid}`);
 
-    const profile = {
-      name,
-      email,
-      role: 'client' as const,
-      hasActiveAlert: false,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
+      const profile = {
+        name,
+        email,
+        role: 'client' as const,
+        hasActiveAlert: false,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
 
-    await setDoc(doc(db, 'users', uid), profile);
-    logger.step('Auth', 3, 3, 'Perfil creado en Firestore', 'success', { role: 'client' });
-    logger.groupEnd();
+      await setDoc(doc(db, 'users', uid), profile);
+      logger.info('Auth', `Perfil creado en Firestore para uid: ${uid}`);
 
-    return mapFirebaseUserToUser(credential.user, profile);
+      return {
+        uid: credential.user.uid,
+        email: credential.user.email || '',
+        name,
+        role: 'client',
+        hasActiveAlert: false,
+        assignedTrainerId: undefined,
+        medicalProfile: undefined,
+        lastActivityAt: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+      };
+    } catch (err) {
+      const authErr = toAuthError(err);
+      logger.error('Auth', `Error en registro para email: ${email}`, { code: authErr.code, message: authErr.message });
+      throw authErr;
+    }
   },
 
   /**
@@ -199,8 +276,6 @@ export const authService = {
       // 2. Fallback: si currentUser ya está seteado (onAuthStateChanged se disparó antes)
       const currentUser = auth.currentUser;
       if (currentUser) {
-        // Solo procesamos si el usuario no existía previamente en la sesión.
-        // Esto evita procesar usuarios ya logueados que navegan a login.
         logger.debug('Auth:Google', 'No hay getRedirectResult, pero hay currentUser - procesando...', {
           uid: currentUser.uid,
         });

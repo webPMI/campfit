@@ -52,15 +52,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, renderEmptyState } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToWorkoutsByTrainer,
     createWorkout,
     updateWorkout,
     deleteWorkout,
-    ICONS,
-    renderEmptyState,
-    escapeHtml,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerWorkout, Exercise } from '@/lib/trainer/trainerUtils';
   import { logger } from '@/lib/shared/logger';
@@ -70,12 +68,20 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let allClients: TrainerClient[] = [];
   let allWorkouts: TrainerWorkout[] = [];
 
+<<<<<<< HEAD
+  const unsubInit = requireAuth(async (user) => {
+=======
   const unsubscribeAuth = requireAuth(async (user) => {
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     initWorkouts(user.uid);
   });
 
   document.addEventListener('astro:before-swap', () => {
+<<<<<<< HEAD
+    unsubInit?.();
+=======
     unsubscribeAuth?.();
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     unsubClients?.();
     unsubWorkouts?.();
   });
@@ -90,7 +96,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     // Subscribe to clients for filter
     unsubClients = subscribeToClients(trainerId, (clients) => {
       allClients = clients;
-      clientFilter.innerHTML = `<option value="">${escapeHtml('Todos los clientes')}</option>` +
+      clientFilter.innerHTML =
+        `<option value="">Todos los clientes</option>` +
+        `<option value="template">✨ Plantillas reutilizables</option>` +
         clients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join('');
 
       const urlClientId = new URLSearchParams(window.location.search).get('clientId');
@@ -159,11 +167,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const clientId = clientFilter.value;
 
     let filtered = allWorkouts;
-    if (clientId) filtered = filtered.filter((w) => w.clientId === clientId);
+    if (clientId === 'template') {
+      filtered = filtered.filter((w) => w.isTemplate || w.clientId === 'template');
+    } else if (clientId) {
+      filtered = filtered.filter((w) => w.clientId === clientId && !w.isTemplate);
+    } else {
+      filtered = filtered.filter((w) => !w.isTemplate && w.clientId !== 'template');
+    }
 
     if (filtered.length === 0) {
       container.innerHTML = renderEmptyState(
         ICONS.workouts,
+        clientId === 'template' ? 'No hay plantillas guardadas' :
         clientId ? 'Este cliente no tiene rutinas' : 'No has creado rutinas aún',
       );
       return;
@@ -171,9 +186,22 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     container.innerHTML = filtered
       .map((w) => {
-        const clientName = allClients.find((c) => c.uid === w.clientId)?.name || 'Sin cliente';
+        const isTemplate = w.isTemplate || w.clientId === 'template';
+        const clientName = isTemplate ? '✨ Plantilla' : allClients.find((c) => c.uid === w.clientId)?.name || 'Sin cliente';
         const difficultyLabels: Record<string, string> = { easy: 'Fácil', medium: 'Intermedio', hard: 'Avanzado', custom: 'Personalizado' };
         return `
+<<<<<<< HEAD
+          <div class="rounded-xl border ${isTemplate ? 'border-purple-500/20 bg-purple-900/10' : 'border-zinc-800/40 bg-zinc-900/40'} p-4 backdrop-blur-sm transition-all hover:border-zinc-700/60">
+            <div class="flex items-center justify-between">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-medium text-zinc-200">${escapeHtml(w.name)}</p>
+                  ${isTemplate ? '<span class="rounded-full bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 text-[10px] font-semibold text-purple-400">✨ Plantilla</span>' : ''}
+                </div>
+                <p class="text-xs text-zinc-500 mt-0.5">
+                  <span class="${isTemplate ? 'text-purple-400' : 'text-emerald-400'}">${escapeHtml(clientName)}</span>
+                  <span class="text-zinc-600 mx-1">·</span>
+=======
           <div class="rounded-xl border theme-border theme-surface-secondary p-4 backdrop-blur-sm transition-all hover:theme-border-strong/60">
             <div class="flex items-center justify-between">
               <div class="min-w-0 flex-1">
@@ -181,6 +209,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
                 <p class="text-xs theme-text-tertiary mt-0.5">
                   <span class="theme-text-brand">${escapeHtml(clientName)}</span>
                   <span class="theme-text-tertiary mx-1">·</span>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
                   ${w.exercises?.length || 0} ejercicios
                   <span class="theme-text-tertiary mx-1">·</span>
                   ${difficultyLabels[w.difficulty] || w.difficulty}
@@ -247,10 +276,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <label class="block text-xs theme-text-tertiary mb-1">Cliente</label>
               <select id="workout-client" class="w-full rounded-xl border theme-border theme-surface-secondary px-4 py-2.5 text-sm theme-text-secondary focus:outline-none focus:ring-2 focus:ring-emerald-500/10">
                 <option value="">Seleccionar cliente</option>
+                <option value="template" ${(workout?.isTemplate || workout?.clientId === 'template') ? 'selected' : ''}>✨ Guardar como Plantilla</option>
                 ${clientOptions}
               </select>
-              <p id="workout-client-error" class="mt-1 hidden text-xs text-red-400">Debes seleccionar un cliente</p>
+              <p id="workout-client-error" class="mt-1 hidden text-xs text-red-400">Debes seleccionar un cliente o marcar como plantilla</p>
             </div>
+          </div>
+
+          <!-- Load from template button -->
+          <div class="flex justify-end">
+            <button id="btn-load-template-workout" class="flex items-center gap-1.5 rounded-xl border border-purple-500/20 bg-purple-500/5 px-3 py-1.5 text-xs font-medium text-purple-400 hover:bg-purple-500/10 transition-all">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+              </svg>
+              Cargar desde Plantilla
+            </button>
           </div>
 
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -352,6 +392,71 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }
     });
 
+    // ─── Load Template Button ────────────────────────────────────────────────
+    const btnLoadTemplateWorkout = document.getElementById('btn-load-template-workout');
+    if (btnLoadTemplateWorkout) {
+      btnLoadTemplateWorkout.addEventListener('click', () => {
+        const templates = allWorkouts.filter((t) => t.isTemplate || t.clientId === 'template');
+        if (templates.length === 0) {
+          alert('No tienes plantillas de rutinas. Crea una y sélecciona "✨ Guardar como Plantilla".');
+          return;
+        }
+        const existing = document.getElementById('template-picker-modal-workout');
+        if (existing) existing.remove();
+        const modal = document.createElement('div');
+        modal.id = 'template-picker-modal-workout';
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm';
+        modal.innerHTML = `
+          <div class="mx-4 w-full max-w-md rounded-2xl border border-zinc-700/50 bg-zinc-900/95 p-6 shadow-2xl backdrop-blur-xl">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-semibold text-zinc-200">📋 Seleccionar Plantilla</h3>
+              <button id="btn-close-workout-template-picker" class="text-zinc-500 hover:text-zinc-300 transition-colors">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <p class="text-xs text-zinc-500 mb-4">Los ejercicios de la plantilla se copiarán al formulario.</p>
+            <div class="space-y-2 max-h-72 overflow-y-auto">
+              ${templates.map((tpl) => `
+                <button data-tpl-id="${tpl.id}" class="tpl-workout-btn w-full rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-3 text-left hover:border-purple-500/40 hover:bg-purple-500/5 transition-all">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm font-medium text-zinc-200">${escapeHtml(tpl.name)}</p>
+                      <p class="text-xs text-zinc-500">${tpl.exercises?.length || 0} ejercicios · ${tpl.difficulty || 'medio'}</p>
+                    </div>
+                    <svg class="h-4 w-4 text-purple-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                  </div>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('btn-close-workout-template-picker')!.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+        modal.querySelectorAll('.tpl-workout-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const tplId = btn.getAttribute('data-tpl-id');
+            const template = allWorkouts.find((t) => t.id === tplId);
+            if (!template) return;
+            exercisesList.innerHTML = '';
+            if (template.exercises && template.exercises.length > 0) {
+              template.exercises.forEach((ex, i) => {
+                exerciseCounter = i + 1;
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = renderExerciseRow(ex, i, dayOptions);
+                exercisesList.appendChild(wrapper.firstElementChild || wrapper);
+              });
+              exerciseCounter = template.exercises.length + 1;
+            }
+            updateExerciseCount();
+            const nameInput = document.getElementById('workout-name') as HTMLInputElement;
+            if (!nameInput.value.trim()) nameInput.value = template.name + ' (copia)';
+            modal.remove();
+          });
+        });
+      });
+    }
+
     document.getElementById('btn-save-workout')!.addEventListener('click', async () => {
       const name = (document.getElementById('workout-name') as HTMLInputElement).value.trim();
       const clientId = (document.getElementById('workout-client') as HTMLSelectElement).value;
@@ -389,10 +494,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }).filter((ex) => ex.name.trim() !== '');
 
       try {
+        const isTemplateFlag = clientId === 'template';
+        const finalClientId = isTemplateFlag ? 'template' : clientId;
         if (isEditing && workout) {
-          await updateWorkout(workout.id, { name, clientId, trainerId, difficulty, description, exercises });
+          await updateWorkout(workout.id, { name, clientId: finalClientId, trainerId, difficulty, description, exercises, isTemplate: isTemplateFlag });
         } else {
-          await createWorkout({ clientId, trainerId, name, difficulty, description, exercises });
+          await createWorkout({ clientId: finalClientId, trainerId, name, difficulty, description, exercises, isTemplate: isTemplateFlag });
         }
         editor.classList.add('hidden');
         editor.innerHTML = '';
@@ -405,10 +512,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }
     });
 
-    (window as any).__closeEditor = () => {
-      editor.classList.add('hidden');
-      editor.innerHTML = '';
-    };
+    // Close editor via event delegation (data-action="close-editor")
   }
 
   function renderExerciseRow(exercise: Exercise, index: number, dayOptions: string): string {

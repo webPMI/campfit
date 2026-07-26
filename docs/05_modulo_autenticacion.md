@@ -15,14 +15,20 @@ src/
 ├── pages/
 │   ├── login.astro              # Inicio de sesión
 │   ├── register.astro           # Registro
-│   └── recover.astro            # Recuperación de contraseña
+│   ├── recover.astro            # Recuperación de contraseña
+│   ├── onboarding.astro         # Onboarding post-registro
+│   └── dashboard.astro          # Dashboard post-login (redirección por rol)
 ├── services/
 │   └── authService.ts           # login, register, recover, logout
 ├── stores/
 │   └── authStore.ts             # $user, $authLoading, $authError
 ├── lib/
 │   ├── firebase.ts              # Configuración Firebase
-│   ├── routeGuards.ts           # AuthGuard, RoleGuard, checkRouteAccess
+│   ├── firebase/auth.ts         # Wrapper de firebase/auth para testing
+│   ├── firebase/firestore.ts    # Wrapper de firebase/firestore para testing
+│   ├── routeGuards.ts           # RouteGuard[], checkRouteAccess
+│   ├── shared/authGuard.ts      # requireAuth(), requireAdmin() — Guards unificados
+│   ├── auth/roleRedirect.ts     # redirectByRole(), getDashboardPath()
 │   └── validators.ts            # Validación de formularios
 └── types/
     └── index.ts                 # User, LoginForm, RegisterForm, AuthError
@@ -36,11 +42,12 @@ src/
 |---|---------------|-----------|
 | 1 | Registro con email y contraseña | Alta |
 | 2 | Inicio de sesión con email/contraseña | Alta |
-| 3 | Recuperación de contraseña | Alta |
-| 4 | Persistencia de sesión (onAuthStateChanged + token refresh automático) | Alta |
-| 5 | Redirección post-login según rol | Alta |
-| 6 | Redirección a perfil médico en primer login (clientes) | Alta |
-| 7 | Cierre de sesión con limpieza de estado | Alta |
+| 3 | Inicio de sesión con Google (signInWithPopup) | Alta |
+| 4 | Recuperación de contraseña | Alta |
+| 5 | Persistencia de sesión (onAuthStateChanged + token refresh automático) | Alta |
+| 6 | Redirección post-login según rol | Alta |
+| 7 | Redirección a perfil médico en primer login (clientes) | Alta |
+| 8 | Cierre de sesión con limpieza de estado | Alta |
 
 ---
 
@@ -62,20 +69,20 @@ src/
      createdAt: serverTimestamp(),
      updatedAt: serverTimestamp()
    }
-5. Redirigir a /login con mensaje de éxito
+5. Redirigir a /onboarding con mensaje de éxito
 ```
 
 ## Flujo de Inicio de Sesión
 
 ```
-1. Usuario ingresa email y password
+1. Usuario ingresa email y password (o Google signInWithPopup)
 2. Firebase Auth (Client SDK): signInWithEmailAndPassword(email, password)
 3. Obtener documento de Firestore: users/{uid}
 4. Evaluar:
    - Si role == 'admin' → /admin/dashboard
    - Si role == 'client' y medicalProfile existe → /client/dashboard
    - Si role == 'client' y sin medicalProfile → /client/medical-profile
-   - Si role == 'trainer' → /trainer/settings (futuro)
+   - Si role == 'trainer' → /trainer/dashboard
 5. Inicializar authStore con datos del usuario
 ```
 
@@ -142,6 +149,8 @@ import {
   signOut,
   sendPasswordResetEmail,
   onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
   type User as FirebaseUser
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
@@ -169,7 +178,7 @@ export async function registerUser(
   });
 }
 
-// Iniciar sesión
+// Iniciar sesión con email/contraseña
 export async function loginUser(
   email: string, 
   password: string
@@ -178,6 +187,20 @@ export async function loginUser(
   const uid = credential.user.uid;
   
   // Obtener perfil de Firestore
+  const userDoc = await getDoc(doc(db, 'users', uid));
+  if (!userDoc.exists()) {
+    throw new Error('Perfil de usuario no encontrado');
+  }
+  
+  return { uid, ...userDoc.data() } as User;
+}
+
+// Iniciar sesión con Google
+export async function loginWithGoogle(): Promise<User> {
+  const provider = new GoogleAuthProvider();
+  const credential = await signInWithPopup(auth, provider);
+  const uid = credential.user.uid;
+  
   const userDoc = await getDoc(doc(db, 'users', uid));
   if (!userDoc.exists()) {
     throw new Error('Perfil de usuario no encontrado');
@@ -253,6 +276,8 @@ export interface AuthError {
 
 ## Guardias de Ruta
 
+### routeGuards.ts (definiciones de rutas)
+
 ```typescript
 // src/lib/routeGuards.ts
 import { $user, $authLoading } from '../stores/authStore';
@@ -278,15 +303,22 @@ export const routeGuards: RouteGuard[] = [
   { path: '/client/progress', allowedRoles: ['client'], requiresMedicalProfile: true },
   { path: '/client/chat', allowedRoles: ['client'], requiresMedicalProfile: true },
   { path: '/client/support', allowedRoles: ['client'], requiresMedicalProfile: true },
+  { path: '/client/settings', allowedRoles: ['client'] },
   
   // Admin
   { path: '/admin/dashboard', allowedRoles: ['admin'] },
   { path: '/admin/users', allowedRoles: ['admin'] },
-  { path: '/admin/workouts', allowedRoles: ['admin'] },
-  { path: '/admin/diets', allowedRoles: ['admin'] },
-  { path: '/admin/chat', allowedRoles: ['admin'] },
-  { path: '/admin/progress', allowedRoles: ['admin'] },
+  { path: '/admin/clients', allowedRoles: ['admin'] },
+  { path: '/admin/trainers', allowedRoles: ['admin'] },
   { path: '/admin/settings', allowedRoles: ['admin'] },
+  
+  // Trainer
+  { path: '/trainer/dashboard', allowedRoles: ['trainer'] },
+  { path: '/trainer/clients', allowedRoles: ['trainer'] },
+  { path: '/trainer/workouts', allowedRoles: ['trainer'] },
+  { path: '/trainer/diets', allowedRoles: ['trainer'] },
+  { path: '/trainer/chat', allowedRoles: ['trainer'] },
+  { path: '/trainer/settings', allowedRoles: ['trainer'] },
 ];
 
 export function checkRouteAccess(path: string, user: User | null): {
@@ -309,7 +341,7 @@ export function checkRouteAccess(path: string, user: User | null): {
     const redirectMap: Record<string, string> = {
       admin: '/admin/dashboard',
       client: '/client/dashboard',
-      trainer: '/trainer/settings',
+      trainer: '/trainer/dashboard',
     };
     return { allowed: false, redirectTo: redirectMap[user.role] ?? '/login' };
   }
@@ -323,12 +355,67 @@ export function checkRouteAccess(path: string, user: User | null): {
 }
 ```
 
+### shared/authGuard.ts (guards unificados para scripts cliente)
+
+```typescript
+// src/lib/shared/authGuard.ts
+// Proporciona requireAuth() y requireAdmin() para usar en páginas
+
+export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe {
+  return onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    callback(user);
+  });
+}
+
+export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscribe {
+  return onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    const docSnap = await getDoc(doc(db, 'users', user.uid));
+    const role = docSnap.data()?.role;
+    if (role !== 'admin') {
+      window.location.href = '/dashboard';
+      return;
+    }
+    callback(user);
+  });
+}
+```
+
+### auth/roleRedirect.ts (redirección post-login)
+
+```typescript
+// src/lib/auth/roleRedirect.ts
+export function getDashboardPath(role: UserRole): string {
+  switch (role) {
+    case 'trainer': return '/trainer/dashboard';
+    case 'admin': return '/admin/dashboard';
+    case 'client': default: return '/client/dashboard';
+  }
+}
+
+export async function redirectByRole(uid: string): Promise<void> {
+  const role = await getUserRole(uid);
+  if (role) {
+    window.location.href = getDashboardPath(role);
+  } else {
+    window.location.href = '/client/dashboard';
+  }
+}
+```
+
 ---
 
 ## Páginas del Módulo
 
 ### `/login.astro`
-- Formulario de inicio de sesión
+- Formulario de inicio de sesión (email/password + Google)
 - Link a registro y recuperación
 - Manejo de errores (credenciales inválidas, usuario no encontrado)
 - Redirección post-login
@@ -337,12 +424,17 @@ export function checkRouteAccess(path: string, user: User | null): {
 - Formulario de registro (name, email, password, confirm password)
 - Validación en cliente
 - Creación de usuario en Firebase Auth + Firestore
-- Redirección a login con mensaje de éxito
+- Redirección a /onboarding con mensaje de éxito
 
 ### `/recover.astro`
 - Formulario de email
 - Envío de email de recuperación
 - Mensaje de confirmación
+
+### `/onboarding.astro`
+- Pantalla de bienvenida post-registro
+- Explicación de los siguientes pasos
+- Botón para ir a /client/medical-profile
 
 ### `/client/medical-profile.astro`
 - Formulario de perfil médico (onboarding)

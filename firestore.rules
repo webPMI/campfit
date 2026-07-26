@@ -9,18 +9,13 @@ service cloud.firestore {
 
     function isBootstrapAdminEmail() {
       return isAuth() &&
-        request.auth.token.email != null &&
-        request.auth.token.email == 'servicioweb.pmi@gmail.com';
+      request.auth.token.email != null &&
+      request.auth.token.email == 'servicioweb.pmi@gmail.com';
     }
 
     function myRole() {
       let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
       return userDoc.exists && userDoc.data.role != null ? userDoc.data.role : null;
-    }
-
-    function isBlocked(uid) {
-      let userDoc = get(/databases/$(database)/documents/users/$(uid));
-      return userDoc.exists && userDoc.data.isBlocked == true;
     }
 
     function isAdmin() {
@@ -52,13 +47,13 @@ service cloud.firestore {
         (isTrainer() && resource.data.assignedTrainerId == request.auth.uid)
       );
       allow create: if isAuth() && request.auth.uid == userId;
-      allow update: if isAuth() && !isBlocked(userId) && (
-        // El propio usuario puede actualizar su perfil, excepto role y isBlocked
-        (request.auth.uid == userId &&
-          !('role' in request.resource.data.diff(resource.data).affectedKeys()) &&
-          !('isBlocked' in request.resource.data.diff(resource.data).affectedKeys())) ||
-        // Admins pueden actualizar cualquier campo (incluyendo role, isBlocked)
-        isAdmin()
+      allow update: if isAuth() && !(resource != null && 'isBlocked' in resource.data && resource.data.isBlocked == true) && (
+      // El propio usuario puede actualizar su perfil, excepto role y isBlocked
+      (request.auth.uid == userId &&
+      !('role' in request.resource.data.diff(resource.data).affectedKeys()) &&
+      !('isBlocked' in request.resource.data.diff(resource.data).affectedKeys())) ||
+      // Admins pueden actualizar cualquier campo (incluyendo role, isBlocked)
+      isAdmin()
       );
       allow delete: if isAdmin();
     }
@@ -70,86 +65,73 @@ service cloud.firestore {
     // Staff (admin/trainer) puede crear, editar o eliminar.
     match /workouts/{workoutId} {
       allow read: if isAuth() && (
-        resource.data.clientId == '' ||
-        resource.data.clientId == request.auth.uid ||
-        resource.data.trainerId == request.auth.uid ||
-        isAdmin()
+      resource.data.clientId == '' ||
+      resource.data.clientId == request.auth.uid ||
+      resource.data.trainerId == request.auth.uid ||
+      isAdmin()
       );
-      allow create, update, delete: if isStaff();
+      allow create: if isAuth() && isStaff();
+      allow update: if isAuth() && isStaff();
+      allow delete: if isAuth() && isStaff();
     }
 
     // ── Dietas ───────────────────────────────────────────────────────────────
-    // Mismas reglas que rutinas.
+    // Plantillas (clientId == ''): cualquier usuario autenticado puede leerlas.
+    // Dietas asignadas (clientId != ''): el cliente asignado, el trainer creador, o admin.
+    // Staff (admin/trainer) puede crear, editar o eliminar.
     match /diets/{dietId} {
       allow read: if isAuth() && (
-        resource.data.clientId == '' ||
-        resource.data.clientId == request.auth.uid ||
-        resource.data.trainerId == request.auth.uid ||
-        isAdmin()
+      resource.data.clientId == '' ||
+      resource.data.clientId == request.auth.uid ||
+      resource.data.trainerId == request.auth.uid ||
+      isAdmin()
       );
-      allow create, update, delete: if isStaff();
+      allow create: if isAuth() && isStaff();
+      allow update: if isAuth() && isStaff();
+      allow delete: if isAuth() && isStaff();
     }
 
-
-    // ── Chat (Mensajes) ───────────────────────────────────────────────────────
-
-    // Colección plana `messages` para facilitar consultas con array-contains.
-    // Solo los participantes del mensaje (array `participants`) pueden leer.
-    // El sender debe ser el usuario autenticado.
-    match /messages/{messageId} {
-      allow read: if isAuth() && resource.data.participants.hasAny([request.auth.uid]);
-
-      allow create: if isAuth() && (
-        request.resource.data.senderId == request.auth.uid &&
-        request.resource.data.participants.hasAny([request.auth.uid]) &&
-        request.resource.data.participants.size() == 2
-      );
-
-      allow update: if isAuth() && resource.data.participants.hasAny([request.auth.uid]) && (
-        // Solo permitir marcar como leído (isRead o read)
-        request.resource.data.keys().hasOnly(['isRead', 'read', 'updatedAt']) &&
-        request.resource.data.isRead == true
-      );
-
-      allow delete: if false;
-    }
-
-    // ── Progreso (progress_logs) ──────────────────────────────────────────────
-    // Cliente puede leer/escribir su propio progreso.
-    // Trainer puede leer el progreso de sus clientes asignados.
-    // Admin puede leer todo.
-    match /progress_logs/{logId} {
+    // ── Progreso ─────────────────────────────────────────────────────────────
+    // Cada usuario puede leer/escribir su propio progreso.
+    // Trainers pueden leer/escribir el progreso de sus clientes.
+    // Admins pueden leer todo (pero no escribir directamente).
+    match /progress/{progressId} {
       allow read: if isAuth() && (
-        resource.data.clientId == request.auth.uid ||
-        (isTrainer() && get(/databases/$(database)/documents/users/$(resource.data.clientId)).data.assignedTrainerId == request.auth.uid) ||
-        isAdmin()
+      resource.data.userId == request.auth.uid ||
+      resource.data.trainerId == request.auth.uid ||
+      isAdmin()
       );
-
       allow create: if isAuth() && (
-        request.resource.data.clientId == request.auth.uid ||
-        isAdmin()
+      request.resource.data.userId == request.auth.uid ||
+      isTrainer()
       );
+      allow update: if isAuth() && (
+      resource.data.userId == request.auth.uid ||
+      isTrainer()
+      );
+      allow delete: if isAdmin();
+    }
 
-      allow update, delete: if isAuth() && (
-        resource.data.clientId == request.auth.uid ||
-        isAdmin()
+    // ── Chat ─────────────────────────────────────────────────────────────────
+    match /chats/{chatId} {
+      allow read, write: if isAuth() && (
+      resource.data.participants.hasAny([request.auth.uid]) ||
+      isAdmin()
       );
     }
 
-    // ── Biblioteca de ejercicios ──────────────────────────────────────────────
-    // Todos los usuarios autenticados pueden leer.
-    // Solo staff (admin/trainer) puede crear/editar/eliminar.
-    match /exercises_library/{exerciseId} {
+    // ── Alertas ──────────────────────────────────────────────────────────────
+    // Solo admins pueden gestionar alertas globales.
+    // Usuarios autenticados pueden leer alertas activas.
+    match /alerts/{alertId} {
       allow read: if isAuth();
-      allow create, update, delete: if isStaff();
+      allow create, update, delete: if isAdmin();
     }
 
-    // ── Plantillas de dieta ───────────────────────────────────────────────────
-    // Todos los usuarios autenticados pueden leer.
-    // Solo staff (admin/trainer) puede crear/editar/eliminar.
-    match /diet_templates/{templateId} {
-      allow read: if isAuth();
-      allow create, update, delete: if isStaff();
+    // ── Chat History (para métricas/soporte) ─────────────────────────────────
+    match /chatHistory/{historyId} {
+      allow read: if isAdmin();
+      allow write: if false;
     }
   }
 }

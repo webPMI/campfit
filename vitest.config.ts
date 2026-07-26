@@ -11,6 +11,16 @@ export default defineConfig({
     environment: 'happy-dom',
 
     setupFiles: ['./tests/setup/vitest.ts'],
+    
+    // Optimizaciones de rendimiento
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        singleThread: false,
+        minThreads: 2,
+        maxThreads: 4,
+      },
+    },
 
     // ─── Firebase como dependencias inline ─────────────────────────────────
     // vitest 4.x necesita que @firebase/firestore y @firebase/auth estén en inline
@@ -40,6 +50,13 @@ export default defineConfig({
       '.astro',
       'tests/e2e',
       'tests/e2e/**',
+<<<<<<< HEAD
+      'tests/e2e/*.spec.ts',
+      'tests/**/*.spec.ts',
+      'tests/e2e/**/*.spec.ts',
+      'tests/e2e/**/*.test.ts',
+=======
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     ],
 
     // ─── Cobertura ─────────────────────────────────────────────────────────
@@ -60,9 +77,6 @@ export default defineConfig({
     },
 
     // ─── Alias de módulos ───────────────────────────────────────────────────
-    // NOTA: En vitest 4.x, los alias que empiezan con @ pueden no resolverse
-    // correctamente en test.alias. Los ponemos en resolve.alias para asegurar
-    // que funcionen tanto en producción como en tests.
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@components': path.resolve(__dirname, 'src/components'),
@@ -88,7 +102,3 @@ export default defineConfig({
     'import.meta.env.PUBLIC_POSTHOG_HOST': JSON.stringify('https://app.posthog.com'),
   },
 });
-
-
-
-

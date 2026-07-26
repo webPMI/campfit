@@ -7,13 +7,20 @@
  *   const users = await adminService.getAllUsers();
  */
 
-import { collection, getDocs, query, orderBy, limit, doc, updateDoc, deleteDoc, where } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, doc, updateDoc, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { User } from '@/types';
 import { mapDocToUser } from '@/lib/helpers/userMappers';
 
 export const adminService = {
   /**
+<<<<<<< HEAD
+   * Obtener todos los usuarios registrados.
+   *
+   * @param maxResults - Número máximo de usuarios a obtener (default: 100)
+   * @returns Lista de usuarios ordenados por fecha de creación descendente
+   */
+=======
     * Obtiene todos los usuarios registrados en la base de datos.
     * 
     * @param maxResults - Número máximo de usuarios a obtener (por defecto 100)
@@ -22,6 +29,7 @@ export const adminService = {
     * @example
     * const users = await adminService.getAllUsers(50);
     */
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   async getAllUsers(maxResults = 100): Promise<User[]> {
     const q = query(
       collection(db, 'users'),
@@ -29,6 +37,17 @@ export const adminService = {
       limit(maxResults),
     );
     const snapshot = await getDocs(q);
+<<<<<<< HEAD
+    return snapshot.docs.map((d) => mapDocToUser(d));
+  },
+
+  /**
+   * Obtener usuarios por rol.
+   *
+   * @param role - Rol a filtrar ('admin' | 'trainer' | 'client')
+   * @param maxResults - Número máximo de usuarios a obtener (default: 100)
+   * @returns Lista de usuarios del rol especificado
+=======
     return snapshot.docs.map((d) => mapDocToUser(d.data(), 'Sin nombre'));
   },
 
@@ -41,6 +60,7 @@ export const adminService = {
    * 
    * @example
    * const trainers = await adminService.getUsersByRole('trainer', 20);
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async getUsersByRole(role: User['role'], maxResults = 100): Promise<User[]> {
     const q = query(
@@ -50,6 +70,16 @@ export const adminService = {
       limit(maxResults),
     );
     const snapshot = await getDocs(q);
+<<<<<<< HEAD
+    return snapshot.docs.map((d) => mapDocToUser(d));
+  },
+
+  /**
+   * Actualizar el rol de un usuario.
+   *
+   * @param uid - ID del usuario
+   * @param newRole - Nuevo rol a asignar
+=======
     return snapshot.docs.map((d) => mapDocToUser(d.data(), 'Sin nombre'));
   },
 
@@ -62,6 +92,7 @@ export const adminService = {
    * 
    * @example
    * await adminService.updateUserRole('user-123', 'trainer');
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async updateUserRole(uid: string, newRole: User['role']): Promise<void> {
     await updateDoc(doc(db, 'users', uid), {
@@ -71,6 +102,11 @@ export const adminService = {
   },
 
   /**
+<<<<<<< HEAD
+   * Deshabilitar un usuario (marca hasActiveAlert como true).
+   *
+   * @param uid - ID del usuario a deshabilitar
+=======
    * Deshabilita un usuario marcándolo con alerta activa.
    * No elimina el usuario, solo actualiza su estado.
    * 
@@ -79,6 +115,7 @@ export const adminService = {
    * 
    * @example
    * await adminService.disableUser('user-123');
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async disableUser(uid: string): Promise<void> {
     await updateDoc(doc(db, 'users', uid), {
@@ -88,6 +125,11 @@ export const adminService = {
   },
 
   /**
+<<<<<<< HEAD
+   * Obtener estadísticas del dashboard admin.
+   *
+   * @returns Objeto con totales de usuarios, trainers, clients y alertas activas
+=======
    * Obtiene estadísticas generales del dashboard de administración.
    * 
    * @returns Promise que resuelve con un objeto con estadísticas de usuarios
@@ -99,6 +141,7 @@ export const adminService = {
    * @example
    * const stats = await adminService.getStats();
    * console.log(stats.totalUsers, stats.totalTrainers);
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
    */
   async getStats(): Promise<{ totalUsers: number; totalTrainers: number; totalClients: number; activeAlerts: number }> {
     const snapshot = await getDocs(collection(db, 'users'));

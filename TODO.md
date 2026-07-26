@@ -4,7 +4,9 @@
 > **Propósito:** Lista única de todas las tareas, optimizaciones y seguimiento del proyecto  
 > **Para agentes IA:** Este es el archivo de referencia para ver qué hacer y qué está pendiente  
 > **IMPORTANTE:** Este archivo reemplaza a `TODO_OPTIMIZACIONES.md`, `TASK_PROGRESS.md` y `tests/TASK_PROGRESS.md`  
-> **Documentación:** Ver `docs/MASTER.md` para la documentación completa del proyecto
+> **Documentación:** Ver `nuevo_proyecto/00_indice.md` para la documentación completa del proyecto
+>
+> 📌 **IMPORTANTE:** Antes de empezar cualquier tarea, leer `GIT_WORKFLOW.md` para entender el flujo de git/deploy.
 
 ---
 
@@ -14,11 +16,18 @@
 |-----------|-------|-------------|------------|
 | 🔴 CRÍTICO - Código Repetido | 9 | 9 | 0 |
 | 🟡 MEDIO - Código Muerto/No Utilizado | 2 | 2 | 0 |
+<<<<<<< HEAD
+| 🟢 BAJO - Mejoras de Código | 3 | 0 | 3 |
+| 🎨 UI/UX - Notificaciones y Feedback | 5 | 5 | 0 |
+| 🧪 Tests y Calidad | 8 | 4 | 4 |
+| **TOTAL** | **27** | **20** | **7** |
+=======
  | 🟢 BAJO - Mejoras de Código | 3 | 3 | 0 |
  | 🧪 Tests y Calidad | 8 | 8 | 0 |
  | **TOTAL** | **22** | **22** | **0** |
 
 **Estado final:** 22/22 tareas completadas (100%) 🎉
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
 ---
 
@@ -91,23 +100,17 @@ const currentPath = Astro.url.pathname;
 
 ### 4. Layouts - Wrapper con padding duplicado
 **Archivos afectados:**
-- `src/layouts/AdminLayout.astro` (líneas 31-33)
-- `src/layouts/ClientLayout.astro` (líneas 31-33)
-- `src/layouts/TrainerLayout.astro` (líneas 31-33)
+- `src/layouts/AdminLayout.astro`
+- `src/layouts/ClientLayout.astro`
+- `src/layouts/TrainerLayout.astro`
 
-**Problema:** Código idéntico:
-```html
-<div class="pb-20">
-  <slot />
-</div>
-```
+**Problema:** Código idéntico `<div class="pb-20"><slot /></div>` repetido 3 veces.
 
-**Solución propuesta:**
-- Mover a `BaseLayout.astro` si todos los layouts lo usan
-- O crear componente `ContentWrapper.astro`
+**Solución aplicada:**
+- Movido a `BaseLayout.astro` — ahora los 3 layouts hijos solo tienen `<slot />` sin wrapper
 
-**Prioridad:** ⚠️ BAJA - Solo 3 líneas, pero acumula  
-**Estado:** ⏳ Pendiente
+**Prioridad:** ⚠️ BAJA  
+**Estado:** ✅ Completado
 
 ---
 
@@ -238,7 +241,11 @@ const altLang = lang === 'es' ? 'en' : 'es';
 - Limpiar imports huérfanos
 
 **Prioridad:** 🟡 MEDIA  
+<<<<<<< HEAD
+**Estado:** ✅ Completado (páginas públicas migradas a PublicPageLayout, imports limpiados)
+=======
 **Estado:** ✅ Completado (los imports de `t` y `lang` son necesarios para el template de las páginas públicas)
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
 
 ---
 
@@ -293,6 +300,67 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ---
 
+### 15. Eliminar re-exports legacy de adminUtils y trainerUtils
+**Archivos afectados:**
+- `src/lib/admin/adminUtils.ts` (línea 373) — re-exportaba `ICONS, escapeHtml, formatDate, formatTime, getUserInitial, showToast, renderEmptyState, renderLoadingState, getRoleBadge` desde `shared/ui`
+- `src/lib/trainer/trainerUtils.ts` (línea 545) — mismo re-export
+
+**Problema:** 
+- Los re-exports creaban una dependencia circular indirecta y ocultaban la fuente real de las funciones
+- Las páginas importaban de `adminUtils` en lugar de `shared/ui`, dificultando el refactor
+
+**Solución aplicada:**
+- ✅ Eliminados los bloques de re-export de ambos archivos
+- ✅ Actualizadas las páginas admin (`clients.astro`, `dashboard.astro`, `trainers.astro`, `users.astro`) para importar directamente de `@/lib/shared/ui`
+- ✅ Eliminada declaración local redundante de `ICONS` en `users.astro`
+
+**Prioridad:** 🔴 CRÍTICA - Dependencia oculta  
+**Estado:** ✅ Completado
+
+---
+
+### 16. Refactorizar adminUtils.ts (629 líneas → objetivo ~200)
+**Archivo:** `src/lib/admin/adminUtils.ts`
+
+**Problema:** Archivo de 629 líneas que mezclaba tipos, auth, servicios, renderizado e init.
+
+**Solución aplicada:**
+- ✅ `src/lib/admin/types.ts` — Tipos AdminUser, CreateUserPayload
+- ✅ `src/lib/admin/adminAuth.ts` — requireAdmin, signOutUser
+- ✅ `src/lib/admin/adminUsers.ts` — CRUD usuarios (createUser, updateUserRole, assignTrainer, deleteUser, toggleUserBlock, getUserName, getUserProfile)
+- ✅ `src/lib/admin/adminSubscriptions.ts` — Suscripciones Firestore (subscribeToUsers, subscribeToUsersByRole, subscribeToCollectionCount, subscribeToRecentUsers, getTrainerClientCount)
+- ✅ `src/lib/admin/adminRender.ts` — Renderizado HTML (renderUserRow, renderUserDetail, renderUserForm, renderUserCard, renderUserCardExtended, renderClientCard, renderTrainerCard)
+- ✅ `src/lib/admin/adminInit.ts` — initGlobalActions, initAdminActions
+- ✅ `src/lib/admin/adminUtils.ts` → Barrel (re-exporta todo)
+
+**Prioridad:** 🔴 CRÍTICA - Archivo > 300 líneas (viola regla #9)  
+**Estado:** ✅ Completado
+
+---
+
+### 17. Refactorizar trainerUtils.ts (570 líneas → objetivo ~300)
+**Archivo:** `src/lib/trainer/trainerUtils.ts`
+
+**Problema:** Archivo de 570 líneas que mezclaba tipos, auth, servicios, renderizado e init.
+
+**Solución aplicada:**
+- ✅ `src/lib/trainer/types.ts` — Tipos TrainerClient, TrainerWorkout, Exercise, TrainerDiet, Meal, TrainerMessage, ProgressLog
+- ✅ `src/lib/trainer/trainerAuth.ts` — requireAuth, signOutUser
+- ✅ `src/lib/trainer/trainerClients.ts` — subscribeToClients, getClientProfile
+- ✅ `src/lib/trainer/trainerWorkouts.ts` — subscribeToWorkoutsByTrainer, subscribeToWorkoutsByClient, createWorkout, updateWorkout, deleteWorkout
+- ✅ `src/lib/trainer/trainerDiets.ts` — subscribeToDietsByTrainer, subscribeToDietsByClient, createDiet, updateDiet, deleteDiet
+- ✅ `src/lib/trainer/trainerProgress.ts` — subscribeToClientProgress
+- ✅ `src/lib/trainer/trainerChat.ts` — subscribeToConversations, subscribeToConversation, sendMessage, markAsRead
+- ✅ `src/lib/trainer/trainerRender.ts` — renderClientCard, renderWorkoutCard, renderDietCard, renderMessageBubble
+- ✅ `src/lib/trainer/trainerInit.ts` — initGlobalActions
+- ✅ `src/lib/trainer/trainerUtils.ts` → Barrel (re-exporta todo)
+
+**Prioridad:** 🔴 CRÍTICA - Archivo > 300 líneas (viola regla #9)  
+**Status:** ✅ Completado
+
+
+---
+
 ## 🧪 Tests y Calidad
 
 ### 15. Tests eliminados (fake/muertos)
@@ -342,13 +410,42 @@ const altLang = lang === 'es' ? 'en' : 'es';
 
 ---
 
-### 20. Implementar tests para páginas
-- [ ] `client/dashboard.astro` (página principal del cliente)
-- [ ] Componentes UI (Skeleton, BaseLayout)
-- [ ] Tests E2E con Playwright para flujos críticos
+### 20. Tests E2E con Playwright
+- [x] Tests de login (formulario, validación, navegación)
+- [x] Tests de registro (formulario, validación, navegación)
+- [x] Tests de recuperación (formulario, validación, navegación)
+- [x] Tests de control de acceso (dashboard, admin, client, trainer)
+- [x] Tests de páginas públicas (landing, 404)
+- [ ] Tests de flujo completo (registro → onboarding → dashboard)
+- [ ] Tests de páginas admin (dashboard, users, clients, trainers)
+- [ ] Tests de páginas cliente (dashboard, workouts, diets, progress, chat)
+- [ ] Tests de páginas trainer (dashboard, clients, workouts, diets, chat)
 
 **Prioridad:** 🟡 MEDIA  
-**Estado:** ⏳ Pendiente
+**Estado:** 🟡 Parcial (auth flow completo, faltan flujos autenticados)
+
+---
+
+## ✅ Funcionalidades Completadas (2026-07-25)
+
+### Sistema de Notificaciones Chat
+- ✅ Badges en tiempo real en layouts (Client, Trainer, Admin)
+- ✅ Toasts de notificación al recibir mensajes nuevos
+- ✅ Indicadores de mensajes no leídos por usuario en lista de admin
+- ✅ Contador total de no leídos en lista de conversaciones del trainer
+- ✅ Ocultar badge al abrir conversación
+- ✅ Actualización automática via Firestore onSnapshot
+
+### Marcado de Entrenamientos Completados
+- ✅ Función `completeWorkout()` en workoutService
+- ✅ Botón funcional en página de workouts del cliente
+- ✅ Estado de carga y feedback visual
+- ✅ Persistencia en Firestore con Timestamp
+- ✅ Actualización del estado al recargar
+
+### Documentación Actualizada
+- ✅ README.md actualizado con nuevas funcionalidades
+- ✅ TODO.md actualizado con resumen de cambios
 
 ---
 
@@ -368,10 +465,54 @@ const altLang = lang === 'es' ? 'en' : 'es';
 9. ✅ **#5** - Mover debug script a `BaseLayout.astro`
 10. ✅ **#8** - Usar componentes en layouts
 
-### Fase 3 - Limpieza (1 hora)
+### Fase 3 - Limpieza (1 hora) ✅ COMPLETADA
 11. ✅ **#10** - Verificar y condicionar código de debug
-12. ⏳ **#11** - Limpiar imports no usados
+12. ✅ **#11** - Limpiar imports no usados
 13. ⏳ **#12, #13, #14** - Mejoras menores (opcional)
+
+### Fase 4 - Notificaciones y Feedback UI (2 horas) ✅ COMPLETADA
+14. ✅ **Sistema de notificaciones chat** - Badges, toasts, indicadores en tiempo real
+15. ✅ **Marcado de workouts** - Botón funcional con estado y feedback visual
+
+### Fase 5 - Próximas Funcionalidades (En progreso)
+16. ⏳ **Mejoras en tests** - Aumentar cobertura en módulos pendientes
+17. ⏳ **Nuevas funcionalidades** - Ver sección "Próximas Funcionalidades" abajo
+
+---
+
+## 🤖 Harness para Agentes IA
+
+### Archivos del Harness (creados/mejorados)
+- [x] `AGENTS_GUIDE.md` — Guía completa para agentes IA (actualizada con MCP y scripts)
+- [x] `CONTEXT.md` — Contexto comprimido del proyecto
+- [x] `TASK.md` — Tarea actual del agente
+- [x] `CLAUDE.md` — Instrucciones para Claude
+- [x] `AGENTS.md` — Instrucciones rápidas para agentes (actualizado con nuevos comandos)
+- [x] `scripts/agent-lock.sh` — Sistema de lock multi-agente
+- [x] `scripts/validate.sh` — Validación pre-commit (modos --quick, --full, --fix)
+- [x] `scripts/check-context.sh` — Verificador de contexto
+- [x] `scripts/setup.sh` — Setup inicial para nuevos agentes
+- [x] `scripts/doctor.sh` — Diagnóstico del proyecto
+- [x] `scripts/mcp-setup.sh` — Setup de servidores MCP
+- [x] `.mcp.json` — Config MCP completa (Firebase, GitHub, Filesystem)
+- [x] `.github/workflows/ci.yml` — CI/CD pipeline completo
+- [x] `.github/workflows/agent-checks.yml` — Validación rápida para agentes
+- [x] `.eslintrc.cjs` — Config ESLint corregida (sin React)
+- [x] `astro.config.mjs` — Config Astro corregida (static con SSR comentado)
+- [x] `package.json` — Scripts añadidos (validate:quick, validate:fix, doctor, mcp:setup, setup, lock:status, lock:release)
+- [x] `.gitignore` — Actualizado con agent-lock, mcp-lock, coverage, reports
+- [x] `README.md` — Tabla de comandos de agente actualizada
+- [x] `HARNESS_IMPROVEMENTS.md` — Plan de mejora del harness (Fase 1 completada)
+
+### Flujo de trabajo para agentes
+1. Leer `CONTEXT.md` y `TASK.md`
+2. Verificar lock: `bash scripts/agent-lock.sh check`
+3. Hacer pull: `git pull origin master --allow-unrelated-histories --no-edit`
+4. Adquirir lock: `bash scripts/agent-lock.sh acquire "agent-name" "feature"`
+5. Implementar cambios
+6. Validar: `bash scripts/validate.sh`
+7. Commit y push
+8. Liberar lock: `bash scripts/agent-lock.sh release`
 
 ---
 
@@ -405,13 +546,16 @@ const altLang = lang === 'es' ? 'en' : 'es';
 ### Comandos de verificación:
 ```bash
 # Verificar tipos
-npx tsc --noEmit
+npm run type-check
 
 # Ejecutar tests
-npm run test
+npm test
 
 # Build de producción
 npm run build
+
+# Validación completa
+bash scripts/validate.sh
 ```
 
 ---
@@ -420,7 +564,12 @@ npm run build
 
 Después de cada fase, ejecutar:
 ```bash
-npm run test && npm run build
+npm test && npm run build
+```
+
+O usar el validador completo:
+```bash
+bash scripts/validate.sh
 ```
 
 Si hay errores, revisar:
@@ -430,13 +579,45 @@ Si hay errores, revisar:
 
 ---
 
+## 🚀 Próximas Funcionalidades a Implementar
+
+### Prioridad Alta
+- [ ] **Sistema de logros y badges** - Logros por completar workouts, adherencia, hitos
+  - Colección `achievements` en Firestore
+  - Tipos: `workout_completed`, `streak_7_days`, `first_workout`, `diet_adherence`
+  - Mostrar en dashboard del cliente
+  - Notificación al desbloquear logro
+- [ ] **Sistema de notificaciones push** - Web Push API para notificaciones del navegador
+- [ ] **Calendario de entrenamientos** - Vista semanal/mensual con días completados
+- [ ] **Seguimiento de adherencia** - Estadísticas de cumplimiento de rutinas y dietas
+
+### Prioridad Media
+- [ ] **Galería de ejercicios** - Biblioteca visual con videos y descripciones
+- [ ] **Exportar datos** - Descargar historial de progreso en PDF/CSV
+- [ ] **Compartir logros** - Compartir en redes sociales
+- [ ] **Modo oscuro/claro** - Toggle de tema visual
+
+### Prioridad Baja
+- [ ] **Integración con wearables** - Sincronización con Apple Watch, Fitbit
+- [ ] **Chat grupal** - Grupos de entrenamiento
+- [ ] **Marketplace de rutinas** - Compartir rutinas entre entrenadores
+- [ ] **Sistema de reseñas** - Calificar entrenadores y rutinas
+
+---
+
 ## 📚 Documentación de Referencia
 
-- **Documentación completa del proyecto:** `docs/MASTER.md`
-- **Índice de documentación:** `docs/00_indice.md`
-- **Reglas de desarrollo:** Ver sección 11 de `docs/MASTER.md`
+- **Guía completa para agentes:** `AGENTS_GUIDE.md`
+- **Agente de testing:** `testing-agent/GUIDE.md` y `testing-agent/CHECKLIST.md` - Golden rules específicas, proceso profesional, estrategias para evitar falsos positivos y lograr alta cobertura
+- **Contexto del proyecto:** `CONTEXT.md`
+- **Tarea actual:** `TASK.md`
+- **Índice de documentación:** `nuevo_proyecto/00_indice.md`
+- **Reglas de desarrollo:** `.clinerules`
+- **Flujo de git:** `GIT_WORKFLOW.md`
 
 ---
 
 **Mantenido por:** Equipo CampFit  
-**Versión:** 1.1
+**Versión:** 2.0
+
+

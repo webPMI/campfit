@@ -7,16 +7,46 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 ---
 
 <AdminLayout>
+<<<<<<< HEAD
+  <div class="mx-auto max-w-5xl px-4 py-8">
+    <div class="animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-zinc-100">Chat de Administración</h1>
+          <p class="mt-1 text-sm text-zinc-500">Comunícate directamente con cualquier usuario de la plataforma</p>
+=======
   <div class="mx-auto max-w-4xl px-4 py-8">
     <div class="animate-fade-in">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">Mensajería de Soporte (Admin)</h1>
           <p class="mt-1 text-sm theme-text-tertiary">Chatea en tiempo real con todos los alumnos de la plataforma</p>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
         </div>
       </div>
 
       <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+<<<<<<< HEAD
+        <!-- Users & Conversations List -->
+        <div class="lg:col-span-1">
+          <div class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 backdrop-blur-sm overflow-hidden flex flex-col" style="height: min(75vh, 650px);">
+            <!-- Search & Filters -->
+            <div class="border-b border-zinc-800/40 p-3 space-y-2">
+              <input id="chat-search" type="text" placeholder="Buscar usuario..." class="w-full rounded-lg border border-zinc-800/40 bg-zinc-800/60 px-3 py-2 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+              
+              <div class="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
+                <button data-role="all" class="role-tab active-tab rounded-md px-2.5 py-1 font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Todos</button>
+                <button data-role="client" class="role-tab rounded-md px-2.5 py-1 font-medium text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">Clientes</button>
+                <button data-role="trainer" class="role-tab rounded-md px-2.5 py-1 font-medium text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">Trainers</button>
+                <button data-role="admin" class="role-tab rounded-md px-2.5 py-1 font-medium text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">Admins</button>
+              </div>
+            </div>
+
+            <!-- List Container -->
+            <div id="user-list" class="flex-1 divide-y divide-zinc-800/40 overflow-y-auto">
+              <div class="p-6 text-center">
+                <p class="text-xs text-zinc-500">Cargando usuarios...</p>
+=======
         <!-- Conversation List -->
         <div class="lg:col-span-1">
           <div class="rounded-xl border theme-border theme-surface-secondary backdrop-blur-sm overflow-hidden">
@@ -26,11 +56,42 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             <div id="conversation-list" class="divide-y divide-zinc-800/40 max-h-[70vh] overflow-y-auto">
               <div class="p-6 text-center">
                 <p class="text-xs theme-text-tertiary">Cargando alumnos...</p>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
               </div>
             </div>
           </div>
         </div>
 
+<<<<<<< HEAD
+        <!-- Chat Main Area -->
+        <div class="lg:col-span-2">
+          <!-- Chat View -->
+          <div id="chat-view" class="hidden rounded-xl border border-zinc-800/40 bg-zinc-900/40 backdrop-blur-sm overflow-hidden flex flex-col" style="height: min(75vh, 650px);">
+            <!-- Chat Header -->
+            <div id="chat-header" class="flex items-center justify-between border-b border-zinc-800/40 p-4">
+              <div class="flex items-center gap-3">
+                <div id="header-avatar" class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-medium text-emerald-400">?</div>
+                <div>
+                  <h3 id="header-name" class="text-sm font-semibold text-zinc-200">Selecciona un usuario</h3>
+                  <p id="header-subtitle" class="text-xs text-zinc-500">—</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-3">
+              <div class="flex h-full items-center justify-center">
+                <p class="text-sm text-zinc-600">Selecciona un usuario para ver o iniciar la conversación</p>
+              </div>
+            </div>
+
+            <!-- Input Controls -->
+            <div class="border-t border-zinc-800/40 p-3">
+              <div class="flex items-center gap-2">
+                <input id="chat-input" type="text" placeholder="Escribe un mensaje como Administrador..." class="flex-1 rounded-xl border border-zinc-800/40 bg-zinc-800/60 px-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500/50" />
+                
+                <button id="btn-send-message" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2.5 text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+=======
         <!-- Chat View -->
         <div class="lg:col-span-2">
           <div id="chat-view" class="hidden rounded-xl border theme-border theme-surface-secondary backdrop-blur-sm overflow-hidden flex flex-col" style="height: min(70vh, 600px);">
@@ -55,10 +116,15 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div class="flex items-center gap-2">
                 <input id="chat-input" type="text" placeholder="Escribe un mensaje..." class="flex-1 rounded-xl border theme-border theme-surface-secondary/60 px-4 py-2.5 text-sm theme-text-primary placeholder-theme-text-tertiary focus:outline-none focus:ring-2 focus:ring-emerald-500/10" />
                 <button id="btn-send-message" class="rounded-xl theme-brand/10 border theme-border-focus/20 px-4 py-2.5 text-sm font-medium theme-text-brand hover:theme-brand/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                   </svg>
                 </button>
+<<<<<<< HEAD
+                
+=======
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
                 <button id="btn-send-alert" class="rounded-xl bg-red-500/10 border border-red-500/20 px-3 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed" title="Enviar llamado de atención" disabled>
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
@@ -68,6 +134,17 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
           </div>
 
+<<<<<<< HEAD
+          <!-- Empty Placeholder -->
+          <div id="chat-empty" class="rounded-xl border border-zinc-800/40 bg-zinc-900/40 p-8 text-center backdrop-blur-sm flex flex-col items-center justify-center" style="height: min(75vh, 650px);">
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-800/50">
+              <svg class="h-7 w-7 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.777 5.98 5.98 0 0 1 1.05-2.617A8.995 8.995 0 0 1 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+              </svg>
+            </div>
+            <h3 class="text-sm font-semibold text-zinc-300 mb-1">Sin chat seleccionado</h3>
+            <p class="text-xs text-zinc-500 max-w-xs">Selecciona un usuario de la lista de la izquierda para ver el historial o enviar un mensaje.</p>
+=======
           <!-- Empty State -->
           <div id="chat-empty" class="rounded-xl border theme-border theme-surface-secondary p-8 text-center backdrop-blur-sm flex flex-col items-center justify-center" style="height: min(70vh, 600px);">
             <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl theme-surface-hover">
@@ -76,6 +153,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               </svg>
             </div>
             <p class="text-sm theme-text-tertiary">Selecciona un alumno de la lista para comenzar a chatear</p>
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
           </div>
         </div>
       </div>
@@ -84,6 +162,222 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
+<<<<<<< HEAD
+  import { requireAdmin } from '@/lib/admin/adminAuth';
+  import { subscribeToUsers } from '@/lib/admin/adminSubscriptions';
+  import { subscribeToConversation, sendMessage, markAllAsRead } from '@/lib/shared/chat';
+  import { escapeHtml, getRoleBadge } from '@/lib/shared/ui';
+  import { db } from '@/lib/firebase';
+  import { collection, query, where, onSnapshot } from 'firebase/firestore';
+  import type { AdminUser } from '@/lib/admin/types';
+  import type { ChatMessage } from '@/lib/shared/chat';
+
+  const unsubInit = requireAdmin(async (user) => {
+    initAdminChat(user.uid);
+  });
+
+  let adminId: string = '';
+  let allUsers: AdminUser[] = [];
+  let userMessagesMap = new Map<string, { lastMessage: ChatMessage | null; unreadCount: number }>();
+  let selectedUser: AdminUser | null = null;
+  let activeRoleFilter: string = 'all';
+  let unsubUsers: (() => void) | null = null;
+  let unsubConversation: (() => void) | null = null;
+  let unsubNotifications: (() => void) | null = null;
+
+  document.addEventListener('astro:before-swap', () => {
+    unsubInit?.();
+    unsubUsers?.();
+    unsubConversation?.();
+    unsubNotifications?.();
+  });
+
+  function initAdminChat(uid: string): void {
+    adminId = uid;
+
+    const chatSearch = document.getElementById('chat-search') as HTMLInputElement;
+    const chatInput = document.getElementById('chat-input') as HTMLInputElement;
+    const btnSend = document.getElementById('btn-send-message')!;
+    const btnAlert = document.getElementById('btn-send-alert')!;
+
+    // Check query params for target user (e.g., ?user=UID)
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUserId = urlParams.get('user');
+
+    // Suscribirse a notificaciones de mensajes no leídos por usuario
+    const messagesRef = collection(db, 'messages');
+    const notificationsQuery = query(
+      messagesRef,
+      where('receiverId', '==', adminId),
+      where('isRead', '==', false)
+    );
+
+    unsubNotifications = onSnapshot(notificationsQuery, (snapshot: any) => {
+      // Reiniciar contadores
+      userMessagesMap.forEach((value, key) => {
+        userMessagesMap.set(key, { lastMessage: value.lastMessage, unreadCount: 0 });
+      });
+
+      // Contar mensajes no leídos por remitente
+      snapshot.docs.forEach((doc: any) => {
+        const data = doc.data();
+        const senderId = data.senderId;
+        if (senderId) {
+          const current = userMessagesMap.get(senderId) || { lastMessage: null, unreadCount: 0 };
+          userMessagesMap.set(senderId, {
+            lastMessage: current.lastMessage,
+            unreadCount: current.unreadCount + 1
+          });
+        }
+      });
+
+      renderUserList();
+    });
+
+    // Subscribe to all users
+    unsubUsers = subscribeToUsers((users) => {
+      // Exclude self from user list
+      allUsers = users.filter((u) => u.uid !== adminId);
+      renderUserList();
+
+      // Auto-select user if passed in query param
+      if (targetUserId && !selectedUser) {
+        const target = allUsers.find((u) => u.uid === targetUserId);
+        if (target) {
+          selectUser(target);
+        }
+      }
+    });
+
+    // Role filter tab listeners
+    document.querySelectorAll('.role-tab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.role-tab').forEach((tab) => {
+          tab.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+          tab.classList.add('text-zinc-400');
+        });
+        btn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+        btn.classList.remove('text-zinc-400');
+
+        activeRoleFilter = (btn as HTMLElement).dataset.role || 'all';
+        renderUserList();
+      });
+    });
+
+    // Search filter listener
+    chatSearch.addEventListener('input', () => renderUserList());
+
+    // Send text message
+    btnSend.addEventListener('click', async () => {
+      const content = chatInput.value.trim();
+      if (!content || !selectedUser) return;
+
+      btnSend.setAttribute('disabled', 'true');
+      btnAlert.setAttribute('disabled', 'true');
+
+      const msgId = await sendMessage(adminId, selectedUser.uid, content, 'text');
+      if (msgId) {
+        chatInput.value = '';
+        scrollToBottom();
+      }
+      btnSend.removeAttribute('disabled');
+      btnAlert.removeAttribute('disabled');
+    });
+
+    // Send alert message
+    btnAlert.addEventListener('click', async () => {
+      const content = chatInput.value.trim();
+      if (!content || !selectedUser) return;
+
+      btnSend.setAttribute('disabled', 'true');
+      btnAlert.setAttribute('disabled', 'true');
+
+      const msgId = await sendMessage(adminId, selectedUser.uid, content, 'alert');
+      if (msgId) {
+        chatInput.value = '';
+        scrollToBottom();
+      }
+      btnSend.removeAttribute('disabled');
+      btnAlert.removeAttribute('disabled');
+    });
+
+    // Enter key
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        btnSend.click();
+      }
+    });
+  }
+
+  function renderUserList(): void {
+    const listContainer = document.getElementById('user-list')!;
+    const searchTerm = (document.getElementById('chat-search') as HTMLInputElement).value.toLowerCase();
+
+    let filtered = allUsers.filter((u) => {
+      const matchesSearch = u.name.toLowerCase().includes(searchTerm) || u.email.toLowerCase().includes(searchTerm);
+      const matchesRole = activeRoleFilter === 'all' || u.role === activeRoleFilter;
+      return matchesSearch && matchesRole;
+    });
+
+    if (filtered.length === 0) {
+      listContainer.innerHTML = `
+        <div class="p-6 text-center">
+          <p class="text-xs text-zinc-500">Sin usuarios encontrados</p>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = filtered
+      .map((user) => {
+        const initial = (user.name || '?').charAt(0).toUpperCase();
+        const badge = getRoleBadge(user.role);
+        const isSelected = selectedUser?.uid === user.uid;
+        const unreadData = userMessagesMap.get(user.uid);
+        const unreadCount = unreadData?.unreadCount || 0;
+
+        return `
+          <div
+            class="flex items-center gap-3 p-3 cursor-pointer transition-all hover:bg-zinc-800/40 ${isSelected ? 'bg-zinc-800/50 border-l-2 border-emerald-500' : ''} ${unreadCount > 0 ? 'bg-emerald-500/5' : ''}"
+            onclick="window.__selectUser('${user.uid}')"
+          >
+            <div class="relative shrink-0">
+              <div class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-400">
+                ${initial}
+              </div>
+              ${user.isBlocked ? '<div class="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-500 border-2 border-zinc-900" title="Usuario bloqueado"></div>' : ''}
+              ${unreadCount > 0 ? `<div class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-bold text-white shadow-lg">${unreadCount > 9 ? '9+' : unreadCount}</div>` : ''}
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold text-zinc-200 truncate">${escapeHtml(user.name)}</p>
+                <span class="rounded-full px-1.5 py-0.5 text-[9px] font-medium ${badge.class}">${badge.label}</span>
+              </div>
+              <p class="mt-0.5 text-[11px] text-zinc-500 truncate">${escapeHtml(user.email)}</p>
+              ${unreadCount > 0 ? `<p class="mt-0.5 text-[10px] text-emerald-400 font-medium">${unreadCount} mensaje${unreadCount > 1 ? 's' : ''} no leído${unreadCount > 1 ? 's' : ''}</p>` : ''}
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  (window as any).__selectUser = (uid: string) => {
+    const user = allUsers.find((u) => u.uid === uid);
+    if (user) selectUser(user);
+  };
+
+  function selectUser(user: AdminUser): void {
+    selectedUser = user;
+
+    const chatView = document.getElementById('chat-view')!;
+    const chatEmpty = document.getElementById('chat-empty')!;
+    const headerAvatar = document.getElementById('header-avatar')!;
+    const headerName = document.getElementById('header-name')!;
+    const headerSubtitle = document.getElementById('header-subtitle')!;
+=======
   import { requireAdmin } from '@/lib/shared/authGuard';
   import { db } from '@/lib/firebase';
   import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp, limit } from 'firebase/firestore';
@@ -134,11 +428,97 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const chatSearch = document.getElementById('chat-search') as HTMLInputElement;
     const chatView = document.getElementById('chat-view')!;
     const chatEmpty = document.getElementById('chat-empty')!;
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     const messagesContainer = document.getElementById('messages-container')!;
     const chatInput = document.getElementById('chat-input') as HTMLInputElement;
     const btnSend = document.getElementById('btn-send-message')!;
     const btnAlert = document.getElementById('btn-send-alert')!;
 
+<<<<<<< HEAD
+    chatView.classList.remove('hidden');
+    chatEmpty.classList.add('hidden');
+    btnSend.removeAttribute('disabled');
+    btnAlert.removeAttribute('disabled');
+    chatInput.removeAttribute('disabled');
+    chatInput.focus();
+
+    // Ocultar badge de notificaciones
+    const notificationBadge = document.getElementById('admin-chat-badge');
+    notificationBadge?.classList.add('hidden');
+
+    const roleBadge = getRoleBadge(user.role);
+    headerAvatar.textContent = (user.name || '?').charAt(0).toUpperCase();
+    headerName.textContent = user.name || 'Sin nombre';
+    headerSubtitle.innerHTML = `
+      <span class="text-zinc-500">${user.email}</span> · 
+      <span class="rounded-full px-2 py-0.5 text-[10px] ${roleBadge.class}">${roleBadge.label}</span>
+    `;
+
+    renderUserList();
+
+    // Subscribe to conversation
+    if (unsubConversation) unsubConversation();
+    unsubConversation = subscribeToConversation(adminId, user.uid, (messages) => {
+      // Mark as read
+      markAllAsRead(adminId, user.uid);
+
+      if (messages.length === 0) {
+        messagesContainer.innerHTML = `
+          <div class="flex h-full items-center justify-center text-center">
+            <div>
+              <p class="text-sm font-medium text-zinc-400">Sin mensajes anteriores</p>
+              <p class="text-xs text-zinc-600 mt-1">Escribe un mensaje abajo para comunicarte con ${escapeHtml(user.name)}</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      messagesContainer.innerHTML = messages
+        .map((m) => {
+          const isMine = m.senderId === adminId;
+          const time = m.createdAt && m.createdAt.toDate
+            ? m.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            : '';
+
+          let bubbleClass = isMine
+            ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-br-md shadow-md shadow-emerald-500/10'
+            : 'bg-zinc-800/90 text-zinc-200 rounded-bl-md border border-zinc-700/40';
+
+          if (m.type === 'alert') {
+            bubbleClass = isMine
+              ? 'bg-amber-600 text-white rounded-br-md shadow-md border border-amber-400/30'
+              : 'bg-amber-500/10 text-amber-200 border border-amber-500/30 rounded-bl-md';
+          }
+
+          const alertHeader = m.type === 'alert' ? `
+            <div class="flex items-center gap-1.5 mb-1 text-xs font-semibold ${isMine ? 'text-amber-100' : 'text-amber-400'}">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+              <span>Llamado de Atención</span>
+            </div>
+          ` : '';
+
+          const timeClass = isMine ? 'text-right' : 'text-left';
+
+          return `
+            <div class="flex ${isMine ? 'justify-end' : 'justify-start'}">
+              <div class="max-w-[80%]">
+                <div class="rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${bubbleClass}">
+                  ${alertHeader}
+                  ${escapeHtml(m.content)}
+                </div>
+                <p class="mt-1 text-[10px] text-zinc-500 ${timeClass}">${time}</p>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      scrollToBottom();
+    });
+=======
     // 1. Subscribe to all clients
     unsubClients = subscribeToUsersByRole('client', (clients) => {
       allClients = clients.map(c => ({
@@ -369,6 +749,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         `;
       })
       .join('');
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   }
 
   function scrollToBottom(): void {

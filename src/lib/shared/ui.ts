@@ -122,11 +122,11 @@ export function getUserInitial(name: string): string {
 export function getRoleBadge(role: string): RoleBadge {
   switch (role) {
     case 'admin':
-      return { label: 'Admin', class: 'bg-purple-500/10 text-purple-400 border border-purple-500/20' };
+      return { label: 'Administrador', class: 'bg-purple-500/10 text-purple-400 border border-purple-500/20' };
     case 'trainer':
-      return { label: 'Trainer', class: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' };
+      return { label: 'Entrenador', class: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' };
     case 'client':
-      return { label: 'Client', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' };
+      return { label: 'Cliente', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' };
     default:
       return { label: role, class: 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20' };
   }

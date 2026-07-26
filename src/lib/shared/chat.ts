@@ -7,7 +7,7 @@
  * @module shared/chat
  */
 
-import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, limit } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs, serverTimestamp, limit, startAfter } from 'firebase/firestore';
 import type { Unsubscribe } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/shared/logger';
@@ -45,7 +45,7 @@ export function subscribeToUserMessages(
 ): Unsubscribe {
   if (!userId) {
     callback([]);
-    return () => {};
+    return () => { };
   }
 
   const q = query(
@@ -77,6 +77,9 @@ export function subscribeToUserMessages(
  * @param userId1 - Primer usuario
  * @param userId2 - Segundo usuario
  * @param callback - Función que recibe los mensajes filtrados
+ * @param options - Opciones de paginación
+ * @param options.limit - Número máximo de mensajes (default: 50, max: 100)
+ * @param options.startAfter - Documento desde el cual empezar (para paginación)
  * @param onError - Callback opcional de error
  * @returns Función para cancelar la suscripción
  */
@@ -84,18 +87,28 @@ export function subscribeToConversation(
   userId1: string,
   userId2: string,
   callback: (messages: ChatMessage[]) => void,
+  options?: { limit?: number; startAfter?: any },
   onError?: (error: Error) => void,
 ): Unsubscribe {
   if (!userId1 || !userId2) {
     callback([]);
-    return () => {};
+    return () => { };
   }
 
-  const q = query(
-    collection(db, 'messages'),
+  const limitCount = Math.min(options?.limit || 50, 100);
+
+  const constraints: any[] = [
     where('participants', 'array-contains', userId1),
     orderBy('createdAt', 'asc'),
-  );
+  ];
+
+  if (options?.startAfter) {
+    constraints.push(startAfter(options.startAfter));
+  }
+
+  constraints.push(limit(limitCount));
+
+  const q = query(collection(db, 'messages'), ...constraints);
 
   return onSnapshot(
     q,
@@ -144,10 +157,11 @@ export async function sendMessage(
   }
 
   try {
+    const participants = [senderId, receiverId].sort();
     const docRef = await addDoc(collection(db, 'messages'), {
       senderId,
       receiverId,
-      participants: [senderId, receiverId],
+      participants,
       content: content.trim(),
       type,
       isRead: false,
@@ -169,5 +183,27 @@ export async function markAsRead(messageId: string): Promise<void> {
     await updateDoc(doc(db, 'messages', messageId), { isRead: true });
   } catch (error) {
     logger.error('Chat', 'Error al marcar mensaje como leído:', error);
+  }
+}
+
+/**
+ * Marca como leídos todos los mensajes recibidos de un remitente específico.
+ * @param receiverId - ID del destinatario (usuario actual)
+ * @param senderId - ID del remitente
+ */
+export async function markAllAsRead(receiverId: string, senderId: string): Promise<void> {
+  if (!receiverId || !senderId) return;
+  try {
+    const q = query(
+      collection(db, 'messages'),
+      where('senderId', '==', senderId),
+      where('receiverId', '==', receiverId),
+      where('isRead', '==', false),
+    );
+    const snap = await getDocs(q);
+    const promises = snap.docs.map((docSnap) => updateDoc(doc(db, 'messages', docSnap.id), { isRead: true }));
+    await Promise.all(promises);
+  } catch (error) {
+    logger.error('Chat', 'Error al marcar mensajes como leídos:', error);
   }
 }

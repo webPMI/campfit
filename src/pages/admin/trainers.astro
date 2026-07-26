@@ -27,11 +27,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
-  import { subscribeToUsersByRole, renderTrainerCard, renderEmptyState, renderLoadingState, ICONS, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
+  import { subscribeToUsersByRole, renderTrainerCard, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
+  import { ICONS, renderEmptyState, renderLoadingState } from '@/lib/shared/ui';
+
 
   const tr = (key: string): string =>
     (window as any).__ADMIN_TRAINERS_TRANSLATIONS__?.[key] || key;
 
+<<<<<<< HEAD
+  const unsubInit = requireAdmin(() => {
+    initTrainers();
+  });
+
+  document.addEventListener('astro:before-swap', () => {
+    unsubInit?.();
+=======
   let unsubTrainers: (() => void) | null = null;
 
   requireAdmin(() => {
@@ -41,6 +51,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   // Cleanup subscription on page unload
   window.addEventListener('beforeunload', () => {
     unsubTrainers?.();
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
   });
 
   async function initTrainers(): Promise<void> {

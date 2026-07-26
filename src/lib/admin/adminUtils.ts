@@ -1,10 +1,43 @@
 /**
- * Utilidades compartidas para el panel de administración.
- * Proporciona funciones de gestión de usuarios, roles y datos del sistema.
+ * Barrel de exportaciones para el módulo de administración.
+ * Re-exporta todas las funciones desde los submódulos especializados.
  *
  * @module adminUtils
  */
 
+<<<<<<< HEAD
+export type { AdminUser, CreateUserPayload } from './types';
+export type { PaginatedResult } from './adminSubscriptions';
+
+export { requireAdmin, signOutUser } from './adminAuth';
+export {
+  createUser,
+  updateUserRole,
+  assignTrainer,
+  deleteUser,
+  toggleUserBlock,
+  getUserName,
+  getUserProfile,
+} from './adminUsers';
+export {
+  subscribeToUsers,
+  subscribeToUsersByRole,
+  subscribeToCollectionCount,
+  subscribeToRecentUsers,
+  getTrainerClientCount,
+  getPaginatedUsers,
+} from './adminSubscriptions';
+export {
+  renderUserRow,
+  renderUserDetail,
+  renderUserForm,
+  renderUserCard,
+  renderUserCardExtended,
+  renderClientCard,
+  renderTrainerCard,
+} from './adminRender';
+export { initGlobalActions, initAdminActions } from './adminInit';
+=======
 import { auth, db } from '@/lib/firebase';
 import {
   collection,
@@ -591,3 +624,4 @@ export function subscribeToRecentUsers(
     },
   );
 }
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a

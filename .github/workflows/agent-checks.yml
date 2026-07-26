@@ -1,0 +1,52 @@
+# ============================================================
+# CampFit Agent Checks - Validación rápida para agentes IA
+# ============================================================
+# Este workflow se ejecuta automáticamente en cada push para
+# verificar que los cambios de agentes IA no rompen nada.
+# ============================================================
+
+name: Agent Checks
+
+on:
+  push:
+    branches-ignore: [master, develop]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  quick-check:
+    name: ✅ Agent Quick Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript Check
+        run: npx astro check
+        continue-on-error: true
+
+      - name: Unit Tests
+        run: npm test -- --run --reporter=verbose
+
+      - name: Build
+        run: npm run build
+        env:
+          PUBLIC_FIREBASE_API_KEY: test-key
+          PUBLIC_FIREBASE_AUTH_DOMAIN: test.firebaseapp.com
+          PUBLIC_FIREBASE_PROJECT_ID: test-project
+          PUBLIC_FIREBASE_STORAGE_BUCKET: test-bucket
+          PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '123456'
+          PUBLIC_FIREBASE_APP_ID: 1:123456:web:abc123

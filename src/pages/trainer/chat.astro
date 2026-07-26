@@ -85,21 +85,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAuth } from '@/lib/shared/authGuard';
+  import { ICONS, escapeHtml, getUserInitial, formatTime } from '@/lib/shared/ui';
   import {
     subscribeToClients,
     subscribeToConversations,
     subscribeToConversation,
     sendMessage,
     markAsRead,
-    ICONS,
     renderMessageBubble,
-    escapeHtml,
-    getUserInitial,
-    formatTime,
   } from '@/lib/trainer/trainerUtils';
   import type { TrainerClient, TrainerMessage } from '@/lib/trainer/trainerUtils';
 
-  requireAuth(async (user) => {
+  const unsubInit = requireAuth(async (user) => {
     initChat(user.uid);
   });
 
@@ -112,7 +109,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let trainerId: string = '';
 
   // Cleanup subscriptions on page unload
-  window.addEventListener('beforeunload', () => {
+  document.addEventListener('astro:before-swap', () => {
+    unsubInit?.();
     unsubClients?.();
     unsubConversations?.();
     currentUnsub?.();
@@ -202,6 +200,18 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const conversationList = document.getElementById('conversation-list')!;
     const searchTerm = (document.getElementById('chat-search') as HTMLInputElement).value.toLowerCase();
 
+<<<<<<< HEAD
+    // Calcular el total de mensajes no leídos
+    const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
+    const trainerBadge = document.getElementById('trainer-chat-badge');
+    if (trainerBadge) {
+      if (totalUnread > 0) {
+        trainerBadge.classList.remove('hidden');
+        trainerBadge.textContent = totalUnread > 99 ? '99+' : totalUnread.toString();
+      } else {
+        trainerBadge.classList.add('hidden');
+      }
+=======
     if (conversations.length === 0) {
       conversationList.innerHTML = `
         <div class="p-6 text-center">
@@ -210,17 +220,43 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
       `;
       return;
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     }
 
-    // Filter by search and also include clients with no messages yet
-    const displayItems = conversations.filter((c) => {
-      const client = allClients.find((cl) => cl.uid === c.clientId);
-      const name = client?.name?.toLowerCase() || '';
-      return name.includes(searchTerm);
+    // Merge all assigned clients with existing conversations so trainer can initiate chats
+    const conversationMap = new Map(conversations.map((c) => [c.clientId, c]));
+    allClients.forEach((client) => {
+      if (!conversationMap.has(client.uid)) {
+        conversationMap.set(client.uid, {
+          clientId: client.uid,
+          lastMessage: null,
+          unread: 0,
+        });
+      }
     });
 
+    const displayItems = Array.from(conversationMap.values())
+      .filter((c) => {
+        const client = allClients.find((cl) => cl.uid === c.clientId);
+        const name = client?.name?.toLowerCase() || '';
+        return name.includes(searchTerm);
+      })
+      .sort((a, b) => {
+        const timeA = a.lastMessage ? (a.lastMessage.createdAt?.toDate?.()?.getTime() || 0) : 0;
+        const timeB = b.lastMessage ? (b.lastMessage.createdAt?.toDate?.()?.getTime() || 0) : 0;
+        return timeB - timeA;
+      });
+
     if (displayItems.length === 0) {
+<<<<<<< HEAD
+      conversationList.innerHTML = `
+        <div class="p-6 text-center">
+          <p class="text-xs text-zinc-500">Sin clientes asignados o resultados</p>
+        </div>
+      `;
+=======
       conversationList.innerHTML = `<div class="p-6 text-center"><p class="text-xs theme-text-tertiary">Sin resultados</p></div>`;
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
       return;
     }
 
@@ -230,12 +266,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         const name = client?.name || 'Usuario';
         const initial = getUserInitial(name);
         const hasAlert = client?.hasActiveAlert;
-        const lastMsg = c.lastMessage?.content || 'Sin mensajes';
+        const lastMsg = c.lastMessage?.content || 'Sin mensajes aún';
         const time = c.lastMessage ? formatTime(c.lastMessage.createdAt) : '';
         const isSelected = selectedClient?.uid === c.clientId;
 
         return `
+<<<<<<< HEAD
+          <div class="flex items-center gap-3 p-3 cursor-pointer transition-all hover:bg-zinc-800/40 ${isSelected ? 'bg-zinc-800/40 border-l-2 border-emerald-500' : ''}" onclick="window.__selectConversation('${c.clientId}')">
+=======
           <div class="flex items-center gap-3 p-3 cursor-pointer transition-all hover:theme-surface-secondary/40 ${isSelected ? 'theme-surface-secondary/40' : ''}" onclick="window.__selectConversation('${c.clientId}')">
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
             <div class="relative shrink-0">
               <div class="flex h-10 w-10 items-center justify-center rounded-full theme-brand/10 text-sm font-medium theme-text-brand">
                 ${initial}
@@ -277,6 +317,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     btnAlert.removeAttribute('disabled');
     chatInput.removeAttribute('disabled');
     chatInput.focus();
+
+    // Ocultar badge de notificaciones
+    const badge = document.getElementById('trainer-chat-badge');
+    badge?.classList.add('hidden');
 
     // Update header
     chatHeader.innerHTML = `

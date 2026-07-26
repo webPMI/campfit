@@ -13,7 +13,11 @@ export async function getUserRole(uid: string): Promise<UserRole | null> {
     }
     return null;
   } catch (err) {
+<<<<<<< HEAD
+    logger.error('RoleRedirect', 'Error getting user role', err);
+=======
     logger.error('RoleRedirect', 'Error getting user role:', err);
+>>>>>>> 4042d86ac520c28484786564a781e3d6e901af5a
     return null;
   }
 }
