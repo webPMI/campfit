@@ -11,7 +11,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   <div class="w-full max-w-sm animate-fade-in-scale">
     <!-- Logo -->
     <div class="mb-8 text-center">
-      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-gradient)] shadow-[var(--shadow-glow-md)]">
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] shadow-[var(--shadow-glow-md)]">
         <svg class="h-7 w-7 text-[var(--text-on-brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
         </svg>
@@ -45,7 +45,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <div class="flex-1 border-t border-[var(--border-subtle)]" />
       </div>
 
-      <!-- Formulario -->
+      <!-- Formulario Email -->
       <form id="registerForm" class="flex flex-col gap-5">
         <div>
           <label for="name" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t('auth.name')}</label>
@@ -78,9 +78,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <input
             id="password"
             type="password"
-            placeholder={t('auth.password.min')}
+            placeholder={t('auth.password.placeholder')}
             required
-            minlength="8"
+            minlength="6"
             autocomplete="new-password"
             class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all duration-200 focus:border-[var(--brand)] focus:bg-[var(--surface-3)] focus:shadow-[0_0_0_3px_var(--brand-dim)]"
           />
@@ -90,7 +90,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <button
           id="registerBtn"
           type="submit"
-          class="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand-gradient)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
         >
           {t('auth.register.btn')}
         </button>

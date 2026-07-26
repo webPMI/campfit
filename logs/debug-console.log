@@ -169,3 +169,323 @@ FirebaseError: Missing or insufficient permissions.
 ============================================================
 [DEV SESSION STARTED] 2026-07-26T12:01:50.797Z
 ============================================================
+[2026-07-26T12:04:43.630Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:04:43.629Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:05:23.324Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:05:53.772Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:03.481Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:12.944Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:13.474Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:13.612Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:13.532Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:13.572Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:13.923Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:14.312Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:14.005Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:14.273Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:14.455Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:14.868Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:15.014Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:16.161Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:16.389Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:16.371Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:16.445Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:17.864Z] [CLIENT] [ERROR] [/register] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:17.973Z] [CLIENT] [ERROR] [/recover] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:18.439Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:19.354Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:19.359Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:19.494Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:20.687Z] [CLIENT] [INFO] [/onboarding] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:20.328Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:20.436Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:21.041Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.046Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:20.743Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.182Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.189Z] [CLIENT] [WARN] [/admin/users] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:21.119Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.640Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.647Z] [CLIENT] [WARN] [/admin/trainers] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:21.269Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.821Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.826Z] [CLIENT] [WARN] [/admin/clients] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:21.713Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:21.927Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:23.408Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:24.514Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:24.518Z] [CLIENT] [WARN] [/admin/settings] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:24.601Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:25.083Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:24.719Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:25.092Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:25.150Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:25.250Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:25.704Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:25.890Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:28.589Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:29.146Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:30.749Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.498Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.498Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.516Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.522Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.522Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.521Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.581Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:30.805Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:31.942Z] [CLIENT] [INFO] [/client/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:32.013Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:32.456Z] [CLIENT] [INFO] [/client/progress] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:32.675Z] [CLIENT] [INFO] [/client/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:32.542Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:32.743Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.149Z] [CLIENT] [INFO] [/client/support] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.186Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.227Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.256Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.971Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.971Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.971Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.972Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.974Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.980Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:33.974Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:34.077Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:35.684Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:35.755Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:39.753Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:40.203Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.201Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.207Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.201Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.200Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.201Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.212Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:40.304Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:41.866Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:41.871Z] [CLIENT] [WARN] [/trainer/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:41.956Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:43.238Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:43.244Z] [CLIENT] [WARN] [/trainer/clients] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:43.303Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:43.919Z] [CLIENT] [INFO] [/trainer/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:43.926Z] [CLIENT] [WARN] [/trainer/workouts] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:44.170Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:44.176Z] [CLIENT] [WARN] [/trainer/diets] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:43.997Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:44.586Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:44.593Z] [CLIENT] [WARN] [/trainer/chat] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:44.598Z] [CLIENT] [INFO] [/trainer/clinical] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:44.254Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:44.691Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:44.689Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:45.942Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:46.884Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:46.889Z] [CLIENT] [WARN] [/trainer/settings] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:46.961Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:47.288Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:47.985Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:48.236Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:48.657Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:48.672Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:50.946Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:07:54.309Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:54.318Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:54.778Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:54.786Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:07:54.422Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:54.872Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:57.557Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:57.557Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:07:57.639Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:03.805Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:03.898Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:05.015Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:08.753Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:08.825Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:12.658Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:13.610Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:13.646Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:18.438Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:18.496Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:19.726Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:19.764Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:22.874Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:22.937Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:23.254Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:23.313Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:29.013Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:29.076Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:33.723Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:43.472Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:08:55.958Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:04.223Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:05.747Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T12:09:14.090Z
+============================================================
+[2026-07-26T12:09:18.505Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:18.264Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:18.313Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:18.922Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:18.957Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:19.337Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:19.452Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:19.931Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:19.910Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:20.199Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:20.640Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:20.494Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:20.515Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:20.806Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:21.215Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:21.282Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:21.804Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:21.811Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:21.933Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:21.923Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:22.021Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:23.049Z] [CLIENT] [ERROR] [/register] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:23.374Z] [CLIENT] [ERROR] [/recover] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:24.136Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:24.596Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:24.601Z] [CLIENT] [WARN] [/trainer/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:24.669Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:24.790Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:25.270Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:25.892Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:26.001Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:26.649Z] [CLIENT] [INFO] [/recover] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:26.860Z] [CLIENT] [INFO] [/onboarding] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:27.652Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:27.694Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:27.721Z] [CLIENT] [WARN] [/admin/users] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:27.457Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:27.706Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:27.717Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:27.615Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:27.742Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:28.181Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:28.224Z] [CLIENT] [WARN] [/admin/trainers] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:28.486Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:28.493Z] [CLIENT] [WARN] [/admin/clients] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:28.435Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:28.451Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:28.550Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:28.665Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:30.792Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:30.799Z] [CLIENT] [WARN] [/admin/settings] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:30.875Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:30.915Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:30.966Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:31.235Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:32.233Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.236Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.235Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.232Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.232Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.232Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.233Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:32.263Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:33.073Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:33.147Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:33.713Z] [CLIENT] [INFO] [/client/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:33.899Z] [CLIENT] [INFO] [/client/progress] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:33.789Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:34.190Z] [CLIENT] [INFO] [/client/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:34.361Z] [CLIENT] [INFO] [/client/support] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:34.028Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:34.250Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:34.435Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:36.513Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:36.610Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-26T12:09:36.972Z
+============================================================
+[2026-07-26T12:09:36.610Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:36.690Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:37.131Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:37.781Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:38.014Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:38.231Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:38.701Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:38.706Z] [CLIENT] [WARN] [/trainer/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:38.433Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:38.773Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:39.453Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:39.460Z] [CLIENT] [WARN] [/trainer/clients] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:39.787Z] [CLIENT] [INFO] [/trainer/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:39.797Z] [CLIENT] [WARN] [/trainer/workouts] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:39.576Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:40.082Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:40.087Z] [CLIENT] [WARN] [/trainer/diets] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:40.146Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:40.152Z] [CLIENT] [WARN] [/trainer/chat] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:39.870Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:40.183Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:40.236Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:40.589Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:40.683Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:42.204Z] [CLIENT] [INFO] [/trainer/clinical] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:42.261Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:42.270Z] [CLIENT] [WARN] [/trainer/settings] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:42.291Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:42.353Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:42.766Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:43.559Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:43.838Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:44.521Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:44.529Z] [CLIENT] [WARN] [/admin/dashboard] [AuthGuard] Usuario no autenticado, redirigiendo a login
+[2026-07-26T12:09:44.167Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:44.228Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:44.655Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-26T12:09:46.260Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:46.338Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+
+[2026-07-26T12:09:48.618Z] [CLIENT] [ERROR] [/login] [Unhandled Promise Rejection] AbortError: Transition was skipped
+

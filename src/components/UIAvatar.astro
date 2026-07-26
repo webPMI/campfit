@@ -55,7 +55,7 @@ const init = (name || '?').charAt(0).toUpperCase();
   ) : (
     <span class={[
       'rounded-full flex items-center justify-center font-semibold',
-      'bg-[var(--brand-gradient)] text-[var(--text-on-brand)]',
+      'bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-[var(--text-on-brand)]',
       'shadow-[var(--shadow-sm)]',
       sizeClasses[size],
     ].join(' ')}>

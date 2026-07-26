@@ -61,7 +61,7 @@ export function renderUserDetail(user: AdminUser): string {
   return `
     <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
       <div class="flex items-center gap-4">
-        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold bg-[var(--brand-gradient)] text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
+        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
           ${initial}
         </div>
         <div>

@@ -192,7 +192,7 @@ export function renderProfileView(profile: ProfileData): string {
 
   return `
     <div class="flex items-center gap-5">
-      <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[var(--brand-gradient)] text-3xl font-bold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
+      <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-3xl font-bold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
         ${initial}
       </div>
       <div class="min-w-0">
