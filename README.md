@@ -129,6 +129,13 @@ campfit-astro/
 | `npm run format` | Formatear con Prettier |
 | `npm run validate` | Validación completa pre-commit |
 
+### PWA (Progressive Web App)
+| Comando | Acción |
+|---------|--------|
+| `npm run pwa:icons` | Generar iconos PWA (192x192, 512x512) |
+| `npm run pwa:build` | Build completo + iconos PWA |
+| `npm run pwa:audit` | Auditoría Lighthouse PWA |
+
 ### Agentes IA
 | Comando | Acción |
 |---------|--------|

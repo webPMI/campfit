@@ -1,19 +1,39 @@
 ---
-export type Language = 'es' | 'en';
-const lang = Astro.params.lang || 'es';
+export type Language = "es" | "en";
+const lang = Astro.params.lang || "es";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="CampFit — Tu plataforma de entrenamiento personal. Rutinas, dietas y seguimiento de progreso." />
+    <meta
+      name="description"
+      content="CampFit — Tu plataforma de entrenamiento personal. Rutinas, dietas y seguimiento de progreso."
+    />
     <meta name="theme-color" content="#10b981" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CampFit" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="CampFit" />
 
-    <!-- Favicon -->
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/logo-icon.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/pwa-icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/pwa-icon-512.png" />
+
+    <script>
+      if ('serviceWorker' in navigator && import.meta.env.PROD) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.error('Service Worker registration failed:', err);
+          });
+        });
+      }
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:title" content="CampFit" />
@@ -21,23 +41,42 @@ const lang = Astro.params.lang || 'es';
     <meta property="og:image" content="/logo-full.png" />
     <meta property="og:type" content="website" />
 
+    <!-- Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((registration) => {
+              console.log("SW registered:", registration.scope);
+            })
+            .catch((error) => {
+              console.log("SW registration failed:", error);
+            });
+        });
+      }
+    </script>
+
     <title>CampFit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body style="font-family: 'Inter', sans-serif;">
     <script>
-      (function() {
-        const saved = localStorage.getItem('campfit_theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', saved);
+      (function () {
+        const saved = localStorage.getItem("campfit_theme") || "dark";
+        document.documentElement.setAttribute("data-theme", saved);
         document.documentElement.style.colorScheme = saved;
       })();
-      (function() {
+      (function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const langParam = urlParams.get('lang');
-        if (langParam === 'es' || langParam === 'en') {
-          localStorage.setItem('campfit_lang', langParam);
+        const langParam = urlParams.get("lang");
+        if (langParam === "es" || langParam === "en") {
+          localStorage.setItem("campfit_lang", langParam);
           document.documentElement.lang = langParam;
         }
       })();
@@ -49,8 +88,8 @@ const lang = Astro.params.lang || 'es';
 </html>
 
 <script>
-  import '@/lib/debug/consoleFileLogger';
-  import '@/lib/debug/firestoreDebug';
+  import "@/lib/debug/consoleFileLogger";
+  import "@/lib/debug/firestoreDebug";
 </script>
 
 <style is:global>
@@ -76,7 +115,11 @@ const lang = Astro.params.lang || 'es';
     --brand-dim: #065f46;
     --brand-glow: oklch(0.75 0.2 160 / 0.25);
     --brand-gradient: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
-    --brand-gradient-subtle: linear-gradient(135deg, oklch(0.35 0.08 160) 0%, oklch(0.30 0.06 160) 100%);
+    --brand-gradient-subtle: linear-gradient(
+      135deg,
+      oklch(0.35 0.08 160) 0%,
+      oklch(0.3 0.06 160) 100%
+    );
 
     --accent-blue: #3b82f6;
     --accent-blue-hover: #60a5fa;
@@ -151,7 +194,11 @@ const lang = Astro.params.lang || 'es';
     --brand-dim: #a7f3d0;
     --brand-glow: oklch(0.65 0.18 160 / 0.2);
     --brand-gradient: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
-    --brand-gradient-subtle: linear-gradient(135deg, oklch(0.88 0.06 160) 0%, oklch(0.92 0.04 160) 100%);
+    --brand-gradient-subtle: linear-gradient(
+      135deg,
+      oklch(0.88 0.06 160) 0%,
+      oklch(0.92 0.04 160) 100%
+    );
 
     --accent-blue: #2563eb;
     --accent-blue-hover: #1d4ed8;
@@ -242,17 +289,23 @@ const lang = Astro.params.lang || 'es';
     -moz-osx-font-smoothing: grayscale;
   }
 
-  *, *::before, *::after { box-sizing: border-box; }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
   body {
     background-color: var(--surface-0);
     color: var(--text-primary);
     min-height: 100vh;
-    transition: background-color var(--transition-base), color var(--transition-base);
+    transition:
+      background-color var(--transition-base),
+      color var(--transition-base);
   }
 
   body::before {
-    content: '';
+    content: "";
     position: fixed;
     inset: 0;
     z-index: 9999;
@@ -262,7 +315,7 @@ const lang = Astro.params.lang || 'es';
   }
 
   body::after {
-    content: '';
+    content: "";
     position: fixed;
     inset: 0;
     z-index: 9998;
@@ -275,42 +328,168 @@ const lang = Astro.params.lang || 'es';
     mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 70%);
   }
 
-  @view-transition { navigation: auto; }
-  ::view-transition-old(root) { animation: fadeOutScale 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-  ::view-transition-new(root) { animation: fadeInScale 0.3s cubic-bezier(0.4, 0, 1, 1) 0.1s forwards; }
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root) {
+    animation: fadeOutScale 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  ::view-transition-new(root) {
+    animation: fadeInScale 0.3s cubic-bezier(0.4, 0, 1, 1) 0.1s forwards;
+  }
 
-  @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
+  @keyframes fadeOutScale {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
 
-  .app-shell { padding-bottom: 5rem; min-height: 100vh; }
+  .app-shell {
+    padding-bottom: 5rem;
+    min-height: 100vh;
+  }
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--surface-5); }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-4);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--surface-5);
+  }
 
-  :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: var(--radius-sm); }
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
 
-  ::selection { background: oklch(0.65 0.18 160 / 0.3); color: var(--text-primary); }
+  ::selection {
+    background: oklch(0.65 0.18 160 / 0.3);
+    color: var(--text-primary);
+  }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes pulseGlow { 0%, 100% { box-shadow: var(--shadow-glow-sm); } 50% { box-shadow: var(--shadow-glow-md); } }
-  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
-  @keyframes toastOut { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -8px); } }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes pulseGlow {
+    0%,
+    100% {
+      box-shadow: var(--shadow-glow-sm);
+    }
+    50% {
+      box-shadow: var(--shadow-glow-md);
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 16px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+  @keyframes toastOut {
+    from {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -8px);
+    }
+  }
 
-  .animate-fade-in { animation: fadeIn var(--transition-base) ease-out forwards; }
-  .animate-fade-in-delay { animation: fadeIn var(--transition-base) ease-out 0.15s forwards; opacity: 0; }
-  .animate-fade-in-scale { animation: fadeInScale var(--transition-spring) ease-out forwards; }
-  .animate-slide-up { animation: slideUp var(--transition-base) ease-out forwards; }
-  .animate-slide-down { animation: slideDown var(--transition-base) ease-out forwards; }
-  .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+  .animate-fade-in {
+    animation: fadeIn var(--transition-base) ease-out forwards;
+  }
+  .animate-fade-in-delay {
+    animation: fadeIn var(--transition-base) ease-out 0.15s forwards;
+    opacity: 0;
+  }
+  .animate-fade-in-scale {
+    animation: fadeInScale var(--transition-spring) ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp var(--transition-base) ease-out forwards;
+  }
+  .animate-slide-down {
+    animation: slideDown var(--transition-base) ease-out forwards;
+  }
+  .animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
 
   .skeleton {
-    background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+    background: linear-gradient(
+      90deg,
+      var(--surface-2) 25%,
+      var(--surface-3) 50%,
+      var(--surface-2) 75%
+    );
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
     border-radius: var(--radius-md);
@@ -323,4 +502,3 @@ const lang = Astro.params.lang || 'es';
     border: 1px solid var(--glass-border);
   }
 </style>
-</write_to_file>

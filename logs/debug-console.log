@@ -5267,3 +5267,49 @@ FirebaseError: The query requires an index. You can create it here: https://cons
 FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
 [2026-07-29T17:27:11.856Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
 FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+
+============================================================
+[DEV SESSION STARTED] 2026-07-29T17:38:26.286Z
+============================================================
+[2026-07-29T17:38:36.807Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:42:20.367Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-29T17:42:25.359Z
+============================================================
+[2026-07-29T17:42:25.366Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-07-29T17:42:29.474Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:42:46.028Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:43:18.683Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:43:18.810Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+[2026-07-29T17:43:42.530Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:43:42.824Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+
+============================================================
+[DEV SESSION STARTED] 2026-07-29T17:43:45.005Z
+============================================================
+[2026-07-29T17:43:45.008Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-07-29T17:43:46.998Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:43:47.130Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+[2026-07-29T17:44:04.307Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:44:04.611Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+
+============================================================
+[DEV SESSION STARTED] 2026-07-29T17:44:13.696Z
+============================================================
+[2026-07-29T17:44:59.102Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T17:44:59.222Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+
+============================================================
+[DEV SESSION STARTED] 2026-07-29T17:45:06.018Z
+============================================================
+[2026-07-29T18:25:32.897Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T18:25:33.073Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+[2026-07-29T18:26:19.270Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T18:26:19.333Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+[2026-07-29T18:26:25.081Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-29T18:26:25.169Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+
+============================================================
+[DEV SESSION STARTED] 2026-07-29T18:26:34.216Z
+============================================================
