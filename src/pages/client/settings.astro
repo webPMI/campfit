@@ -232,6 +232,7 @@ const clientTranslations = {
   import { showToast } from '@/lib/shared/ui';
   import { getStoredLanguage, setStoredLanguage } from '@/i18n/client';
   import { logger } from '@/lib/shared/logger';
+  import { signOutUser } from '@/lib/shared/authGuard';
 
   const tr = (key: string): string =>
     (window as any).__CLIENT_SETTINGS_TRANSLATIONS__?.[key] || key;
@@ -465,8 +466,7 @@ const clientTranslations = {
     document.getElementById('btn-logout')?.addEventListener('click', async () => {
       if (!confirm(tr('admin.settings.logout.confirm'))) return;
       try {
-        await authService.logoutUser();
-        window.location.href = '/login';
+        await signOutUser();
       } catch (err) {
         logger.error('ClientSettings', 'Error signing out', err);
         showToast({ message: tr('admin.settings.logout.error'), type: 'error' });

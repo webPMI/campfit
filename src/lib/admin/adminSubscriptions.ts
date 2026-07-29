@@ -19,6 +19,10 @@ import { logger } from '@/lib/shared/logger';
 import { showToast } from '@/lib/shared/ui';
 import type { AdminUser } from './types';
 
+/** Tipo simplificado para uso en dropdowns de asignación */
+export type TrainerOption = { uid: string; name: string; role: string };
+
+
 /**
  * Se suscribe a todos los usuarios, ordenados por fecha de creación descendente.
  */
@@ -163,3 +167,64 @@ export async function getTrainerClientCount(trainerId: string): Promise<number> 
     return 0;
   }
 }
+
+/**
+ * Se suscribe a todos los usuarios que pueden actuar como entrenadores:
+ * usuarios con rol 'trainer' y usuarios con rol 'admin'.
+ *
+ * Firestore no soporta OR en where(), así que se usan dos queries en paralelo
+ * cuyos resultados se fusionan y ordenan por nombre.
+ *
+ * @param callback - Función que recibe la lista combinada de trainers + admins
+ * @returns Función de limpieza que cancela ambas suscripciones
+ */
+export function subscribeToTrainers(
+  callback: (trainers: TrainerOption[]) => void,
+): Unsubscribe {
+  const map = new Map<string, TrainerOption>();
+
+  function emit(): void {
+    const sorted = Array.from(map.values()).sort((a, b) =>
+      a.name.localeCompare(b.name, 'es'),
+    );
+    callback(sorted);
+  }
+
+  function makeQuery(role: 'trainer' | 'admin'): Unsubscribe {
+    const q = query(
+      collection(db, 'users'),
+      where('role', '==', role),
+      orderBy('name', 'asc'),
+    );
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'removed') {
+            map.delete(change.doc.id);
+          } else {
+            const data = change.doc.data();
+            map.set(change.doc.id, {
+              uid: change.doc.id,
+              name: data.name || 'Sin nombre',
+              role,
+            });
+          }
+        });
+        emit();
+      },
+      (error) => {
+        logger.error('Admin', `Error al suscribirse a ${role}s:`, error);
+      },
+    );
+  }
+
+  const unsubTrainers = makeQuery('trainer');
+  const unsubAdmins = makeQuery('admin');
+
+  return () => {
+    unsubTrainers();
+    unsubAdmins();
+  };
+}
+

@@ -54,10 +54,19 @@ export async function resolveSessionNow(): Promise<SessionContext> {
 
   try {
     const snap = await getDoc(doc(db, 'users', user.uid));
-    const role = snap.exists() ? (snap.data().role || 'client') : 'client';
+    const email = (user.email || '').toLowerCase();
+    const isBootstrapAdmin =
+      email === 'servicioweb.pmi@gmail.com' ||
+      email === 'sevicioweb.pmi@gmail.com';
+
+    const role = snap.exists()
+      ? (snap.data().role || 'client')
+      : (isBootstrapAdmin ? 'admin' : 'client');
+
     const name = snap.exists()
       ? (snap.data().name || user.displayName || user.email || 'Usuario')
       : (user.displayName || user.email || 'Usuario');
+
     cachedSession = {
       user,
       role,
@@ -66,11 +75,17 @@ export async function resolveSessionNow(): Promise<SessionContext> {
       userName: name,
     };
   } catch {
+    const email = (user.email || '').toLowerCase();
+    const isBootstrapAdmin =
+      email === 'servicioweb.pmi@gmail.com' ||
+      email === 'sevicioweb.pmi@gmail.com';
+    const fallbackRole = isBootstrapAdmin ? 'admin' : 'client';
+
     cachedSession = {
       user,
-      role: 'client',
-      dashboardPath: '/client/dashboard',
-      dashboardLabel: 'Mi Progreso',
+      role: fallbackRole,
+      dashboardPath: ROLE_ROUTES[fallbackRole] || '/client/dashboard',
+      dashboardLabel: DASHBOARD_LABELS[fallbackRole] || 'Mi Progreso',
       userName: user.displayName || user.email || 'Usuario',
     };
   }

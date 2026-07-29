@@ -5,10 +5,11 @@
  *   requireAuth(user => { ... });   // cualquier usuario autenticado
  *   requireAdmin(user => { ... });  // solo admins
  *
- * 🔒 Protección anti-bucle infinito:
- *   1. Salta la primera llamada de Firebase (inicialización)
- *   2. Nunca redirige desde páginas públicas (/login, /register, /recover, /)
- *   3. Solo ejecuta el callback una vez (evita re-fires de Firebase)
+ * 🔒 Estrategia de autenticación:
+ *   1. Verifica auth.currentUser sincrónicamente al montar (caso post-login)
+ *   2. Suscripción a onAuthStateChanged para detectar logout/expiración
+ *   3. callbackFired evita re-ejecuciones por re-fires de Firebase
+ *   4. Nunca redirige desde páginas públicas (/login, /register, /recover, /)
  *
  * @module shared/authGuard
  */
@@ -36,13 +37,9 @@ function isPublicPath(): boolean {
  * @returns Función para cancelar la suscripción
  */
 export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe {
-  let initialized = false; // 🔑 clave: evita redirigir durante inicialización de Firebase
+  let callbackFired = false;
 
-  return onAuthStateChanged(auth, (user) => {
-    // Primera llamada: Firebase está inicializando — no tomar acción
-    if (!initialized) { initialized = true; return; }
-
-    // Usuario cerró sesión o expiró
+  function checkUser(user: FirebaseUser | null): void {
     if (!user) {
       if (!isPublicPath()) {
         logger.warn('AuthGuard', 'Usuario no autenticado, redirigiendo a login');
@@ -50,9 +47,19 @@ export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe
       }
       return;
     }
-
-    // ✅ Sesión válida — ejecutar callback
+    if (callbackFired) return;
+    callbackFired = true;
     callback(user);
+  }
+
+  // Verificar sincrónicamente si ya hay sesión activa (caso post-login)
+  if (auth.currentUser) {
+    checkUser(auth.currentUser);
+  }
+
+  // Suscribirse para detectar cambios futuros (logout, expiración de token)
+  return onAuthStateChanged(auth, (user) => {
+    if (!callbackFired) checkUser(user);
   });
 }
 
@@ -64,9 +71,9 @@ export function requireAuth(callback: (user: FirebaseUser) => void): Unsubscribe
  * pero con email de administrador conocido.
  */
 export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscribe {
-  let callbackFired = false; // evita ejecutar el callback más de una vez
+  let callbackFired = false;
 
-  return onAuthStateChanged(auth, async (user) => {
+  async function checkAdmin(user: FirebaseUser | null): Promise<void> {
     if (!user) {
       if (!isPublicPath()) window.location.replace('/login');
       return;
@@ -77,7 +84,7 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
 
     try {
       const docSnap = await getDoc(doc(db, 'users', user.uid));
-      const role = docSnap.data()?.role;
+      const role = docSnap.exists() ? docSnap.data()?.role : undefined;
       const email = (user.email || '').toLowerCase();
 
       // Bootstrap admins: correos de administrador conocidos
@@ -104,6 +111,16 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
       showToast({ message: 'Error al verificar permisos', type: 'error' });
       window.location.replace('/login');
     }
+  }
+
+  // Verificar sincrónicamente si ya hay sesión activa (caso post-login)
+  if (auth.currentUser) {
+    checkAdmin(auth.currentUser);
+  }
+
+  // Suscribirse para detectar cambios futuros (logout, expiración de token)
+  return onAuthStateChanged(auth, async (user) => {
+    if (!callbackFired) await checkAdmin(user);
   });
 }
 

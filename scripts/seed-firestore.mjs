@@ -431,5 +431,4 @@ async function main() {
   }
 }
 
-main();
-</write_to_file>
+main();

@@ -58,15 +58,20 @@ describe('adminAuth', () => {
   describe('requireAdmin', () => {
     it('debería llamar al callback cuando el usuario está autenticado', async () => {
       const mockUser = { uid: 'admin-123', email: 'admin@test.com' };
+      let storedCallback: ((u: unknown) => void) | null = null;
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
-        const callback = args[1] as (u: unknown) => void;
-        callback(mockUser);
+        storedCallback = args[1] as (u: unknown) => void;
+        // Primera llamada = inicialización de Firebase (se ignora)
+        storedCallback(null);
         return vi.fn();
       }) as never);
 
       const { requireAdmin } = await import('@/lib/admin/adminAuth');
       const callback = vi.fn();
       const unsubscribe = requireAdmin(callback);
+
+      // Segunda llamada = usuario real
+      storedCallback!(mockUser);
       await new Promise(resolve => setTimeout(resolve, 10));
 
       expect(mockOnAuthStateChanged).toHaveBeenCalledWith(mockAuth, expect.any(Function));
@@ -75,15 +80,20 @@ describe('adminAuth', () => {
     });
 
     it('debería redirigir a /login cuando el usuario NO está autenticado', async () => {
+      let storedCallback: ((u: unknown) => void) | null = null;
       mockOnAuthStateChanged.mockImplementation(((...args: unknown[]) => {
-        const callback = args[1] as (u: unknown) => void;
-        callback(null);
+        storedCallback = args[1] as (u: unknown) => void;
+        // Primera llamada = inicialización (se ignora)
+        storedCallback(null);
         return vi.fn();
       }) as never);
 
       const { requireAdmin } = await import('@/lib/admin/adminAuth');
       const callback = vi.fn();
       requireAdmin(callback);
+
+      // Segunda llamada = usuario null (sesión expirada/cerrada)
+      storedCallback!(null);
 
       expect(callback).not.toHaveBeenCalled();
       expect(window.location.href).toBe('/login');

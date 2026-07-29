@@ -186,7 +186,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { requireAdmin } from '@/lib/shared/authGuard';
   import {
     subscribeToUsers,
-    subscribeToUsersByRole,
+    subscribeToTrainers,
     renderUserCardExtended,
     initGlobalActions,
     updateUserRole,
@@ -195,6 +195,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     assignTrainer,
     getUserName,
     type AdminUser,
+    type TrainerOption,
   } from '@/lib/admin/adminUtils';
   import { ICONS, showToast, escapeHtml, formatDate, getRoleBadge, renderEmptyState, renderLoadingState } from '@/lib/shared/ui';
   import { collection, doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
@@ -308,9 +309,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       });
     }
 
-    // Load trainers for assignment dropdown
-    unsubTrainers = subscribeToUsersByRole('trainer', (trainers) => {
-      allTrainers = trainers.map((t) => ({ uid: t.uid, name: t.name }));
+    // Load trainers + admins for assignment dropdown
+    unsubTrainers = subscribeToTrainers((trainers) => {
+      allTrainers = trainers;
       updateTrainerSelect();
     });
 
@@ -392,10 +393,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     if (!select) return;
     const currentValue = select.value;
     select.innerHTML = '<option value="">Sin trainer</option>';
-    allTrainers.forEach((trainer) => {
+    (allTrainers as TrainerOption[]).forEach((trainer) => {
       const opt = document.createElement('option');
       opt.value = trainer.uid;
-      opt.textContent = trainer.name;
+      opt.textContent = trainer.role === 'admin'
+        ? `${trainer.name} (Admin)`
+        : trainer.name;
       select.appendChild(opt);
     });
     select.value = currentValue;

@@ -20,9 +20,11 @@ export {
 export {
   subscribeToUsers,
   subscribeToUsersByRole,
+  subscribeToTrainers,
   subscribeToCollectionCount,
   subscribeToRecentUsers,
   getTrainerClientCount,
+  type TrainerOption,
 } from './adminSubscriptions';
 export {
   renderUserRow,
