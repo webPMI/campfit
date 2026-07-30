@@ -167,6 +167,16 @@ export function initPage(options: InitPageOptions): () => void {
                 email === 'sevicioweb.pmi@gmail.com';
             const userRole = ((userData.role as string) || (isBootstrap ? 'admin' : 'client')) as 'admin' | 'trainer' | 'client';
 
+            // Comprobar si el cliente necesita realizar el onboarding antes de acceder a /client/*
+            const isClientPath = window.location.pathname.startsWith('/client');
+            const isOnboardingPath = window.location.pathname.startsWith('/onboarding');
+            if (userRole === 'client' && userData.onboardingCompleted === false && isClientPath && !isOnboardingPath) {
+                redirecting = true;
+                logger.warn('InitPage', `Cliente UID: ${firebaseUser.uid} sin onboarding completado. Redirigiendo a /onboarding`);
+                window.location.href = '/onboarding';
+                return;
+            }
+
             // Verificar acceso — redirigir al dashboard propio, no a /dashboard genérico
             if (allowedRoles && !allowedRoles.includes(userRole)) {
                 redirecting = true;

@@ -1,40 +1,25 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import DecorativeBackground from '@/components/DecorativeBackground.astro';
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import UILogoIcon from '@/components/UILogoIcon.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
 const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
-const altLang = lang === 'es' ? 'en' : 'es';
+const currentPath = Astro.url.pathname;
 ---
 
 <BaseLayout>
   <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12">
-    <!-- Fondo decorativo -->
-    <div class="pointer-events-none fixed inset-0 overflow-hidden">
-      <div class="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-[var(--brand-dim)] blur-3xl"></div>
-      <div class="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-[var(--brand-dim)] blur-3xl"></div>
-    </div>
+    <DecorativeBackground />
+    <LanguageSwitcher currentPath={currentPath} lang={lang} />
 
-    <!-- Language Switcher -->
-    <div class="fixed right-4 top-4 z-50">
-      <a
-        href={`/onboarding?lang=${altLang}`}
-        class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] backdrop-blur-sm transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
-      >
-        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-        </svg>
-        {altLang === 'en' ? 'EN' : 'ES'}
-      </a>
-    </div>
-
-    <div class="w-full max-w-lg animate-fade-in">
+    <div class="w-full max-w-lg animate-fade-in" id="onboardingContainer" data-lang={lang}>
       <!-- Header -->
       <div class="mb-8 text-center">
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] shadow-lg shadow-[var(--shadow-glow-sm)]">
-          <svg class="h-7 w-7 text-[var(--text-on-brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-          </svg>
+          <UILogoIcon size="h-7 w-7" class="text-[var(--text-on-brand)]" />
         </div>
         <h1 class="text-2xl font-bold tracking-tight">{t('onboarding.title')}</h1>
         <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('onboarding.subtitle')}</p>
@@ -329,11 +314,13 @@ const altLang = lang === 'es' ? 'en' : 'es';
     updateProgress();
   }
 
+  import { saveOnboardingProfile, skipOnboarding, type OnboardingData } from '@/lib/client/onboardingService';
+
   // ============================================================
   // Collect data from all steps
   // ============================================================
 
-  function collectData(): Record<string, unknown> {
+  function collectData(): OnboardingData {
     const birthdate = (document.getElementById('birthdate') as HTMLInputElement).value;
     const height = (document.getElementById('height') as HTMLInputElement).value;
     const weight = (document.getElementById('weight') as HTMLInputElement).value;
@@ -367,53 +354,25 @@ const altLang = lang === 'es' ? 'en' : 'es';
     };
   }
 
-  // ============================================================
-  // Save to Firestore
-  // ============================================================
-
-  async function saveOnboarding(): Promise<boolean> {
+  async function handleSaveOnboarding(): Promise<boolean> {
     if (!currentUser) {
       showError('Debes iniciar sesión');
       return false;
     }
-
     const data = collectData();
-
-    // Build medicalProfile object
-    const medicalProfile: Record<string, unknown> = {
-      updatedAt: serverTimestamp(),
-    };
-
-    if (data.birthdate) medicalProfile.birthDate = data.birthdate;
-    if (data.height) medicalProfile.height = data.height;
-    if (data.initialWeight) medicalProfile.initialWeight = data.initialWeight;
-    if (data.experience) medicalProfile.experience = data.experience;
-    if (data.goals) medicalProfile.goals = data.goals;
-    if (data.conditions) medicalProfile.conditions = data.conditions;
-    if (data.medications) medicalProfile.medications = data.medications;
-    if (data.allergies) medicalProfile.allergies = data.allergies;
-    if (data.injuries) medicalProfile.injuries = data.injuries;
-    if (data.surgery) medicalProfile.surgery = data.surgery;
-    if (data.emergencyName) medicalProfile.emergencyName = data.emergencyName;
-    if (data.emergencyPhone) medicalProfile.emergencyPhone = data.emergencyPhone;
-
-    try {
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        medicalProfile,
-        onboardingCompleted: true,
-        updatedAt: serverTimestamp(),
-      });
-      return true;
-    } catch (err) {
-      console.error('[Onboarding] Error saving:', err);
+    const success = await saveOnboardingProfile(currentUser.uid, data);
+    if (!success) {
       showError(t('onboarding.error'));
-      return false;
     }
+    return success;
   }
 
   // ============================================================
   // Navigation
   // ============================================================
+
+  const onboardingContainer = document.getElementById('onboardingContainer')!;
+  const currentLang = onboardingContainer.dataset.lang || 'es';
 
   nextBtn.addEventListener('click', async () => {
     hideError();
@@ -425,9 +384,9 @@ const altLang = lang === 'es' ? 'en' : 'es';
       nextBtn.disabled = true;
       nextBtn.textContent = t('onboarding.saving');
 
-      const success = await saveOnboarding();
+      const success = await handleSaveOnboarding();
       if (success) {
-        window.location.href = '/client/dashboard';
+        window.location.href = `/client/dashboard?lang=${currentLang}`;
       } else {
         nextBtn.disabled = false;
         nextBtn.textContent = t('onboarding.finish');
@@ -441,7 +400,10 @@ const altLang = lang === 'es' ? 'en' : 'es';
     }
   });
 
-  skipBtn.addEventListener('click', () => {
-    window.location.href = '/client/dashboard';
+  skipBtn.addEventListener('click', async () => {
+    if (currentUser) {
+      await skipOnboarding(currentUser.uid);
+    }
+    window.location.href = `/client/dashboard?lang=${currentLang}`;
   });
 </script>

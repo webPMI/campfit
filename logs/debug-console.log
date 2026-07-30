@@ -5313,3 +5313,97 @@ FirebaseError: The query requires an index. You can create it here: https://cons
 ============================================================
 [DEV SESSION STARTED] 2026-07-29T18:26:34.216Z
 ============================================================
+[2026-07-29T20:31:30.801Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-07-30T08:15:42.144Z] [CLIENT] [LOG] [/] SW registered: http://localhost:4321/
+[2026-07-30T08:15:42.230Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+    at HTMLDocument.<anonymous> (http://localhost:4321/@id/astro/runtime/client/dev-toolbar/entrypoint.js:449:16)
+[2026-07-30T08:15:42.231Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+    at HTMLDocument.<anonymous> (http://localhost:4321/@id/astro/runtime/client/dev-toolbar/entrypoint.js:449:16)
+[2026-07-30T08:15:42.231Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+    at HTMLDocument.<anonymous> (http://localhost:4321/@id/astro/runtime/client/dev-toolbar/entrypoint.js:449:16)
+[2026-07-30T08:15:42.232Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+    at HTMLDocument.<anonymous> (http://localhost:4321/@id/astro/runtime/client/dev-toolbar/entrypoint.js:449:16)
+[2026-07-30T08:15:42.233Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+    at HTMLDocument.<anonymous> (http://localhost:4321/@id/astro/runtime/client/dev-toolbar/entrypoint.js:449:16)
+[2026-07-30T15:26:40.475Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-30T15:26:40.475Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-30T15:26:40.475Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-30T15:26:40.476Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-30T15:26:40.492Z] [CLIENT] [ERROR] [/] [vite] SendBeforeConnectError: send was called before connect
+SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:4321/@vite/client:384:15)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:27:25.426Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:41:31.144Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:42:30.195Z
+============================================================

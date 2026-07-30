@@ -125,11 +125,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     errorMsg.classList.remove('flex');
   }
 
-  function redirectByRole(role: string) {
+  function redirectByRole(role: string, onboardingCompleted?: boolean) {
     const routes: Record<string, string> = {
       admin: '/admin/dashboard',
       trainer: '/trainer/dashboard',
-      client: '/client/dashboard',
+      client: onboardingCompleted === false ? '/onboarding' : '/client/dashboard',
     };
     window.location.href = routes[role] || '/client/dashboard';
   }
@@ -158,7 +158,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const user = await authService.loginUser(email, password);
       setUser(user);
       setAuthLoading(false);
-      redirectByRole(user.role);
+      redirectByRole(user.role, (user as any).onboardingCompleted);
     } catch (err: unknown) {
       const fbErr = err as FirebaseError & { message?: string };
       const code = fbErr.code || fbErr.message || '';
@@ -186,7 +186,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const user = await authService.loginWithGoogle();
       setUser(user);
       setAuthLoading(false);
-      redirectByRole(user.role);
+      redirectByRole(user.role, (user as any).onboardingCompleted);
     } catch (err: unknown) {
       const fbErr = err as FirebaseError;
       const code = fbErr.code || '';

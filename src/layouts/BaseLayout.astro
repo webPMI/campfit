@@ -25,34 +25,19 @@ const lang = Astro.params.lang || "es";
     <link rel="apple-touch-icon" sizes="192x192" href="/pwa-icon-192.png" />
     <link rel="apple-touch-icon" sizes="512x512" href="/pwa-icon-512.png" />
 
-    <script>
-      if ('serviceWorker' in navigator && import.meta.env.PROD) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch((err) => {
-            console.error('Service Worker registration failed:', err);
-          });
-        });
-      }
-    </script>
-
     <!-- Open Graph -->
     <meta property="og:title" content="CampFit" />
     <meta property="og:description" content="Tu plataforma de entrenamiento personal" />
     <meta property="og:image" content="/logo-full.png" />
     <meta property="og:type" content="website" />
 
-    <!-- Service Worker -->
+    <!-- Service Worker (solo en producción) -->
     <script>
-      if ("serviceWorker" in navigator) {
+      if ("serviceWorker" in navigator && import.meta.env.PROD) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then((registration) => {
-              console.log("SW registered:", registration.scope);
-            })
-            .catch((error) => {
-              console.log("SW registration failed:", error);
-            });
+          navigator.serviceWorker.register("/sw.js").catch((err) => {
+            console.error("Service Worker registration failed:", err);
+          });
         });
       }
     </script>
