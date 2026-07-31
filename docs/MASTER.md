@@ -3,7 +3,7 @@
 > **Stack:** Astro 7 + Tailwind CSS 4 + Firebase 11 + Nanostores  
 > **Arquitectura:** Vanilla JS (sin React). Compilación y enrutado estático.  
 > **Estado:** En desarrollo activo.  
-> **Última actualización:** 2026-07-30
+> **Última actualización:** 2026-07-31
 
 ---
 
@@ -316,7 +316,7 @@ Iconos clave del proyecto:
 ## 5. Estructura del Proyecto
 
 ```
-campfit-astro/
+campfit/
 ├── src/               # 📁 Código fuente (sin tests)
 │   ├── components/    # Componentes .astro
 │   ├── layouts/       # Layouts .astro
@@ -335,14 +335,21 @@ campfit-astro/
 │   │   │   ├── users.astro
 │   │   │   ├── trainers.astro
 │   │   │   ├── clients.astro
-│   │   │   └── settings.astro
-│   │   ├── client/
-│   │   │   ├── dashboard.astro
+│   │   │   ├── clinical.astro
 │   │   │   ├── workouts.astro
 │   │   │   ├── diets.astro
 │   │   │   ├── progress.astro
 │   │   │   ├── chat.astro
-│   │   │   └── support.astro
+│   │   │   └── settings.astro
+│   │   ├── client/
+│   │   │   ├── dashboard.astro
+│   │   │   ├── medical-profile.astro
+│   │   │   ├── workouts.astro
+│   │   │   ├── diets.astro
+│   │   │   ├── progress.astro
+│   │   │   ├── chat.astro
+│   │   │   ├── support.astro
+│   │   │   └── settings.astro
 │   │   └── trainer/
 │   │       ├── dashboard.astro
 │   │       ├── clients.astro
@@ -365,7 +372,8 @@ campfit-astro/
 │   │   ├── authService.ts     # Auth centralizado
 │   │   └── adminService.ts    # Admin: CRUD usuarios, estadísticas
 │   ├── stores/        # Nanostores
-│   │   └── authStore.ts       # $user, $authLoading, $authError, $isAuthenticated
+│   │   ├── authStore.ts       # $user, $authLoading, $authError, $isAuthenticated
+│   │   └── themeStore.ts      # $theme, $isDark, $isLight
 │   ├── types/         # Tipos globales
 │   │   └── index.ts           # User, MedicalProfile, LoginForm, RegisterForm, AuthError
 │   └── i18n/          # Internacionalización
@@ -395,6 +403,7 @@ campfit-astro/
 ├── /login                     # 🔐 Inicio de sesión
 ├── /register                  # Registro de nuevo usuario
 ├── /recover                   # Recuperación de contraseña
+├── /onboarding                # Onboarding post-registro
 │
 ├── /client/                   # 👤 Panel del Cliente
 │   ├── /client/dashboard      # Resumen diario del cliente
@@ -403,25 +412,27 @@ campfit-astro/
 │   ├── /client/diets          # Visualizador de dietas
 │   ├── /client/progress       # Progreso (peso + fotos)
 │   ├── /client/chat           # Chat 1:1 con entrenador
-│   └── /client/support        # Chatbot de soporte
+│   ├── /client/support        # Chatbot de soporte
+│   └── /client/settings       # Configuración del cliente
 │
 ├── /admin/                    # ⚙️ Panel del Administrador
 │   ├── /admin/dashboard       # Dashboard de administración
 │   ├── /admin/users           # Gestión de usuarios
-│   ├── /admin/workouts        # Listado de rutinas
-│   ├── /admin/diets           # Listado de dietas
-│   ├── /admin/chat            # Bandeja de entrada de chats
-│   ├── /admin/progress        # Visor de progreso de alumnos
-│   ├── /admin/settings        # Configuración del sistema
-│   ├── /admin/clients         # Listado de clientes
-│   └── /admin/trainers        # Listado de entrenadores
+│   ├── /admin/clients         # Lista de clientes
+│   ├── /admin/trainers        # Lista de entrenadores
+│   ├── /admin/clinical        # Fichas clínicas
+│   ├── /admin/workouts        # Supervisión de rutinas
+│   ├── /admin/diets           # Supervisión de dietas
+│   ├── /admin/progress        # Visor de progreso
+│   ├── /admin/chat            # Centro de mensajes
+│   └── /admin/settings        # Configuración del sistema
 │
 └── /trainer/                  # 🏋️ Panel del Entrenador
     ├── /trainer/dashboard     # Dashboard del entrenador
-    ├── /trainer/clients       # Gestión de clientes
-    ├── /trainer/workouts      # Creador de rutinas
-    ├── /trainer/diets         # Planificador de dietas
-    ├── /trainer/chat          # Bandeja de mensajes
+    ├── /trainer/clients       # Gestión de clientes asignados
+    ├── /trainer/workouts      # Gestión de rutinas
+    ├── /trainer/diets         # Gestión de dietas
+    ├── /trainer/chat          # Chat con clientes
     └── /trainer/settings      # Configuración del entrenador
 ```
 
@@ -487,10 +498,8 @@ campfit-astro/
 |-------|------|-------|
 | 📊 | `/admin/dashboard` | Dashboard |
 | 👥 | `/admin/users` | Usuarios |
-| 💪 | `/admin/workouts` | Rutinas |
-| 🥗 | `/admin/diets` | Dietas |
-| 💬 | `/admin/chat` | Chat |
-| 📈 | `/admin/progress` | Progreso |
+| 👤 | `/admin/clients` | Clientes |
+| 🏋️ | `/admin/trainers` | Entrenadores |
 | ⚙️ | `/admin/settings` | Configuración |
 
 ---
@@ -509,14 +518,20 @@ src/
 ├── pages/
 │   ├── login.astro              # Inicio de sesión
 │   ├── register.astro           # Registro
-│   └── recover.astro            # Recuperación de contraseña
+│   ├── recover.astro            # Recuperación de contraseña
+│   ├── onboarding.astro         # Onboarding post-registro
+│   └── dashboard.astro          # Dashboard post-login (redirección por rol)
 ├── services/
 │   └── authService.ts           # login, register, recover, logout
 ├── stores/
 │   └── authStore.ts             # $user, $authLoading, $authError
 ├── lib/
 │   ├── firebase.ts              # Configuración Firebase
-│   ├── routeGuards.ts           # AuthGuard, RoleGuard, checkRouteAccess
+│   ├── firebase/auth.ts         # Wrapper de firebase/auth para testing
+│   ├── firebase/firestore.ts    # Wrapper de firebase/firestore para testing
+│   ├── routeGuards.ts           # RouteGuard[], checkRouteAccess
+│   ├── shared/authGuard.ts      # requireAuth(), requireAdmin() — Guards unificados
+│   ├── auth/roleRedirect.ts     # redirectByRole(), getDashboardPath()
 │   └── validators.ts            # Validación de formularios
 └── types/
     └── index.ts                 # User, LoginForm, RegisterForm, AuthError
@@ -540,20 +555,20 @@ src/
      createdAt: serverTimestamp(),
      updatedAt: serverTimestamp()
    }
-5. Redirigir a /login con mensaje de éxito
+5. Redirigir a /onboarding con mensaje de éxito
 ```
 
 ### 7.4 Flujo de Inicio de Sesión
 
 ```
-1. Usuario ingresa email y password
+1. Usuario ingresa email y password (o Google signInWithPopup)
 2. Firebase Auth (Client SDK): signInWithEmailAndPassword(email, password)
 3. Obtener documento de Firestore: users/{uid}
 4. Evaluar:
    - Si role == 'admin' → /admin/dashboard
    - Si role == 'client' y medicalProfile existe → /client/dashboard
    - Si role == 'client' y sin medicalProfile → /client/medical-profile
-   - Si role == 'trainer' → /trainer/settings (futuro)
+   - Si role == 'trainer' → /trainer/dashboard
 5. Inicializar authStore con datos del usuario
 ```
 
@@ -1014,20 +1029,26 @@ src/
 ├── pages/admin/
 │   ├── dashboard.astro          # /admin/dashboard
 │   ├── users.astro              # /admin/users
+│   ├── trainers.astro           # /admin/trainers
+│   ├── clients.astro            # /admin/clients
+│   ├── clinical.astro           # /admin/clinical
 │   ├── workouts.astro           # /admin/workouts
 │   ├── diets.astro              # /admin/diets
-│   ├── chat.astro               # /admin/chat
 │   ├── progress.astro           # /admin/progress
-│   ├── settings.astro           # /admin/settings
-│   ├── clients.astro            # /admin/clients
-│   └── trainers.astro           # /admin/trainers
+│   ├── chat.astro               # /admin/chat
+│   └── settings.astro           # /admin/settings
 ├── layouts/
 │   └── AdminLayout.astro        # Layout con Sidebar Navigation
-├── lib/
-│   └── admin/
-│       └── adminUtils.ts        # Utilidades de admin (iconos, tipos, renderizado, servicios)
+├── lib/admin/                   # Módulo admin (modularizado)
+│   ├── types.ts                 # AdminUser, CreateUserPayload, AdminStats
+│   ├── adminAuth.ts             # requireAdmin, signOutUser
+│   ├── adminUsers.ts            # CRUD usuarios (Firestore)
+│   ├── adminSubscriptions.ts    # Suscripciones Firestore (streams)
+│   ├── adminRender.ts           # Renderizado HTML (tablas, modales, cards)
+│   ├── adminInit.ts             # initGlobalActions (setup de página)
+│   └── adminUtils.ts            # Barrel (re-export)
 ├── services/
-│   └── adminService.ts          # CRUD usuarios, estadísticas
+│   └── adminService.ts          # CRUD usuarios, estadísticas (legacy)
 └── types/
     └── index.ts                 # User, AdminStats, Alert
 ```
@@ -1037,49 +1058,14 @@ src/
 **Ruta:** `/admin/dashboard`  
 **Layout:** `AdminLayout.astro` (con Sidebar Navigation)
 
-**Componentes:**
-- Header: Panel de Administración
-- StatCards: Usuarios (45), Rutinas (12), Dietas (8), Mensajes (23), Progreso (78%), Alertas (3)
-- Últimos Mensajes: Lista de mensajes recientes
-- Alertas Activas: Lista de clientes con alertas
-
-**Datos (Firestore streams):**
-```typescript
-// src/services/adminService.ts
-import { collection, query, where, orderBy, limit, onSnapshot, getDocs } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-
-export function subscribeToUsers(callback: (users: any[]) => void) {
-  const q = query(
-    collection(db, 'users'),
-    orderBy('createdAt', 'desc')
-  );
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })));
-  });
-}
-
-export function subscribeToAlerts(callback: (alerts: any[]) => void) {
-  const q = query(
-    collection(db, 'users'),
-    where('hasActiveAlert', '==', true)
-  );
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })));
-  });
-}
-```
+Panel principal con estadísticas globales del sistema: total de usuarios, rutinas, dietas, mensajes no leídos y alertas activas. Visualización en tiempo real mediante streams de Firestore.
 
 ### 10.3 Gestión de Usuarios
 
 **Ruta:** `/admin/users`  
 **Layout:** `AdminLayout.astro`
 
-**Componentes:**
-- Header: Gestión de Usuarios
-- Buscador y filtro por rol
-- DataTable con columnas: Nombre, Email, Rol, Alertas, Acciones
-- Paginación
+DataTable completo con búsqueda, filtro por rol, edición de perfiles, bloqueo/desbloqueo, envío de emails de recuperación y eliminación de cuentas. Modal de edición con asignación de trainer para clientes.
 
 **Acciones por Usuario:**
 
@@ -1095,47 +1081,35 @@ export function subscribeToAlerts(callback: (alerts: any[]) => void) {
 **Ruta:** `/admin/workouts`  
 **Layout:** `AdminLayout.astro`
 
-- Lista de rutinas con filtros
-- CRUD completo de rutinas
-- Visualización de ejercicios por rutina
+Vista global de todas las rutinas de entrenamiento del sistema. Estadísticas de rutinas totales, activas esta semana, ejercicios totales y tasa de completado. Búsqueda por nombre de rutina o cliente.
 
 ### 10.5 Gestión de Dietas
 
 **Ruta:** `/admin/diets`  
 **Layout:** `AdminLayout.astro`
 
-- Lista de dietas con filtros
-- CRUD completo de dietas
-- Visualización de macros por comida
+Vista global de todos los planes nutricionales. Estadísticas de dietas totales, activas hoy, comidas totales y adherencia media. Búsqueda por nombre de dieta o cliente.
 
 ### 10.6 Bandeja de Chat
 
 **Ruta:** `/admin/chat`  
 **Layout:** `AdminLayout.astro`
 
-- Lista de conversaciones ordenadas por último mensaje
-- Indicador de mensajes no leídos
-- Envío de llamados de atención (alertas)
-- Búsqueda de conversaciones por nombre de cliente
+Supervisión de todas las conversaciones entre trainers y clientes. Estadísticas de conversaciones totales, mensajes sin leer y conversaciones activas hoy. Interfaz para interactuar como cliente. Búsqueda por nombre de participante.
 
 ### 10.7 Visor de Progreso
 
 **Ruta:** `/admin/progress`  
 **Layout:** `AdminLayout.astro`
 
-- Seleccionar cliente
-- LineChart: Evolución del peso
-- Adherencia: Rutina y Dieta (porcentajes)
-- Últimos Registros: Lista de actividades recientes
+Monitoreo global del progreso de todos los clientes. Filtro por tipo (peso, fotos, medidas). Estadísticas de clientes con datos, registros totales, última semana y clientes con fotos. Búsqueda por nombre de cliente o tipo de progreso.
 
 ### 10.8 Configuración del Sistema
 
 **Ruta:** `/admin/settings`  
 **Layout:** `AdminLayout.astro`
 
-- Sección: Perfil de Administrador
-- Sección: Preferencias del Sistema (idioma, tema, notificaciones)
-- Sección: Gestión de la Aplicación (versión, exportar datos, limpiar caché)
+Perfil de administrador, preferencias de idioma/tema/notificaciones y gestión de la aplicación (versión, exportación de datos, limpieza de caché).
 
 ### 10.9 Listado de Clientes
 
@@ -1150,6 +1124,13 @@ Visualiza todos los alumnos/clientes registrados en la plataforma y sus respecti
 **Layout:** `AdminLayout.astro`
 
 Muestra el listado de todos los entrenadores del sistema junto con la cantidad total de clientes reales que tienen bajo su supervisión.
+
+### 10.11 Fichas Clínicas
+
+**Ruta:** `/admin/clinical`  
+**Layout:** `AdminLayout.astro`
+
+Panel de supervisión médica global. Muestra datos de salud, alergias, intolerancias, lesiones, condiciones médicas y restricciones alimentarias de todos los clientes. Incluye estadísticas de clientes con datos clínicos, intolerancias, restricciones y alergias.
 
 ---
 
