@@ -3,6 +3,7 @@
 > **Stack:** Astro 7 + Tailwind CSS 4 + Firebase 11 + Nanostores  
 > **Arquitectura:** Vanilla JS (sin React). Compilación y enrutado estático.  
 > **Estado:** En desarrollo activo.
+> **Última actualización:** 2026-07-31
 
 ---
 
@@ -45,11 +46,23 @@ Este archivo contiene toda la información del proyecto consolidada:
 
 ---
 
+## 📚 Documentación Adicional
+
+| Documento | Descripción |
+|-----------|-------------|
+| **`THEME.md`** | Sistema de temas light/dark con CSS variables y Nanostores |
+| **`THEME_STATUS.md`** | Estado de migración del sistema de temas (41/44 archivos migrados) |
+| **`ACCESIBILIDAD.md`** | Guía de cumplimiento WCAG 2.1 AA |
+| **`UI_UX_FINAL_PLAN.md`** | Plan de optimización de motion system (7/34 páginas mejoradas) |
+| **`UI_UX_MIGRATION_PLAN.md`** | Plan detallado de migración de componentes de carga |
+
+---
+
 ## 🚀 Inicio Rápido
 
 ### Para Agentes IA
 1. **Leer:** `docs/MASTER.md` (documentación completa)
-2. **Leer:** `TODO_OPTIMIZACIONES.md` (lista de tareas pendientes)
+2. **Leer:** `TODO.md` (lista de tareas pendientes)
 3. **Implementar:** Siguiendo las reglas en sección 11 de MASTER.md
 
 ### Para Desarrolladores
@@ -86,6 +99,6 @@ Este archivo contiene toda la información del proyecto consolidada:
 
 ---
 
-**Última actualización:** 2026-06-13  
+**Última actualización:** 2026-07-31  
 **Mantenido por:** Equipo CampFit  
 **Versión:** 2.0

@@ -1,6 +1,6 @@
 # 🎨 CampFit Design System — Sistema de Temas
 
-> **Última actualización:** 2026-07-25  
+> **Última actualización:** 2026-07-31  
 > **Propietario:** Equipo CampFit  
 > **Archivos clave:** `src/styles/theme.css`, `src/stores/themeStore.ts`, `src/components/ThemeToggle.astro`
 
@@ -78,7 +78,7 @@ Para prevenir el "flash" del tema incorrecto al cargar la página, se ejecuta un
 ## Archivos del Sistema
 
 | Archivo | Propósito | Tipo |
-|---|---|---|
+|---------|-----------|------|
 | `src/styles/theme.css` | **Fuente única de verdad** para todos los tokens de diseño. Define variables CSS para light y dark. | CSS |
 | `src/stores/themeStore.ts` | Estado reactivo del tema con Nanostores. Persistencia, acciones, sincronización DOM. | TypeScript |
 | `src/components/ThemeToggle.astro` | Botón accesible de toggle tema. Soportado por teclado (Ctrl+Shift+T). | Astro |
@@ -128,7 +128,7 @@ Para prevenir el "flash" del tema incorrecto al cargar la página, se ejecuta un
 ### Clases Utilitarias Semánticas Disponibles
 
 | Clase | Descripción |
-|---|---|
+|-------|-------------|
 | `theme-bg-primary` | Fondo principal |
 | `theme-bg-secondary` | Fondo secundario |
 | `theme-bg-elevated` | Fondo elevado (cards, modales) |
@@ -193,7 +193,7 @@ Ejemplos:
 #### Colores de Fondo (`--color-bg-*`)
 
 | Token | Light | Dark | Uso |
-|---|---|---|---|
+|-------|-------|------|-----|
 | `--color-bg-primary` | `#fafafa` | `#09090b` | Fondo de página |
 | `--color-bg-secondary` | `#f4f4f5` | `#18181b` | Fondo secundario |
 | `--color-bg-elevated` | `#ffffff` | `#1c1c1f` | Cards, modales |
@@ -202,7 +202,7 @@ Ejemplos:
 #### Colores de Texto (`--color-text-*`)
 
 | Token | Light | Dark | Uso |
-|---|---|---|---|
+|-------|-------|------|-----|
 | `--color-text-primary` | `#18181b` | `#fafafa` | Texto principal |
 | `--color-text-secondary` | `#52525b` | `#a1a1aa` | Texto secundario |
 | `--color-text-link` | `#059669` | `#34d399` | Enlaces |
@@ -210,7 +210,7 @@ Ejemplos:
 #### Bordes (`--color-border-*`)
 
 | Token | Light | Dark |
-|---|---|---|
+|-------|-------|------|
 | `--color-border-default` | `#e4e4e7` | `#27272a` |
 | `--color-border-focus` | `#10b981` | `#34d399` |
 
@@ -239,7 +239,7 @@ type Theme = 'light' | 'dark';
 ### Atoms
 
 | Atom | Tipo | Descripción |
-|---|---|---|
+|------|------|-------------|
 | `$theme` | `Atom<Theme>` | Tema actual |
 | `$resolvedTheme` | `Computed<Theme>` | Tema resuelto (para futura extensión 'auto') |
 | `$isDark` | `Computed<boolean>` | `true` si el tema es dark |
@@ -248,7 +248,7 @@ type Theme = 'light' | 'dark';
 ### Acciones
 
 | Función | Firma | Descripción |
-|---|---|---|
+|---------|-------|-------------|
 | `setTheme(theme)` | `(theme: Theme) => void` | Establece el tema, persiste y aplica al DOM |
 | `toggleTheme()` | `() => void` | Alterna entre light y dark |
 | `initTheme()` | `() => void` | Inicializa el tema desde localStorage |
@@ -417,8 +417,47 @@ El store ya está preparado para esto. `$resolvedTheme` y `applyThemeToDom` exis
 - [x] Script de validación automatizado
 - [x] Tests unitarios completos
 - [x] Documentación centralizada
-- [ ] Tema "auto" (preferencia del sistema)
-- [ ] Transiciones suaves entre temas
+- [x] Auto Theme (preferencia del sistema)
+- [x] Transiciones suaves entre temas
 - [ ] Tests e2e con Playwright para el toggle
 - [ ] Paleta de colores ampliada (más variantes)
 - [ ] Integración con prefers-reduced-motion
+
+---
+
+## 📊 Métricas del Sistema
+
+| Métrica | Valor |
+|---------|-------|
+| Total archivos Astro | 44 |
+| Archivos migrados | **41** |
+| Archivos sin hardcodeos | 3 (Icon, BaseLayout meta, etc.) |
+| Hardcodeos detectados | **0** |
+| Tests totales | **400+** ✅ |
+| Tests theme store | **33+** ✅ |
+| Tests nuevos componentes | **32** ✅ |
+| Validación | **7/7 (100%)** |
+| Accesibilidad | ✅ docs/ACCESIBILIDAD.md |
+
+---
+
+## 🛠️ Cómo verificar
+
+```bash
+npm run theme:validate   # 7 checks de integridad
+npm run theme:test       # 33+ tests del theme store (incluye auto-theme)
+npm run theme:check      # Validación + tests
+npm test                 # Tests unitarios completos
+```
+
+Si algún agente introduce nuevas clases hardcodeadas, el validador las detectará y mostrará:
+```
+❌ Detección de hardcodeos en Astro
+   N clases hardcodeadas encontradas. Ejecuta: npx tsx scripts/migrate-theme.ts
+```
+
+---
+
+**Documento creado:** 2026-07-25  
+**Última actualización:** 2026-07-31  
+**Mantenido por:** Equipo CampFit
