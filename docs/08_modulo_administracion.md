@@ -13,8 +13,13 @@ src/
 ├── pages/admin/
 │   ├── dashboard.astro          # /admin/dashboard
 │   ├── users.astro              # /admin/users
-│   ├── clients.astro            # /admin/clients
 │   ├── trainers.astro           # /admin/trainers
+│   ├── clients.astro            # /admin/clients
+│   ├── clinical.astro           # /admin/clinical
+│   ├── workouts.astro           # /admin/workouts
+│   ├── diets.astro              # /admin/diets
+│   ├── progress.astro           # /admin/progress
+│   ├── chat.astro               # /admin/chat
 │   └── settings.astro           # /admin/settings
 ├── layouts/
 │   └── AdminLayout.astro        # Layout con Sidebar Navigation
@@ -39,66 +44,7 @@ src/
 **Ruta:** `/admin/dashboard`  
 **Layout:** `AdminLayout.astro` (con Sidebar Navigation)
 
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Panel de Administración        │
-├─────────────────────────────────────────┤
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐│
-│  │ 👥       │ │ 💪       │ │ 🥗       ││
-│  │ Usuarios │ │ Rutinas  │ │ Dietas   ││
-│  │ 45       │ │ 12       │ │ 8        ││
-│  └──────────┘ └──────────┘ └──────────┘│
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐│
-│  │ 💬       │ │ 📈       │ │ ⚠️       ││
-│  │ Mensajes │ │ Progreso │ │ Alertas  ││
-│  │ 23       │ │ 78%      │ │ 3        ││
-│  └──────────┘ └──────────┘ └──────────┘│
-├─────────────────────────────────────────┤
-│  Últimos Mensajes                       │
-│  ┌─────────────────────────────────┐   │
-│  │ Juan: "¿Cómo va mi rutina?"     │   │
-│  │ María: "No encuentro mi dieta"  │   │
-│  │ Pedro: "¿Puedo cambiar mi      │   │
-│  │        horario?"                │   │
-│  └─────────────────────────────────┘   │
-├─────────────────────────────────────────┤
-│  Alertas Activas                        │
-│  ┌─────────────────────────────────┐   │
-│  │ ⚠️ Juan Pérez - Inasistencia   │   │
-│  │ ⚠️ María García - Peso estanc. │   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
-
-### Datos (Firestore streams)
-
-```typescript
-// src/lib/admin/adminSubscriptions.ts
-import { collection, query, where, orderBy, limit, onSnapshot, getDocs } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-
-export function subscribeToUsers(callback: (users: any[]) => void) {
-  const q = query(
-    collection(db, 'users'),
-    orderBy('createdAt', 'desc')
-  );
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })));
-  });
-}
-
-export function subscribeToAlerts(callback: (alerts: any[]) => void) {
-  const q = query(
-    collection(db, 'users'),
-    where('hasActiveAlert', '==', true)
-  );
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })));
-  });
-}
-```
+Panel principal con estadísticas globales del sistema: total de usuarios, rutinas, dietas, mensajes no leídos y alertas activas. Visualización en tiempo real mediante streams de Firestore.
 
 ---
 
@@ -107,25 +53,7 @@ export function subscribeToAlerts(callback: (alerts: any[]) => void) {
 **Ruta:** `/admin/users`  
 **Layout:** `AdminLayout.astro`
 
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Gestión de Usuarios            │
-│  [Buscar...] [Filtrar por rol]         │
-├─────────────────────────────────────────┤
-│  DataTable                              │
-│  ┌────┬──────┬──────┬──────┬──────┬──┐ │
-│  │Nombre│Email│Rol  │Alertas│Acción│  │ │
-│  ├────┼──────┼──────┼──────┼──────┼──┤ │
-│  │Juan │j@e.co│client│  ⚠️  │[✏️] │  │ │
-│  │María│m@e.co│client│  ✅  │[✏️] │  │ │
-│  │Admin│a@e.co│admin │  ✅  │[✏️] │  │ │
-│  └────┴──────┴──────┴──────┴──────┴──┘ │
-├─────────────────────────────────────────┤
-│  Paginación: < 1 2 3 ... 10 >          │
-└─────────────────────────────────────────┘
-```
+DataTable completo con búsqueda, filtro por rol, edición de perfiles, bloqueo/desbloqueo, envío de emails de recuperación y eliminación de cuentas. Modal de edición con asignación de trainer para clientes.
 
 ### Acciones por Usuario
 
@@ -136,20 +64,6 @@ export function subscribeToAlerts(callback: (alerts: any[]) => void) {
 | 🔄 Reset | Enviar email de restablecimiento de contraseña |
 | ❌ Eliminar | Eliminar usuario (requiere confirmación) |
 
-### Modal de Edición
-
-```
-┌─────────────────────────────────┐
-│  ✏️ Editar Usuario              │
-│                                 │
-│  Nombre: [Juan Pérez        ]  │
-│  Email:  [juan@email.com    ]  │
-│  Rol:    [client ▼          ]  │
-│                                 │
-│  [Cancelar] [Guardar Cambios]  │
-└─────────────────────────────────┘
-```
-
 ---
 
 ## 3. Lista de Clientes
@@ -157,7 +71,7 @@ export function subscribeToAlerts(callback: (alerts: any[]) => void) {
 **Ruta:** `/admin/clients`  
 **Layout:** `AdminLayout.astro`
 
-Lista filtrada de usuarios con rol `client`. Muestra tarjetas con información básica, alertas y entrenador asignado.
+Lista filtrada de usuarios con rol `client`. Muestra tarjetas con información básica, alertas y entrenador asignado. Resolución dinámica de nombres de trainers en tiempo real.
 
 ---
 
@@ -170,49 +84,57 @@ Lista filtrada de usuarios con rol `trainer`. Muestra tarjetas con información 
 
 ---
 
-## 5. Configuración del Sistema
+## 5. Fichas Clínicas
+
+**Ruta:** `/admin/clinical`  
+**Layout:** `AdminLayout.astro`
+
+Panel de supervisión médica global. Muestra datos de salud, alergias, intolerancias, lesiones, condiciones médicas y restricciones alimentarias de todos los clientes. Incluye estadísticas de clientes con datos clínicos, intolerancias, restricciones y alergias.
+
+---
+
+## 6. Supervisión de Rutinas
+
+**Ruta:** `/admin/workouts`  
+**Layout:** `AdminLayout.astro`
+
+Vista global de todas las rutinas de entrenamiento del sistema. Estadísticas de rutinas totales, activas esta semana, ejercicios totales y tasa de completado. Búsqueda por nombre de rutina o cliente.
+
+---
+
+## 7. Supervisión de Dietas
+
+**Ruta:** `/admin/diets`  
+**Layout:** `AdminLayout.astro`
+
+Vista global de todos los planes nutricionales. Estadísticas de dietas totales, activas hoy, comidas totales y adherencia media. Búsqueda por nombre de dieta o cliente.
+
+---
+
+## 8. Visor de Progreso
+
+**Ruta:** `/admin/progress`  
+**Layout:** `AdminLayout.astro`
+
+Monitoreo global del progreso de todos los clientes. Filtro por tipo (peso, fotos, medidas). Estadísticas de clientes con datos, registros totales, última semana y clientes con fotos. Búsqueda por nombre de cliente o tipo de progreso.
+
+---
+
+## 9. Centro de Mensajes
+
+**Ruta:** `/admin/chat`  
+**Layout:** `AdminLayout.astro`
+
+Supervisión de todas las conversaciones entre trainers y clientes. Estadísticas de conversaciones totales, mensajes sin leer y conversaciones activas hoy. Interfaz para interactuar como cliente. Búsqueda por nombre de participante.
+
+---
+
+## 10. Configuración del Sistema
 
 **Ruta:** `/admin/settings`  
 **Layout:** `AdminLayout.astro`
 
-### Componentes
-
-```
-┌─────────────────────────────────────────┐
-│  Header: Configuración del Sistema      │
-├─────────────────────────────────────────┤
-│  Sección: Perfil de Administrador       │
-│  ┌─────────────────────────────────┐   │
-│  │ Nombre: [Admin Name         ]   │   │
-│  │ Email:  [admin@campfit.com  ]   │   │
-│  │ [Guardar Cambios]               │   │
-│  └─────────────────────────────────┘   │
-├─────────────────────────────────────────┤
-│  Sección: Preferencias del Sistema      │
-│  ┌─────────────────────────────────┐   │
-│  │ Idioma: [Español ▼]            │   │
-│  │ Tema:   [Oscuro ▼]             │   │
-│  │ Notificaciones: [🔔 Activadas] │   │
-│  └─────────────────────────────────┘   │
-├─────────────────────────────────────────┤
-│  Sección: Gestión de la Aplicación      │
-│  ┌─────────────────────────────────┐   │
-│  │ Versión: 2.0.0                  │   │
-│  │ Última actualización: 15/03/25 │   │
-│  │ [Exportar datos] [Limpiar caché]│   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
-
----
-
-## Páginas Pendientes (Futuras)
-
-Las siguientes páginas están planificadas pero aún no implementadas:
-- `/admin/workouts` — CRUD de rutinas
-- `/admin/diets` — CRUD de dietas
-- `/admin/chat` — Bandeja de chat con clientes
-- `/admin/progress` — Visor de progreso de alumnos
+Perfil de administrador, preferencias de idioma/tema/notificaciones y gestión de la aplicación (versión, exportación de datos, limpieza de caché).
 
 ---
 
@@ -220,4 +142,3 @@ Las siguientes páginas están planificadas pero aún no implementadas:
 > **📌 Golden Rules:** Ver `.clinerules`
 > **📌 Componentes UI:** Ver `06_design_system.md`
 > **📌 Guards de ruta:** Ver `08_modulo_autenticacion.md`
-

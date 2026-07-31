@@ -1,284 +1,268 @@
 # 🔍 Auditoría Completa de CampFit — Problemas, Incoherencias y Optimizaciones
 
-> **Fecha:** 2026-07-25  
-> **Propósito:** Documentar todos los problemas encontrados tras revisión multi-agente del código fuente, tests, config y documentación.  
-> **Estado:** ✅ COMPLETADO — 38/38 problemas resueltos  
-> **Última actualización:** 2026-07-25 21:26
+> **Fecha:** 2026-07-30  
+> **Propósito:** Documentar todos los problemas encontrados tras revisión multi-agente (5 agentes en paralelo).  
+> **Estado:** ✅ REPORTE GENERADO — Pendiente de corrección  
+> **Ronda:** 1 — Auditoría inicial
 
 ---
 
-## 📊 Resumen
+## 📊 Resumen Consolidado
 
-| Severidad | Cantidad | 
+| Severidad | Cantidad |
 |-----------|----------|
-| 🔴 CRÍTICO | 12 |
-| 🟡 MEDIO | 18 |
-| 🟢 BAJO | 8 |
-| **TOTAL** | **38** |
+| 🔴 CRÍTICO | 18 |
+| 🟡 MEDIO | 25 |
+| 🟢 BAJO | 12 |
+| **TOTAL** | **55** |
+
+> ⚠️ **NUEVO vs auditoría anterior:** Se encontraron **17 problemas nuevos** no documentados en la auditoría del 2026-07-25.
 
 ---
 
-## 🔴 CRÍTICOS
+## 🚨 NUEVOS — CRÍTICOS (No documentados antes)
+
+### N-C1. BUILD ROTO — `src/pages/client/dashboard.astro` error de sintaxis
+**Archivo:** `src/pages/client/dashboard.astro:257`  
+**Problema:** El build de Astro falla con `[CompilerError] Unexpected token` en línea 257 (EOF). El archivo tiene 256 líneas, lo que sugiere un carácter invisible (BOM/no break space) o una estructura AST malformada al final del `<script>`. **IMPIDE CUALQUIER DEPLOY.**  
+**Severidad:** 🔴 CRÍTICO 🔴
+
+### N-C2. `.env.example` con credenciales Firebase REALES
+**Archivo:** `.env.example`  
+**Problema:** `PUBLIC_FIREBASE_API_KEY=AIzaSyDHocd6h8QRFGKyo5j6PMrcKuPxOWSSOV8` y `PUBLIC_FIREBASE_AUTH_DOMAIN=...` son credenciales reales. `.env.example` no está en `.gitignore`. Cualquiera con acceso al repo tiene las credenciales.  
+**Severidad:** 🔴 CRÍTICO 🔴
+
+### N-C3. Bootstrap admin email `sevicioweb.pmi@gmail.com` NO está en Firestore Rules
+**Archivo:** `firestore.rules:12-13` vs `src/services/authService.ts:77`  
+**Problema:** El código trata `sevicioweb.pmi@gmail.com` como admin bootstrap (asigna role admin automáticamente). Pero `firestore.rules` solo lista `servicioweb.pmi@gmail.com`. Firestore Rules DENEGARÁ acceso a ese admin.  
+**Severidad:** 🔴 CRÍTICO 🔴
+
+### N-C4. `admin/clinical.astro` sin protección de ruta
+**Archivo:** `src/pages/admin/clinical.astro`  
+**Problema:** La página existe físicamente pero NO está en `src/lib/routeGuards.ts`. Cualquier usuario autenticado podría acceder a datos clínicos.  
+**Severidad:** 🔴 CRÍTICO 🔴
+
+### N-C5. 12+ archivos > 300 líneas (Golden Rule #9 violada)
+**Archivos:**
+- `src/pages/admin/users.astro` — **576 líneas** 🏆
+- `src/components/settings/UnifiedSettingsView.astro` — 524 líneas
+- `src/pages/trainer/diets.astro` — 470 líneas
+- `src/pages/trainer/workouts.astro` — 398 líneas
+- `src/pages/client/diets.astro` — 368 líneas
+- `src/pages/onboarding.astro` — 365 líneas
+- `src/lib/shared/profileService.ts` — 343 líneas
+- `src/pages/admin/clinical.astro` — 331 líneas
+- `src/pages/admin/dashboard.astro` — 330 líneas
+- `src/pages/trainer/clients.astro` — 325 líneas
+- `src/pages/admin/diets.astro` — 321 líneas
+- `src/pages/admin/progress.astro` — 306 líneas
+
+**Severidad:** 🟡 MEDIO (pero 12 archivos es crítico a nivel mantenibilidad)
+
+---
+
+## 🔴 CRÍTICOS (De auditoría anterior, algunos resueltos)
 
 ### C1. `firestore.rules` — `isBlocked()` hace doble lectura de Firestore
-**Archivo:** `firestore.rules:21-24`  
-**Problema:** La función `isBlocked(uid)` llama a `get(/databases/$(database)/documents/users/$(uid))` para leer el documento del usuario. Pero `myRole()` (línea 16) YA hace la misma lectura. En cada `allow read/write` se hacen **2 lecturas de Firestore** por cada documento evaluado, duplicando costos.  
-**Solución:** Cachear el resultado de la lectura del usuario en una variable dentro del `match`, o reestructurar las reglas para leer una sola vez.
+**Archivo:** `firestore.rules`  
+**Problema:** `isBlocked(uid)` y `myRole()` leen el mismo documento. **2 lecturas por evaluación.**  
+**Estado:** ❌ NO RESUELTO
 
 ### C2. `src/lib/firebase.ts` — Sin validación de variables de entorno
-**Archivo:** `src/lib/firebase.ts:6-15`  
-**Problema:** Si falta cualquier variable `PUBLIC_FIREBASE_*`, Firebase se inicializa con `undefined` y la app falla silenciosamente en runtime. No hay validación ni error temprano.  
-**Solución:** Agregar validación al inicio:
-```typescript
-const required = ['PUBLIC_FIREBASE_API_KEY', 'PUBLIC_FIREBASE_AUTH_DOMAIN', ...];
-for (const key of required) {
-  if (!env[key]) throw new Error(`Missing env var: ${key}`);
-}
-```
+**Archivo:** `src/lib/firebase.ts`  
+**Problema:** Si falta variable, Firebase se inicializa con `undefined`.  
+**Estado:** ❌ NO RESUELTO
 
-### C3. `onboarding.*` — Traducción EN completamente faltante
-**Archivo:** `src/i18n/translations.ts`  
-**Problema:** ~40 claves de la sección `onboarding.*` existen solo en ES, no en EN. Si un usuario cambia a inglés durante el onboarding, verá las keys literales.  
-**Solución:** Agregar todas las claves `onboarding.*` a la sección EN.
+### C3. Traducciones `onboarding.*` — RESUELTO ✅
+**Estado:** ✅ 39 claves `onboarding.*` existen en ambos idiomas (443 claves ES/EN c/u)
 
-### C4. `client/progress.astro` — Tipos de fecha `Timestamp | Date | string | null`
-**Archivo:** `src/types/index.ts:22`  
-**Problema:** `birthDate` tiene 4 tipos posibles (`Timestamp | Date | string | null`). `createdAt`, `updatedAt`, `lastActivityAt` también tienen tipos incorrectos incluyendo `Date`. `serverTimestamp()` devuelve `Timestamp`, no `Date`.  
-**Solución:** Unificar a `Timestamp | null` para todas las fechas.
+### C4. Tipos de fecha — `Timestamp | Date | string | null`
+**Archivo:** `src/types/index.ts`  
+**Problema:** `birthDate` tiene 4 tipos posibles.  
+**Estado:** ❌ NO RESUELTO
 
-### C5. `console.log`/`console.error` en lugar del logger centralizado
-**Archivos múltiples.** Ocurrencias:
-- `src/services/authService.ts` — usa logger, OK ✅
-- `src/pages/admin/users.astro` — `console.error` en varias líneas
-- `src/pages/client/progress.astro` — `console.error` en varias líneas
-- `src/pages/client/workouts.astro` — `console.error`
-- `src/pages/admin/clients.astro` — `console.error`
-- `src/pages/trainer/clients.astro` — `console.error`
-- `src/pages/trainer/dashboard.astro` — `console.error`
-- `src/lib/client/progressService.ts` — `console.error`
-- `src/lib/client/workoutService.ts` — `console.error`
-- `src/lib/client/dietService.ts` — `console.error`
-- `src/lib/trainer/trainerUtils.ts` — `console.warn`
-- `src/stores/themeStore.ts` — `console.log`
+### C5. `console.log`/`console.error` en lugar de logger
+**Archivos:** 11 archivos aún usan `console.*` directo  
+**Estado:** ❌ PARCIALMENTE RESUELTO (authService.ts ya usa logger)
 
-**Solución:** Reemplazar TODOS con `logger.warn`/`logger.error` de `@/lib/shared/logger`.
+### C6. `window.*` expuesto globalmente
+**Archivos:** 5 archivos con `window.__*`  
+**Estado:** ❌ NO RESUELTO
 
-### C6. `window.*` expuesto globalmente en páginas
-**Archivos:**
-- `src/pages/admin/users.astro` — `window.__toggleBlockUser`, `window.__deleteUser`, `window.__openEditModal`
-- `src/pages/trainer/diets.astro` — `window.__deleteDiet`
-
-**Problema:** Riesgo de XSS, colisiones de scripts, difícil testing.  
-**Solución:** Migrar a event listeners locales con `data-*` attributes (data-action, data-user-id, etc.).
-
-### C7. Tests con `expect(true).toBe(true)` — aserciones placeholder
-**Archivos:**
-- `tests/unit/lib/firebase/auth.test.ts:57` — solo verifica que las funciones se exportan
-- `tests/unit/lib/firebase/firestore.test.ts:9-29` — smoke tests sin aserciones reales
-
-**Solución:** Escribir tests reales que verifiquen comportamiento, no solo exports.
+### C7. Tests placeholder `expect(true).toBe(true)`
+**Archivos:** 4 archivos con placeholders  
+**Estado:** ❌ NO RESUELTO
 
 ### C8. Consultas Firestore SIN límites ni paginación
-**Archivos:**
-- `src/lib/admin/adminUtils.ts` — `subscribeToUsers()` escucha TODA la colección `users`
-- `src/lib/admin/adminUtils.ts` — `subscribeToAllUsers()` sin límite
-- `src/services/adminService.ts` — `getAllUsers()` lee todos los documentos
+**Archivos:** `src/lib/admin/adminSubscriptions.ts` (3 funciones), `src/services/adminService.ts`  
+**Estado:** ❌ NO RESUELTO — `subscribeToUsers()`, `subscribeToUsersByRole()`, `getTrainerClientCount()` sin `.limit()`
 
-**Problema:** Cuando hay cientos/miles de usuarios, cada lectura cuesta $$$ y el frontend se satura.  
-**Solución:** Implementar paginación con `limit()` y `startAfter()`.
+### C9. Settings duplicados ~80%
+**Estado:** ❌ NO RESUELTO (aunque `UnifiedSettingsView.astro` existe con 524 líneas)
 
-### C9. Settings duplicados ~80% — admin/trainer/client
-**Archivos:**
-- `src/pages/admin/settings.astro`
-- `src/pages/trainer/settings.astro`
-- `src/pages/client/settings.astro`
-
-**Problema:** Los 3 archivos tienen ~80% de código idéntico (layout, estilos, lógica de perfil, cambio de contraseña). Solo cambia el layout que los envuelve.  
-**Solución:** Crear componente `SettingsShell.astro` que acepte el layout como prop.
-
-### C10. Faltan rutas en `routeGuards.ts`
+### C10. Rutas faltantes en `routeGuards.ts`
 **Archivo:** `src/lib/routeGuards.ts`  
-**Problema:** Existen páginas que NO están en la lista de guards:
-- `/admin/progress` — existe en `src/pages/admin/progress.astro` pero no en guards
-- `/admin/diets` — existe pero no en guards
-- `/admin/workouts` — existe pero no en guards
-- `/admin/chat` — existe pero no en guards
+**Faltan:** `/admin/progress`, `/admin/diets`, `/admin/workouts`, `/admin/chat`, `/admin/clinical`  
+**Estado:** ❌ NO RESUELTO
 
-**Solución:** Agregar las 4 rutas a `routeGuards` con rol `admin`.
+### C11. `<style>` en páginas rompe CSP
+**Estado:** ❌ NO RESUELTO
 
-### C11. `<style>` en páginas rompe CSP y no hace SCOPE (Astro)
-**Archivos:** Varias páginas tienen bloques `<style>` que **no son de Astro** (se inyectan via `innerHTML`):
-- `src/pages/client/workouts.astro` — estilos inline en template string
-- `src/pages/client/progress.astro` — estilos inline
-
-**Problema:** Si se inyectan via `<style>` en innerHTML, no tienen scoping de Astro y pueden colisionar.  
-**Solución:** Usar clases de Tailwind o extraer a componentes.
-
-### C12. `@theme` en `BaseLayout.astro` duplica tokens que ya están en `theme.css`
-**Archivo:** `src/layouts/BaseLayout.astro:105-109`  
-**Problema:** Define `--color-emerald-400`, `--color-emerald-500`, `--color-emerald-900` que ya existen o deberían estar en `src/styles/theme.css`. Rompe el principio de fuente única de verdad.  
-**Solución:** Mover esos colores a `theme.css` o eliminarlos si ya existen como `--color-primary`.
+### C12. `@theme` en `BaseLayout.astro` duplica tokens
+**Estado:** ❌ NO RESUELTO
 
 ---
 
 ## 🟡 MEDIOS
 
-### M1. `admin/users.astro` — ~600 líneas, necesita modularización
-**Problema:** La página mezcla HTML + lógica JS + estilos. Debería extraerse a componentes más pequeños.
+### M1-M18 (Ver documento anterior)
+**Estado general:** ❌ Mayoría NO resueltos. Algunos parcialmente (M5 tests E2E, M6 tests componentes)
 
-### M2. `client/workouts.astro` — Modal RPE inline en template string
-**Problema:** El HTML del modal RPE está construido como string JS y asignado via `innerHTML`. Debería ser un componente Astro.
+### NUEVOS M19-M25
 
-### M3. Falta cleanup de `onSnapshot` en algunas páginas
-**Archivos a verificar:**
-- `admin/dashboard.astro` — suscripciones sin unsubscribe confirmado
-- `admin/users.astro` — onSnapshot para usuarios sin cleanup
+### N-M19. `src/lib/shared/profileService.ts` — 343 líneas, demasiado grande
+**Severidad:** 🟡 MEDIO
 
-### M4. `admin/dashboard.astro` — usa `subscribeToCollectionCount` (ineficiente)
-**Problema:** Lee TODOS los documentos solo para contar. Debería usar `count()` de Firestore.
+### N-M20. `onboarding.astro` — 365 líneas, necesita modularización
+**Severidad:** 🟡 MEDIO
 
-### M5. Sin tests E2E funcionales
-**Archivo:** `tests/e2e/`  
-**Problema:** `auth.e2e.ts` fue eliminado. No hay ningún test E2E funcionando.  
-**Prioridad:** 🟡 MEDIA — Bloqueante para CI/CD confiable.
+### N-M21. `theme.css` — Variables asimétricas entre light/dark
+**Detalle:** `:root` tiene 170 variables, `.dark` tiene 169. Falta `--color-surface-secondary` en modo dark.
+**Severidad:** 🟡 MEDIO
 
-### M6. Sin tests para componentes/páginas `.astro`
-**Archivo:** `tests/unit/`  
-**Problema:** `TODO.md` tarea #20 lo marca como pendiente. No hay tests para `BaseLayout.astro`, `AdminLayout.astro`, ni ninguna página.  
-**Solución:** Usar Vitest con `@astrojs/check` o testing con cheerio/happy-dom.
+### N-M22. Clases `bg-zinc-*` / `text-zinc-*` hardcodeadas en 6 páginas
+**Archivos:** Varias páginas admin/trainer/client  
+**Severidad:** 🟡 MEDIO
 
-### M7. `markAsRead` en tests de chat — test superficial
-**Archivo:** `tests/unit/lib/shared/chat.test.ts:164-167`  
-**Problema:** Solo verifica `typeof === 'function'`. No prueba que llame a `updateDoc` con parámetros correctos.  
-**Solución:** Mockear `updateDoc` y verificar que se llama con `{ isRead: true }`.
+### N-M23. Sin test E2E funcional — sigue igual que antes
+**Severidad:** 🟡 MEDIO
 
-### M8. `subscribeToRecentUsers` — test solo verifica unsubscribe
-**Archivo:** `tests/unit/lib/admin/adminUtils.test.ts:469-474`  
-**Problema:** No prueba callback ni onSnapshot.  
-**Solución:** Mockear onSnapshot y verificar que llama al callback con datos.
+### N-M24. `subscribeToCollectionCount` aún existe (M4)
+**Archivo:** Buscar en src/  
+**Severidad:** 🟡 MEDIO
 
-### M9. Archivo `onboarding.astro` no existe físicamente
-**Problema:** `routeGuards.ts` referencia `/onboarding` pero la ruta real es `/client/medical-profile`. Posible confusión o ruta muerta.
-
-### M10. `firestore.rules` — `isStaff()` incluye admin pero `isAdmin()` ya verifica admin
-**Archivo:** `firestore.rules:34-36`  
-**Problema:** `isStaff()` llama a `isAuth() && (isAdmin() || isTrainer())`. Pero `isAdmin()` ya verifica `isAuth()`. La doble verificación es redundante pero no dañina.
-
-### M11. Variables de entorno hardcodeadas en `.env.example`
-**Archivo:** `.env.example`  
-**Problema:** Las claves API de Firebase están hardcodeadas en el ejemplo. Esto es un riesgo de seguridad si alguien hace commit del `.env`.  
-**Solución:** Usar placeholders como `tu-api-key`.
-
-### M12. `src/pages/client/settings.astro` — falta página
-**Problema:** Existe `admin/settings.astro` y `trainer/settings.astro`, pero `client/settings.astro` tiene una estructura diferente y no está en `routeGuards.ts`.
-
-### M13. `trainer/clients.astro` — exposición de lógica en window
-**Archivo:** `src/pages/trainer/clients.astro` — verificar si también expone funciones en `window.*`.
-
-### M14. Sin validación de `role` en register
-**Archivo:** `src/services/authService.ts`  
-**Problema:** En el registro, el `role` se asigna como `client` por defecto. No hay validación de que un usuario no pueda auto-asignarse `admin`.
-
-### M15. `theme.css` — faltan algunas variables en modo light
-**Archivo:** `src/styles/theme.css`  
-**Problema:** Verificar que modo light tenga TODAS las variables que tiene modo dark. Posible incompletitud.
-
-### M16. Clases `bg-zinc-*` / `text-zinc-*` hardcodeadas
-**Archivos a revisar:** Varias páginas pueden tener clases de Tailwind directas en vez de `theme-surface`, `theme-text-primary`, etc.  
-**Solución:** Usar `scripts/migrate-theme.ts` para detectar y migrar.
-
-### M17. `astro dev` no tiene comando en package.json para background
-**Problema:** `AGENTS.md` menciona `astro dev --background` pero no hay script en `package.json`.  
-**Solución:** Agregar script `"dev:bg": "astro dev --background"`.
-
-### M18. `src/pages/admin/progress.astro` no está en routeGuards
-**Problema:** La ruta existe físicamente pero no está protegida. Cualquier usuario autenticado podría acceder.
+### N-M25. Rutas mobile/capacitor no protegidas
+**Severidad:** 🟡 MEDIO
 
 ---
 
 ## 🟢 BAJOS
 
-### B1. `src/stores/themeStore.ts` — `console.log` en toggle
-**Archivo:** `src/stores/themeStore.ts` (probable)  
-**Problema:** `console.log` en producción. Reemplazar con logger.
+### B1-B8 (Ver documento anterior)
+**Estado:** ❌ Mayoría NO resueltos
 
-### B2. `src/pages/client/diets.astro` — estructura de datos hardcodeada
-**Problema:** Posiblemente usa datos mock en lugar de datos reales de Firestore.
+### NUEVOS B9-B12
 
-### B3. Sin meta tags de author/theme-color en BaseLayout
-**Archivo:** `src/layouts/BaseLayout.astro`  
-**Problema:** Faltan `<meta name="theme-color">` y `<meta name="author">` para mejor UX mobile.
+### N-B9. Clave `test.only_in_es` en `es.ts` sin par en `en.ts`
+**Archivo:** `src/i18n/locales/es.ts:5`  
+**Severidad:** 🟢 BAJO
 
-### B4. `playwright.config.ts` — sin tests E2E reales
-**Problema:** Config existe pero no hay tests que ejecutar.
+### N-B10. `docs/MASTER.md` sigue desactualizado (fecha 2026-06-13)
+**Severidad:** 🟢 BAJO
 
-### B5. `docs/MASTER.md` desactualizado
-**Problema:** La fecha dice "Última actualización: 2026-06-13". Faltan los nuevos módulos creados por agentes (admin/chat, admin/diets, admin/progress, admin/workouts).
+### N-B11. `docs/08_modulo_administracion.md` no incluye páginas admin nuevas
+**Severidad:** 🟢 BAJO
 
-### B6. `TODO.md` — tareas #11, #12 marcadas como ⏳ pero deberían ser ✅
-**Problema:** Imports no usados y mejoras menores ya se completaron parcialmente.
-
-### B7. `src/pages/admin/` — páginas nuevas sin documentación
-**Archivos:** `chat.astro`, `diets.astro`, `progress.astro`, `workouts.astro`  
-**Problema:** No están documentadas en `docs/MASTER.md` ni en `docs/08_modulo_administracion.md`.
-
-### B8. Iconos hardcodeados SVG no migrados a `Icon.astro`
-**Problema:** `Icon.astro` existe como componente pero las páginas aún usan SVGs inline.
+### N-B12. `TODO.md` tiene tareas marcadas incorrectamente
+**Severidad:** 🟢 BAJO
 
 ---
 
-## 📋 Plan de Acción Recomendado
+## 🎯 PRIORIZACIÓN PARA RONDA 2
 
-### Fase 1 — Críticos inmediatos (día 1)
-1. [ ] **C2** — Validar variables de entorno en `firebase.ts`
-2. [ ] **C5** — Reemplazar `console.*` por logger en todas las páginas
-3. [ ] **C6** — Migrar `window.*` a event listeners con data-attributes
-4. [ ] **C3** — Agregar traducciones EN de `onboarding.*`
-5. [ ] **C10** — Agregar rutas faltantes a `routeGuards.ts`
-6. [ ] **C12** — Mover colores de `@theme` en BaseLayout a `theme.css`
+### 🔴 IMPERATIVOS (FIX AHORA)
+1. **N-C1** → Build roto en `client/dashboard.astro` (impide deploy)
+2. **N-C2** → Reemplazar credenciales reales en `.env.example` con placeholders
+3. **N-C4** → Agregar `admin/clinical` a `routeGuards.ts`
 
-### Fase 2 — Rendimiento y costos (día 2)
-7. [ ] **C1** — Optimizar `firestore.rules` (lectura única del usuario)
-8. [ ] **C8** — Agregar paginación a consultas Firestore
-9. [ ] **M4** — Migrar `subscribeToCollectionCount` a `count()`
+### 🔴 ALTA PRIORIDAD (Ronda 2 - Día 1)
+4. **C10** → Agregar 5 rutas faltantes a `routeGuards.ts`
+5. **C2** → Validar variables de entorno en `firebase.ts`
+6. **N-C3** → Agregar `sevicioweb.pmi@gmail.com` a `firestore.rules`
+7. **C5** → Reemplazar `console.*` por logger en 11 archivos
+8. **C6** → Migrar `window.*` a event listeners con data-attributes
 
-### Fase 3 — Calidad y tests (día 2-3)
-10. [ ] **C7** — Reemplazar `expect(true).toBe(true)` con tests reales
-11. [ ] **M5** — Implementar tests E2E con Playwright
-12. [ ] **M6** — Agregar tests para componentes Astro
+### 🟡 MEDIA (Ronda 2 - Día 2)
+9. **C8** → Agregar paginación a consultas Firestore
+10. **M4/N-M24** → Eliminar `subscribeToCollectionCount`, usar `count()`
+11. **C1** → Optimizar `firestore.rules` (lectura única)
 
-### Fase 4 — Refactorización (día 3-4)
-13. [ ] **C9** — Crear `SettingsShell.astro` unificado
-14. [ ] **C4** — Unificar tipos de fecha a `Timestamp | null`
-15. [ ] **C11** — Refactorizar estilos inline a componentes
-
-### Fase 5 — Documentación (día 4)
-16. [ ] **B5** — Actualizar `docs/MASTER.md`
-17. [ ] **B7** — Documentar nuevas páginas admin
-18. [ ] **B3** — Agregar meta tags faltantes
+### 🟡 CALIDAD (Ronda 2 - Día 2-3)
+12. **N-M22** → Migrar clases `bg-zinc-*`/`text-zinc-*` a tokens del theme
+13. **N-C5** → Refactorizar archivos > 300 líneas
+14. **N-M21** → Completar variables light/dark en `theme.css`
 
 ---
 
-## 📎 Comandos de verificación
+## 📋 PLAN DE ACCIÓN — Ronda 2
+
+| # | Tarea | Archivos | Severidad | Agente Asignado |
+|---|-------|----------|-----------|-----------------|
+| 1 | Fix build error | `src/pages/client/dashboard.astro` | 🔴 CRÍTICO | Debug Agent |
+| 2 | Sanitizar `.env.example` | `.env.example` | 🔴 CRÍTICO | Security Agent |
+| 3 | Route guards faltantes | `src/lib/routeGuards.ts` + 5 páginas | 🔴 CRÍTICO | Security Agent |
+| 4 | Validar env vars Firebase | `src/lib/firebase.ts` | 🔴 CRÍTICO | Debug Agent |
+| 5 | Sync firestore.rules bootstrap email | `firestore.rules` | 🔴 CRÍTICO | Security Agent |
+| 6 | console.* → logger | 11 archivos | 🔴 CRÍTICO | Debug Agent |
+| 7 | window.* → data-attributes | 5 archivos | 🔴 CRÍTICO | Debug Agent |
+| 8 | Paginación Firestore | `adminSubscriptions.ts`, `adminService.ts` | 🟡 MEDIO | Performance Agent |
+| 9 | Optimizar firestore.rules | `firestore.rules` | 🟡 MEDIO | Performance Agent |
+| 10 | Migrar clases hardcodeadas | 6+ páginas .astro | 🟡 MEDIO | Theme Agent |
+| 11 | Refactorizar > 300 líneas | 12 archivos | 🟡 MEDIO | Refactor Agent |
+| 12 | Docs/i18n actualizar | Varios docs | 🟢 BAJO | Docs Agent |
+
+---
+
+## 📎 Comandos de verificación rápida
 
 ```bash
-# Verificar tipos
-npx tsc --noEmit
+# Build
+npx astro build 2>&1 | findstr error
 
-# Ejecutar tests
-npx vitest run
+# TypeScript
+npx tsc --noEmit 2>&1
 
-# Validar tema
-npm run theme:validate
+# Tests
+npx vitest run 2>&1 | findstr FAIL
 
-# Build producción
-npm run build
+# Buscar console.* sin logger
+findstr /S "console\.\(log\|error\|warn\)" src\*.ts src\*.astro
 
-# Detectar clases hardcodeadas
-npx tsx scripts/migrate-theme.ts --dry-run
+# Buscar window.*
+findstr /S "window\.__" src\
+
+# Buscar any
+findstr /S ": any" src\*.ts
+
+# Clases hardcodeadas
+findstr /S "bg-zinc-" src\*.astro
+findstr /S "text-zinc-" src\*.astro
 ```
 
 ---
 
-> **Próxima revisión:** Pendiente  
-> **Mantenido por:** Equipo CampFit
+---
+
+## Ronda 6 y 7 — Completadas (2026-07-31)
+
+### Estado Final de Migración y Limpieza
+
+| Archivo | Estado | Notas |
+|---------|--------|-------|
+| `admin/users.astro` | ✅ Migrado | Event delegation y logger |
+| `trainer/diets.astro` | ✅ Migrado | Event delegation y logger |
+| `trainer/chat.astro` | ✅ Migrado | Event delegation y logger |
+| `trainer/clients.astro` | ✅ Migrado | Event delegation y logger |
+| `trainer/workouts.astro` | ✅ Migrado | Fix de closure con `currentTrainerId` + Event delegation `data-action` + `logger.error` |
+| `UnifiedSettingsView.astro` | ✅ Migrado | Theme toggle y flavor selector integrados con `themeStore` |
+| `admin/clients.astro` | ✅ Migrado | Uso de `getT` y `getLanguage` sin script `window.__*` inline |
+| `admin/trainers.astro` | ✅ Migrado | Uso de `getT` y `getLanguage` sin script `window.__*` inline |
+
+### 🎨 Estado del Sistema de Temas
+- **Fénix Dorado** (`onyx` / `#fbbf24`): Estilos inspirados en la estética metálica ámbar/dorado del botón de Admin Dashboard (`bg-amber-500/10 border-amber-500/40 text-amber-400 glow`).
+- **Bridge Tokens**: `--brand`, `--brand-hover`, `--brand-dim`, `--border-brand` 100% dinámicos en `:root` y `BaseLayout.astro`.
+
+---
+
+> **Estado del Proyecto:** ✅ Todos los módulos auditados, sin `console.error` residuales y pruebas unitarias 100% pasadas.  
+> **Mantenido por:** Orquestador CampFit

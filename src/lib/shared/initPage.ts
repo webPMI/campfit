@@ -154,7 +154,11 @@ export function initPage(options: InitPageOptions): () => void {
         try {
             // Leer de cache o Firestore (una sola vez por sesión)
             let userData = getCachedUserData(firebaseUser.uid);
-            if (!userData) {
+            if (userData) {
+                // Ocultar pantalla de carga inmediatamente para evitar parpadeos visuales
+                document.querySelectorAll('#loadingScreen').forEach((el) => el.classList.add('hidden'));
+                document.querySelectorAll('[id$="Content"]').forEach((el) => el.classList.remove('hidden'));
+            } else {
                 const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
                 userData = snap.data() || {};
                 setCachedUserData(firebaseUser.uid, userData);
@@ -170,7 +174,7 @@ export function initPage(options: InitPageOptions): () => void {
             // Comprobar si el cliente necesita realizar el onboarding antes de acceder a /client/*
             const isClientPath = window.location.pathname.startsWith('/client');
             const isOnboardingPath = window.location.pathname.startsWith('/onboarding');
-            if (userRole === 'client' && userData.onboardingCompleted === false && isClientPath && !isOnboardingPath) {
+            if (userRole === 'client' && userData.onboardingCompleted !== true && isClientPath && !isOnboardingPath) {
                 redirecting = true;
                 logger.warn('InitPage', `Cliente UID: ${firebaseUser.uid} sin onboarding completado. Redirigiendo a /onboarding`);
                 window.location.href = '/onboarding';

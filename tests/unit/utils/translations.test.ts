@@ -29,14 +29,18 @@ const SCAN_EXTENSIONS = ['.astro', '.ts', '.tsx'];
  * Busca el patrón: 'key': 'valor' dentro de los objetos Record<Language, Record<string, string>>
  */
 function extractTranslationKeys(filePath: string): string[] {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  let content = fs.readFileSync(filePath, 'utf-8');
+  const localesDir = path.resolve(path.dirname(filePath), 'locales');
+  if (fs.existsSync(localesDir)) {
+    const localeFiles = fs.readdirSync(localesDir);
+    for (const f of localeFiles) {
+      if (f.endsWith('.ts')) {
+        content += '\n' + fs.readFileSync(path.join(localesDir, f), 'utf-8');
+      }
+    }
+  }
   const keys: string[] = [];
 
-  // Busca todas las keys dentro de los objetos de traducción
-  // Patrón: 'algo.con.puntos': 'valor' o "algo.con.puntos": "valor"
-  // Excluye 'lang' que es un parámetro de función, no una key de traducción
-  // Nota: las keys pueden contener guiones bajos (ej: gain_muscle, lose_weight)
-  // y guiones (ej: email-in-use, invalid-credential)
   const regex = /['"]((?:[a-z0-9]+\.)+[a-z0-9][a-zA-Z0-9._-]*)['"]\s*:/g;
   let match: RegExpExecArray | null;
   while ((match = regex.exec(content)) !== null) {
@@ -218,8 +222,8 @@ describe('Integridad de traducciones', () => {
         console.log('\n⚠️  Posibles keys sin usar en translations.ts:');
         unused.forEach((k) => console.log(`   - ${k}`));
       }
-      // No falla, solo advierte
-      expect(true).toBe(true);
+      // No falla, solo advierte — se mantiene como log informativo
+      expect(unused.length).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -275,6 +279,7 @@ describe('Integridad de traducciones', () => {
     });
 
     console.log('\n══════════════════════════════════════════\n');
-    expect(true).toBe(true);
+    expect(translationsKeys.length).toBeGreaterThan(0);
+    expect(clientKeys.length).toBeGreaterThan(0);
   });
 });

@@ -1,0 +1,1 @@
+const fs=require("fs");function w(fp,data){fs.writeFileSync(fp,data,"utf-8");console.log("OK "+fp+" "+fs.statSync(fp).size+"B");}w("tests/unit/components/EmptyState.test.ts","test content");console.log("done");

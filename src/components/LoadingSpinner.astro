@@ -1,16 +1,77 @@
 ﻿---
+/**
+ * LoadingSpinner Component — Indicador de carga animado.
+ *
+ * @description Spinner circular CSS puro para indicar carga de contenido.
+ * Respeta prefers-reduced-motion y es accesible por defecto.
+ *
+ * @usage
+ * ```astro
+ * <LoadingSpinner size="md" />
+ * <LoadingSpinner size="lg" class="text-brand" />
+ * ```
+ *
+ * @param {'sm'|'md'|'lg'} [size="md"] - Tamaño del spinner
+ * @param {string}         [class=""]   - Clases CSS adicionales
+ * @param {string}         [label]      - Texto accesible para screen readers
+ *
+ * @accessibility
+ * - aria-busy="true" en el contenedor
+ * - role="status" para anunciar carga
+ * - sr-only text descriptivo
+ * - Respeta prefers-reduced-motion (pausa animación)
+ */
+
 export interface Props {
+  /** Tamaño del spinner: 'sm' (16px), 'md' (24px), 'lg' (36px). Default: 'md' */
   size?: 'sm' | 'md' | 'lg';
-  text?: string;
+  /** Clases CSS adicionales */
+  class?: string;
+  /** Texto accesible para screen readers. Default: "Cargando..." */
+  label?: string;
 }
 
-const sizes: Record<string, string> = { sm: 'h-5 w-5', md: 'h-8 w-8', lg: 'h-12 w-12' };
-const { size = 'md', text } = Astro.props;
+const { size = 'md', class: className = '', label = 'Cargando...' } = Astro.props;
+
+const sizeMap: Record<string, string> = {
+  sm: 'w-4 h-4',
+  md: 'w-6 h-6',
+  lg: 'w-9 h-9',
+};
+
+const borderMap: Record<string, string> = {
+  sm: 'border-2',
+  md: 'border-2',
+  lg: 'border-3',
+};
 ---
-<div class="flex flex-col items-center justify-center py-16">
-  <svg class={"animate-spin text-emerald-500 " + (sizes[size] || sizes['md'])} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg>
-  {text && <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">{text}</p>}
+
+<div
+  role="status"
+  aria-busy="true"
+  class="inline-flex items-center justify-center {className}"
+>
+  <span class="sr-only">{label}</span>
+  <div
+    class="
+      {sizeMap[size] || sizeMap.md}
+      {borderMap[size] || borderMap.md}
+      rounded-full
+      border-current
+      border-r-transparent
+      animate-spin
+      theme-text-brand
+    "
+    style="
+      animation-duration: 700ms;
+    "
+  ></div>
 </div>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    .animate-spin {
+      animation: none !important;
+    }
+  }
+</style>

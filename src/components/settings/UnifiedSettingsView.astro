@@ -1,0 +1,590 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import TrainerLayout from '@/layouts/TrainerLayout.astro';
+import { getT } from '@/lib/shared/i18n';
+import ThemeFlavorSelector from '@/components/ThemeFlavorSelector.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+
+interface Props {
+  role: 'client' | 'trainer' | 'admin';
+}
+
+const { role } = Astro.props;
+const lang = Astro.url.searchParams.get('lang');
+const t = getT(lang);
+
+const clientTranslations = {
+  'admin.settings.profile': t('admin.settings.profile'),
+  'admin.settings.profile.error': t('admin.settings.profile.error'),
+  'admin.settings.profile.saving': t('admin.settings.profile.saving'),
+  'admin.settings.profile.save': t('admin.settings.profile.save'),
+  'admin.settings.profile.name.required': t('admin.settings.profile.name.required'),
+  'admin.settings.password.saving': t('admin.settings.password.saving'),
+  'admin.settings.password.btn': t('admin.settings.password.btn'),
+  'admin.settings.password.minlength': t('admin.settings.password.minlength'),
+  'admin.settings.password.mismatch': t('admin.settings.password.mismatch'),
+  'admin.settings.logout.confirm': t('admin.settings.logout.confirm'),
+  'admin.settings.logout.error': t('admin.settings.logout.error'),
+  'client.settings.language.changed': t('client.settings.language.changed'),
+};
+
+const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? TrainerLayout : ClientLayout;
+---
+
+<LayoutComponent>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <div class="animate-fade-in">
+      <h1 class="text-2xl font-bold text-[var(--text-primary)]">
+        {role === 'admin' ? t('admin.settings') : role === 'trainer' ? (t('trainer.settings') || 'Configuración') : t('client.settings.title')}
+      </h1>
+      <p class="mt-1 text-sm text-[var(--text-tertiary)]">
+        {role === 'admin' ? t('admin.settings.desc') : role === 'trainer' ? (t('trainer.settings.desc') || 'Configuración de tu cuenta') : t('client.settings.desc')}
+      </p>
+
+      <div id="settingsContent" class="mt-8 space-y-6">
+        <!-- 1. Perfil Básico (Carga dinámica de datos de usuario) -->
+        <div id="profile-section" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <div id="profile-loading" class="flex items-center justify-center py-8">
+            <div class="flex items-center gap-3">
+              <svg class="h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <p class="text-sm text-[var(--text-tertiary)]">{t('dashboard.loading') || 'Cargando...'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Formulario de Edición de Perfil -->
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)]">{t('admin.settings.profile')}</h2>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('admin.settings.profile.desc')}</p>
+
+          <form id="profile-form" class="mt-4 space-y-4">
+            <div>
+              <label for="edit-name" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{t('auth.name')}</label>
+              <input
+                id="edit-name"
+                type="text"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
+              />
+            </div>
+            <div>
+              <label for="edit-email" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{t('auth.email')}</label>
+              <input
+                id="edit-email"
+                type="email"
+                disabled
+                class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-4)] px-3.5 py-2.5 text-sm text-[var(--text-tertiary)] cursor-not-allowed opacity-75"
+              />
+              <p class="mt-1 text-[11px] text-[var(--text-tertiary)]">{t('admin.settings.email.notice')}</p>
+            </div>
+            <div class="flex justify-end">
+              <button
+                id="save-profile-btn"
+                type="submit"
+                class="rounded-xl bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-[var(--brand-hover)] active:scale-[0.98]"
+              >
+                {t('client.medical.save') || 'Guardar Cambios'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 3. SECCIÓN ESPECÍFICA: Ficha Médica y Mi Entrenador -->
+        {role === 'client' && (
+          <div id="trainer-info-section" class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+            <h2 class="text-lg font-semibold text-[var(--text-primary)] mb-1">{t('client.settings.my.trainer') || 'Mi Entrenador'}</h2>
+            <p class="text-xs text-[var(--text-tertiary)] mb-4">{t('client.settings.my.trainer.desc') || 'Entrenador personal asignado'}</p>
+            <div id="trainer-info-content"></div>
+          </div>
+        )}
+
+        <div id="medical-profile-shortcut-section" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-dim)]">
+                <svg class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+              </div>
+              <div>
+                <h2 class="text-base font-semibold text-[var(--text-primary)]">{t('client.medical.title') || 'Ficha Médica y Salud'}</h2>
+                <p class="text-xs text-[var(--text-tertiary)]">{t('client.medical.desc') || 'Modifica tus condiciones, alergias y datos físicos'}</p>
+              </div>
+            </div>
+            <a
+              href={`/client/medical-profile?lang=${lang || 'es'}`}
+              class="rounded-xl bg-[var(--surface-4)] border border-[var(--border-default)] px-4 py-2 text-xs font-medium text-[var(--text-primary)] transition-all hover:bg-[var(--surface-3)] hover:border-[var(--border-strong)]"
+            >
+              Editar
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. Cambio de Contraseña -->
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)]">{t('admin.settings.password')}</h2>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('admin.settings.password.desc')}</p>
+
+          <form id="password-form" class="mt-4 space-y-4">
+            <div>
+              <label for="new-password" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{t('admin.settings.password.new')}</label>
+              <input
+                id="new-password"
+                type="password"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
+              />
+            </div>
+            <div>
+              <label for="confirm-password" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{t('admin.settings.password.confirm')}</label>
+              <input
+                id="confirm-password"
+                type="password"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
+              />
+            </div>
+            <div class="flex justify-end">
+              <button
+                id="save-password-btn"
+                type="submit"
+                class="rounded-xl bg-[var(--surface-4)] border border-[var(--border-default)] px-5 py-2.5 text-sm font-medium text-[var(--text-primary)] transition-all hover:bg-[var(--surface-3)] hover:border-[var(--border-strong)] active:scale-[0.98]"
+              >
+                {t('admin.settings.password.btn')}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 5. Preferencias Generales (Tema, Notificaciones Push y Alertas, Idioma) -->
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)]">{t('client.settings.preferences') || 'Preferencias'}</h2>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.settings.preferences.desc') || 'Personaliza la aplicación'}</p>
+
+          <div class="mt-4 space-y-4">
+            <!-- Theme Flavor Selector (Nuevo) -->
+            <div class="space-y-4 rounded-xl bg-[var(--surface-4)] px-4 py-3">
+              <div>
+                <p class="text-sm font-medium text-[var(--text-primary)]">Tema visual</p>
+                <p class="text-xs text-[var(--text-tertiary)]">Elige la paleta de colores</p>
+              </div>
+              <ThemeFlavorSelector />
+            </div>
+
+            <!-- Modo Claro/Oscuro/Auto (Nuevo ThemeToggle) -->
+            <div class="flex items-center justify-between rounded-xl bg-[var(--surface-4)] px-4 py-3">
+              <div class="flex items-center gap-3">
+                <svg class="h-5 w-5 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+                <div>
+                  <p class="text-sm font-medium text-[var(--text-primary)]">Modo</p>
+                  <p class="text-xs text-[var(--text-tertiary)]">Claro / Oscuro / Automático</p>
+                </div>
+              </div>
+              <ThemeToggle />
+            </div>
+
+            <!-- Notifications Section (Granular por Rol) -->
+            <div class="rounded-xl bg-[var(--surface-4)] p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                <div class="flex items-center gap-3">
+                  <svg class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                  </svg>
+                  <div>
+                    <p class="text-sm font-semibold text-[var(--text-primary)]">{t('notifications.title')}</p>
+                    <p class="text-xs text-[var(--text-tertiary)]">{t('notifications.desc')}</p>
+                  </div>
+                </div>
+                <button
+                  id="btn-notifications-toggle"
+                  class="relative inline-flex h-6 w-11 items-center rounded-full bg-[var(--surface-3)] transition-colors duration-200 focus:outline-none"
+                  role="switch"
+                  aria-checked="false"
+                >
+                  <span id="notifications-toggle-thumb" class="inline-block h-4 w-4 translate-x-1 transform rounded-full bg-white transition-transform duration-200"></span>
+                </button>
+              </div>
+
+              <!-- Categorías Granulares -->
+              <div id="granular-notifications-container" class="pt-2 space-y-3 text-xs">
+                <!-- Secciones de Cliente -->
+                <div class="space-y-2">
+                  <p class="font-semibold text-[var(--brand)] text-[11px] uppercase tracking-wider">{t('notifications.section.client')}</p>
+
+                  <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                    <span class="text-[var(--text-secondary)]">{t('notifications.cat.clientChat')}</span>
+                    <input type="checkbox" data-notification-category="clientChat" class="rounded accent-[var(--brand)] h-4 w-4 cursor-pointer" />
+                  </label>
+
+                  <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                    <span class="text-[var(--text-secondary)]">{t('notifications.cat.newWorkoutAssigned')}</span>
+                    <input type="checkbox" data-notification-category="newWorkoutAssigned" class="rounded accent-[var(--brand)] h-4 w-4 cursor-pointer" />
+                  </label>
+
+                  <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                    <span class="text-[var(--text-secondary)]">{t('notifications.cat.newDietAssigned')}</span>
+                    <input type="checkbox" data-notification-category="newDietAssigned" class="rounded accent-[var(--brand)] h-4 w-4 cursor-pointer" />
+                  </label>
+                </div>
+
+                <!-- Secciones de Entrenador (Para trainer o admin) -->
+                {(role === 'trainer' || role === 'admin') && (
+                  <div class="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
+                    <p class="font-semibold text-[var(--info)] text-[11px] uppercase tracking-wider">{t('notifications.section.trainer')}</p>
+
+                    <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                      <span class="text-[var(--text-secondary)]">{t('notifications.cat.trainerChat')}</span>
+                      <input type="checkbox" data-notification-category="trainerChat" class="rounded accent-[var(--info)] h-4 w-4 cursor-pointer" />
+                    </label>
+
+                    <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                      <span class="text-[var(--text-secondary)]">{t('notifications.cat.clientMedicalAlerts')}</span>
+                      <input type="checkbox" data-notification-category="clientMedicalAlerts" class="rounded accent-[var(--info)] h-4 w-4 cursor-pointer" />
+                    </label>
+
+                    <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                      <span class="text-[var(--text-secondary)]">{t('notifications.cat.clientProgressLogs')}</span>
+                      <input type="checkbox" data-notification-category="clientProgressLogs" class="rounded accent-[var(--info)] h-4 w-4 cursor-pointer" />
+                    </label>
+                  </div>
+                )}
+
+                <!-- Secciones de Administrador (Para admin) -->
+                {role === 'admin' && (
+                  <div class="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
+                    <p class="font-semibold text-purple-400 text-[11px] uppercase tracking-wider">{t('notifications.section.admin')}</p>
+
+                    <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                      <span class="text-[var(--text-secondary)]">{t('notifications.cat.newUserRegistrations')}</span>
+                      <input type="checkbox" data-notification-category="newUserRegistrations" class="rounded accent-purple-500 h-4 w-4 cursor-pointer" />
+                    </label>
+
+                    <label class="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-3)]/50 cursor-pointer">
+                      <span class="text-[var(--text-secondary)]">{t('notifications.cat.systemAlerts')}</span>
+                      <input type="checkbox" data-notification-category="systemAlerts" class="rounded accent-purple-500 h-4 w-4 cursor-pointer" />
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <!-- Language -->
+            <div class="flex items-center justify-between rounded-xl bg-[var(--surface-4)] px-4 py-3">
+              <div class="flex items-center gap-3">
+                <svg class="h-5 w-5 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                </svg>
+                <div>
+                  <p class="text-sm font-medium text-[var(--text-primary)]">{t('client.settings.language') || 'Idioma'}</p>
+                  <p class="text-xs text-[var(--text-tertiary)]">{t('client.settings.language.desc') || 'Selecciona el idioma'}</p>
+                </div>
+              </div>
+              <select
+                id="select-language"
+                class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)]"
+              >
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Danger Zone -->
+        <div class="rounded-xl border border-red-900/30 bg-[var(--danger-dim)] p-6 backdrop-blur-sm">
+          <h2 class="text-lg font-semibold text-[var(--danger)]">{t('admin.settings.danger')}</h2>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('admin.settings.danger.desc')}</p>
+          <div class="mt-4 space-y-3">
+            <button id="btn-logout" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-3 text-sm font-medium text-[var(--text-secondary)] backdrop-blur-sm transition-all hover:bg-[var(--surface-3)]">
+              {t('admin.settings.logout')}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</LayoutComponent>
+
+<script is:inline set:html={`window.__UNIFIED_SETTINGS_TRANSLATIONS__ = ${JSON.stringify(clientTranslations)};`}></script>
+
+<script>
+  import { initPage } from '@/lib/shared/initPage';
+  import { loadProfile, updateProfile, changePassword } from '@/lib/shared/profileService';
+  import { showToast } from '@/lib/shared/ui';
+  import { getStoredLanguage, setStoredLanguage } from '@/i18n/client';
+  import { logger } from '@/lib/shared/logger';
+  import { signOutUser } from '@/lib/shared/authGuard';
+
+  const tr = (key: string): string =>
+    (window as any).__UNIFIED_SETTINGS_TRANSLATIONS__?.[key] || key;
+
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser, userData) => {
+      await initSettings(firebaseUser, userData);
+    },
+  });
+
+  document.addEventListener('astro:before-swap', cleanup);
+
+  async function initSettings(user: import('firebase/auth').User, userData: any): Promise<void> {
+    const profileLoading = document.getElementById('profile-loading');
+    const nameInput = document.getElementById('edit-name') as HTMLInputElement;
+    const emailInput = document.getElementById('edit-email') as HTMLInputElement;
+
+    try {
+      const profile = await loadProfile(user.uid);
+
+      if (profileLoading) {
+        profileLoading.classList.add('hidden');
+      }
+
+      if (profile) {
+        if (nameInput) nameInput.value = profile.name;
+        if (emailInput) emailInput.value = profile.email;
+
+        // Mostrar entrenador para clientes
+        if (profile.assignedTrainerName) {
+          const trainerSection = document.getElementById('trainer-info-section');
+          if (trainerSection) {
+            trainerSection.classList.remove('hidden');
+            const content = document.getElementById('trainer-info-content');
+            if (content) {
+              content.innerHTML = `
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-[var(--surface-4)] border border-[var(--border-strong)]/40">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--info-dim)] text-sm font-medium text-[var(--info)]">
+                    ${profile.assignedTrainerName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-[var(--text-primary)]">${profile.assignedTrainerName}</p>
+                    <p class="text-xs text-[var(--text-tertiary)]">${tr('client.settings.my.trainer.desc') || 'Entrenador asignado'}</p>
+                  </div>
+                </div>
+              `;
+            }
+          }
+        }
+      }
+    } catch (err) {
+      logger.error('UnifiedSettings', 'Error cargando datos de usuario', err);
+    }
+
+    // ─── Setup Form Handlers ─────────────────────────────────────────────
+    const profileForm = document.getElementById('profile-form') as HTMLFormElement;
+    if (profileForm) {
+      profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+
+        if (!name) {
+          showToast({ message: tr('admin.settings.profile.name.required'), type: 'error' });
+          return;
+        }
+
+        const saveBtn = document.getElementById('save-profile-btn') as HTMLButtonElement;
+        if (saveBtn) {
+          saveBtn.disabled = true;
+          saveBtn.textContent = tr('admin.settings.profile.saving');
+        }
+
+        try {
+          const res = await updateProfile(user.uid, { name, email });
+          showToast({ message: res.message, type: res.success ? 'success' : 'error' });
+        } catch (err) {
+          logger.error('UnifiedSettings', 'Error actualizando perfil', err);
+          showToast({ message: tr('admin.settings.profile.error'), type: 'error' });
+        } finally {
+          if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = tr('client.medical.save') || 'Guardar Cambios';
+          }
+        }
+      });
+    }
+
+    // ─── Password Form ───────────────────────────────────────────────────
+    const passwordForm = document.getElementById('password-form') as HTMLFormElement;
+    if (passwordForm) {
+      passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPass = (document.getElementById('new-password') as HTMLInputElement).value;
+        const confirmPass = (document.getElementById('confirm-password') as HTMLInputElement).value;
+
+        if (newPass.length < 6) {
+          showToast({ message: tr('admin.settings.password.minlength'), type: 'error' });
+          return;
+        }
+
+        if (newPass !== confirmPass) {
+          showToast({ message: tr('admin.settings.password.mismatch'), type: 'error' });
+          return;
+        }
+
+        const passBtn = document.getElementById('save-password-btn') as HTMLButtonElement;
+        if (passBtn) {
+          passBtn.disabled = true;
+          passBtn.textContent = tr('admin.settings.password.saving');
+        }
+
+        try {
+          const res = await changePassword(user, newPass);
+          showToast({ message: res.message, type: res.success ? 'success' : 'error' });
+          if (res.success) passwordForm.reset();
+        } catch (err) {
+          logger.error('UnifiedSettings', 'Error cambiando contraseña', err);
+          showToast({ message: tr('admin.settings.password.mismatch'), type: 'error' });
+        } finally {
+          if (passBtn) {
+            passBtn.disabled = false;
+            passBtn.textContent = tr('admin.settings.password.btn');
+          }
+        }
+      });
+    }
+
+    // ─── Theme Toggle ────────────────────────────────────────────────────
+    const themeToggle = document.getElementById('btn-theme-toggle');
+    if (themeToggle) {
+      const storedTheme = localStorage.getItem('campfit_theme') || 'dark';
+      applyTheme(storedTheme);
+
+      themeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem('campfit_theme', next);
+      });
+    }
+
+    // ─── Notifications Toggle (Granular) ─────────────────────────────────
+    const notificationsToggle = document.getElementById('btn-notifications-toggle');
+    const notificationsThumb = document.getElementById('notifications-toggle-thumb');
+    const granularContainer = document.getElementById('granular-notifications-container');
+
+    if (notificationsToggle && notificationsThumb) {
+      const { updateNotificationPreferences, DEFAULT_NOTIFICATION_PREFERENCES } = await import('@/lib/notifications/notificationService');
+      let isGlobalEnabled = userData?.notificationsEnabled ?? true;
+      const userCategories = {
+        ...DEFAULT_NOTIFICATION_PREFERENCES.categories,
+        ...(userData?.notificationPreferences || {}),
+      };
+
+      const updateUI = (enabled: boolean) => {
+        if (enabled) {
+          notificationsToggle.classList.remove('bg-[var(--surface-3)]');
+          notificationsToggle.classList.add('bg-[var(--brand)]');
+          notificationsThumb.classList.remove('translate-x-1');
+          notificationsThumb.classList.add('translate-x-6');
+          notificationsToggle.setAttribute('aria-checked', 'true');
+          granularContainer?.classList.remove('opacity-50', 'pointer-events-none');
+        } else {
+          notificationsToggle.classList.remove('bg-[var(--brand)]');
+          notificationsToggle.classList.add('bg-[var(--surface-3)]');
+          notificationsThumb.classList.remove('translate-x-6');
+          notificationsThumb.classList.add('translate-x-1');
+          notificationsToggle.setAttribute('aria-checked', 'false');
+          granularContainer?.classList.add('opacity-50', 'pointer-events-none');
+        }
+      };
+
+      updateUI(isGlobalEnabled);
+
+      // Cargar estado inicial de checkboxes granulares
+      const categoryInputs = document.querySelectorAll<HTMLInputElement>('[data-notification-category]');
+      categoryInputs.forEach((input) => {
+        const cat = input.dataset.notificationCategory as keyof typeof userCategories;
+        if (cat) {
+          input.checked = userCategories[cat] ?? true;
+        }
+
+        input.addEventListener('change', async () => {
+          const categoryName = input.dataset.notificationCategory as any;
+          const isChecked = input.checked;
+          userCategories[categoryName as keyof typeof userCategories] = isChecked;
+
+          const success = await updateNotificationPreferences(user.uid, {
+            categories: { [categoryName]: isChecked } as any,
+          });
+
+          if (success) {
+            showToast({ message: 'Preferencia de notificación actualizada', type: 'success' });
+          } else {
+            input.checked = !isChecked;
+            showToast({ message: 'Error al actualizar preferencia', type: 'error' });
+          }
+        });
+      });
+
+      notificationsToggle.addEventListener('click', async () => {
+        const nextState = !isGlobalEnabled;
+        updateUI(nextState);
+        isGlobalEnabled = nextState;
+
+        const success = await updateNotificationPreferences(user.uid, { enabled: nextState });
+        if (success) {
+          showToast({
+            message: nextState ? 'Notificaciones push activadas' : 'Notificaciones desactivadas',
+            type: 'success',
+          });
+        } else {
+          isGlobalEnabled = !nextState;
+          updateUI(isGlobalEnabled);
+          showToast({ message: 'Error al actualizar preferencia de notificaciones', type: 'error' });
+        }
+      });
+    }
+
+    // ─── Language Selector ───────────────────────────────────────────────
+    const langSelect = document.getElementById('select-language') as HTMLSelectElement;
+    if (langSelect) {
+      langSelect.value = getStoredLanguage();
+      langSelect.addEventListener('change', () => {
+        const newLang = langSelect.value as 'es' | 'en';
+        setStoredLanguage(newLang);
+        showToast({ message: `${tr('client.settings.language.changed')} ${newLang === 'es' ? 'Español' : 'English'}`, type: 'success' });
+        setTimeout(() => {
+          const url = new URL(window.location.href);
+          url.searchParams.set('lang', newLang);
+          window.location.href = url.toString();
+        }, 1000);
+      });
+    }
+
+    // ─── Logout Button ───────────────────────────────────────────────────
+    const logoutBtn = document.getElementById('btn-logout');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        if (!confirm(tr('admin.settings.logout.confirm'))) return;
+        try {
+          await signOutUser();
+          window.location.href = '/login';
+        } catch (err) {
+          logger.error('UnifiedSettings', 'Error cerrando sesión', err);
+          showToast({ message: tr('admin.settings.logout.error'), type: 'error' });
+        }
+      });
+    }
+  }
+
+  function applyTheme(theme: string): void {
+    const toggle = document.getElementById('btn-theme-toggle')!;
+    const thumb = toggle.querySelector('span')!;
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      toggle.classList.remove('bg-[var(--brand)]');
+      toggle.classList.add('bg-[var(--surface-4)]');
+      thumb.classList.remove('translate-x-6');
+      thumb.classList.add('translate-x-1');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      toggle.classList.remove('bg-[var(--surface-4)]');
+      toggle.classList.add('bg-[var(--brand)]');
+      thumb.classList.remove('translate-x-1');
+      thumb.classList.add('translate-x-6');
+    }
+  }
+</script>

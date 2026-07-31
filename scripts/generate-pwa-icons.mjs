@@ -1,14 +1,16 @@
 /**
  * Genera iconos PWA PNG (192x192 y 512x512) usando sharp a partir del SVG oficial de la app.
+ *
+ * Uso: node scripts/generate-pwa-icons.mjs
  */
 
-import { writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 
+// SVG base del icono de CampFit (mismo diseño que favicon.svg, escalado a 512)
 const svgBuffer = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -21,21 +23,24 @@ const svgBuffer = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="
   <path d="M328 168 A120 120 0 1 1 328 344 L360 344 A152 152 0 1 0 360 168 Z" fill="#0f1117"/>
 </svg>`);
 
+const SIZES = [192, 512];
+
 async function generate() {
   try {
     const sharp = (await import('sharp')).default;
-    const sizes = [192, 512];
-
-    for (const size of sizes) {
-      const outputPath = join(root, 'public', `pwa-icon-${size}.png`);
-      await sharp(svgBuffer)
-        .resize(size, size)
-        .png()
-        .toFile(outputPath);
-      console.log(`✅ Creado icono PNG PWA: ${outputPath}`);
-    }
+    const results = await Promise.all(
+      SIZES.map(async (size) => {
+        const outputPath = join(root, 'public', `pwa-icon-${size}.png`);
+        await sharp(svgBuffer).resize(size, size).png().toFile(outputPath);
+        return outputPath;
+      })
+    );
+    results.forEach((path) => console.log(`✅ Icono PWA generado: ${path}`));
+    console.log('\n✅ Iconos PWA generados correctamente.');
   } catch (err) {
-    console.error('Error al generar iconos PNG con sharp:', err);
+    console.error('❌ Error al generar iconos PWA:', err.message);
+    console.error('   Asegúrate de que sharp está instalado: npm install sharp');
+    process.exit(1);
   }
 }
 

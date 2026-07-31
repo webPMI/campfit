@@ -53,9 +53,26 @@ const lang = Astro.params.lang || "es";
   <body style="font-family: 'Inter', sans-serif;">
     <script>
       (function () {
-        const saved = localStorage.getItem("campfit_theme") || "dark";
-        document.documentElement.setAttribute("data-theme", saved);
-        document.documentElement.style.colorScheme = saved;
+        try {
+          var oldKey = localStorage.getItem("campfit_theme");
+          var mode, flavor;
+          if (oldKey) {
+            mode = oldKey;
+            flavor = "emerald";
+            localStorage.removeItem("campfit_theme");
+            localStorage.setItem("campfit_theme_mode", mode);
+            localStorage.setItem("campfit_theme_flavor", flavor);
+          } else {
+            mode = localStorage.getItem("campfit_theme_mode") || "dark";
+            flavor = localStorage.getItem("campfit_theme_flavor") || "emerald";
+          }
+          document.documentElement.setAttribute("data-theme-mode", mode);
+          document.documentElement.setAttribute("data-theme-flavor", flavor);
+          document.documentElement.style.colorScheme = mode;
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme-mode", "dark");
+          document.documentElement.setAttribute("data-theme-flavor", "emerald");
+        }
       })();
       (function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -79,32 +96,34 @@ const lang = Astro.params.lang || "es";
 
 <style is:global>
   @import "tailwindcss";
+  @import "../styles/theme.css";
 
   /* ============================================================
    * CAMPFIT DESIGN SYSTEM TOKENS v2 — WCAG AA contrast optimized
    * ============================================================ */
   :root,
-  [data-theme="dark"] {
+  [data-theme-mode="dark"] {
     color-scheme: dark;
 
-    --surface-0: #09090b;
+    /* Map flavor-aware tokens from theme.css to the v2 surface system */
+    --brand: var(--color-brand-primary, #10b981);
+    --brand-hover: var(--color-brand-primary-hover, #34d399);
+    --brand-dim: var(--color-brand-light, color-mix(in srgb, var(--brand) 15%, transparent));
+    --brand-glow: color-mix(in srgb, var(--brand) 25%, transparent);
+    --brand-gradient: linear-gradient(135deg, var(--brand) 0%, var(--brand-hover) 50%, var(--color-brand-secondary, var(--brand-hover)) 100%);
+    --brand-gradient-subtle: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand) 30%, transparent) 0%,
+      color-mix(in srgb, var(--brand) 15%, transparent) 100%
+    );
+
+    --surface-0: var(--color-bg-primary, #09090b);
     --surface-1: #131316;
-    --surface-2: #18181b;
+    --surface-2: var(--color-bg-secondary, #18181b);
     --surface-3: #1f1f24;
     --surface-4: #27272d;
     --surface-5: #2f2f36;
     --surface-glass: oklch(0.15 0.01 260 / 0.6);
-
-    --brand: #10b981;
-    --brand-hover: #34d399;
-    --brand-dim: #065f46;
-    --brand-glow: oklch(0.75 0.2 160 / 0.25);
-    --brand-gradient: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
-    --brand-gradient-subtle: linear-gradient(
-      135deg,
-      oklch(0.35 0.08 160) 0%,
-      oklch(0.3 0.06 160) 100%
-    );
 
     --accent-blue: #3b82f6;
     --accent-blue-hover: #60a5fa;
@@ -125,7 +144,7 @@ const lang = Astro.params.lang || "es";
     --border-default: oklch(0.28 0.01 260);
     --border-subtle: oklch(0.22 0.01 260);
     --border-strong: oklch(0.35 0.01 260);
-    --border-brand: oklch(0.45 0.12 160 / 0.5);
+    --border-brand: color-mix(in srgb, var(--brand) 40%, transparent);
 
     --success: #10b981;
     --success-dim: #064e3b;
@@ -163,27 +182,28 @@ const lang = Astro.params.lang || "es";
     --glass-blur: 16px;
   }
 
-  [data-theme="light"] {
+  [data-theme-mode="light"] {
     color-scheme: light;
 
-    --surface-0: #fafafa;
+    /* Map flavor-aware tokens from theme.css to the v2 surface system */
+    --brand: var(--color-brand-primary, #059669);
+    --brand-hover: var(--color-brand-primary-hover, #047857);
+    --brand-dim: var(--color-brand-light, color-mix(in srgb, var(--brand) 12%, transparent));
+    --brand-glow: color-mix(in srgb, var(--brand) 20%, transparent);
+    --brand-gradient: linear-gradient(135deg, var(--brand) 0%, var(--brand-hover) 50%, var(--color-brand-secondary, var(--brand-hover)) 100%);
+    --brand-gradient-subtle: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand) 20%, transparent) 0%,
+      color-mix(in srgb, var(--brand) 10%, transparent) 100%
+    );
+
+    --surface-0: var(--color-bg-primary, #fafafa);
     --surface-1: #ffffff;
-    --surface-2: #f4f4f6;
+    --surface-2: var(--color-bg-secondary, #f4f4f6);
     --surface-3: #eaeaed;
     --surface-4: #dfdfe3;
     --surface-5: #d4d4d8;
     --surface-glass: oklch(0.98 0.002 260 / 0.65);
-
-    --brand: #059669;
-    --brand-hover: #047857;
-    --brand-dim: #a7f3d0;
-    --brand-glow: oklch(0.65 0.18 160 / 0.2);
-    --brand-gradient: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
-    --brand-gradient-subtle: linear-gradient(
-      135deg,
-      oklch(0.88 0.06 160) 0%,
-      oklch(0.92 0.04 160) 100%
-    );
 
     --accent-blue: #2563eb;
     --accent-blue-hover: #1d4ed8;
@@ -204,7 +224,7 @@ const lang = Astro.params.lang || "es";
     --border-default: oklch(0.85 0.01 260);
     --border-subtle: oklch(0.92 0.005 260);
     --border-strong: oklch(0.75 0.01 260);
-    --border-brand: oklch(0.5 0.12 160 / 0.45);
+    --border-brand: color-mix(in srgb, var(--brand) 35%, transparent);
 
     --success-dim: #d1fae5;
     --warning-dim: #fef3c7;
@@ -485,5 +505,222 @@ const lang = Astro.params.lang || "es";
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
+  }
+
+  /* ============================================================
+   * CAMPFIT MOTION SYSTEM — Tokens, Keyframes, Utilities
+   * ============================================================ */
+
+  /* Motion tokens */
+  :root {
+    --duration-instant: 80ms;
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --duration-slower: 600ms;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    --stagger-1: 50ms;
+    --stagger-2: 100ms;
+    --stagger-3: 150ms;
+    --stagger-4: 200ms;
+    --stagger-5: 250ms;
+    --stagger-6: 300ms;
+    --stagger-7: 350ms;
+    --stagger-8: 400ms;
+
+    --slide-offset-sm: 8px;
+    --slide-offset-md: 16px;
+    --slide-offset-lg: 24px;
+  }
+
+  /* Keyframes */
+  @keyframes cf-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(var(--slide-offset-md));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes cf-fade-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(var(--slide-offset-md));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes cf-fade-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(calc(-1 * var(--slide-offset-md)));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes cf-scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes cf-scale-in-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes cf-ripple {
+    to {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes cf-bounce-subtle {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(calc(-1 * var(--slide-offset-sm)));
+    }
+  }
+
+  @keyframes cf-shake {
+    10%,
+    90% {
+      transform: translateX(-2px);
+    }
+    20%,
+    80% {
+      transform: translateX(3px);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translateX(-4px);
+    }
+    40%,
+    60% {
+      transform: translateX(4px);
+    }
+  }
+
+  /* Utility classes */
+  .animate-fade-in-up {
+    animation: cf-fade-in-up var(--duration-normal) var(--ease-out-expo) both;
+  }
+
+  .animate-fade-in-left {
+    animation: cf-fade-in-left var(--duration-normal) var(--ease-out-expo) both;
+  }
+
+  .animate-fade-in-right {
+    animation: cf-fade-in-right var(--duration-normal) var(--ease-out-expo) both;
+  }
+
+  .animate-scale-in {
+    animation: cf-scale-in var(--duration-normal) var(--ease-out-expo) both;
+  }
+
+  .animate-scale-in-pop {
+    animation: cf-scale-in-pop var(--duration-slow) var(--ease-spring) both;
+  }
+
+  .animate-shake {
+    animation: cf-shake var(--duration-slow) var(--ease-in-out) both;
+  }
+
+  .animate-bounce-subtle {
+    animation: cf-bounce-subtle 2s var(--ease-in-out) infinite;
+  }
+
+  /* Stagger helpers */
+  .stagger-1 {
+    animation-delay: var(--stagger-1);
+  }
+  .stagger-2 {
+    animation-delay: var(--stagger-2);
+  }
+  .stagger-3 {
+    animation-delay: var(--stagger-3);
+  }
+  .stagger-4 {
+    animation-delay: var(--stagger-4);
+  }
+  .stagger-5 {
+    animation-delay: var(--stagger-5);
+  }
+  .stagger-6 {
+    animation-delay: var(--stagger-6);
+  }
+  .stagger-7 {
+    animation-delay: var(--stagger-7);
+  }
+  .stagger-8 {
+    animation-delay: var(--stagger-8);
+  }
+
+  /* Hover lift */
+  .cf-hover-lift {
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .cf-hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  .cf-hover-lift:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Focus ring */
+  .cf-focus-ring {
+    transition:
+      box-shadow var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+  .cf-focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px oklch(0.7 0.18 160 / 0.25);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: var(--duration-instant) !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: var(--duration-instant) !important;
+      scroll-behavior: auto !important;
+    }
   }
 </style>

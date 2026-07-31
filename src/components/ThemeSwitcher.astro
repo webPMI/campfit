@@ -1,0 +1,97 @@
+---
+/**
+ * ThemeSwitcher Component — Selector de tema visual INMEDIATAMENTE visible.
+ *
+ * @description Muestra directamente los 4 botones de flavor (Esmeralda, Océano,
+ * Atardecer, Ónix) con indicador de color circular + toggle modo claro/oscuro.
+ * SIN dropdown oculto — todo visible de inmediato.
+ *
+ * @usage
+ * ```astro
+ * <ThemeSwitcher />
+ * ```
+ *
+ * @accessibility
+ * - Botones con aria-pressed para el flavor activo
+ * - Indicadores de color circulares visibles
+ * - Etiquetas de texto accesibles
+ */
+
+import { $themeFlavor, FLAVOR_NAMES, FLAVOR_COLORS, type ThemeFlavor } from '@/stores/themeStore';
+
+const flavors: ThemeFlavor[] = ['emerald', 'ocean', 'sunset', 'onyx'];
+const currentFlavor = $themeFlavor.get();
+const isBrowser = typeof window !== 'undefined';
+const currentMode = isBrowser ? (document.documentElement.getAttribute('data-theme-mode') || 'dark') : 'dark';
+---
+
+<div class="flex flex-col items-end gap-2">
+  <!-- Selector de 4 flavors: siempre visible -->
+  <div class="flex items-center gap-1 rounded-full theme-surface theme-border p-1 shadow-lg" role="group" aria-label="Seleccionar tema visual">
+    {
+      flavors.map((flavor) => (
+        <button
+          type="button"
+          data-set-flavor={flavor}
+          class={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+            currentFlavor === flavor
+              ? 'theme-brand text-white shadow-md scale-105'
+              : 'theme-text-secondary hover:theme-surface-hover hover:scale-105'
+          }`}
+          title={`Tema ${FLAVOR_NAMES[flavor]}`}
+          aria-pressed={currentFlavor === flavor ? 'true' : 'false'}
+        >
+          <span
+            class="w-3 h-3 rounded-full ring-2 ring-white/20"
+            style={{ backgroundColor: FLAVOR_COLORS[flavor] }}
+          ></span>
+          <span class="hidden sm:inline whitespace-nowrap">{FLAVOR_NAMES[flavor]}</span>
+        </button>
+      ))
+    }
+    <span class="w-px h-5 bg-[var(--border-default)] mx-1"></span>
+    <button
+      type="button"
+      data-toggle-mode
+      class="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium theme-text-secondary hover:theme-surface-hover transition-all duration-200"
+      title="Alternar modo claro/oscuro"
+      aria-pressed={currentMode === 'dark' ? 'true' : 'false'}
+    >
+      <span class="w-3 h-3 rounded-full" style={{ backgroundColor: currentMode === 'dark' ? '#1a1a1a' : '#ffffff', border: '1px solid var(--color-border-default)' }}></span>
+      <span class="hidden sm:inline whitespace-nowrap">{currentMode === 'dark' ? 'Oscuro' : 'Claro'}</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  import { setThemeFlavor, toggleThemeMode, $themeFlavor } from '@/stores/themeStore';
+  import type { ThemeFlavor } from '@/stores/themeStore';
+
+  // Click handlers for flavor buttons
+  document.querySelectorAll('[data-set-flavor]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const flavor = btn.getAttribute('data-set-flavor') as ThemeFlavor;
+      setThemeFlavor(flavor);
+    });
+  });
+
+  // Click handler for mode toggle
+  const modeToggle = document.querySelector('[data-toggle-mode]');
+  if (modeToggle) {
+    modeToggle.addEventListener('click', () => {
+      toggleThemeMode();
+    });
+  }
+
+  // Reactive update of active state
+  $themeFlavor.subscribe((flavor: ThemeFlavor) => {
+    document.querySelectorAll('[data-set-flavor]').forEach((el) => {
+      const isActive = el.getAttribute('data-set-flavor') === flavor;
+      el.classList.toggle('theme-brand', isActive);
+      el.classList.toggle('text-white', isActive);
+      el.classList.toggle('shadow-md', isActive);
+      el.classList.toggle('scale-105', isActive);
+      el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  });
+</script>

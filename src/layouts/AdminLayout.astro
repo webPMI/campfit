@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import DecorativeBackground from '@/components/DecorativeBackground.astro';
 import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import ThemeSwitcher from '@/components/ThemeSwitcher.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
@@ -11,7 +12,10 @@ const currentPath = Astro.url.pathname;
 
   <BaseLayout>
     <DecorativeBackground />
-    <LanguageSwitcher currentPath={currentPath} lang={lang} />
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+      <ThemeSwitcher />
+      <LanguageSwitcher currentPath={currentPath} lang={lang} />
+    </div>
 
     <!-- Page content -->
     <slot />

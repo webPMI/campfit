@@ -1,22 +1,83 @@
 ﻿---
+/**
+ * EmptyState Component — Estado vacío para listas y secciones sin datos.
+ *
+ * @description Muestra un estado visual cuando no hay contenido disponible,
+ * con un icono grande, título, descripción y un botón de acción opcional.
+ *
+ * @usage
+ * ```astro
+ * <EmptyState
+ *   title="Sin entrenadores"
+ *   description="No hay entrenadores asignados todavía."
+ *   actionLabel="Añadir entrenador"
+ *   actionHref="/admin/trainers/new"
+ * />
+ * ```
+ *
+ * @param {string}  [icon="inbox"]    - Nombre del icono (ver Icon.astro)
+ * @param {string}  [title]           - Título del estado vacío (requerido)
+ * @param {string}  [description]     - Descripción del estado vacío (requerido)
+ * @param {string}  [actionLabel]     - Texto del botón de acción
+ * @param {string}  [actionHref]      - URL del botón de acción
+ * @param {string}  [class=""]         - Clases CSS adicionales
+ *
+ * @accessibility
+ * - role="status" para que screen readers anuncien el estado
+ * - Botón con texto descriptivo
+ * - Contraste suficiente entre el texto y el fondo
+ */
+
+import Icon from './Icon.astro';
+
 export interface Props {
+  /** Nombre del icono a mostrar. Default: "inbox" */
+  icon?: string;
+  /** Título del estado vacío */
   title: string;
-  description?: string;
-  actionText?: string;
+  /** Descripción del estado vacío */
+  description: string;
+  /** Texto del botón de acción (opcional) */
+  actionLabel?: string;
+  /** URL del botón de acción (opcional) */
   actionHref?: string;
+  /** Clases CSS adicionales */
+  class?: string;
 }
 
-const { title, description, actionText, actionHref } = Astro.props;
+const {
+  icon = 'inbox',
+  title,
+  description,
+  actionLabel,
+  actionHref,
+  class: className = '',
+} = Astro.props;
 ---
-<div class="flex flex-col items-center justify-center py-16 text-center">
-  <div class="mb-4 text-gray-500 dark:text-gray-400">
-    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+
+<div
+  role="status"
+  class="flex flex-col items-center justify-center py-12 px-6 text-center {className}"
+>
+  <div class="mb-4 theme-text-tertiary">
+    <Icon name={icon} size={48} />
   </div>
-  <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{title}</h3>
-  {description && <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{description}</p>}
-  {actionText && actionHref && (
-    <a href={actionHref} class="mt-4 inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
-      {actionText}
+
+  <h3 class="text-lg font-semibold theme-text-primary mb-2">
+    {title}
+  </h3>
+
+  <p class="text-sm theme-text-secondary max-w-md mb-6">
+    {description}
+  </p>
+
+  {actionLabel && actionHref && (
+    <a
+      href={actionHref}
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg theme-brand text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+    >
+      <Icon name="plus" size={16} />
+      {actionLabel}
     </a>
   )}
 </div>

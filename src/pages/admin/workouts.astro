@@ -12,27 +12,27 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-bold">{t('admin.workouts')}</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Supervisión global de rutinas de entrenamiento</p>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('admin.workouts.desc')}</p>
         </div>
-        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">{t('admin.updated')}: --</div>
       </div>
 
       <!-- Stats Row -->
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Total rutinas</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.workouts.stat.total')}</p>
           <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Activas esta semana</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.workouts.stat.active')}</p>
           <p id="stat-active" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Ejercicios totales</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.workouts.stat.exercises')}</p>
           <p id="stat-exercises" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Tasa de completado</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.workouts.stat.completion')}</p>
           <p id="stat-completion" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
       </div>
@@ -42,7 +42,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <input
           type="text"
           id="searchInput"
-          placeholder="Buscar por nombre de rutina o cliente..."
+          placeholder={t('admin.workouts.search')}
           class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
         />
         <select
@@ -55,7 +55,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           id="refreshBtn"
           class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
         >
-          Actualizar
+          {t('admin.refresh')}
         </button>
       </div>
 

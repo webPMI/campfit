@@ -5,38 +5,39 @@
 
 ---
 
-## Tarea: Refactorización completa de adminUtils y trainerUtils
+## Tarea: Sistema de Temas (Theme v2.0)
 
 **Prioridad:** 🔴 Alta
 **Estado:** ✅ Completado
 
 ### Descripción
-Refactorización completa de los archivos monolíticos `adminUtils.ts` (629 líneas) y `trainerUtils.ts` (570 líneas) en módulos pequeños y especializados. Cada módulo tiene una única responsabilidad: tipos, auth, servicios de datos, renderizado o init.
+Implementación completa del sistema de temas v2.0 incluyendo auto-theme, nuevos componentes visuales, accesibilidad WCAG 2.1 AA, y documentación.
 
-### Archivos creados (admin)
-- [x] `src/lib/admin/types.ts` — Tipos AdminUser, CreateUserPayload
-- [x] `src/lib/admin/adminAuth.ts` — requireAdmin, signOutUser
-- [x] `src/lib/admin/adminUsers.ts` — CRUD usuarios
-- [x] `src/lib/admin/adminSubscriptions.ts` — Suscripciones Firestore
-- [x] `src/lib/admin/adminRender.ts` — Renderizado HTML
-- [x] `src/lib/admin/adminInit.ts` — initGlobalActions
-- [x] `src/lib/admin/adminUtils.ts` → Barrel (re-exporta todo)
+### Cambios Realizados
 
-### Archivos creados (trainer)
-- [x] `src/lib/trainer/types.ts` — TrainerClient, Workout, Diet, etc.
-- [x] `src/lib/trainer/trainerAuth.ts` — requireAuth, signOutUser
-- [x] `src/lib/trainer/trainerClients.ts` — Clientes del trainer
-- [x] `src/lib/trainer/trainerWorkouts.ts` — CRUD rutinas
-- [x] `src/lib/trainer/trainerDiets.ts` — CRUD dietas
-- [x] `src/lib/trainer/trainerProgress.ts` — Progreso de clientes
-- [x] `src/lib/trainer/trainerChat.ts` — Mensajería
-- [x] `src/lib/trainer/trainerRender.ts` — Renderizado HTML
-- [x] `src/lib/trainer/trainerInit.ts` — initGlobalActions
-- [x] `src/lib/trainer/trainerUtils.ts` → Barrel (re-exporta todo)
+#### Componentes Nuevos (3)
+- [x] `src/components/Icon.astro` — Expandido a 28 iconos SVG accesibles con aria-hidden
+- [x] `src/components/EmptyState.astro` — Estado vacío con icono, título, descripción y CTA
+- [x] `src/components/ErrorState.astro` — Estado de error con role="alert", código y retry
+- [x] `src/components/LoadingSpinner.astro` — Spinner CSS puro con 3 tamaños y prefers-reduced-motion
 
-### Criterios de aceptación
-- [x] Todos los tests existentes pasan (38 tests en adminUtils + trainerUtils)
-- [x] Los barrels mantienen compatibilidad hacia atrás
-- [x] Cada archivo < 300 líneas
-- [x] JSDoc en todas las funciones públicas
-- [x] Sin `any` - tipos explícitos en todas partes
+#### Auto Theme + Transiciones
+- [x] `src/stores/themeStore.ts` — Soporte para type 'auto' con $systemPreference y watchSystemTheme
+- [x] `src/styles/theme.css` — Transiciones suaves (.theme-transitioning), prefers-reduced-motion global, shimmer animation
+
+#### Accesibilidad WCAG 2.1 AA
+- [x] ConfirmModal: role="dialog", aria-modal, focus trap, Escape key
+- [x] BaseLayout: skip-to-content link, landmarks semánticos, prefers-reduced-motion en View Transitions
+- [x] ThemeToggle: role="switch", aria-checked dinámico, Ctrl+Shift+T shortcut
+- [x] LanguageSwitcher: aria-label, aria-current
+- [x] Skeleton: aria-busy, role="status", sr-only text
+
+#### Tests
+- [x] 32 tests de themeStore (todos pasando ✅)
+- [x] Tests de interface para EmptyState, ErrorState, LoadingSpinner, Icon
+- [x] Tests E2E para auto-theme (Playwright)
+
+#### Documentación
+- [x] `docs/ACCESIBILIDAD.md` — Guía completa WCAG 2.1 AA
+- [x] `docs/THEME_STATUS.md` — Actualizado con nuevos componentes y funcionalidades
+- [x] `docs/THEME.md` — Pendiente de actualización (requiere revisión manual)

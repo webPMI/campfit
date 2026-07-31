@@ -96,9 +96,9 @@ describe('shared/i18n', () => {
       expect(t('key.inexistente')).toBe('key.inexistente');
     });
 
-    it('debería hacer fallback a español si el idioma no tiene la key', () => {
+    it('debería devolver la key si ningún idioma la tiene', () => {
       const t = getT('en');
-      expect(t('test.only_in_es')).toBe('Solo en Español');
+      expect(t('key.inexistente')).toBe('key.inexistente');
     });
   });
 

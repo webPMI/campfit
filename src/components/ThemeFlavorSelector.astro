@@ -1,0 +1,91 @@
+---
+/**
+ * ThemeFlavorSelector Component — Selector visual de flavors de tema.
+ *
+ * @description Muestra botones para cada flavor disponible (Esmeralda, Océano, Atardecer)
+ * con indicación visual del flavor activo.
+ *
+ * @usage
+ * ```astro
+ * <ThemeFlavorSelector />
+ * ```
+ *
+ * @param {string} [class=""] - Clases CSS adicionales
+ *
+ * @accessibility
+ * - role="radiogroup" para agrupar opciones
+ * - Cada botón tiene role="radio" con aria-checked
+ * - aria-label descriptivo
+ */
+
+import { $themeFlavor, $flavorName, FLAVOR_NAMES, FLAVOR_COLORS, type ThemeFlavor } from '@/stores/themeStore';
+
+export interface Props {
+  /** Clases CSS adicionales */
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const flavors: ThemeFlavor[] = ['emerald', 'ocean', 'sunset', 'onyx'];
+const currentFlavor = $themeFlavor.get();
+---
+
+<div
+  role="radiogroup"
+  aria-label="Seleccionar tema visual"
+  class="flex items-center gap-2 {className}"
+>
+  {
+    flavors.map((flavor) => (
+      <button
+        type="button"
+        role="radio"
+        aria-checked={currentFlavor === flavor ? 'true' : 'false'}
+        aria-label={`Tema ${FLAVOR_NAMES[flavor]}`}
+        data-flavor={flavor}
+        class={`
+          relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
+          transition-all duration-200 border
+          ${currentFlavor === flavor
+            ? 'theme-brand text-white border-transparent shadow-md'
+            : 'theme-surface theme-border theme-text-secondary hover:theme-surface-hover'
+          }
+        `}
+      >
+        <span
+          class="w-3 h-3 rounded-full"
+          style={{ backgroundColor: FLAVOR_COLORS[flavor] }}
+        ></span>
+        {FLAVOR_NAMES[flavor]}
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  import { setThemeFlavor, $themeFlavor } from '@/stores/themeStore';
+  import type { ThemeFlavor } from '@/stores/themeStore';
+
+  document.querySelectorAll('[data-flavor]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const flavor = btn.getAttribute('data-flavor') as ThemeFlavor;
+      setThemeFlavor(flavor);
+    });
+  });
+
+  $themeFlavor.subscribe((flavor: ThemeFlavor) => {
+    document.querySelectorAll('[role="radio"]').forEach((el) => {
+      const isActive = el.getAttribute('data-flavor') === flavor;
+      el.setAttribute('aria-checked', String(isActive));
+      el.classList.toggle('theme-brand', isActive);
+      el.classList.toggle('text-white', isActive);
+      el.classList.toggle('border-transparent', isActive);
+      el.classList.toggle('shadow-md', isActive);
+      el.classList.toggle('theme-surface', !isActive);
+      el.classList.toggle('theme-border', !isActive);
+      el.classList.toggle('theme-text-secondary', !isActive);
+      el.classList.toggle('hover:theme-surface-hover', !isActive);
+    });
+  });
+</script>

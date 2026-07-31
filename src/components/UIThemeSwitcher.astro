@@ -8,6 +8,7 @@
 
 <button
   id="theme-switcher"
+  data-ui-theme-switcher
   type="button"
   class="relative h-9 w-9 rounded-xl flex items-center justify-center
          text-[var(--text-secondary)] hover:text-[var(--text-primary)]
@@ -37,51 +38,27 @@
 </button>
 
 <script>
-  const KEY = 'campfit_theme';
+  import { $resolvedMode, toggleThemeMode } from '@/stores/themeStore';
 
-  function getTheme(): string {
-    return localStorage.getItem(KEY) || 'dark';
-  }
+  document.querySelectorAll('[data-ui-theme-switcher]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toggleThemeMode();
+    });
+  });
 
-  function setTheme(theme: string): void {
-    localStorage.setItem(KEY, theme);
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.style.colorScheme = theme;
-    updateIcons(theme);
-  }
+  $resolvedMode.subscribe((resolvedMode) => {
+    document.querySelectorAll('[data-ui-theme-switcher]').forEach((btn) => {
+      const sun = btn.querySelector('#theme-icon-sun') as HTMLElement | null;
+      const moon = btn.querySelector('#theme-icon-moon') as HTMLElement | null;
+      if (!sun || !moon) return;
 
-  function toggleTheme(): void {
-    const current = getTheme();
-    setTheme(current === 'dark' ? 'light' : 'dark');
-  }
-
-  function updateIcons(theme: string): void {
-    const sun = document.getElementById('theme-icon-sun');
-    const moon = document.getElementById('theme-icon-moon');
-    if (!sun || !moon) return;
-
-    if (theme === 'dark') {
-      sun.style.opacity = '1';
-      moon.style.opacity = '0';
-    } else {
-      sun.style.opacity = '0';
-      moon.style.opacity = '1';
-    }
-  }
-
-  // Init on load
-  const btn = document.getElementById('theme-switcher');
-  if (btn) {
-    updateIcons(getTheme());
-    btn.addEventListener('click', toggleTheme);
-  }
-
-  // Listen for system preference changes
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem(KEY)) {
-        setTheme(e.matches ? 'dark' : 'light');
+      if (resolvedMode === 'dark') {
+        sun.style.opacity = '1';
+        moon.style.opacity = '0';
+      } else {
+        sun.style.opacity = '0';
+        moon.style.opacity = '1';
       }
     });
-  }
+  });
 </script>

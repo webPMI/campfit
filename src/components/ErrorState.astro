@@ -1,22 +1,95 @@
 ﻿---
+/**
+ * ErrorState Component — Estado de error para secciones con fallos.
+ *
+ * @description Muestra un estado visual cuando ocurre un error,
+ * con mensaje descriptivo, código opcional y botón de reintentar.
+ *
+ * @usage
+ * ```astro
+ * <ErrorState
+ *   title="Error al cargar"
+ *   message="No se pudieron cargar los datos del cliente."
+ *   errorCode={500}
+ *   retryHref="/dashboard"
+ * />
+ * ```
+ *
+ * @param {string}        [icon="alert"]    - Nombre del icono de error
+ * @param {string}        [title]           - Título del error
+ * @param {string}        [message]         - Mensaje descriptivo del error
+ * @param {string|number} [errorCode]       - Código de error (HTTP, etc.)
+ * @param {string}        [retryHref]       - URL para reintentar (recarga)
+ * @param {string}        [retryLabel]      - Texto del botón reintentar
+ * @param {string}        [class=""]         - Clases CSS adicionales
+ *
+ * @accessibility
+ * - role="alert" para notificar inmediatamente a screen readers
+ * - focus en el botón de reintentar si está presente
+ * - Contraste suficiente en colores de error
+ */
+
+import Icon from './Icon.astro';
+
 export interface Props {
+  /** Nombre del icono a mostrar. Default: "alert" */
+  icon?: string;
+  /** Título del error. Default: "Algo salió mal" */
   title?: string;
+  /** Mensaje descriptivo del error */
   message?: string;
-  retryText?: string;
+  /** Código de error (HTTP, interno, etc.) */
+  errorCode?: string | number;
+  /** URL para reintentar (navegación) */
   retryHref?: string;
+  /** Texto del botón reintentar. Default: "Reintentar" */
+  retryLabel?: string;
+  /** Clases CSS adicionales */
+  class?: string;
 }
 
-const { title = 'Error', message = 'Ha ocurrido un error inesperado', retryText = 'Intentar de nuevo', retryHref } = Astro.props;
+const {
+  icon = 'alert',
+  title = 'Algo salió mal',
+  message,
+  errorCode,
+  retryHref,
+  retryLabel = 'Reintentar',
+  class: className = '',
+} = Astro.props;
 ---
-<div class="flex flex-col items-center justify-center py-16 text-center">
-  <div class="mb-4 text-red-500">
-    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+
+<div
+  role="alert"
+  class="flex flex-col items-center justify-center py-12 px-6 text-center {className}"
+>
+  <div class="mb-4 theme-text-error">
+    <Icon name={icon} size={48} />
   </div>
-  <h3 class="text-lg font-medium text-red-600 dark:text-red-400">{title}</h3>
-  <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{message}</p>
+
+  <h3 class="text-lg font-semibold theme-text-primary mb-2">
+    {title}
+  </h3>
+
+  {message && (
+    <p class="text-sm theme-text-secondary max-w-md mb-2">
+      {message}
+    </p>
+  )}
+
+  {errorCode && (
+    <p class="text-xs theme-text-tertiary font-mono mb-6">
+      Error: {errorCode}
+    </p>
+  )}
+
   {retryHref && (
-    <a href={retryHref} class="mt-4 inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors">
-      {retryText}
+    <a
+      href={retryHref}
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg theme-brand text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+    >
+      <Icon name="refresh" size={16} />
+      {retryLabel}
     </a>
   )}
 </div>

@@ -1,6 +1,6 @@
 # 🎯 CampFit - Sistema de Agentes Especializados
 
-> **Registro maestro de agentes IA.** Última actualización: 2026-07-25
+> **Registro maestro de agentes IA.** Última actualización: 2026-07-30
 > 
 > Cada agente tiene un rol fijo con contexto, reglas, checklist y backlog de tareas.
 > Un agente nuevo debe leer **este archivo primero** para saber qué rol es y a quién delegar.
@@ -20,6 +20,7 @@
 | 7 | **Trainer** | Módulo trainer (clientes, rutinas, dietas) | 🟢 Activo | Tests unitarios trainerUtils (0%) |
 | 8 | **Auth** | Autenticación, roles, guardias, sesiones | 🟢 Activo | AuthError type (#13) |
 | 9 | **Infra** | Firebase, Firestore, R2, CI/CD, scripts, config | 🟢 Activo | Instalar ESLint (INFRA-001) |
+| 10 | **Mobile** | PWA, Capacitor, Service Worker, app móvil | 🟢 Activo | Verificar PWA en producción (MOBILE-001) |
 
 ---
 
@@ -54,6 +55,7 @@ npm run doctor
 | Feature del módulo trainer | `trainer-agent` | `agents/trainer-agent/` |
 | Cambios en auth/login/roles | `auth-agent` | `agents/auth-agent/` |
 | Scripts, CI/CD, Firebase, config | `infra-agent` | `agents/infra-agent/` |
+| PWA, Capacitor, app móvil | `mobile-agent` | `agents/mobile-agent/` |
 | Coordinar tareas, roadmap | `planner-agent` | `agents/planner-agent/` |
 
 ---
@@ -118,6 +120,11 @@ agents/
 │   ├── RULES.md
 │   ├── CHECKLIST.md
 │   └── TASKS.md
+├── mobile-agent/           # PWA, Capacitor, app móvil
+│   ├── GUIDE.md
+│   ├── RULES.md
+│   ├── CHECKLIST.md
+│   └── TASKS.md
 └── infra-agent/            # Firebase, scripts, CI/CD
     ├── GUIDE.md
     ├── RULES.md
@@ -130,4 +137,4 @@ agents/
 ---
 
 > **Mantenido por:** Equipo CampFit  
-> **Versión:** 1.0 - Sistema de Agentes Especializados
+> **Versión:** 1.1 - Sistema de Agentes Especializados

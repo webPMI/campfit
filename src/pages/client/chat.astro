@@ -60,6 +60,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </ClientLayout>
 
 <script>
+  import { logger } from '@/lib/shared/logger';
   import { initPage } from '@/lib/shared/initPage';
   import { db } from '@/lib/firebase';
   import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -143,7 +144,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
           chatInput.value = '';
         } catch (err) {
-          console.error('Error sending message:', err);
+          logger.error('ClientChat', 'Error sending message', err);
         } finally {
           chatInput.disabled = false;
           sendBtn.disabled = false;

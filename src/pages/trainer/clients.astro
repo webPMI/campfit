@@ -1,9 +1,9 @@
 ---
-import TrainerLayout from '@/layouts/TrainerLayout.astro';
-import { translations, type Language } from '@/i18n/translations';
+import TrainerLayout from "@/layouts/TrainerLayout.astro";
+import { translations, type Language } from "@/i18n/translations";
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
-const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
+const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
 <TrainerLayout>
@@ -11,9 +11,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <div class="animate-fade-in">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold">{t('trainer.clients')}</h1>
+          <h1 class="text-2xl font-bold">{t("trainer.clients")}</h1>
           <p class="mt-1 text-sm text-[var(--text-tertiary)]">
-            <span id="client-count" class="text-[var(--brand)] font-medium">0</span> {t('admin.clients.total')}
+            <span id="client-count" class="text-[var(--brand)] font-medium">0</span>
+            {t("admin.clients.total")}
           </p>
         </div>
       </div>
@@ -21,10 +22,25 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <!-- Search -->
       <div class="mt-6">
         <div class="relative">
-          <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          <svg
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-tertiary)]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            ></path>
           </svg>
-          <input id="client-search" type="text" placeholder="Buscar clientes por nombre..." class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] pl-10 pr-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm focus:outline-none focus:border-[var(--border-brand)]" />
+          <input
+            id="client-search"
+            type="text"
+            placeholder="Buscar clientes por nombre..."
+            class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] pl-10 pr-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm focus:outline-none focus:border-[var(--border-brand)]"
+          />
         </div>
       </div>
 
@@ -33,13 +49,24 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       <!-- Clients List -->
       <div id="clients-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm">
+        <div
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm"
+        >
           <div class="flex items-center justify-center gap-3">
             <svg class="h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <p class="text-sm text-[var(--text-tertiary)]">{t('admin.loading')}</p>
+            <p class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
           </div>
         </div>
       </div>
@@ -48,8 +75,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </TrainerLayout>
 
 <script>
-  import { requireAuth } from '@/lib/shared/authGuard';
-  import { ICONS, escapeHtml, getUserInitial, formatDate, renderEmptyState } from '@/lib/shared/ui';
+  import { logger } from "@/lib/shared/logger";
+  import { requireAuth } from "@/lib/shared/authGuard";
+  import { ICONS, escapeHtml, getUserInitial, formatDate, renderEmptyState } from "@/lib/shared/ui";
   import {
     subscribeToClients,
     subscribeToWorkoutsByClient,
@@ -59,8 +87,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     renderClientCard,
     renderWorkoutCard,
     renderDietCard,
-  } from '@/lib/trainer/trainerUtils';
-  import type { TrainerClient } from '@/lib/trainer/trainerUtils';
+  } from "@/lib/trainer/trainerUtils";
+  import type { TrainerClient } from "@/lib/trainer/trainerUtils";
 
   let unsubClients: (() => void) | null = null;
   let unsubDetailWorkouts: (() => void) | null = null;
@@ -69,12 +97,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   let allClients: TrainerClient[] = [];
 
   requireAuth(async (user) => {
-    const lang = new URLSearchParams(window.location.search).get('lang') || 'es';
+    const lang = new URLSearchParams(window.location.search).get("lang") || "es";
     initClients(user.uid, lang);
   });
 
   // Cleanup on unload
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener("beforeunload", () => {
     unsubClients?.();
     cleanupDetailSubscriptions();
   });
@@ -89,10 +117,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   }
 
   async function initClients(trainerId: string, lang: string): Promise<void> {
-    const clientsContainer = document.getElementById('clients-container')!;
-    const clientDetail = document.getElementById('client-detail')!;
-    const clientCount = document.getElementById('client-count')!;
-    const searchInput = document.getElementById('client-search') as HTMLInputElement;
+    const clientsContainer = document.getElementById("clients-container")!;
+    const clientDetail = document.getElementById("client-detail")!;
+    const clientCount = document.getElementById("client-count")!;
+    const searchInput = document.getElementById("client-search") as HTMLInputElement;
 
     function renderFilteredClients(clients: TrainerClient[], search: string): void {
       const filtered = search
@@ -102,7 +130,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       if (filtered.length === 0) {
         clientsContainer.innerHTML = renderEmptyState(
           ICONS.users,
-          search ? `Sin resultados para "${search}"` : 'No tienes clientes asignados',
+          search ? `Sin resultados para "${search}"` : "No tienes clientes asignados"
         );
         return;
       }
@@ -110,11 +138,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       clientsContainer.innerHTML = filtered
         .map(
           (c) =>
-            `<div class="cursor-pointer" onclick="window.__showClientDetail('${c.uid}')">
+            `<div class="cursor-pointer" data-action="showClientDetail" data-uid="${c.uid}">
               ${renderClientCard(c)}
-            </div>`,
+            </div>`
         )
-        .join('');
+        .join("");
     }
 
     // Subscribe to clients
@@ -125,21 +153,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     });
 
     // Search handler
-    searchInput.addEventListener('input', () => {
+    searchInput.addEventListener("input", () => {
       renderFilteredClients(allClients, searchInput.value);
     });
 
-    // Global function to show client detail
-    (window as any).__showClientDetail = async (clientId: string) => {
+    // Function to show client detail (called via delegated data-action handler)
+    async function showClientDetail(clientId: string): Promise<void> {
       // Cleanup previous detail subscriptions
       cleanupDetailSubscriptions();
 
-      clientDetail.classList.remove('hidden');
+      clientDetail.classList.remove("hidden");
       clientDetail.innerHTML = `
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-[var(--text-primary)]">${escapeHtml('Detalle del Cliente')}</h2>
-            <button onclick="window.__hideClientDetail()" class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">Cerrar</button>
+            <h2 class="text-lg font-semibold text-[var(--text-primary)]">${escapeHtml("Detalle del Cliente")}</h2>
+            <button data-action="hideClientDetail" class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">Cerrar</button>
           </div>
 
           <!-- Profile Header -->
@@ -244,7 +272,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       try {
         // Load profile
         const profile = await getClientProfile(clientId);
-        const profileInfo = document.getElementById('client-profile-info')!;
+        const profileInfo = document.getElementById("client-profile-info")!;
         if (profile) {
           const hasAlert = profile.hasActiveAlert;
           profileInfo.innerHTML = `
@@ -255,7 +283,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div class="flex-1">
                 <div class="flex items-center gap-2">
                   <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(profile.name)}</p>
-                  ${hasAlert ? '<span class="h-2 w-2 rounded-full bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
+                  ${hasAlert ? '<span class="h-2 w-2 rounded-full bg-red-500 animate-pulse" title="Alerta activa"></span>' : ""}
                 </div>
                 <p class="text-xs text-[var(--text-tertiary)]">${escapeHtml(profile.email)}</p>
               </div>
@@ -264,26 +292,26 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         }
 
         // Load medical profile
-        const medicalEl = document.getElementById('detail-medical')!;
+        const medicalEl = document.getElementById("detail-medical")!;
         if (profile?.medicalProfile) {
           const mp = profile.medicalProfile;
           medicalEl.innerHTML = `
             <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
               <div>
                 <p class="text-[var(--text-tertiary)] mb-0.5">Alergias</p>
-                <p class="text-[var(--text-primary)]">${mp.allergies?.length ? mp.allergies.join(', ') : '<span class="text-[var(--text-disabled)]">Ninguna</span>'}</p>
+                <p class="text-[var(--text-primary)]">${mp.allergies?.length ? mp.allergies.join(", ") : '<span class="text-[var(--text-disabled)]">Ninguna</span>'}</p>
               </div>
               <div>
                 <p class="text-[var(--text-tertiary)] mb-0.5">Lesiones</p>
-                <p class="text-[var(--text-primary)]">${mp.injuries?.length ? mp.injuries.join(', ') : '<span class="text-[var(--text-disabled)]">Ninguna</span>'}</p>
+                <p class="text-[var(--text-primary)]">${mp.injuries?.length ? mp.injuries.join(", ") : '<span class="text-[var(--text-disabled)]">Ninguna</span>'}</p>
               </div>
               <div>
                 <p class="text-[var(--text-tertiary)] mb-0.5">Condiciones</p>
-                <p class="text-[var(--text-primary)]">${mp.conditions?.length ? mp.conditions.join(', ') : '<span class="text-[var(--text-disabled)]">Ninguna</span>'}</p>
+                <p class="text-[var(--text-primary)]">${mp.conditions?.length ? mp.conditions.join(", ") : '<span class="text-[var(--text-disabled)]">Ninguna</span>'}</p>
               </div>
               <div>
                 <p class="text-[var(--text-tertiary)] mb-0.5">Objetivos</p>
-                <p class="text-[var(--text-primary)]">${mp.goals?.length ? mp.goals.join(', ') : '<span class="text-[var(--text-disabled)]">No especificados</span>'}</p>
+                <p class="text-[var(--text-primary)]">${mp.goals?.length ? mp.goals.join(", ") : '<span class="text-[var(--text-disabled)]">No especificados</span>'}</p>
               </div>
               <div>
                 <p class="text-[var(--text-tertiary)] mb-0.5">Experiencia</p>
@@ -292,69 +320,89 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
           `;
         } else {
-          medicalEl.innerHTML = '<p class="text-xs text-[var(--text-disabled)]">Perfil médico no completado</p>';
+          medicalEl.innerHTML =
+            '<p class="text-xs text-[var(--text-disabled)]">Perfil médico no completado</p>';
         }
       } catch (error) {
-        console.error('[TrainerClients] Error loading profile:', error);
-        const profileInfo = document.getElementById('client-profile-info')!;
-        profileInfo.innerHTML = '<p class="text-xs text-[var(--danger)]">Error al cargar perfil</p>';
+        logger.error("TrainerClients", "Error loading profile", error);
+        const profileInfo = document.getElementById("client-profile-info")!;
+        profileInfo.innerHTML =
+          '<p class="text-xs text-[var(--danger)]">Error al cargar perfil</p>';
       }
 
       // Load workouts
       unsubDetailWorkouts = subscribeToWorkoutsByClient(clientId, (workouts) => {
-        const el = document.getElementById('detail-workouts')!;
+        const el = document.getElementById("detail-workouts")!;
         if (workouts.length === 0) {
           el.innerHTML = '<p class="text-xs text-[var(--text-disabled)]">Sin rutinas asignadas</p>';
         } else {
-          el.innerHTML = workouts.map((w) => renderWorkoutCard(w)).join('');
+          el.innerHTML = workouts.map((w) => renderWorkoutCard(w)).join("");
         }
       });
 
       // Load diets
       unsubDetailDiets = subscribeToDietsByClient(clientId, (diets) => {
-        const el = document.getElementById('detail-diets')!;
+        const el = document.getElementById("detail-diets")!;
         if (diets.length === 0) {
           el.innerHTML = '<p class="text-xs text-[var(--text-disabled)]">Sin dietas asignadas</p>';
         } else {
-          el.innerHTML = diets.map((d) => renderDietCard(d)).join('');
+          el.innerHTML = diets.map((d) => renderDietCard(d)).join("");
         }
       });
 
       // Load progress
       unsubDetailProgress = subscribeToClientProgress(clientId, (logs) => {
-        const el = document.getElementById('detail-progress')!;
+        const el = document.getElementById("detail-progress")!;
         if (logs.length === 0) {
-          el.innerHTML = '<p class="text-xs text-[var(--text-disabled)]">Sin registros de progreso</p>';
+          el.innerHTML =
+            '<p class="text-xs text-[var(--text-disabled)]">Sin registros de progreso</p>';
         } else {
-          el.innerHTML = logs.slice(0, 5).map((log: any) => {
-            const date = log.date?.toDate ? formatDate(log.date) : log.date || '-';
-            let value: string;
-            switch (log.type) {
-              case 'weight':
-                value = `${log.value?.weight || '-'} kg`;
-                break;
-              case 'workout':
-                value = log.value?.completed ? '✅ Completado' : '⏳ Pendiente';
-                break;
-              case 'meal':
-                value = log.value?.completed ? '✅ Completada' : '⏳ Pendiente';
-                break;
-              default:
-                value = log.value ? JSON.stringify(log.value) : '-';
-            }
-            return `<div class="flex items-center justify-between py-1.5 border-b border-[var(--border-subtle)] last:border-0">
+          el.innerHTML = logs
+            .slice(0, 5)
+            .map((log: any) => {
+              const date = log.date?.toDate ? formatDate(log.date) : log.date || "-";
+              let value: string;
+              switch (log.type) {
+                case "weight":
+                  value = `${log.value?.weight || "-"} kg`;
+                  break;
+                case "workout":
+                  value = log.value?.completed ? "✅ Completado" : "⏳ Pendiente";
+                  break;
+                case "meal":
+                  value = log.value?.completed ? "✅ Completada" : "⏳ Pendiente";
+                  break;
+                default:
+                  value = log.value ? JSON.stringify(log.value) : "-";
+              }
+              return `<div class="flex items-center justify-between py-1.5 border-b border-[var(--border-subtle)] last:border-0">
               <span class="text-xs text-[var(--text-tertiary)]">${date}</span>
               <span class="text-xs text-[var(--text-primary)]">${value}</span>
             </div>`;
-          }).join('');
+            })
+            .join("");
         }
       });
-    };
+    }
 
-    (window as any).__hideClientDetail = () => {
+    function hideClientDetail(): void {
       cleanupDetailSubscriptions();
-      clientDetail.classList.add('hidden');
-      clientDetail.innerHTML = '';
-    };
+      clientDetail.classList.add("hidden");
+      clientDetail.innerHTML = "";
+    }
+
+    // Delegated click handler for data-action buttons
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const showBtn = target.closest('[data-action="showClientDetail"]') as HTMLElement | null;
+      if (showBtn) {
+        const uid = showBtn.dataset.uid;
+        if (uid) showClientDetail(uid);
+        return;
+      }
+      if (target.closest('[data-action="hideClientDetail"]')) {
+        hideClientDetail();
+      }
+    });
   }
 </script>

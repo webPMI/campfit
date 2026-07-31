@@ -49,10 +49,60 @@ Almacenamiento de archivos multimedia (videos de ejercicios, fotos de progreso) 
 
 ---
 
-## 3. Capacitor
+## 3. PWA (Progressive Web App) — ✅ Implementado
 
 ### Propósito
-Wrapper nativo para convertir la web app en aplicaciones Android e iOS.
+Permite que los usuarios instalen CampFit directamente desde el navegador (Chrome, Firefox, Safari) sin pasar por Google Play ni App Store. Funciona offline y se actualiza automáticamente.
+
+### Archivos
+| Archivo | Propósito |
+|---------|-----------|
+| `public/manifest.json` | Web App Manifest (nombre, iconos, colores, shortcuts) |
+| `public/sw.js` | Service Worker (caché offline, estrategias de red) |
+| `public/pwa-icon-192.png` | Icono 192x192 (requerido por Android) |
+| `public/pwa-icon-512.png` | Icono 512x512 (requerido por PWA) |
+| `scripts/generate-pwa-icons.mjs` | Script para regenerar iconos desde SVG |
+| `tests/unit/pwa/pwa.test.ts` | Tests unitarios del manifest y SW |
+
+### Configuración en `BaseLayout.astro`
+- Meta tags: `apple-mobile-web-app-capable`, `theme-color`, `application-name`
+- Link al manifest: `<link rel="manifest" href="/manifest.json" />`
+- Iconos: `apple-touch-icon` (192px y 512px)
+- Service Worker: registro solo en producción (`import.meta.env.PROD`)
+
+### Estrategias de Caché del Service Worker
+| Tipo de recurso | Estrategia | Razón |
+|-----------------|-----------|-------|
+| Assets estáticos (CSS, JS, PNG, SVG) | Cache-first | Inmutables (tienen hash de Astro) |
+| Navegación (HTML) | Network-first | Siempre la última versión, fallback offline |
+| Otras peticiones del mismo origen | Stale-while-revalidate | Balance entre velocidad y frescura |
+| Firebase / Google APIs | Excluidas | Ya tienen su propio manejo de caché |
+
+### Comandos
+```bash
+npm run pwa:icons    # Regenerar iconos PWA desde SVG
+npm run pwa:build    # Build + iconos
+npm run pwa:audit     # Auditoría Lighthouse PWA
+```
+
+### Despliegue
+La PWA se despliega con Firebase Hosting sin cambios adicionales:
+```bash
+npm run build
+firebase deploy --only hosting
+```
+
+Los headers HTTP están configurados en `firebase.json`:
+- `sw.js`: `Cache-Control: no-cache` (siempre actualizado)
+- `manifest.json`: `Content-Type: application/manifest+json`
+- `*.png`, `*.svg`: `Cache-Control: immutable` (cacheo permanente)
+
+---
+
+## 4. Capacitor (App Nativa) — Pendiente
+
+### Propósito
+Wrapper nativo para convertir la web app en aplicaciones Android e iOS publicables en Google Play y App Store.
 
 ### Instalación
 ```bash
@@ -92,7 +142,7 @@ npx cap build ios
 
 ---
 
-## 4. Cloudflare Workers
+## 5. Cloudflare Workers
 
 ### Propósito
 Funciones serverless para operaciones que requieren lógica de backend.
@@ -113,7 +163,7 @@ npx wrangler dev         # Desarrollo local de workers
 
 ---
 
-## 5. GitHub Actions (CI/CD)
+## 6. GitHub Actions (CI/CD)
 
 ### Pipeline de Calidad y Deploy
 
@@ -174,7 +224,7 @@ jobs:
 
 ---
 
-## 6. Sentry (Monitoreo de Errores)
+## 7. Sentry (Monitoreo de Errores)
 
 ### Instalación
 ```bash
@@ -195,7 +245,7 @@ Sentry.init({
 
 ---
 
-## 7. PostHog (Analytics)
+## 8. PostHog (Analytics)
 
 ### Instalación
 ```bash
@@ -229,7 +279,7 @@ posthog.init(import.meta.env.PUBLIC_POSTHOG_KEY, {
 
 ---
 
-## 8. Checklist de Release
+## 9. Checklist de Release
 
 ### Pre-Release
 - [ ] Todos los tests pasan (unitarios + E2E)

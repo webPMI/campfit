@@ -15,6 +15,6 @@ const { class: className, padding = 'md', hover } = Astro.props;
 const padClass = { none: '', sm: 'p-3', md: 'p-5', lg: 'p-7' }[padding];
 ---
 
-<div class="rounded-2xl border border-zinc-800/40 bg-zinc-900/40 backdrop-blur-sm transition-all ${padClass} ${hover ? 'hover:border-zinc-700/60 hover:bg-zinc-800/30' : ''} ${className || ''}">
+<div class="rounded-2xl border theme-border theme-surface-secondary backdrop-blur-sm transition-all ${padClass} ${hover ? 'hover:theme-border-hover hover:theme-surface-hover' : ''} ${className || ''}">
   <slot />
 </div>

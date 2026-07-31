@@ -11,28 +11,28 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <div class="animate-fade-in">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold">Visor de Progreso</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Monitorización global del progreso de todos los clientes</p>
+          <h1 class="text-2xl font-bold">{t('admin.progress.title')}</h1>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('admin.progress.desc')}</p>
         </div>
-        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">{t('admin.updated')}: --</div>
       </div>
 
       <!-- Stats Row -->
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Clientes con datos</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.progress.stat.clients')}</p>
           <p id="stat-clients" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Registros totales</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.progress.stat.total')}</p>
           <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Última semana</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.progress.stat.week')}</p>
           <p id="stat-week" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Con fotos</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('admin.progress.stat.photos')}</p>
           <p id="stat-photos" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
       </div>
@@ -42,24 +42,30 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <input
           type="text"
           id="searchInput"
-          placeholder="Buscar por nombre de cliente o tipo de progreso..."
+          placeholder={t('admin.progress.search')}
           class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
         />
         <select
           id="filterType"
           class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)]"
         >
-          <option value="all">Todos los tipos</option>
-          <option value="weight">Peso</option>
-          <option value="photo">Fotos</option>
-          <option value="measurement">Medidas</option>
+          <option value="all">{t('admin.progress.types.all')}</option>
+          <option value="weight">{t('admin.progress.types.weight')}</option>
+          <option value="photo">{t('admin.progress.types.photo')}</option>
+          <option value="measurement">{t('admin.progress.types.measurement')}</option>
         </select>
         <button
           id="refreshBtn"
           class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
         >
-          Actualizar
+          {t('admin.refresh')}
         </button>
+        <a
+          href="/client/dashboard"
+          class="ml-2 rounded-xl border border-[var(--border-default)] bg-[var(--brand)] px-4 py-2.5 text-sm text-[var(--text-on-brand)] transition-all hover:bg-[var(--brand-hover)]"
+        >
+          {t('admin.interactAsClient')}
+        </a>
       </div>
 
       <!-- Loading State -->

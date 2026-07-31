@@ -42,6 +42,25 @@ Object.defineProperty(globalThis, 'localStorage', {
 });
 
 // ---------------------------------------------------------------------------
+// Mock matchMedia globally (before module loads)
+// ---------------------------------------------------------------------------
+const matchMediaMock = vi.fn().mockImplementation((query: string) => ({
+  matches: false, // default: light mode
+  media: query,
+  onchange: null,
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(),
+}));
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: matchMediaMock,
+});
+
+// ---------------------------------------------------------------------------
 // Dynamic import to ensure mocks are in place before module loads
 // ---------------------------------------------------------------------------
 async function loadThemeStore() {
@@ -75,7 +94,8 @@ describe('themeStore', () => {
     vi.clearAllMocks();
     setupDOM();
     vi.resetModules();
-    localStorageMock.setItem('campfit_theme', 'dark');
+    localStorageMock.setItem('campfit_theme_mode', 'dark');
+    localStorageMock.setItem('campfit_theme_flavor', 'emerald');
     themeStore = await loadThemeStore();
   });
 
@@ -93,14 +113,16 @@ describe('themeStore', () => {
     });
 
     it('debe leer el valor de localStorage si existe "light"', async () => {
-      localStorageMock.setItem('campfit_theme', 'light');
+      localStorageMock.setItem('campfit_theme_mode', 'light');
+      localStorageMock.setItem('campfit_theme_flavor', 'emerald');
       vi.resetModules();
       const fresh = await import('@/stores/themeStore');
       expect(fresh.$theme.get()).toBe('light');
     });
 
     it('debe caer en "dark" si localStorage tiene un valor inválido', async () => {
-      localStorageMock.setItem('campfit_theme', 'invalid');
+      localStorageMock.setItem('campfit_theme_mode', 'invalid');
+      localStorageMock.setItem('campfit_theme_flavor', 'emerald');
       vi.resetModules();
       const fresh = await import('@/stores/themeStore');
       expect(fresh.$theme.get()).toBe('dark');
@@ -149,12 +171,12 @@ describe('themeStore', () => {
 
     it('debe persistir en localStorage', () => {
       themeStore.setTheme('light');
-      expect(localStorageMock.setItem).toHaveBeenCalledWith('campfit_theme', 'light');
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('campfit_theme_mode', 'light');
     });
 
-    it('debe aplicar data-theme en el DOM', () => {
+    it('debe aplicar data-theme-mode en el DOM', () => {
       themeStore.setTheme('light');
-      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+      expect(document.documentElement.getAttribute('data-theme-mode')).toBe('light');
     });
 
     it('debe actualizar meta theme-color para tema claro', () => {
@@ -186,7 +208,7 @@ describe('themeStore', () => {
     it('debe persistir el cambio en localStorage', () => {
       themeStore.$theme.set('dark');
       themeStore.toggleTheme();
-      expect(localStorageMock.setItem).toHaveBeenCalledWith('campfit_theme', 'light');
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('campfit_theme_mode', 'light');
     });
 
     it('toggleTheme 2 veces debe volver al tema original', () => {
@@ -199,13 +221,15 @@ describe('themeStore', () => {
 
   describe('initTheme()', () => {
     it('debe aplicar el tema almacenado al DOM', () => {
-      localStorageMock.setItem('campfit_theme', 'light');
+      localStorageMock.setItem('campfit_theme_mode', 'light');
+      localStorageMock.setItem('campfit_theme_flavor', 'emerald');
       themeStore.initTheme();
-      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+      expect(document.documentElement.getAttribute('data-theme-mode')).toBe('light');
     });
 
     it('debe sincronizar $theme con localStorage', () => {
-      localStorageMock.setItem('campfit_theme', 'light');
+      localStorageMock.setItem('campfit_theme_mode', 'light');
+      localStorageMock.setItem('campfit_theme_flavor', 'emerald');
       themeStore.initTheme();
       expect(themeStore.$theme.get()).toBe('light');
     });
@@ -216,24 +240,26 @@ describe('themeStore', () => {
   // =========================================================================
 
   describe('applyThemeToDom()', () => {
-    it('debe establecer data-theme="dark" en <html>', () => {
-      themeStore.applyThemeToDom('dark');
-      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    it('debe establecer data-theme-mode y data-theme-flavor en <html>', () => {
+      themeStore.applyThemeToDom('dark', 'emerald');
+      expect(document.documentElement.getAttribute('data-theme-mode')).toBe('dark');
+      expect(document.documentElement.getAttribute('data-theme-flavor')).toBe('emerald');
     });
 
-    it('debe establecer data-theme="light" en <html>', () => {
-      themeStore.applyThemeToDom('light');
-      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    it('debe establecer data-theme-mode light con flavor ocean', () => {
+      themeStore.applyThemeToDom('light', 'ocean');
+      expect(document.documentElement.getAttribute('data-theme-mode')).toBe('light');
+      expect(document.documentElement.getAttribute('data-theme-flavor')).toBe('ocean');
     });
 
     it('debe añadir clase "dark" al body para tema oscuro', () => {
-      themeStore.applyThemeToDom('dark');
+      themeStore.applyThemeToDom('dark', 'emerald');
       expect(document.body.classList.contains('dark')).toBe(true);
       expect(document.body.classList.contains('light')).toBe(false);
     });
 
     it('debe añadir clase "light" al body para tema claro', () => {
-      themeStore.applyThemeToDom('light');
+      themeStore.applyThemeToDom('light', 'emerald');
       expect(document.body.classList.contains('light')).toBe(true);
       expect(document.body.classList.contains('dark')).toBe(false);
     });
@@ -254,7 +280,7 @@ describe('themeStore', () => {
 
     it('no debe romperse si no existe meta[name="theme-color"]', () => {
       document.querySelector('meta[name="theme-color"]')?.remove();
-      expect(() => themeStore.applyThemeToDom('dark')).not.toThrow();
+      expect(() => themeStore.applyThemeToDom('dark', 'emerald')).not.toThrow();
     });
   });
 
@@ -263,13 +289,108 @@ describe('themeStore', () => {
   // =========================================================================
 
   describe('type safety', () => {
-    it('Theme type solo acepta "light" | "dark"', () => {
+    it('Theme type acepta "light" | "dark" | "auto"', () => {
       const valid: typeof themeStore.$theme extends { get(): infer T }
-        ? T extends 'light' | 'dark'
+        ? T extends 'light' | 'dark' | 'auto'
           ? true
           : never
         : never = true;
       expect(valid).toBe(true);
     });
+  });
+});
+
+
+// =========================================================================
+// Auto Theme
+// =========================================================================
+
+  describe('themeStore - Auto Theme', () => {
+    let themeStore: Awaited<ReturnType<typeof loadThemeStore>>;
+
+    beforeEach(async () => {
+      localStorageMock.clear();
+      vi.clearAllMocks();
+      setupDOM();
+
+      // Re-define matchMedia mock (restoreAllMocks in main describe clears it)
+      window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })) as unknown as (query: string) => MediaQueryList;
+
+      vi.resetModules();
+      localStorageMock.setItem('campfit_theme', 'dark');
+      themeStore = await loadThemeStore();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+  it('debe aceptar auto como valor de tema', () => {
+    themeStore.setTheme('auto');
+    expect(themeStore.$theme.get()).toBe('auto');
+  });
+
+  it('debe persistir auto en localStorage', () => {
+    themeStore.setTheme('auto');
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('campfit_theme_mode', 'auto');
+  });
+
+  it('$resolvedTheme debe devolver light cuando sistema es light y theme=auto', () => {
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })) as unknown as (query: string) => MediaQueryList;
+    themeStore.$systemPreference.set('light');
+    themeStore.setTheme('auto');
+    expect(themeStore.$resolvedTheme.get()).toBe('light');
+  });
+
+  it('$resolvedTheme debe devolver dark cuando sistema es dark y theme=auto', () => {
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: true,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })) as unknown as (query: string) => MediaQueryList;
+    themeStore.$systemPreference.set('dark');
+    themeStore.setTheme('auto');
+    expect(themeStore.$resolvedTheme.get()).toBe('dark');
+  });
+
+  it('$isDark debe ser false cuando $resolvedTheme=light', () => {
+    themeStore.setTheme('light');
+    expect(themeStore.$isDark.get()).toBe(false);
+    expect(themeStore.$isLight.get()).toBe(true);
+  });
+
+  it('toggleTheme desde auto debe ir a light explicito', () => {
+    themeStore.setTheme('auto');
+    themeStore.toggleTheme();
+    expect(themeStore.$theme.get()).toBe('light');
+  });
+
+  it('toggleTheme desde auto debe persistir light en localStorage', () => {
+    themeStore.setTheme('auto');
+    themeStore.toggleTheme();
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('campfit_theme_mode', 'light');
   });
 });

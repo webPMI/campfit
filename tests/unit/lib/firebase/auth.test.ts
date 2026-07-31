@@ -51,8 +51,12 @@ describe('lib/firebase/auth', () => {
   });
 
   it('✅ should export FirebaseUser type', () => {
-    // Verificar que el tipo existe (no se puede verificar en runtime,
-    // pero al menos verificamos que la importación no falla)
-    expect(true).toBe(true);
+    // Verificar que las funciones de Firebase Auth se exportan correctamente
+    expect(typeof createUserWithEmailAndPassword).toBe('function');
+    expect(typeof signInWithEmailAndPassword).toBe('function');
+    expect(typeof signOut).toBe('function');
+    expect(typeof sendPasswordResetEmail).toBe('function');
+    expect(typeof signInWithPopup).toBe('function');
+    expect(typeof GoogleAuthProvider).toBe('function');
   });
 });

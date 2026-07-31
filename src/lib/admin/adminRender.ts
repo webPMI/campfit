@@ -186,11 +186,11 @@ export function renderUserCardExtended(user: AdminUser, showEdit: boolean = fals
 /**
  * Renderiza una tarjeta de cliente (para la página de clientes del admin).
  */
-export function renderClientCard(client: AdminUser): string {
+export function renderClientCard(client: AdminUser & { assignedTrainerName?: string }): string {
   const name = client.name || 'Sin nombre';
   const email = client.email || '';
   const initial = getUserInitial(name);
-  const trainerName = client.assignedTrainerId || 'Sin trainer';
+  const trainerName = client.assignedTrainerName || client.assignedTrainerId || 'Sin trainer';
 
   return `
     <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">

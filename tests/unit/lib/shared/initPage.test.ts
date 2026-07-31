@@ -38,15 +38,13 @@ describe('initPage', () => {
     });
 
     it('debe redirigir si rol no está en allowedRoles', async () => {
-        mockGetDoc.mockResolvedValue({ data: () => ({ role: 'client' }), exists: () => true });
-        const orig = window.location.href;
+        mockGetDoc.mockResolvedValue({ data: () => ({ role: 'client', onboardingCompleted: true }), exists: () => true });
         delete (window as any).location;
-        window.location = { href: '' } as any;
+        window.location = { href: '', pathname: '/admin/dashboard' } as any;
         const { initPage } = await import('@/lib/shared/initPage');
         initPage({ onReady: vi.fn(), allowedRoles: ['admin'] });
         const cb = capturedCallback.get();
         await cb!({ uid: 'c1', email: 'c@c.com' });
         expect(window.location.href).toBe('/client/dashboard');
-        window.location.href = orig;
     });
 });

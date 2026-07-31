@@ -5407,3 +5407,2387 @@ SendBeforeConnectError: send was called before connect
 ============================================================
 [DEV SESSION STARTED] 2026-07-30T15:42:30.195Z
 ============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:45:34.652Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:47:05.047Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:48:12.514Z
+============================================================
+[2026-07-30T15:48:55.475Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:48:57.379Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:48:59.301Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T15:49:03.759Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:49:11.060Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:49:20.685Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:49:26.337Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:50:08.908Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:50:14.004Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:50:18.151Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:50:31.134Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:50:33.071Z
+============================================================
+[2026-07-30T15:50:56.705Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:51:11.261Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:51:11.762Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T15:51:11.886Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T15:51:11.886Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T15:51:11.900Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T15:51:11.901Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T15:51:15.395Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:51:17.630Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:51:20.096Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:51:20.662Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:51:20.665Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:52:36.770Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:52:38.763Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:52:38.775Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:53:01.432Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:53:03.753Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:53:03.777Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:53:25.456Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:53:27.825Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:53:27.828Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:54:22.269Z
+============================================================
+[2026-07-30T15:54:36.513Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:54:38.763Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:54:38.771Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:54:44.092Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:54:45.819Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:54:45.824Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T15:54:53.166Z
+============================================================
+[2026-07-30T15:55:15.002Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T15:55:16.761Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T15:55:16.809Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T16:00:30.615Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:00:44.714Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:01:01.592Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:01:12.337Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:01:30.290Z
+============================================================
+[2026-07-30T16:03:43.529Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:03:53.296Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:04:27.762Z
+============================================================
+[2026-07-30T16:04:49.254Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:07:09.865Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:07:20.356Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:07:42.233Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:08:17.167Z
+============================================================
+[2026-07-30T16:08:50.987Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:11:09.849Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:12:20.173Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:12:54.433Z
+============================================================
+[2026-07-30T16:20:54.737Z] [CLIENT] [LOG] [/admin/settings] [vite] server connection lost. Polling for restart...
+[2026-07-30T16:20:55.257Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:20:57.552Z] [CLIENT] [WARN] [/admin/settings] [2026-07-30T16:20:57.552Z]  @firebase/firestore: Firestore (11.10.0): WebChannelConnection RPC 'Listen' stream 0x748f36c5 transport errored. Name: undefined Message: undefined
+[2026-07-30T16:20:57.554Z] [CLIENT] [ERROR] [/admin/settings] [2026-07-30T16:20:57.554Z]  @firebase/firestore: Firestore (11.10.0): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=unavailable]: The operation could not be completed
+This typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend.
+[2026-07-30T16:20:57.556Z] [CLIENT] [ERROR] [/admin/settings] [AuthGuard] Error al verificar rol de admin: FirebaseError: Failed to get document because the client is offline.
+FirebaseError: Failed to get document because the client is offline.
+[2026-07-30T16:20:58.196Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:21:17.542Z] [CLIENT] [LOG] [/login] [vite] server connection lost. Polling for restart...
+[2026-07-30T16:21:20.928Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:21:55.161Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:22:02.927Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:22:20.610Z
+============================================================
+[2026-07-30T16:22:59.076Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:04.781Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:09.119Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:23:17.535Z
+============================================================
+[2026-07-30T16:23:28.099Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:29.693Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:30.338Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:33.686Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:36.845Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:43.764Z] [CLIENT] [INFO] [/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:44.818Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:48.505Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:23:56.825Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:24:03.096Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:26:14.263Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:26:25.110Z
+============================================================
+[2026-07-30T16:27:57.236Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:28:21.029Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:28:22.599Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:28:23.099Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T16:28:23.180Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T16:28:23.180Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T16:28:23.182Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T16:28:23.182Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T16:28:25.721Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:28:34.897Z] [CLIENT] [INFO] [/trainer/settings] [NotificationService] Permiso de notificaciones: granted
+[2026-07-30T16:28:35.163Z] [CLIENT] [INFO] [/trainer/settings] [NotificationService] Preferencia de notificaciones actualizada para UID irwYIbTi6OPL7vZFbKTqzBFsxk73: true
+[2026-07-30T16:28:37.611Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:28:38.136Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T16:28:38.158Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T16:28:38.158Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T16:28:38.162Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T16:28:38.162Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T16:28:51.430Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:28:52.234Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T16:29:06.451Z] [CLIENT] [INFO] [/client/progress] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:29:06.978Z] [CLIENT] [ERROR] [/client/progress] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T16:29:17.557Z] [CLIENT] [INFO] [/client/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:29:19.212Z] [CLIENT] [ERROR] [/client/chat] [2026-07-30T16:29:19.212Z]  @firebase/firestore: Firestore (11.10.0): Uncaught Error in snapshot listener: FirebaseError: [code=permission-denied]: Missing or insufficient permissions.
+[2026-07-30T16:29:49.461Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:29:56.541Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:30:03.783Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:30:17.899Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:30:39.588Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:30:42.092Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:31:03.068Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:38:36.424Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:38:40.997Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:38:59.014Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:39:04.880Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:39:29.163Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:39:52.592Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:39:56.365Z] [CLIENT] [INFO] [/client/settings] [NotificationService] Preferencia de notificaciones actualizada para UID irwYIbTi6OPL7vZFbKTqzBFsxk73: false
+[2026-07-30T16:39:58.475Z] [CLIENT] [INFO] [/client/settings] [NotificationService] Permiso de notificaciones: granted
+[2026-07-30T16:39:58.612Z] [CLIENT] [INFO] [/client/settings] [NotificationService] Preferencia de notificaciones actualizada para UID irwYIbTi6OPL7vZFbKTqzBFsxk73: true
+[2026-07-30T16:40:02.435Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:40:05.851Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:40:28.480Z
+============================================================
+[2026-07-30T16:41:28.284Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:41:40.429Z
+============================================================
+[2026-07-30T16:41:47.286Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:42:14.946Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:42:17.795Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Preferencias de notificaciones actualizadas para UID irwYIbTi6OPL7vZFbKTqzBFsxk73
+[2026-07-30T16:42:22.441Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Permiso de notificaciones: granted
+[2026-07-30T16:42:22.548Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Preferencias de notificaciones actualizadas para UID irwYIbTi6OPL7vZFbKTqzBFsxk73
+[2026-07-30T16:43:19.065Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:43:26.280Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:43:33.233Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:45:14.688Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:46:40.507Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:48:42.301Z] [CLIENT] [LOG] [/admin/settings] [vite] server connection lost. Polling for restart...
+[2026-07-30T16:55:13.850Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:56:11.190Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Preferencias de notificaciones actualizadas para UID irwYIbTi6OPL7vZFbKTqzBFsxk73
+[2026-07-30T16:56:12.799Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T16:56:15.001Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Permiso de notificaciones: granted
+[2026-07-30T16:56:15.278Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Preferencias de notificaciones actualizadas para UID irwYIbTi6OPL7vZFbKTqzBFsxk73
+[2026-07-30T16:56:15.840Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Preferencias de notificaciones actualizadas para UID irwYIbTi6OPL7vZFbKTqzBFsxk73
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T16:58:01.182Z
+============================================================
+[2026-07-30T16:59:17.794Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:00:47.276Z
+============================================================
+[2026-07-30T17:02:51.258Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:02:58.248Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:03:09.084Z
+============================================================
+[2026-07-30T17:03:24.348Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:03:30.371Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Permiso de notificaciones: granted
+[2026-07-30T17:03:30.605Z] [CLIENT] [INFO] [/admin/settings] [NotificationService] Preferencias de notificaciones actualizadas para UID irwYIbTi6OPL7vZFbKTqzBFsxk73
+[2026-07-30T17:03:33.822Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:03:34.363Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:03:34.375Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:03:34.375Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T17:03:34.376Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:03:34.376Z] [CLIENT] [LOG] [/trainer/dashboard]    ⚠️  Sin datos (array vacío)
+[2026-07-30T17:03:44.416Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:03:46.713Z] [CLIENT] [ERROR] [/trainer/clients] [Trainer] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:03:59.398Z] [CLIENT] [INFO] [/trainer/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:03:59.974Z] [CLIENT] [LOG] [/trainer/workouts]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:03:59.974Z] [CLIENT] [LOG] [/trainer/workouts]    ⚠️  Sin datos (array vacío)
+[2026-07-30T17:04:13.475Z] [CLIENT] [ERROR] [/trainer/workouts] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74)
+[2026-07-30T17:04:16.620Z] [CLIENT] [ERROR] [/trainer/workouts] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74)
+[2026-07-30T17:04:17.371Z] [CLIENT] [ERROR] [/trainer/workouts] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74)
+[2026-07-30T17:04:17.546Z] [CLIENT] [ERROR] [/trainer/workouts] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74)
+[2026-07-30T17:04:17.746Z] [CLIENT] [ERROR] [/trainer/workouts] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/workouts.astro?astro&type=script&index=0&lang.ts:253:74)
+[2026-07-30T17:04:25.988Z] [CLIENT] [LOG] [/trainer/workouts]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:04:25.988Z] [CLIENT] [LOG] [/trainer/workouts]    📋 1 documentos:
+[2026-07-30T17:04:25.989Z] [CLIENT] [LOG] [/trainer/workouts]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:04:25.989Z] [CLIENT] [LOG] [/trainer/workouts]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:04:25.989Z] [CLIENT] [LOG] [/trainer/workouts]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "full test",
+  "difficulty": "medium",
+  "description": "nueva rotin test",
+  "exercises": [],
+  "createdAt": null,
+  "updatedAt": null
+}
+[2026-07-30T17:04:26.254Z] [CLIENT] [INFO] [/trainer/workouts] [Trainer] Rutina creada: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:04:26.271Z] [CLIENT] [LOG] [/trainer/workouts]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:04:26.271Z] [CLIENT] [LOG] [/trainer/workouts]    📋 1 documentos:
+[2026-07-30T17:04:26.271Z] [CLIENT] [LOG] [/trainer/workouts]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:04:26.271Z] [CLIENT] [LOG] [/trainer/workouts]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:04:26.271Z] [CLIENT] [LOG] [/trainer/workouts]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "exercises": [],
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "difficulty": "medium",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "name": "full test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "description": "nueva rotin test"
+}
+[2026-07-30T17:04:51.296Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:04:53.672Z] [CLIENT] [ERROR] [/trainer/clients] [Trainer] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:04:57.483Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:04:57.969Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:04:57.969Z] [CLIENT] [LOG] [/trainer/diets]    ⚠️  Sin datos (array vacío)
+[2026-07-30T17:05:17.124Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:18.012Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:20.030Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:20.301Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:20.489Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:21.088Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:21.302Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:22.272Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:22.812Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:05:22.812Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:05:22.812Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:05:22.812Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:05:22.812Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "dieta test",
+  "type": "normal",
+  "somatotype": "ectomorph",
+  "totalCalories": 0,
+  "meals": [],
+  "createdAt": null,
+  "updatedAt": null
+}
+[2026-07-30T17:05:23.269Z] [CLIENT] [INFO] [/trainer/diets] [Trainer] Dieta creada: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:05:23.300Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:05:23.300Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:05:23.300Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:05:23.300Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:05:23.300Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "meals": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "name": "dieta test",
+  "totalCalories": 0,
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph",
+  "type": "normal",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:05:26.691Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:26.871Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:33.804Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:33.980Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:05:58.175Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:05:59.796Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:05:59.796Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:05:59.796Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:05:59.797Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:05:59.797Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "meals": [],
+  "name": "dieta test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 0,
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "normal",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  }
+}
+[2026-07-30T17:06:03.157Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:06:04.668Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:06:04.668Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:06:04.668Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:06:04.668Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:06:04.668Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "normal",
+  "totalCalories": 0,
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph",
+  "meals": []
+}
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:06:11.539Z
+============================================================
+[2026-07-30T17:07:32.418Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:34.267Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:07:35.323Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:07:35.323Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:07:35.324Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:07:35.324Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:07:35.324Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "normal",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "somatotype": "ectomorph",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "totalCalories": 0,
+  "meals": []
+}
+[2026-07-30T17:07:37.482Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:37.927Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:38.097Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:38.263Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:38.438Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:41.513Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:41.742Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:41.921Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:07:42.097Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:238:66)
+[2026-07-30T17:08:52.295Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:08:53.679Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:08:53.679Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:08:53.679Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:08:53.679Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:08:53.679Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "name": "dieta test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "normal",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "totalCalories": 0,
+  "somatotype": "ectomorph",
+  "meals": [],
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:08:59.986Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:09:01.716Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:09:01.716Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:09:01.716Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:09:01.716Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:09:01.716Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "normal",
+  "totalCalories": 0,
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:10:45.508Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:10:48.495Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:10:50.013Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:10:50.768Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:10:50.768Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:10:50.768Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:10:50.768Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:10:50.768Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "normal",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "totalCalories": 0,
+  "somatotype": "ectomorph",
+  "meals": []
+}
+[2026-07-30T17:10:52.054Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:10:52.312Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:10:52.520Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:10:52.763Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:11:15.462Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:11:16.064Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:11:16.064Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:11:16.064Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:11:16.064Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:11:16.064Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "totalCalories": 0,
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "name": "dieta test",
+  "type": "normal",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "meals": [],
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  }
+}
+[2026-07-30T17:11:18.192Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:11:18.681Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:11:18.681Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:11:18.681Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:11:18.681Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:11:18.681Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "normal",
+  "somatotype": "ectomorph",
+  "meals": [],
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test",
+  "totalCalories": 0,
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  }
+}
+[2026-07-30T17:11:20.666Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:11:21.251Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:11:21.251Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:11:21.251Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:11:21.252Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:11:21.252Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 0,
+  "meals": [],
+  "name": "dieta test",
+  "type": "normal"
+}
+[2026-07-30T17:11:30.546Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:11:36.984Z
+============================================================
+[2026-07-30T17:11:50.965Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:11:51.968Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:11:52.138Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:11:57.627Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:11:59.860Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:12:00.737Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:12:00.737Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:12:00.737Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:12:00.737Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:12:00.737Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "meals": [],
+  "type": "normal",
+  "somatotype": "ectomorph",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "totalCalories": 0
+}
+[2026-07-30T17:12:02.013Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:02.617Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:02.806Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:02.947Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:05.045Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:05.230Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:05.420Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:26.426Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:27.734Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:12:28.315Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:12:28.315Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:12:28.315Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:12:28.315Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:12:28.315Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "normal",
+  "meals": [],
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "totalCalories": 0,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "name": "dieta test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph"
+}
+[2026-07-30T17:12:30.520Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:32.362Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:32.729Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:12:32.879Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:13:08.286Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:13:09.895Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:13:09.895Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:13:09.895Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:13:09.895Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:13:09.895Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "name": "dieta test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph",
+  "type": "normal",
+  "totalCalories": 0,
+  "meals": [],
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:13:13.415Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:244:66)
+[2026-07-30T17:13:16.351Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:13:17.067Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:13:17.067Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:13:17.067Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:13:17.067Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:13:17.067Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "meals": [],
+  "name": "dieta test",
+  "totalCalories": 0,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "normal"
+}
+[2026-07-30T17:13:18.684Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:19.712Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:19.888Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:20.072Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:30.721Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:31.569Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:13:31.569Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:13:31.569Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:13:31.569Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:13:31.569Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "meals": [],
+  "name": "dieta test",
+  "totalCalories": 0,
+  "updatedAt": null,
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "normal"
+}
+[2026-07-30T17:13:31.865Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:13:31.865Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:13:31.865Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · normal · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:13:31.865Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:13:31.865Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "meals": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431611,
+    "nanoseconds": 830000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "normal",
+  "totalCalories": 0
+}
+[2026-07-30T17:13:37.575Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:13:39.066Z
+============================================================
+[2026-07-30T17:13:42.777Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:13:42.777Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:13:42.777Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:13:42.777Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:13:42.777Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "meals": [],
+  "updatedAt": null,
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "advanced",
+  "totalCalories": 0
+}
+[2026-07-30T17:13:42.902Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:13:42.902Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:13:42.902Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:13:42.902Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:13:42.902Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [],
+  "type": "advanced",
+  "totalCalories": 0,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431622,
+    "nanoseconds": 859000000
+  },
+  "somatotype": "ectomorph",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "name": "dieta test",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:13:46.677Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:46.868Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:13:47.028Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:14:29.729Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:14:30.281Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:14:30.448Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector. at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66 SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+SyntaxError: Failed to execute 'querySelector' on 'Element': 'p.text-[var(--text-disabled)]' is not a valid selector.
+    at HTMLButtonElement.<anonymous> (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:248:66)
+[2026-07-30T17:14:31.804Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:14:33.752Z] [CLIENT] [ERROR] [/trainer/clients] [Trainer] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:14:36.721Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:14:37.365Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:14:37.365Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:14:37.365Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:14:37.365Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:14:37.365Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "advanced",
+  "somatotype": "ectomorph",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431622,
+    "nanoseconds": 859000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "dieta test",
+  "meals": [],
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 0
+}
+[2026-07-30T17:14:45.417Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:14:47.451Z] [CLIENT] [ERROR] [/trainer/clients] [Trainer] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:15:02.152Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:15:02.714Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:15:02.714Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:15:02.714Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:15:02.714Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:15:02.714Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 0,
+  "name": "dieta test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431622,
+    "nanoseconds": 859000000
+  },
+  "meals": [],
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "advanced",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph"
+}
+[2026-07-30T17:15:06.381Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:15:08.224Z] [CLIENT] [ERROR] [/trainer/clients] [Trainer] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:15:11.611Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:15:12.136Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:15:12.136Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:15:12.136Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 0 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:15:12.136Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:15:12.136Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "advanced",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431622,
+    "nanoseconds": 859000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "meals": [],
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 0,
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:16:15.728Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:16:15.728Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:16:15.728Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:16:15.728Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:16:15.728Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "advanced",
+  "updatedAt": null,
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "meals": [
+    {
+      "id": "meal-1785431775714-0",
+      "name": "breakfast",
+      "description": "3 huevo",
+      "calories": 200,
+      "protein": 20,
+      "carbs": 0,
+      "fat": 0,
+      "order": 1
+    }
+  ],
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 200,
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:16:16.093Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:16:16.093Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:16:16.093Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:16:16.093Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:16:16.093Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "type": "advanced",
+  "meals": [
+    {
+      "description": "3 huevo",
+      "fat": 0,
+      "order": 1,
+      "id": "meal-1785431775714-0",
+      "protein": 20,
+      "carbs": 0,
+      "name": "breakfast",
+      "calories": 200
+    }
+  ],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "name": "dieta test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 200,
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:17:02.417Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:17:04.678Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:17:04.678Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:17:04.679Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:17:04.679Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:17:04.679Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "advanced",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 200,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "meals": [
+    {
+      "fat": 0,
+      "carbs": 0,
+      "calories": 200,
+      "description": "3 huevo",
+      "order": 1,
+      "name": "breakfast",
+      "id": "meal-1785431775714-0",
+      "protein": 20
+    }
+  ],
+  "somatotype": "ectomorph",
+  "name": "dieta test"
+}
+[2026-07-30T17:17:09.054Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:17:10.680Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:17:10.681Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:17:10.681Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:17:10.681Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:17:10.681Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "somatotype": "ectomorph",
+  "type": "advanced",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "meals": [
+    {
+      "fat": 0,
+      "protein": 20,
+      "id": "meal-1785431775714-0",
+      "calories": 200,
+      "carbs": 0,
+      "description": "3 huevo",
+      "name": "breakfast",
+      "order": 1
+    }
+  ],
+  "name": "dieta test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "totalCalories": 200,
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2"
+}
+[2026-07-30T17:17:28.152Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:17:29.674Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:17:29.675Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:17:29.675Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:17:29.675Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:17:29.675Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "name": "dieta test",
+  "totalCalories": 200,
+  "meals": [
+    {
+      "carbs": 0,
+      "id": "meal-1785431775714-0",
+      "calories": 200,
+      "name": "breakfast",
+      "fat": 0,
+      "description": "3 huevo",
+      "protein": 20,
+      "order": 1
+    }
+  ],
+  "somatotype": "ectomorph",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "type": "advanced",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  }
+}
+[2026-07-30T17:17:35.165Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:17:36.680Z] [CLIENT] [ERROR] [/trainer/diets] [Uncaught Exception] Uncaught ReferenceError: t is not defined at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:138:20 ReferenceError: t is not defined
+ReferenceError: t is not defined
+    at tr (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:138:20)
+    at showEditor (http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:164:117)
+    at http://localhost:4321/src/pages/trainer/diets.astro?astro&type=script&index=0&lang.ts:33:5
+    at Array.<anonymous> (http://localhost:4321/src/lib/trainer/trainerClients.ts:30:3)
+    at next (http://localhost:4321/node_modules/.vite/deps/firebase_firestore.js?v=518f2b71:20081:17)
+    at http://localhost:4321/node_modules/.vite/deps/firebase_firestore.js?v=518f2b71:16632:18
+[2026-07-30T17:17:36.686Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:17:36.686Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:17:36.686Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:17:36.686Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:17:36.686Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "type": "advanced",
+  "name": "dieta test",
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "meals": [
+    {
+      "order": 1,
+      "protein": 20,
+      "description": "3 huevo",
+      "name": "breakfast",
+      "fat": 0,
+      "calories": 200,
+      "id": "meal-1785431775714-0",
+      "carbs": 0
+    }
+  ],
+  "totalCalories": 200,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  }
+}
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:17:44.378Z
+============================================================
+[2026-07-30T17:18:24.022Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:18:54.087Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:18:58.010Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:19:04.971Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:19:14.476Z
+============================================================
+[2026-07-30T17:20:22.681Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:23.534Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:20:23.534Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:20:23.534Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:20:23.534Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:20:23.534Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "somatotype": "ectomorph",
+  "meals": [
+    {
+      "name": "breakfast",
+      "protein": 20,
+      "description": "3 huevo",
+      "order": 1,
+      "calories": 200,
+      "fat": 0,
+      "id": "meal-1785431775714-0",
+      "carbs": 0
+    }
+  ],
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "totalCalories": 200,
+  "name": "dieta test",
+  "type": "advanced",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2"
+}
+[2026-07-30T17:20:27.399Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:33.326Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:42.631Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:43.978Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:44.594Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:20:44.594Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:20:44.594Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:20:44.594Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:20:44.594Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "somatotype": "ectomorph",
+  "type": "advanced",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "dieta test",
+  "totalCalories": 200,
+  "meals": [
+    {
+      "order": 1,
+      "id": "meal-1785431775714-0",
+      "fat": 0,
+      "name": "breakfast",
+      "carbs": 0,
+      "calories": 200,
+      "protein": 20,
+      "description": "3 huevo"
+    }
+  ]
+}
+[2026-07-30T17:20:51.389Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:51.942Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:20:51.942Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:20:51.942Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:20:51.943Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:20:51.943Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "meals": [
+    {
+      "fat": 0,
+      "calories": 200,
+      "protein": 20,
+      "order": 1,
+      "id": "meal-1785431775714-0",
+      "name": "breakfast",
+      "description": "3 huevo",
+      "carbs": 0
+    }
+  ],
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "totalCalories": 200,
+  "type": "advanced",
+  "name": "dieta test",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "somatotype": "ectomorph"
+}
+[2026-07-30T17:20:57.003Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:20:57.690Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:20:57.690Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:20:57.690Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:20:57.690Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:20:57.690Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [
+    {
+      "calories": 200,
+      "protein": 20,
+      "description": "3 huevo",
+      "carbs": 0,
+      "order": 1,
+      "fat": 0,
+      "id": "meal-1785431775714-0",
+      "name": "breakfast"
+    }
+  ],
+  "somatotype": "ectomorph",
+  "totalCalories": 200,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "type": "advanced",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "dieta test"
+}
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:21:01.162Z
+============================================================
+[2026-07-30T17:21:26.244Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:21:27.085Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:21:27.085Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:21:27.085Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:21:27.085Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:21:27.085Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [
+    {
+      "id": "meal-1785431775714-0",
+      "fat": 0,
+      "name": "breakfast",
+      "protein": 20,
+      "order": 1,
+      "description": "3 huevo",
+      "calories": 200,
+      "carbs": 0
+    }
+  ],
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "dieta test",
+  "somatotype": "ectomorph",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "totalCalories": 200,
+  "type": "advanced"
+}
+[2026-07-30T17:21:29.654Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:21:30.453Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:21:31.264Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:21:31.264Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:21:31.264Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:21:31.264Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:21:31.264Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "advanced",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "totalCalories": 200,
+  "somatotype": "ectomorph",
+  "meals": [
+    {
+      "description": "3 huevo",
+      "id": "meal-1785431775714-0",
+      "order": 1,
+      "name": "breakfast",
+      "carbs": 0,
+      "fat": 0,
+      "protein": 20,
+      "calories": 200
+    }
+  ]
+}
+[2026-07-30T17:21:37.534Z] [CLIENT] [INFO] [/trainer/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:21:38.165Z] [CLIENT] [LOG] [/trainer/diets]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:21:38.165Z] [CLIENT] [LOG] [/trainer/diets]    📋 1 documentos:
+[2026-07-30T17:21:38.165Z] [CLIENT] [LOG] [/trainer/diets]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:21:38.165Z] [CLIENT] [LOG] [/trainer/diets]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:21:38.165Z] [CLIENT] [LOG] [/trainer/diets]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "name": "dieta test",
+  "totalCalories": 200,
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "advanced",
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "meals": [
+    {
+      "description": "3 huevo",
+      "protein": 20,
+      "order": 1,
+      "id": "meal-1785431775714-0",
+      "carbs": 0,
+      "calories": 200,
+      "name": "breakfast",
+      "fat": 0
+    }
+  ]
+}
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:23:48.802Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T17:25:27.065Z
+============================================================
+[2026-07-30T17:35:56.956Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:35:57.304Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:35:57.788Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "exercises": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "description": "nueva rotin test",
+  "difficulty": "medium",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "name": "full test"
+}
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:35:57.809Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "meals": [
+    {
+      "order": 1,
+      "id": "meal-1785431775714-0",
+      "calories": 200,
+      "description": "3 huevo",
+      "protein": 20,
+      "fat": 0,
+      "carbs": 0,
+      "name": "breakfast"
+    }
+  ],
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "somatotype": "ectomorph",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "name": "dieta test",
+  "totalCalories": 200,
+  "type": "advanced",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2"
+}
+[2026-07-30T17:35:59.966Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:00.471Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "exercises": [],
+  "name": "full test",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "difficulty": "medium",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "description": "nueva rotin test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  }
+}
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:36:00.509Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "totalCalories": 200,
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "name": "dieta test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [
+    {
+      "carbs": 0,
+      "calories": 200,
+      "description": "3 huevo",
+      "fat": 0,
+      "protein": 20,
+      "name": "breakfast",
+      "order": 1,
+      "id": "meal-1785431775714-0"
+    }
+  ],
+  "type": "advanced",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73"
+}
+[2026-07-30T17:36:01.935Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:03.250Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:11.549Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:11.956Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:36:12.094Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:12.094Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:12.094Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:12.094Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:36:12.094Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "name": "full test",
+  "difficulty": "medium",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "exercises": [],
+  "description": "nueva rotin test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  }
+}
+[2026-07-30T17:36:12.095Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:12.095Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:12.095Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:12.095Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:36:12.095Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "type": "advanced",
+  "totalCalories": 200,
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "meals": [
+    {
+      "name": "breakfast",
+      "protein": 20,
+      "calories": 200,
+      "carbs": 0,
+      "order": 1,
+      "description": "3 huevo",
+      "fat": 0,
+      "id": "meal-1785431775714-0"
+    }
+  ]
+}
+[2026-07-30T17:36:14.673Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:18.857Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:26.836Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:32.204Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:33.244Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:33.687Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "description": "nueva rotin test",
+  "name": "full test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "exercises": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "difficulty": "medium"
+}
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:36:33.739Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "totalCalories": 200,
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "type": "advanced",
+  "meals": [
+    {
+      "id": "meal-1785431775714-0",
+      "carbs": 0,
+      "fat": 0,
+      "description": "3 huevo",
+      "order": 1,
+      "calories": 200,
+      "name": "breakfast",
+      "protein": 20
+    }
+  ],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "somatotype": "ectomorph",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "name": "dieta test"
+}
+[2026-07-30T17:36:37.520Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:37.975Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "description": "nueva rotin test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "difficulty": "medium",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "exercises": [],
+  "name": "full test"
+}
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:36:37.978Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "meals": [
+    {
+      "calories": 200,
+      "carbs": 0,
+      "id": "meal-1785431775714-0",
+      "description": "3 huevo",
+      "order": 1,
+      "fat": 0,
+      "protein": 20,
+      "name": "breakfast"
+    }
+  ],
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "totalCalories": 200,
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "type": "advanced"
+}
+[2026-07-30T17:36:40.954Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:41.406Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "exercises": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "name": "full test",
+  "description": "nueva rotin test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "difficulty": "medium",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  }
+}
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:36:41.415Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "name": "dieta test",
+  "meals": [
+    {
+      "order": 1,
+      "name": "breakfast",
+      "carbs": 0,
+      "calories": 200,
+      "fat": 0,
+      "description": "3 huevo",
+      "protein": 20,
+      "id": "meal-1785431775714-0"
+    }
+  ],
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "type": "advanced",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "totalCalories": 200
+}
+[2026-07-30T17:36:47.038Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:48.527Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:36:51.631Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:37:06.697Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:37:39.777Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:39:34.914Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:39:50.651Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:41:21.692Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:42:05.773Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:42:23.781Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:42:48.741Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:43:30.304Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:44:11.642Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:03.192Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:03.893Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T17:45:03.929Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T17:45:06.901Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:09.469Z] [CLIENT] [INFO] [/admin/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:12.729Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:13.198Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:45:13.201Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:45:13.201Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:45:13.201Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:45:13.201Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:45:13.201Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "difficulty": "medium",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "exercises": [],
+  "description": "nueva rotin test",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "name": "full test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  }
+}
+[2026-07-30T17:45:13.203Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:45:13.203Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:45:13.203Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:45:13.203Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:45:13.203Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [
+    {
+      "carbs": 0,
+      "id": "meal-1785431775714-0",
+      "description": "3 huevo",
+      "fat": 0,
+      "calories": 200,
+      "order": 1,
+      "name": "breakfast",
+      "protein": 20
+    }
+  ],
+  "name": "dieta test",
+  "totalCalories": 200,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "advanced"
+}
+[2026-07-30T17:45:16.754Z] [CLIENT] [INFO] [/trainer/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:19.355Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:19.894Z] [CLIENT] [ERROR] [/trainer/dashboard] [Trainer] Error al suscribirse a conversaciones: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:45:19.902Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "difficulty": "medium",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "description": "nueva rotin test",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "exercises": [],
+  "name": "full test",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  }
+}
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-07-30T17:45:19.903Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "name": "dieta test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [
+    {
+      "carbs": 0,
+      "protein": 20,
+      "id": "meal-1785431775714-0",
+      "order": 1,
+      "calories": 200,
+      "description": "3 huevo",
+      "name": "breakfast",
+      "fat": 0
+    }
+  ],
+  "type": "advanced",
+  "somatotype": "ectomorph",
+  "totalCalories": 200,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  }
+}
+[2026-07-30T17:45:27.896Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:30.112Z] [CLIENT] [INFO] [/trainer/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:30.509Z] [CLIENT] [LOG] [/trainer/workouts]    Context: 🏋️ irwYIbTi6O...
+[2026-07-30T17:45:30.509Z] [CLIENT] [LOG] [/trainer/workouts]    📋 1 documentos:
+[2026-07-30T17:45:30.509Z] [CLIENT] [LOG] [/trainer/workouts]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-07-30T17:45:30.509Z] [CLIENT] [LOG] [/trainer/workouts]       id: hnT7g6862L3UA5qSmpIc
+[2026-07-30T17:45:30.509Z] [CLIENT] [LOG] [/trainer/workouts]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "description": "nueva rotin test",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "name": "full test",
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "difficulty": "medium",
+  "exercises": []
+}
+[2026-07-30T17:45:33.621Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:39.939Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:48.569Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:54.062Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:45:57.855Z] [CLIENT] [INFO] [/client/medical-profile] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:46:04.607Z] [CLIENT] [INFO] [/client/diets] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:46:05.000Z] [CLIENT] [ERROR] [/client/diets] [Diet] Error al suscribirse a comidas de hoy: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:46:08.679Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:46:10.304Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:46:10.752Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:46:22.523Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:47:09.021Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:48:05.561Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:49:32.856Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:50:09.705Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:50:12.152Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:50:15.957Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:54:02.169Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:54:08.791Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:54:10.717Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:54:13.955Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:54:14.588Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:55:59.939Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:56:29.775Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:56:47.564Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:56:53.727Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:57:32.437Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:57:47.726Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:57:48.237Z] [CLIENT] [ERROR] [/client/dashboard] [Progress] Error al suscribirse a progreso: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-07-30T17:57:55.210Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:57:56.796Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T17:57:57.385Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T17:57:57.385Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T17:58:13.901Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:01:31.258Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:01:51.975Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:02:10.167Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:02:22.910Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:02:44.127Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:03:03.140Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:03:14.821Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:03:25.893Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T18:04:04.170Z
+============================================================
+[2026-07-30T18:05:40.946Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:05:53.143Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:06:05.780Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T18:06:16.453Z
+============================================================
+[2026-07-30T18:14:42.854Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:14:55.736Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:15:06.885Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:15:19.868Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:15:31.924Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T18:15:44.640Z
+============================================================
+[2026-07-30T18:19:47.839Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:19:48.666Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:19:48.667Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:20:24.820Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:20:25.581Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:20:25.588Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:20:38.999Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:20:39.557Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:20:39.568Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:20:50.752Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:20:53.877Z] [CLIENT] [INFO] [/admin/trainers] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:20:54.985Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-30T18:20:55.802Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a trainers: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:20:55.802Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error al suscribirse a admins: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-07-30T18:21:08.714Z] [CLIENT] [ERROR] [/admin/users] [Admin] Error loading medical profile: TypeError: mp.allergies.map is not a function
+TypeError: mp.allergies.map is not a function
+    at viewMedicalProfile (http://localhost:4321/src/pages/admin/users.astro?astro&type=script&index=0&lang.ts:299:32)
+    at async HTMLDocument.<anonymous> (http://localhost:4321/src/pages/admin/users.astro?astro&type=script&index=0&lang.ts:45:5)
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T19:01:23.749Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:18:10.259Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:18:57.322Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:20:08.454Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:20:31.803Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:23:38.537Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:26:31.622Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-30T21:29:26.804Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T07:52:26.950Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T07:59:55.916Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T08:08:31.396Z
+============================================================
+[2026-07-31T08:11:02.948Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:11:19.531Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:11:41.599Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:11:47.345Z] [CLIENT] [INFO] [/client/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:11:47.956Z] [CLIENT] [ERROR] [/client/settings] [InitPage] Error en inicialización: FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+[2026-07-31T08:12:18.559Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:12:35.507Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:12:36.251Z] [CLIENT] [ERROR] [/admin/dashboard] [AuthGuard] Error al verificar rol de admin: FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+[2026-07-31T08:12:36.994Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:12:49.875Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:12:52.556Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T08:12:55.279Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T08:13:40.098Z
+============================================================
+[2026-07-31T08:14:19.006Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T10:47:12.966Z
+============================================================
+[2026-07-31T10:47:26.420Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T10:47:28.192Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T10:48:53.683Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T10:49:00.314Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:00:34.699Z] [CLIENT] [LOG] [/client/dashboard] [vite] server connection lost. Polling for restart...
+[2026-07-31T12:06:18.854Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:06:39.289Z] [CLIENT] [ERROR] [/client/dashboard] [2026-07-31T12:06:39.289Z]  @firebase/firestore: Firestore (11.10.0): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=unknown]: Fetching auth token failed: Firebase: Error (auth/network-request-failed).
+This typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend.
+[2026-07-31T12:15:05.404Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:15:11.445Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:15:21.410Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T12:16:23.127Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-07-31T12:17:14.777Z
+============================================================
+[2026-07-31T12:17:16.656Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:17:16.814Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+[2026-07-31T12:17:16.815Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+[2026-07-31T12:17:16.815Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+[2026-07-31T12:17:16.815Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+[2026-07-31T12:17:16.815Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.setAppStatus (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:386:20)
+    at http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:278:15
+    at Array.forEach (<anonymous>)
+    at AstroDevToolbar.connectedCallback (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:277:13)
+[2026-07-31T12:17:16.862Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-31T12:17:16.862Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-31T12:17:16.862Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-31T12:17:16.862Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-31T12:17:16.874Z] [CLIENT] [ERROR] [/client/dashboard] [vite] TypeError: Cannot read properties of undefined (reading 'send')
+TypeError: Cannot read properties of undefined (reading 'send')
+    at Object.send (http://localhost:4321/@vite/client:444:7)
+    at Object.send (http://localhost:4321/@vite/client:1634:16)
+    at Object.send (http://localhost:4321/@vite/client:307:21)
+    at Object.send (http://localhost:4321/@vite/client:385:30)
+    at HMRClient.send (http://localhost:4321/@vite/client:161:18)
+    at HMRContext.send (http://localhost:4321/@vite/client:123:18)
+    at AstroDevToolbar.initApp (http://localhost:4321/node_modules/.vite/deps/toolbar-BJ5M0JdJ.js?v=518f2b71:322:41)
+[2026-07-31T12:17:20.412Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:17:20.871Z] [CLIENT] [ERROR] [/admin/dashboard] [AuthGuard] Error al verificar rol de admin: FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+[2026-07-31T12:17:21.313Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:17:51.569Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:17:54.916Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:17:56.713Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:18:03.090Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:18:03.605Z] [CLIENT] [ERROR] [/client/workouts] [InitPage] Error en inicialización: FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+[2026-07-31T12:18:10.254Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:18:10.870Z] [CLIENT] [ERROR] [/client/workouts] [InitPage] Error en inicialización: FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+FirebaseError: Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+[2026-07-31T12:18:16.036Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:18:20.616Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:18:33.208Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:18:59.822Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:19:41.285Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-07-31T12:19:44.036Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.

@@ -1,6 +1,6 @@
 # 🎨 Estado de Migración del Sistema de Temas
 
-> **Última actualización:** 2026-07-25 19:05  
+> **Última actualización:** 2026-07-30  
 > **Verifica:** `npm run theme:validate`
 
 ---
@@ -17,14 +17,17 @@
 | `src/layouts/TrainerLayout.astro` | ✅ Migrado | ✅ Añadido `fixed top-4 right-4 z-50` |
 | `src/layouts/PublicPageLayout.astro` | ✅ Migrado | ✅ Añadido `fixed top-4 right-4 z-50` |
 
-### Componentes (3/3)
+### Componentes Existentes (4/4)
 
 | Archivo | Estado |
 |---|---|
 | `src/components/DecorativeBackground.astro` | ✅ Migrado |
 | `src/components/LanguageSwitcher.astro` | ✅ Migrado |
 | `src/components/Skeleton.astro` | ✅ Migrado |
-| `src/components/ThemeToggle.astro` | ✅ Creado (nuevo) |
+| `src/components/ThemeToggle.astro` | ✅ Creado |
+| `src/components/EmptyState.astro` | ✅ Creado |
+| `src/components/ErrorState.astro` | ✅ Creado |
+| `src/components/LoadingSpinner.astro` | ✅ Creado |
 
 ### Páginas Públicas (6/6)
 
@@ -105,17 +108,32 @@ Estos archivos ya usaban clases semánticas o no tenían estilos de color:
 
 ---
 
+## 🆕 Nuevas Funcionalidades
+
+| Funcionalidad | Estado |
+|---|---|
+| Auto Theme (preferencia del sistema) | ✅ Implementado |
+| Transiciones suaves entre temas | ✅ Implementado |
+| prefers-reduced-motion global | ✅ Implementado |
+| Skip-to-content link | ✅ Implementado |
+| Focus trap en modales | ✅ Implementado |
+| Atajo de teclado Ctrl+Shift+T | ✅ Implementado |
+| role="switch" en ThemeToggle | ✅ Implementado |
+| Accesibilidad WCAG 2.1 AA | ✅ Documentado |
+
 ## 📊 Resumen
 
 | Métrica | Valor |
 |---|---|
-| Total archivos Astro | 41 |
-| Archivos migrados | **38** |
+| Total archivos Astro | 44 |
+| Archivos migrados | **41** |
 | Archivos sin hardcodeos | 3 (Icon, BaseLayout meta, etc.) |
 | Hardcodeos detectados | **0** |
-| Tests totales | **388** ✅ |
-| Tests theme store | **25** ✅ |
+| Tests totales | **400+** ✅ |
+| Tests theme store | **33+** ✅ |
+| Tests nuevos componentes | **32** ✅ |
 | Validación | **7/7 (100%)** |
+| Accesibilidad | ✅ docs/ACCESIBILIDAD.md |
 
 ---
 
@@ -123,8 +141,9 @@ Estos archivos ya usaban clases semánticas o no tenían estilos de color:
 
 ```bash
 npm run theme:validate   # 7 checks de integridad
-npm run theme:test       # 25 tests del theme store
+npm run theme:test       # 33+ tests del theme store (incluye auto-theme)
 npm run theme:check      # Validación + tests
+npm test                 # Tests unitarios completos
 ```
 
 Si algún agente introduce nuevas clases hardcodeadas, el validador las detectará y mostrará:

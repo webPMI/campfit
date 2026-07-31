@@ -24,7 +24,8 @@ export type TrainerOption = { uid: string; name: string; role: string };
 
 
 /**
- * Se suscribe a todos los usuarios, ordenados por fecha de creación descendente.
+ * Se suscribe a los usuarios más recientes, ordenados por fecha de creación descendente.
+ * Limitado a 50 documentos para evitar lecturas masivas de Firestore.
  */
 export function subscribeToUsers(
   callback: (users: AdminUser[]) => void,
@@ -32,6 +33,7 @@ export function subscribeToUsers(
   const q = query(
     collection(db, 'users'),
     orderBy('createdAt', 'desc'),
+    limit(50),
   );
   return onSnapshot(
     q,
@@ -59,7 +61,9 @@ export function subscribeToUsers(
 }
 
 /**
- * Se suscribe a usuarios filtrados por rol.
+ * Se suscribe a usuarios filtrados por rol, limitado a 50 documentos.
+ * @param role - Rol a filtrar ('admin' | 'trainer' | 'client')
+ * @param callback - Función que recibe los usuarios filtrados
  */
 export function subscribeToUsersByRole(
   role: string,
@@ -69,6 +73,7 @@ export function subscribeToUsersByRole(
     collection(db, 'users'),
     where('role', '==', role),
     orderBy('createdAt', 'desc'),
+    limit(50),
   );
   return onSnapshot(
     q,

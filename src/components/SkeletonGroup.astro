@@ -1,0 +1,295 @@
+---
+/**
+ * SkeletonGroup.astro — Composiciones de skeleton pre-construidas.
+ *
+ * @prop { string } variant - Tipo de composición: 'dashboard' | 'list' | 'card-grid' | 'form' | 'profile' | 'table'
+ * @prop { number } [items] - Número de items a renderizar.
+ * @prop { string } [className] - Clases adicionales.
+ */
+
+import Skeleton from './Skeleton.astro';
+
+export interface Props {
+  variant: 'dashboard' | 'list' | 'card-grid' | 'form' | 'profile' | 'table';
+  items?: number;
+  className?: string;
+}
+
+const { variant, items = 5, className = '' } = Astro.props;
+const itemCount = Math.min(items, 12);
+---
+
+{variant === 'dashboard' && (
+  <div class={`cf-sg-dashboard ${className}`} role="status" aria-label="Cargando panel...">
+    <div class="cf-sg-header">
+      <Skeleton variant="circle" width="48px" height="48px" />
+      <div class="cf-sg-header-text">
+        <Skeleton variant="text" height="20px" width="60%" />
+        <Skeleton variant="text" height="14px" width="40%" />
+      </div>
+    </div>
+    <div class="cf-sg-stats">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div class="cf-sg-stat-card stagger-item" style={`animation-delay: var(--stagger-${i + 1})`}>
+          <Skeleton variant="text" height="12px" width="50px" />
+          <Skeleton variant="text" height="24px" width="80px" />
+        </div>
+      ))}
+    </div>
+    <div class="cf-sg-actions">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div class="cf-sg-action stagger-item" style={`animation-delay: var(--stagger-${i + 1})`}>
+          <Skeleton variant="circle" width="40px" height="40px" />
+          <Skeleton variant="text" height="12px" width="60px" />
+        </div>
+      ))}
+    </div>
+    <div class="cf-sg-content">
+      <Skeleton variant="rect" height="180px" />
+    </div>
+  </div>
+)}
+
+{variant === 'list' && (
+  <div class={`cf-sg-list ${className}`} role="status" aria-label="Cargando lista...">
+    {Array.from({ length: itemCount }).map((_, i) => (
+      <div class="cf-sg-list-item stagger-item" style={`animation-delay: var(--stagger-${Math.min(i + 1, 8)})`}>
+        <Skeleton variant="circle" width="44px" height="44px" />
+        <div class="cf-sg-list-text">
+          <Skeleton variant="text" height="16px" width="70%" />
+          <Skeleton variant="text" height="12px" width="50%" />
+        </div>
+        <Skeleton variant="rect" width="60px" height="24px" />
+      </div>
+    ))}
+  </div>
+)}
+
+{variant === 'card-grid' && (
+  <div class={`cf-sg-card-grid ${className}`} role="status" aria-label="Cargando tarjetas...">
+    {Array.from({ length: itemCount }).map((_, i) => (
+      <div class="cf-sg-card stagger-item" style={`animation-delay: var(--stagger-${Math.min(i + 1, 8)})`}>
+        <Skeleton variant="rect" height="120px" />
+        <div class="cf-sg-card-body">
+          <Skeleton variant="text" height="16px" width="80%" />
+          <Skeleton variant="text" height="12px" width="60%" />
+          <Skeleton variant="text" height="12px" width="40%" />
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+{variant === 'form' && (
+  <div class={`cf-sg-form ${className}`} role="status" aria-label="Cargando formulario...">
+    {Array.from({ length: itemCount }).map((_, i) => (
+      <div class="cf-sg-form-field stagger-item" style={`animation-delay: var(--stagger-${Math.min(i + 1, 8)})`}>
+        <Skeleton variant="text" height="14px" width="100px" />
+        <Skeleton variant="rect" height="44px" width="100%" />
+      </div>
+    ))}
+    <div class="cf-sg-form-actions">
+      <Skeleton variant="rect" width="120px" height="44px" />
+    </div>
+  </div>
+)}
+
+{variant === 'profile' && (
+  <div class={`cf-sg-profile ${className}`} role="status" aria-label="Cargando perfil...">
+    <div class="cf-sg-profile-header">
+      <Skeleton variant="circle" width="80px" height="80px" />
+      <div class="cf-sg-profile-info">
+        <Skeleton variant="text" height="22px" width="50%" />
+        <Skeleton variant="text" height="14px" width="35%" />
+      </div>
+    </div>
+    <div class="cf-sg-profile-fields">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div class="cf-sg-profile-field stagger-item" style={`animation-delay: var(--stagger-${i + 1})`}>
+          <Skeleton variant="text" height="12px" width="80px" />
+          <Skeleton variant="text" height="16px" width="100%" />
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+{variant === 'table' && (
+  <div class={`cf-sg-table ${className}`} role="status" aria-label="Cargando tabla...">
+    <div class="cf-sg-table-header">
+      {Array.from({ length: 4 }).map(() => (
+        <Skeleton variant="text" height="14px" width="80px" />
+      ))}
+    </div>
+    {Array.from({ length: itemCount }).map((_, i) => (
+      <div class="cf-sg-table-row stagger-item" style={`animation-delay: var(--stagger-${Math.min(i + 1, 8)})`}>
+        {Array.from({ length: 4 }).map(() => (
+          <Skeleton variant="text" height="14px" width="90%" />
+        ))}
+      </div>
+    ))}
+  </div>
+)}
+
+<style>
+  .cf-sg-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+  }
+  .cf-sg-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .cf-sg-header-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cf-sg-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .cf-sg-stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg, 12px);
+    background: var(--surface-2, rgba(255, 255, 255, 0.03));
+  }
+  .cf-sg-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+  .cf-sg-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .cf-sg-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cf-sg-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+  .cf-sg-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-md, 8px);
+  }
+  .cf-sg-list-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .cf-sg-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+  .cf-sg-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg, 12px);
+    overflow: hidden;
+    background: var(--surface-1, rgba(255, 255, 255, 0.03));
+  }
+  .cf-sg-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cf-sg-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1rem 0;
+  }
+  .cf-sg-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cf-sg-form-actions {
+    margin-top: 0.5rem;
+  }
+
+  .cf-sg-profile {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+  }
+  .cf-sg-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .cf-sg-profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cf-sg-profile-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .cf-sg-profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .cf-sg-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .cf-sg-table-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+  .cf-sg-table-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .cf-sg-stats {
+      grid-template-columns: 1fr;
+    }
+    .cf-sg-actions {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .cf-sg-card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

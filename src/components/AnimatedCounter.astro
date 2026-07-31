@@ -1,0 +1,90 @@
+---
+/**
+ * AnimatedCounter.astro — Contador numérico animado al entrar en viewport.
+ *
+ * @prop { number } value - Valor final a mostrar.
+ * @prop { string } [suffix] - Sufijo opcional (ej: ' usuarios', ' kg').
+ * @prop { string } [prefix] - Prefijo opcional (ej: '€', '$').
+ * @prop { number } [duration] - Duración de la animación en ms (default: 1000).
+ * @prop { string } [className] - Clases adicionales.
+ * @prop { string } [id] - ID del elemento.
+ */
+
+export interface Props {
+  value: number;
+  suffix?: string;
+  prefix?: string;
+  duration?: number;
+  className?: string;
+  id?: string;
+}
+
+const {
+  value,
+  suffix = '',
+  prefix = '',
+  duration = 1000,
+  className = '',
+  id,
+} = Astro.props;
+---
+
+<span
+  id={id}
+  class={`cf-animated-counter ${className}`}
+  data-counter={value}
+  data-counter-suffix={suffix}
+  data-counter-prefix={prefix}
+  data-counter-duration={duration}
+>
+  {prefix}0{suffix}
+</span>
+
+<script>
+  import { animateCounter, prefersReducedMotion } from '../lib/client/animations';
+
+  function initCounters(): void {
+    const counters = document.querySelectorAll<HTMLElement>('.cf-animated-counter');
+    if (counters.length === 0) return;
+
+    if (prefersReducedMotion()) {
+      counters.forEach((el) => {
+        const target = parseInt(el.dataset.counter || '0', 10);
+        const suffix = el.dataset.counterSuffix || '';
+        const prefix = el.dataset.counterPrefix || '';
+        el.textContent = `${prefix}${target}${suffix}`;
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            const target = parseInt(el.dataset.counter || '0', 10);
+            const suffix = el.dataset.counterSuffix || '';
+            const prefix = el.dataset.counterPrefix || '';
+            const duration = parseInt(el.dataset.counterDuration || '1000', 10);
+
+            animateCounter(el, 0, target, duration, (n) => `${prefix}${n}${suffix}`);
+            observer.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    counters.forEach((el) => observer.observe(el));
+  }
+
+  initCounters();
+  document.addEventListener('astro:page-load', initCounters);
+</script>
+
+<style>
+  .cf-animated-counter {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

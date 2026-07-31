@@ -163,6 +163,8 @@ export function setupPasswordForm(
     });
 }
 
+import { $themeMode, setThemeMode } from '@/stores/themeStore';
+
 /**
  * Sets up theme toggle in settings pages.
  */
@@ -171,17 +173,16 @@ export function setupThemeToggle(_tr?: (key: string) => string): void {
     if (!btn) return;
 
     const updateLabel = () => {
-        const theme = localStorage.getItem('campfit_theme') || 'dark';
-        btn.textContent = theme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+        const mode = $themeMode.get();
+        btn.textContent = mode === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
     };
 
     updateLabel();
     btn.addEventListener('click', () => {
-        const current = localStorage.getItem('campfit_theme') || 'dark';
+        const current = $themeMode.get();
         const next = current === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('campfit_theme', next);
-        document.documentElement.setAttribute('data-theme', next);
-        document.documentElement.style.colorScheme = next;
+        setThemeMode(next);
+        try { localStorage.setItem('campfit_theme', next); } catch { /* no-op */ }
         updateLabel();
         showToast({ message: `Tema cambiado a ${next === 'dark' ? 'oscuro' : 'claro'}`, type: 'info' });
     });

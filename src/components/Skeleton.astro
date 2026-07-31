@@ -1,77 +1,68 @@
 ---
 /**
- * Skeleton - Loading placeholder component.
- * Theme-aware shimmer animation using surface colors.
+ * Skeleton.astro — Placeholder con shimmer elegante para estados de carga.
+ *
+ * @prop { 'text' | 'circle' | 'rect' | 'card' } variant - Forma del skeleton.
+ * @prop { string } [width] - Ancho CSS personalizado (ej: '100%', '200px').
+ * @prop { string } [height] - Alto CSS personalizado (ej: '20px', '40px').
+ * @prop { number } [lines] - Número de líneas a renderizar (solo variant='text').
+ * @prop { string } [className] - Clases adicionales.
+ * @prop { string } [ariaLabel] - Label accesible.
  */
+
 export interface Props {
-  /** Variante de skeleton */
-  variant?: 'text' | 'circular' | 'rectangular' | 'card';
-  /** Ancho (ej: '100%', '200px', 'w-full') */
+  variant?: "text" | "circle" | "rect" | "card";
   width?: string;
-  /** Alto (ej: '16px', 'h-4') */
   height?: string;
-  /** Clases adicionales */
-  class?: string;
-  /** Número de líneas (solo variant='text') */
   lines?: number;
-  /** Espaciado entre líneas */
-  gap?: string;
+  className?: string;
+  ariaLabel?: string;
 }
 
 const {
-  variant = 'text',
+  variant = "text",
   width,
   height,
-  lines = 3,
-  gap = '0.625rem',
+  lines = 1,
+  className = "",
+  ariaLabel = "Cargando contenido...",
 } = Astro.props;
 
 const variantStyles: Record<string, string> = {
-  text: 'rounded-lg',
-  circular: 'rounded-full',
-  rectangular: 'rounded-xl',
-  card: 'rounded-2xl',
+  text: `height: ${height || "14px"}; width: ${width || "100%"};`,
+  circle: `height: ${height || "40px"}; width: ${width || "40px"}; border-radius: 50%;`,
+  rect: `height: ${height || "80px"}; width: ${width || "100%"};`,
+  card: `height: ${height || "120px"}; width: ${width || "100%"};`,
 };
 
-const defaultSizes: Record<string, { w: string; h: string }> = {
-  text: { w: '100%', h: '0.875rem' },
-  circular: { w: '2.5rem', h: '2.5rem' },
-  rectangular: { w: '100%', h: '8rem' },
-  card: { w: '100%', h: '12rem' },
-};
-
-const sizes = defaultSizes[variant]!;
-const w = width || sizes.w;
-const h = height || sizes.h;
-
-// Build inline style
-const inlineStyle = [
-  `width: ${w}`,
-  `height: ${h}`,
-].join('; ');
+const isText = variant === "text" && lines > 1;
 ---
 
 {
-  variant === 'text' ? (
-    <div style={`display: flex; flex-direction: column; gap: ${gap};`} class={Astro.props.class ?? ''}>
-      {Array.from({ length: lines }).map((_, i) => {
-        const isLast = i === lines - 1;
-        const lineWidth = isLast ? '60%' : i === lines - 2 && lines > 2 ? '85%' : '100%';
-        return (
-          <div
-            class={`skeleton ${variantStyles[variant]}`}
-            style={`width: ${lineWidth}; height: ${h};`}
-          ></div>
-        );
-      })}
+  isText ? (
+    <div class={`cf-skeleton-group ${className}`} role="status" aria-label={ariaLabel}>
+      {Array.from({ length: lines }).map((_, i) => (
+        <div
+          class="cf-skeleton cf-skeleton-line"
+          style={`height: ${height || "14px"}; width: ${i === lines - 1 ? "60%" : "100%"};`}
+        />
+      ))}
     </div>
   ) : (
     <div
-      class={['skeleton', variantStyles[variant], Astro.props.class ?? ''].join(' ')}
-      style={inlineStyle}
-    >
-      <slot />
-    </div>
+      class={`cf-skeleton ${className}`}
+      style={variantStyles[variant]}
+      role="status"
+      aria-label={ariaLabel}
+    />
   )
 }
-</write_to_file>
+
+<style>
+  .cf-skeleton-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+</style>

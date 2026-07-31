@@ -11,28 +11,28 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <div class="animate-fade-in">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold">Ficha Clínica de Clientes</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Datos médicos, intolerancias y condiciones de tus clientes asignados</p>
+          <h1 class="text-2xl font-bold">{t('clinical.title.trainer')}</h1>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('clinical.desc.trainer')}</p>
         </div>
-        <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)]">{t('clinical.updated')}: --</div>
       </div>
 
       <!-- Stats Row -->
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Mis clientes</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.clients')}</p>
           <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Con datos clínicos</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.withData')}</p>
           <p id="stat-clinical" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Con intolerancias</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.intolerances')}</p>
           <p id="stat-intolerances" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">Con restricciones</p>
+          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.restrictions')}</p>
           <p id="stat-restrictions" class="mt-1 text-2xl font-bold text-[var(--warning)]">-</p>
         </div>
       </div>
@@ -42,14 +42,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <input
           type="text"
           id="searchInput"
-          placeholder="Buscar por nombre, condición, alergia..."
+          placeholder={t('clinical.search.placeholder.trainer')}
           class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
         />
         <button
           id="refreshBtn"
           class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
         >
-          Actualizar
+          {t('clinical.refresh')}
         </button>
       </div>
 
@@ -82,8 +82,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-[var(--text-secondary)]">No tienes clientes asignados</h3>
-        <p class="mt-1 text-sm text-[var(--text-disabled)]">Un administrador debe asignarte clientes primero</p>
+        <h3 class="text-lg font-medium text-[var(--text-secondary)]">{t('clinical.empty.trainer')}</h3>
+        <p class="mt-1 text-sm text-[var(--text-disabled)]">{t('clinical.empty.trainer.desc')}</p>
       </div>
 
       <!-- Clinical Cards -->
@@ -98,10 +98,24 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 </TrainerLayout>
 
+<script define:vars={{ lang }}>
+  // i18n strings available in client script
+  const _lang = lang;
+  const _t = (/** @type {string} */ key) => {
+    const map = window.__CAMPFIT_I18N__ || {};
+    return map[key] || key;
+  };
+</script>
+
 <script>
   import { db, auth } from '@/lib/firebase';
   import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
   import { logger } from '@/lib/shared/logger';
+  import { translations } from '@/i18n/translations';
+
+  // Detect lang from URL
+  const urlLang = new URLSearchParams(window.location.search).get('lang') || 'es';
+  const t = (key: string) => translations[urlLang as 'es' | 'en']?.[key] || translations['es']?.[key] || key;
 
   interface ClinicalClient {
     uid: string;
@@ -173,6 +187,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     document.getElementById('stat-restrictions')!.textContent = String(allClients.filter(c => c.medicalProfile?.dietaryRestrictions && (c.medicalProfile.dietaryRestrictions.glutenFree || c.medicalProfile.dietaryRestrictions.lactoseFree || c.medicalProfile.dietaryRestrictions.nutFree)).length);
   }
 
+  function genderLabel(g: string): string {
+    if (g === 'male') return t('clinical.gender.male');
+    if (g === 'female') return t('clinical.gender.female');
+    return t('clinical.gender.other');
+  }
+
+  function severityLabel(s: string): string {
+    if (s === 'mild') return t('clinical.severity.mild');
+    if (s === 'moderate') return t('clinical.severity.moderate');
+    if (s === 'severe') return t('clinical.severity.severe');
+    return s;
+  }
+
   function renderClients(clients: ClinicalClient[]): void {
     clinicalList.innerHTML = '';
     if (clients.length === 0) {
@@ -201,64 +228,64 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <p class="text-xs text-[var(--text-tertiary)]">${c.email}</p>
             </div>
           </div>
-          ${hasIntolerances ? '<span class="rounded-full bg-[var(--danger-dim)] px-2 py-1 text-xs text-[var(--danger)]">⚠️ Intolerancias</span>' : hasRestrictions ? '<span class="rounded-full bg-[var(--warning-dim)] px-2 py-1 text-xs text-[var(--warning)]">Restricciones</span>' : mp ? '<span class="rounded-full bg-[var(--brand-dim)] px-2 py-1 text-xs text-[var(--brand)]">OK</span>' : '<span class="rounded-full bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-disabled)]">Sin datos</span>'}
+          ${hasIntolerances ? `<span class="rounded-full bg-[var(--danger-dim)] px-2 py-1 text-xs text-[var(--danger)]">${t('clinical.badge.intolerances')}</span>` : hasRestrictions ? `<span class="rounded-full bg-[var(--warning-dim)] px-2 py-1 text-xs text-[var(--warning)]">${t('clinical.badge.restrictions')}</span>` : mp ? `<span class="rounded-full bg-[var(--brand-dim)] px-2 py-1 text-xs text-[var(--brand)]">${t('clinical.badge.ok')}</span>` : `<span class="rounded-full bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-disabled)]">${t('clinical.badge.noData')}</span>`}
         </div>
 
         ${mp ? `
         <div class="grid grid-cols-2 gap-2 text-sm">
           ${mp.bloodType ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🩸</span> <span class="text-[var(--text-secondary)]">${mp.bloodType}</span></div>` : ''}
-          ${mp.gender ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚧</span> <span class="text-[var(--text-secondary)]">${mp.gender === 'male' ? 'Masculino' : mp.gender === 'female' ? 'Femenino' : 'Otro'}</span></div>` : ''}
+          ${mp.gender ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚧</span> <span class="text-[var(--text-secondary)]">${genderLabel(mp.gender)}</span></div>` : ''}
           ${mp.height ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">📏</span> <span class="text-[var(--text-secondary)]">${mp.height} cm</span></div>` : ''}
           ${mp.weight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚖️</span> <span class="text-[var(--text-secondary)]">${mp.weight} kg</span></div>` : ''}
-          ${mp.age ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🎂</span> <span class="text-[var(--text-secondary)]">${mp.age} años</span></div>` : ''}
+          ${mp.age ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🎂</span> <span class="text-[var(--text-secondary)]">${mp.age} ${t('clinical.years')}</span></div>` : ''}
           ${mp.experience ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">💪</span> <span class="text-[var(--text-secondary)] capitalize">${mp.experience}</span></div>` : ''}
         </div>
 
         ${hasRestrictions ? `
         <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
-          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">🍽️ Restricciones alimentarias</p>
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">${t('clinical.section.restrictions')}</p>
           <div class="flex flex-wrap gap-1.5">
-            ${mp!.dietaryRestrictions!.glutenFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🌾 Sin gluten</span>' : ''}
-            ${mp!.dietaryRestrictions!.lactoseFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🥛 Sin lactosa</span>' : ''}
-            ${mp!.dietaryRestrictions!.vegan ? '<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">🌱 Vegano</span>' : ''}
-            ${mp!.dietaryRestrictions!.vegetarian ? '<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">🥬 Vegetariano</span>' : ''}
-            ${mp!.dietaryRestrictions!.nutFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🥜 Sin frutos secos</span>' : ''}
-            ${mp!.dietaryRestrictions!.shellfishFree ? '<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">🦐 Sin mariscos</span>' : ''}
+            ${mp!.dietaryRestrictions!.glutenFree ? `<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">${t('clinical.diet.glutenFree')}</span>` : ''}
+            ${mp!.dietaryRestrictions!.lactoseFree ? `<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">${t('clinical.diet.lactoseFree')}</span>` : ''}
+            ${mp!.dietaryRestrictions!.vegan ? `<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">${t('clinical.diet.vegan')}</span>` : ''}
+            ${mp!.dietaryRestrictions!.vegetarian ? `<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">${t('clinical.diet.vegetarian')}</span>` : ''}
+            ${mp!.dietaryRestrictions!.nutFree ? `<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">${t('clinical.diet.nutFree')}</span>` : ''}
+            ${mp!.dietaryRestrictions!.shellfishFree ? `<span class="rounded-md bg-[var(--warning-dim)] px-2 py-0.5 text-xs text-[var(--warning)]">${t('clinical.diet.shellfishFree')}</span>` : ''}
             ${(mp!.dietaryRestrictions!.other || []).map(o => `<span class="rounded-md bg-[var(--surface-3)] px-2 py-0.5 text-xs text-[var(--text-secondary)]">${o}</span>`).join('')}
           </div>
         </div>` : ''}
 
         ${(mp!.intolerances || []).length > 0 ? `
         <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
-          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">⚠️ Intolerancias</p>
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">${t('clinical.section.intolerances')}</p>
           <div class="space-y-1">
             ${(mp!.intolerances || []).map(i => `
               <div class="flex items-center justify-between rounded-lg bg-[var(--surface-4)] px-3 py-1.5">
                 <span class="text-sm text-[var(--text-secondary)]">${i.substance}</span>
-                <span class="rounded-full px-2 py-0.5 text-xs font-medium ${severityBadge(i.severity)}">${i.severity === 'mild' ? 'Leve' : i.severity === 'moderate' ? 'Moderada' : 'Severa'}</span>
+                <span class="rounded-full px-2 py-0.5 text-xs font-medium ${severityBadge(i.severity)}">${severityLabel(i.severity)}</span>
               </div>
             `).join('')}
           </div>
         </div>` : ''}
 
-        ${mp!.allergies ? `<div class="mt-2 rounded-lg bg-[var(--danger-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🤧 Alergias:</span> <span class="text-sm text-[var(--danger)]">${mp!.allergies}</span></div>` : ''}
-        ${mp!.conditions ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🏥 Condiciones:</span> <span class="text-sm text-[var(--warning)]">${mp!.conditions}</span></div>` : ''}
-        ${mp!.medications ? `<div class="mt-1 rounded-lg bg-blue-500/5 px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">💊 Medicación:</span> <span class="text-sm text-blue-300">${mp!.medications}</span></div>` : ''}
-        ${mp!.injuries ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🤕 Lesiones:</span> <span class="text-sm text-[var(--warning)]">${mp!.injuries}</span></div>` : ''}
-        ${mp!.surgery ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">🏨 Cirugías:</span> <span class="text-sm text-[var(--text-secondary)]">${mp!.surgery}</span></div>` : ''}
+        ${mp!.allergies ? `<div class="mt-2 rounded-lg bg-[var(--danger-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.allergies')}:</span> <span class="text-sm text-[var(--danger)]">${mp!.allergies}</span></div>` : ''}
+        ${mp!.conditions ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.conditions')}:</span> <span class="text-sm text-[var(--warning)]">${mp!.conditions}</span></div>` : ''}
+        ${mp!.medications ? `<div class="mt-1 rounded-lg bg-blue-500/5 px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.medications')}:</span> <span class="text-sm text-blue-300">${mp!.medications}</span></div>` : ''}
+        ${mp!.injuries ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.injuries')}:</span> <span class="text-sm text-[var(--warning)]">${mp!.injuries}</span></div>` : ''}
+        ${mp!.surgery ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.surgery')}:</span> <span class="text-sm text-[var(--text-secondary)]">${mp!.surgery}</span></div>` : ''}
 
         ${mp!.goals && mp!.goals.length > 0 ? `
         <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
-          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">🎯 Objetivos</p>
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">${t('clinical.section.goals')}</p>
           <div class="flex flex-wrap gap-1.5">${mp!.goals.map(g => `<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">${g}</span>`).join('')}</div>
         </div>` : ''}
 
         ${mp!.emergencyName || mp!.emergencyPhone ? `
         <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
-          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-1">🚨 Emergencia</p>
+          <p class="text-xs font-medium text-[var(--text-tertiary)] mb-1">${t('clinical.section.emergency')}</p>
           <p class="text-sm text-[var(--text-secondary)]">${mp!.emergencyName || '-'} · ${mp!.emergencyPhone || '-'}</p>
         </div>` : ''}
-        ` : '<p class="text-sm text-[var(--text-disabled)] italic">⚠️ Este cliente no ha completado su perfil médico</p>'}
+        ` : `<p class="text-sm text-[var(--text-disabled)] italic">${t('clinical.no.profile')}</p>`}
       `;
       clinicalList.appendChild(card);
     });
@@ -314,10 +341,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
       updateStats();
       renderClients(allClients);
-      lastUpdate.textContent = `Actualizado: ${new Date().toLocaleTimeString()}`;
+      const now = new Date().toLocaleTimeString();
+      lastUpdate.textContent = `${t('clinical.updated')}: ${now}`;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Error desconocido';
-      showError(`Error: ${msg}`);
+      const msg = err instanceof Error ? err.message : t('clinical.error.load');
+      showError(`${t('clinical.error.load')}: ${msg}`);
       loadingState.classList.add('hidden');
       emptyState.classList.remove('hidden');
     }

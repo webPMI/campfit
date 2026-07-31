@@ -34,6 +34,16 @@ export const routeGuards: RouteGuard[] = [
 
   // Admin
   { path: '/admin', allowedRoles: ['admin'] },
+  { path: '/admin/dashboard', allowedRoles: ['admin'] },
+  { path: '/admin/users', allowedRoles: ['admin'] },
+  { path: '/admin/trainers', allowedRoles: ['admin'] },
+  { path: '/admin/clients', allowedRoles: ['admin'] },
+  { path: '/admin/clinical', allowedRoles: ['admin'] },
+  { path: '/admin/workouts', allowedRoles: ['admin'] },
+  { path: '/admin/diets', allowedRoles: ['admin'] },
+  { path: '/admin/progress', allowedRoles: ['admin'] },
+  { path: '/admin/chat', allowedRoles: ['admin'] },
+  { path: '/admin/settings', allowedRoles: ['admin'] },
 
   // Trainer (también accesible por admin)
   { path: '/trainer/dashboard', allowedRoles: ['trainer', 'admin'] },

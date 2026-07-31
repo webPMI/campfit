@@ -95,6 +95,6 @@ src/
 - **Tests Centralizados en `tests/`**
 - **Pruebas Unitarias:** 426+ tests pasados (Vitest)
 - **TypeScript:** 100% libre de errores (`npm run type-check`)
-- **Compilaciones Estáticas:** 33 páginas estáticas generadas correctamente
+- **Compilaciones Estáticas:** 34 páginas estáticas generadas correctamente
 - **WCAG AA Compliance:** Contraste de colores $\ge 4.5:1$ en modo claro y oscuro, indicadores de foco visibles
 - **i18n:** Paridad 1:1 completa entre Español e Inglés (286 claves globales)

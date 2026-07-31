@@ -1,0 +1,157 @@
+---
+/**
+ * LoadingState.astro — Estado de carga unificado para toda la app.
+ *
+ * Reemplaza los 3 patrones inconsistentes (spinner fullscreen, skeleton, texto "Cargando...")
+ * con un solo componente configurable.
+ *
+ * @prop { 'fullscreen' | 'inline' | 'overlay' } variant - Tipo de loading.
+ * @prop { 'spinner' | 'dots' | 'skeleton' } [type] - Estilo del indicador.
+ * @prop { string } [message] - Mensaje a mostrar bajo el spinner.
+ * @prop { 'sm' | 'md' | 'lg' } [size] - Tamaño del spinner.
+ * @prop { string } [className] - Clases adicionales.
+ * @prop { boolean } [withFade] - Animación de entrada fade-in.
+ */
+
+export interface Props {
+  variant?: "fullscreen" | "inline" | "overlay";
+  type?: "spinner" | "dots" | "skeleton";
+  message?: string;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+  withFade?: boolean;
+}
+
+const {
+  variant = "inline",
+  type = "spinner",
+  message = "",
+  size = "md",
+  className = "",
+  withFade = true,
+} = Astro.props;
+
+const sizeMap: Record<string, string> = {
+  sm: "20px",
+  md: "36px",
+  lg: "56px",
+};
+
+const spinnerSize = sizeMap[size];
+const fadeClass = withFade ? "animate-fade-in" : "";
+const containerClass =
+  variant === "fullscreen"
+    ? "cf-loading-fullscreen"
+    : variant === "overlay"
+      ? "cf-loading-overlay"
+      : "cf-loading-inline";
+---
+
+<div
+  class={`cf-loading ${containerClass} ${fadeClass} ${className}`}
+  role="status"
+  aria-live="polite"
+  aria-label={message || "Cargando"}
+>
+  {
+    type === "spinner" && (
+      <div
+        class="cf-spinner"
+        style={`width: ${spinnerSize}; height: ${spinnerSize};`}
+        aria-hidden="true"
+      />
+    )
+  }
+
+  {
+    type === "dots" && (
+      <div class="cf-dots" aria-hidden="true">
+        <span class="cf-dot cf-dot-1" />
+        <span class="cf-dot cf-dot-2" />
+        <span class="cf-dot cf-dot-3" />
+      </div>
+    )
+  }
+
+  {
+    type === "skeleton" && (
+      <div class="cf-loading-skeleton" aria-hidden="true">
+        <div class="cf-skeleton" style="height: 16px; width: 180px; margin-bottom: 8px;" />
+        <div class="cf-skeleton" style="height: 12px; width: 140px;" />
+      </div>
+    )
+  }
+
+  {message && type !== "skeleton" && <p class="cf-loading-message">{message}</p>}
+</div>
+
+<style>
+  .cf-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .cf-loading-inline {
+    padding: 1.5rem 1rem;
+  }
+
+  .cf-loading-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--color-bg-primary, #0a0f0d);
+  }
+
+  .cf-loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    background: var(--color-bg-overlay, rgba(0, 0, 0, 0.7));
+    backdrop-filter: blur(4px);
+  }
+
+  .cf-spinner {
+    border: 2.5px solid var(--color-surface-hover, rgba(255, 255, 255, 0.08));
+    border-top-color: var(--color-brand-primary, #00e676);
+    border-radius: 50%;
+    animation: spin var(--anim-duration-slow, 400ms) linear infinite;
+  }
+
+  .cf-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .cf-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-brand-primary, #00e676);
+    animation: cf-bounce-subtle 1.4s ease-in-out infinite;
+  }
+
+  .cf-dot-1 {
+    animation-delay: 0ms;
+  }
+  .cf-dot-2 {
+    animation-delay: 160ms;
+  }
+  .cf-dot-3 {
+    animation-delay: 320ms;
+  }
+
+  .cf-loading-message {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+    margin: 0;
+  }
+
+  .cf-loading-skeleton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

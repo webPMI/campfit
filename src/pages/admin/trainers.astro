@@ -1,9 +1,9 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
-import { translations, type Language } from '@/i18n/translations';
+import { getT, getLanguage } from '@/lib/shared/i18n';
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
-const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const lang = getLanguage(Astro.url.searchParams.get('lang'));
+const t = getT(lang);
 ---
 
 <AdminLayout>
@@ -21,18 +21,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 </AdminLayout>
 
-<script is:inline set:html={`window.__ADMIN_TRAINERS_TRANSLATIONS__ = ${JSON.stringify({
-  'admin.no.trainers': t('admin.no.trainers'),
-})};`}></script>
-
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
+  import { getT } from '@/lib/shared/i18n';
   import { subscribeToUsersByRole, renderTrainerCard, getTrainerClientCount, type AdminUser } from '@/lib/admin/adminUtils';
   import { ICONS, renderEmptyState, renderLoadingState } from '@/lib/shared/ui';
 
-
-  const tr = (key: string): string =>
-    (window as any).__ADMIN_TRAINERS_TRANSLATIONS__?.[key] || key;
+  const t = getT();
 
   requireAdmin(() => {
     initTrainers();
@@ -45,7 +40,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     subscribeToUsersByRole('trainer', async (trainers) => {
       if (trainers.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.trainers, tr('admin.no.trainers'));
+        container.innerHTML = renderEmptyState(ICONS.trainers, t('admin.no.trainers'));
         return;
       }
 

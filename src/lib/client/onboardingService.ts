@@ -65,6 +65,8 @@ export async function saveOnboardingProfile(
       onboardingCompleted: true,
       updatedAt: serverTimestamp(),
     });
+    const { clearUserCache } = await import('@/lib/shared/initPage');
+    clearUserCache();
     logger.info('OnboardingService', `Perfil de onboarding completado para UID: ${uid}`);
     return true;
   } catch (err) {
@@ -85,6 +87,8 @@ export async function skipOnboarding(uid: string): Promise<boolean> {
       onboardingCompleted: true,
       updatedAt: serverTimestamp(),
     });
+    const { clearUserCache } = await import('@/lib/shared/initPage');
+    clearUserCache();
     logger.info('OnboardingService', `Onboarding omitido por el usuario UID: ${uid}`);
     return true;
   } catch (err) {
