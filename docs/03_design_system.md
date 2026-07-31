@@ -1,61 +1,148 @@
-# 🎨 Design System - CampFit 2.0
+# 🎨 Design System - CampFit
 
-## Principios de Diseño
-
-1. **Mobile-First**: Todos los componentes se diseñan primero para móvil
-2. **Modo Oscuro por Defecto**: La UI principal es dark theme
-3. **Consistencia**: Sistema de tokens (colores, tipografía, espaciado)
-4. **Accesibilidad**: WCAG 2.1 AA (contrastes, tamaños, roles ARIA)
-5. **Animaciones Suaves**: Micro-interacciones para feedback
+> **Última actualización:** 2026-07-31  
+> **Estado:** Consolidado en `docs/MASTER.md` (sección 4) y `docs/THEME.md`
 
 ---
 
-## Tokens de Diseño
+## 📑 Índice
 
-### Colores (Modo Oscuro)
+1. [Principios de Diseño](#1-principios-de-diseño)
+2. [Tokens de Diseño](#2-tokens-de-diseño)
+3. [Catálogo de Componentes](#3-catálogo-de-componentes)
+4. [Responsive Breakpoints](#4-responsive-breakpoints)
+5. [Iconos](#5-iconos)
+
+---
+
+## 1. Principios de Diseño
+
+### 1.1 Filosofía
+
+CampFit sigue una filosofía de diseño centrada en el usuario, con foco en la simplicidad, accesibilidad y rendimiento.
+
+### 1.2 Principios Core
+
+1. **Mobile-First:** Todos los componentes se diseñan primero para móvil
+2. **Modo Oscuro por Defecto:** La UI principal es dark theme
+3. **Consistencia:** Sistema de tokens (colores, tipografía, espaciado)
+4. **Accesibilidad:** WCAG 2.1 AA (contrastes, tamaños, roles ARIA)
+5. **Animaciones Suaves:** Micro-interacciones para feedback
+
+### 1.3 Metas de Diseño
+
+- **Claridad:** Información fácil de escanear y entender
+- **Eficiencia:** Menos clics para completar tareas
+- **Feedback:** Respuesta visual a cada acción
+- **Previsibilidad:** Comportamiento consistente en toda la app
+- **Accesibilidad:** Usable por todos los usuarios
+
+---
+
+## 2. Tokens de Diseño
+
+> **Nota:** Para la documentación completa del sistema de temas, ver `docs/THEME.md`
+
+### 2.1 Colores
+
+#### Paleta Principal (Modo Oscuro)
 
 ```css
-/* Tokens CSS - Sintaxis Tailwind CSS 4 (@theme) */
 @theme {
-  --color-primary: #00E676;        /* Verde neón - acción principal */
-  --color-primary-hover: #00C853;
-  --color-primary-dim: #1B5E20;
+  /* Primarios - Verde Neón */
+  --color-primary: #00E676;        /* Acción principal */
+  --color-primary-hover: #00C853;  /* Hover */
+  --color-primary-dim: #1B5E20;    /* Fondo dim */
   
-  --color-secondary: #2979FF;      /* Azul - links, información */
+  /* Secundarios - Azul */
+  --color-secondary: #2979FF;      /* Links, información */
   --color-secondary-hover: #2962FF;
   
+  /* Fondos */
   --color-bg-primary: #0A0A0A;     /* Fondo principal */
   --color-bg-secondary: #1A1A1A;   /* Tarjetas, paneles */
   --color-bg-tertiary: #2A2A2A;    /* Hover, elementos elevados */
   
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #B0B0B0;
-  --color-text-disabled: #666666;
+  /* Textos */
+  --color-text-primary: #FFFFFF;   /* Texto principal */
+  --color-text-secondary: #B0B0B0; /* Texto secundario */
+  --color-text-disabled: #666666;  /* Texto deshabilitado */
   
-  --color-border: #333333;
-  --color-border-light: #444444;
+  /* Bordes */
+  --color-border: #333333;         /* Borde normal */
+  --color-border-light: #444444;   /* Borde claro */
   
-  --color-success: #00E676;
-  --color-warning: #FFD600;
-  --color-danger: #FF1744;
-  --color-info: #2979FF;
+  /* Estados */
+  --color-success: #00E676;        /* Verde */
+  --color-warning: #FFD600;        /* Amarillo */
+  --color-danger: #FF1744;         /* Rojo */
+  --color-info: #2979FF;           /* Azul */
   
-  --color-alert-bg: #4A0000;       /* Fondo de alerta (llamado atención) */
-  --color-alert-border: #FF1744;
+  /* Alertas */
+  --color-alert-bg: #4A0000;       /* Fondo de alerta */
+  --color-alert-border: #FF1744;   /* Borde de alerta */
   
+  /* Adherencia */
   --color-green: #00E676;          /* > 90% adherencia */
   --color-yellow: #FFD600;         /* 70-90% adherencia */
   --color-red: #FF1744;            /* < 70% adherencia */
 }
 ```
 
-### Tipografía
+#### Paleta Principal (Modo Claro)
+
+```css
+:root,
+[data-theme='light'] {
+  /* Primarios - Verde Esmeralda */
+  --color-primary: #059669;        /* Acción principal */
+  --color-primary-hover: #047857;  /* Hover */
+  --color-primary-dim: #d1fae5;    /* Fondo dim */
+  
+  /* Secundarios - Azul */
+  --color-secondary: #2563eb;      /* Links, información */
+  --color-secondary-hover: #1d4ed8;
+  
+  /* Fondos */
+  --color-bg-primary: #fafafa;     /* Fondo principal */
+  --color-bg-secondary: #f4f4f5;   /* Tarjetas, paneles */
+  --color-bg-tertiary: #e4e4e7;    /* Hover, elementos elevados */
+  
+  /* Textos */
+  --color-text-primary: #18181b;   /* Texto principal */
+  --color-text-secondary: #52525b; /* Texto secundario */
+  --color-text-disabled: #a1a1aa;  /* Texto deshabilitado */
+  
+  /* Bordes */
+  --color-border: #e4e4e7;         /* Borde normal */
+  --color-border-light: #d4d4d8;   /* Borde claro */
+  
+  /* Estados */
+  --color-success: #16a34a;        /* Verde */
+  --color-warning: #ca8a04;        /* Amarillo */
+  --color-danger: #dc2626;         /* Rojo */
+  --color-info: #2563eb;           /* Azul */
+  
+  /* Alertas */
+  --color-alert-bg: #fef2f2;       /* Fondo de alerta */
+  --color-alert-border: #dc2626;   /* Borde de alerta */
+  
+  /* Adherencia */
+  --color-green: #16a34a;          /* > 90% adherencia */
+  --color-yellow: #ca8a04;         /* 70-90% adherencia */
+  --color-red: #dc2626;            /* < 70% adherencia */
+}
+```
+
+### 2.2 Tipografía
 
 ```css
 :root {
+  /* Familias */
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
+  /* Tamaños */
   --text-xs: 0.75rem;     /* 12px */
   --text-sm: 0.875rem;    /* 14px */
   --text-base: 1rem;      /* 16px */
@@ -64,6 +151,7 @@
   --text-2xl: 1.5rem;     /* 24px */
   --text-3xl: 1.875rem;   /* 30px */
   
+  /* Pesos */
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
@@ -71,7 +159,16 @@
 }
 ```
 
-### Espaciado
+**Uso:**
+- `text-xs`: Labels pequeños, timestamps
+- `text-sm`: Textos secundarios, hints
+- `text-base`: Texto base, párrafos
+- `text-lg`: Subtítulos
+- `text-xl`: Títulos de sección
+- `text-2xl`: Títulos de página
+- `text-3xl`: Títulos principales
+
+### 2.3 Espaciado
 
 ```css
 :root {
@@ -87,16 +184,27 @@
 }
 ```
 
-### Bordes y Sombras
+**Uso:**
+- `space-1`: Separación mínima (iconos)
+- `space-2`: Espaciado interno de botones
+- `space-3`: Separación entre elementos relacionados
+- `space-4`: Espaciado estándar
+- `space-6`: Separación entre secciones
+- `space-8`: Separación entre bloques grandes
+- `space-10/12`: Separación entre páginas
+
+### 2.4 Bordes y Sombras
 
 ```css
 :root {
+  /* Radios */
   --radius-sm: 0.375rem;   /* 6px */
   --radius-md: 0.5rem;     /* 8px */
   --radius-lg: 0.75rem;    /* 12px */
   --radius-xl: 1rem;       /* 16px */
   --radius-full: 9999px;
   
+  /* Sombras */
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
   --shadow-lg: 0 10px 15px rgba(0,0,0,0.5);
@@ -104,301 +212,543 @@
 }
 ```
 
+**Uso:**
+- `radius-sm`: Inputs, botones pequeños
+- `radius-md`: Cards, modales
+- `radius-lg`: Elementos destacados
+- `radius-xl`: Modales grandes
+- `radius-full`: Avatares, pills
+
+### 2.5 Transiciones
+
+```css
+:root {
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+}
+```
+
+**Uso:**
+- `transition-fast`: Hover states
+- `transition-normal`: Transiciones de estado
+- `transition-slow`: Animaciones de página
+
 ---
 
-## Catálogo de Componentes
+## 3. Catálogo de Componentes
 
-> **Nota:** Todos los componentes se implementan como funciones JS que retornan strings HTML. No se usa React ni JSX.
+> **Nota:** Todos los componentes se implementan como archivos `.astro` (Astro components)
 
-### Átomos
+### 3.1 Componentes Atómicos
 
 #### Button
-```typescript
-// Variantes: primary, secondary, outline, ghost, danger
-// Tamaños: sm, md, lg
-// Estados: default, hover, active, disabled, loading
-function Button({ variant = 'primary', size = 'md', loading = false, children }) {
-  return `<button class="btn btn-${variant} btn-${size}" ${loading ? 'disabled' : ''}>
-    ${loading ? '<span class="spinner-sm"></span>' : ''}
-    ${children}
-  </button>`;
-}
+
+**Variantes:**
+- `primary` - Acción principal (verde)
+- `secondary` - Acción secundaria (azul)
+- `outline` - Borde sin fondo
+- `ghost` - Sin borde ni fondo
+- `danger` - Acción destructiva (rojo)
+
+**Tamaños:**
+- `sm` - 32px altura
+- `md` - 40px altura (default)
+- `lg` - 48px altura
+
+**Estados:**
+- `default` - Estado normal
+- `hover` - Al pasar el mouse
+- `active` - Al hacer clic
+- `disabled` - Deshabilitado
+- `loading` - Con spinner
+
+**Ejemplo:**
+```astro
+<Button variant="primary" size="md" loading={false}>
+  Guardar Cambios
+</Button>
 ```
 
 #### Input
-```typescript
-// Tipos: text, email, password, number, search
-// Estados: default, focused, error, disabled
-function Input({ type = 'text', label, placeholder, error, icon }) {
-  return `
-    <div class="input-group">
-      ${label ? `<label class="input-label">${label}</label>` : ''}
-      <div class="input-wrapper ${error ? 'input-error' : ''}">
-        ${icon ? `<span class="input-icon">${icon}</span>` : ''}
-        <input type="${type}" placeholder="${placeholder || ''}" class="input-field" />
-      </div>
-      ${error ? `<span class="input-error-text">${error}</span>` : ''}
-    </div>
-  `;
-}
+
+**Tipos:**
+- `text` - Texto plano
+- `email` - Email con validación
+- `password` - Contraseña con toggle visibilidad
+- `number` - Número con controles
+- `search` - Búsqueda con icono
+
+**Estados:**
+- `default` - Estado normal
+- `focused` - Con foco
+- `error` - Con mensaje de error
+- `disabled` - Deshabilitado
+
+**Ejemplo:**
+```astro
+<Input 
+  type="email" 
+  label="Email" 
+  placeholder="tu@email.com"
+  error={errors.email}
+  required
+/>
 ```
 
 #### Select
-```typescript
-// Variantes: default, searchable (con búsqueda)
-function Select({ label, options = [], value = '' }) {
-  return `
-    <div class="select-group">
-      ${label ? `<label class="select-label">${label}</label>` : ''}
-      <select class="select-field">
-        ${options.map(opt => `
-          <option value="${opt.value}" ${opt.value === value ? 'selected' : ''}>
-            ${opt.label}
-          </option>
-        `).join('')}
-      </select>
-    </div>
-  `;
-}
+
+**Variantes:**
+- `default` - Select normal
+- `searchable` - Con búsqueda interna
+
+**Ejemplo:**
+```astro
+<Select 
+  label="Rol"
+  options={[
+    { value: 'client', label: 'Cliente' },
+    { value: 'trainer', label: 'Entrenador' },
+    { value: 'admin', label: 'Administrador' }
+  ]}
+  value={user.role}
+  onChange={handleRoleChange}
+/>
 ```
 
 #### Slider
-```typescript
-// Rango: 1-10 (RPE), 0-300 (peso)
-function Slider({ min = 1, max = 10, value = 5, label, showValue = false }) {
-  return `
-    <div class="slider-group">
-      ${label ? `<label class="slider-label">${label}</label>` : ''}
-      <input type="range" min="${min}" max="${max}" value="${value}" class="slider" />
-      ${showValue ? `<span class="slider-value">${value}</span>` : ''}
-    </div>
-  `;
-}
+
+**Uso:** RPE (1-10), rangos de valores
+
+**Ejemplo:**
+```astro
+<Slider 
+  min={1} 
+  max={10} 
+  value={rpe} 
+  label="Esfuerzo Percibido"
+  showValue
+  onChange={setRpe}
+/>
 ```
 
 #### Switch
-```typescript
-function Switch({ checked = false, label, onChange }) {
-  return `
-    <label class="switch-group">
-      <input type="checkbox" class="switch-input" ${checked ? 'checked' : ''} />
-      <span class="switch-slider"></span>
-      ${label ? `<span class="switch-label">${label}</span>` : ''}
-    </label>
-  `;
-}
-```
 
-#### Spinner
-```typescript
-// Tamaños: sm, md, lg
-function Spinner({ size = 'md' }) {
-  return `<div class="spinner spinner-${size}"></div>`;
-}
+**Uso:** Toggles de configuración
+
+**Ejemplo:**
+```astro
+<Switch 
+  checked={notificationsEnabled}
+  label="Notificaciones"
+  onChange={toggleNotifications}
+/>
 ```
 
 #### Badge
-```typescript
-// Variantes: success, warning, danger, info, default
-function Badge({ variant = 'default', children }) {
-  return `<span class="badge badge-${variant}">${children}</span>`;
-}
+
+**Variantes:**
+- `default` - Gris
+- `success` - Verde
+- `warning` - Amarillo
+- `danger` - Rojo
+- `info` - Azul
+
+**Ejemplo:**
+```astro
+<Badge variant="success">Activo</Badge>
+<Badge variant="danger">Inactivo</Badge>
 ```
 
----
-
-### Moléculas
+### 3.2 Componentes Moleculares
 
 #### StatCard
-```typescript
-function StatCard({ icon, label, value, trend, trendValue }) {
-  return `
-    <div class="stat-card">
-      <div class="stat-card-icon">${icon}</div>
-      <div class="stat-card-body">
-        <span class="stat-card-label">${label}</span>
-        <span class="stat-card-value">${value}</span>
-        ${trend ? `<span class="stat-card-trend trend-${trend}">${trendValue}</span>` : ''}
-      </div>
-    </div>
-  `;
-}
+
+**Uso:** Tarjetas de estadísticas en dashboards
+
+**Props:**
+- `icon` - Icono Lucide
+- `label` - Título de la estadística
+- `value` - Valor principal
+- `trend` - Tendencia (up/down/neutral)
+- `trendValue` - Valor de tendencia (ej: "+5%")
+
+**Ejemplo:**
+```astro
+<StatCard 
+  icon={Dumbbell}
+  label="Rutinas Completadas"
+  value="12"
+  trend="up"
+  trendValue="+3 esta semana"
+/>
 ```
 
 #### ProgressBar
-```typescript
-function ProgressBar({ value = 0, max = 100, label, showPercentage = false, variant = 'primary' }) {
-  const pct = Math.round((value / max) * 100);
-  return `
-    <div class="progress-group">
-      ${label ? `<span class="progress-label">${label}</span>` : ''}
-      <div class="progress-bar">
-        <div class="progress-fill progress-${variant}" style="width: ${pct}%"></div>
-      </div>
-      ${showPercentage ? `<span class="progress-pct">${pct}%</span>` : ''}
-    </div>
-  `;
-}
+
+**Props:**
+- `value` - Valor actual
+- `max` - Valor máximo (default: 100)
+- `label` - Etiqueta opcional
+- `showPercentage` - Mostrar porcentaje
+- `variant` - primary/secondary/success/warning/danger
+
+**Ejemplo:**
+```astro
+<ProgressBar 
+  value={75} 
+  max={100}
+  label="Adherencia"
+  showPercentage
+  variant="success"
+/>
 ```
 
 #### AlertBanner
-```typescript
-// Variantes: info, success, warning, danger
-function AlertBanner({ variant = 'info', message, persistent = false }) {
-  return `
-    <div class="alert-banner alert-${variant} ${persistent ? 'alert-persistent' : ''}">
-      <span class="alert-message">${message}</span>
-      ${!persistent ? '<button class="alert-dismiss">&times;</button>' : ''}
-    </div>
-  `;
-}
-```
 
-#### Accordion
-```typescript
-function Accordion({ title, children }) {
-  return `
-    <details class="accordion">
-      <summary class="accordion-title">${title}</summary>
-      <div class="accordion-content">${children}</div>
-    </details>
-  `;
-}
+**Variantes:**
+- `info` - Azul
+- `success` - Verde
+- `warning` - Amarillo
+- `danger` - Rojo
+
+**Props:**
+- `variant` - Tipo de alerta
+- `message` - Mensaje a mostrar
+- `persistent` - Si se puede cerrar
+- `onClose` - Callback al cerrar
+
+**Ejemplo:**
+```astro
+<AlertBanner 
+  variant="warning"
+  message="No has registrado tu peso en 3 días"
+  onClose={() => setShowAlert(false)}
+/>
 ```
 
 #### EmptyState
-```typescript
-function EmptyState({ icon, title, description, actionLabel, onAction }) {
-  return `
-    <div class="empty-state">
-      <div class="empty-state-icon">${icon}</div>
-      <h3 class="empty-state-title">${title}</h3>
-      <p class="empty-state-desc">${description}</p>
-      ${actionLabel ? `<button class="btn btn-primary" onclick="${onAction}">${actionLabel}</button>` : ''}
-    </div>
-  `;
-}
+
+**Props:**
+- `icon` - Icono Lucide
+- `title` - Título
+- `description` - Descripción
+- `actionLabel` - Texto del botón
+- `onAction` - Callback del botón
+
+**Ejemplo:**
+```astro
+<EmptyState 
+  icon={Dumbbell}
+  title="No hay rutinas asignadas"
+  description="Tu entrenador aún no te ha asignado una rutina"
+  actionLabel="Contactar entrenador"
+  onAction={() => navigate('/client/chat')}
+/>
 ```
 
----
+#### ErrorState
 
-### Organismos
+**Props:**
+- `title` - Título del error
+- `message` - Mensaje descriptivo
+- `retryLabel` - Texto del botón de reintento
+- `onRetry` - Callback de reintento
+
+**Ejemplo:**
+```astro
+<ErrorState 
+  title="Error al cargar datos"
+  message="No se pudo conectar con el servidor"
+  retryLabel="Reintentar"
+  onRetry={loadData}
+/>
+```
+
+#### LoadingSpinner
+
+**Tamaños:**
+- `sm` - 16px
+- `md` - 24px (default)
+- `lg` - 40px
+
+**Variantes:**
+- `default` - Spinner centrado
+- `inline` - Spinner en línea con texto
+
+**Ejemplo:**
+```astro
+<LoadingSpinner size="md" />
+<LoadingSpinner variant="inline" text="Cargando..." />
+```
+
+#### Skeleton
+
+**Variantes:**
+- `text` - Línea de texto
+- `rect` - Rectángulo
+- `circle` - Círculo
+
+**Props:**
+- `width` - Ancho (px o %)
+- `height` - Alto (px o %)
+- `className` - Clases adicionales
+
+**Ejemplo:**
+```astro
+<Skeleton variant="text" width="96px" height="16px" />
+<Skeleton variant="rect" width="100%" height="200px" />
+<Skeleton variant="circle" width="40px" height="40px" />
+```
+
+#### SkeletonGroup
+
+**Variantes:**
+- `card-grid` - Grid de cards
+- `list` - Lista de items
+- `table` - Tabla de datos
+
+**Props:**
+- `count` - Número de items (card-grid y list)
+- `rows` - Número de filas (table)
+- `cols` - Número de columnas (table)
+
+**Ejemplo:**
+```astro
+<SkeletonGroup variant="card-grid" count={6} />
+<SkeletonGroup variant="list" count={4} />
+<SkeletonGroup variant="table" rows={5} cols={4} />
+```
+
+#### LoadingState
+
+**Variantes:**
+- `inline` - En línea con texto
+- `centered` - Centrado en contenedor
+
+**Tipos:**
+- `spinner` - Spinner animado
+- `skeleton` - Placeholder skeleton
+
+**Tamaños:**
+- `sm` - 16px
+- `md` - 24px
+- `lg` - 40px
+
+**Ejemplo:**
+```astro
+<LoadingState variant="inline" type="spinner" size="sm" />
+<LoadingState variant="centered" type="skeleton" />
+```
+
+#### PageTransition
+
+**Animaciones:**
+- `fade-up` - Fade in con movimiento hacia arriba
+- `fade-in` - Fade in simple
+- `scale` - Escala desde 0.95 a 1
+- `slide` - Deslizamiento desde la derecha
+
+**Props:**
+- `animation` - Tipo de animación
+- `duration` - Duración en ms (default: 300)
+
+**Ejemplo:**
+```astro
+<PageTransition animation="fade-up">
+  <!-- contenido de la página -->
+</PageTransition>
+```
+
+#### AnimatedCounter
+
+**Props:**
+- `value` - Valor final
+- `duration` - Duración en ms (default: 1000)
+- `easing` - Función de easing (default: ease-out)
+
+**Ejemplo:**
+```astro
+<AnimatedCounter value={75} duration={1000} />
+```
+
+### 3.3 Componentes Organismos
 
 #### TabBar
-```typescript
-// Uso: días de la semana, comidas del día
-function TabBar({ tabs = [], activeTab, onChange }) {
-  return `
-    <div class="tab-bar">
-      ${tabs.map(tab => `
-        <button class="tab ${tab.id === activeTab ? 'tab-active' : ''}" 
-                data-tab="${tab.id}">
-          ${tab.label}
-        </button>
-      `).join('')}
-    </div>
-  `;
-}
+
+**Uso:** Navegación por pestañas
+
+**Props:**
+- `tabs` - Array de tabs `{ id, label, icon? }`
+- `activeTab` - Tab activo
+- `onChange` - Callback al cambiar
+
+**Ejemplo:**
+```astro
+<TabBar 
+  tabs={[
+    { id: 'lun', label: 'Lun' },
+    { id: 'mar', label: 'Mar' },
+    { id: 'mie', label: 'Mié' }
+  ]}
+  activeTab={activeDay}
+  onChange={setActiveDay}
+/>
 ```
 
 #### Modal
-```typescript
-function Modal({ open = false, title, children, size = 'sm' }) {
-  return `
-    <div class="modal-overlay ${open ? 'modal-open' : ''}">
-      <div class="modal modal-${size}">
-        <div class="modal-header">
-          <h3 class="modal-title">${title}</h3>
-          <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">${children}</div>
-      </div>
-    </div>
-  `;
-}
+
+**Props:**
+- `open` - Si está abierto
+- `title` - Título del modal
+- `size` - sm/md/lg (default: md)
+- `onClose` - Callback al cerrar
+
+**Características:**
+- Focus trap
+- Cierre con Escape
+- No cierra con clic fuera
+- Overlay con blur
+
+**Ejemplo:**
+```astro
+<Modal 
+  open={isModalOpen} 
+  title="Confirmar Acción"
+  onClose={() => setIsModalOpen(false)}
+>
+  <p>¿Estás seguro?</p>
+  <Button variant="primary" onclick={handleConfirm}>Confirmar</Button>
+</Modal>
 ```
 
-#### VideoPlayer
-```typescript
-function VideoPlayer({ src, poster, controls = true, autoPlay = false }) {
-  return `
-    <div class="video-player">
-      <video src="${src}" poster="${poster || ''}" 
-             ${controls ? 'controls' : ''} 
-             ${autoPlay ? 'autoplay' : ''}>
-      </video>
-    </div>
-  `;
-}
-```
+#### ConfirmModal
 
-#### FileUploader
-```typescript
-function FileUploader({ accept = 'image/*,video/*', maxSize = 100 * 1024 * 1024, label }) {
-  return `
-    <div class="file-uploader">
-      <label class="file-uploader-label">
-        <span>${label || 'Subir archivo'}</span>
-        <input type="file" accept="${accept}" class="file-uploader-input" />
-      </label>
-      <div class="file-uploader-progress" style="display:none">
-        <div class="progress-bar"><div class="progress-fill"></div></div>
-      </div>
-    </div>
-  `;
-}
-```
+**Props:**
+- `open` - Si está abierto
+- `title` - Título
+- `message` - Mensaje de confirmación
+- `confirmLabel` - Texto botón confirmar
+- `cancelLabel` - Texto botón cancelar
+- `onConfirm` - Callback confirmar
+- `onCancel` - Callback cancelar
+- `variant` - danger/warning/info
 
-#### ChatBubble
-```typescript
-function ChatBubble({ message, type = 'received', timestamp, isRead = false }) {
-  return `
-    <div class="chat-bubble chat-${type}">
-      <div class="chat-bubble-content">${message}</div>
-      <div class="chat-bubble-meta">
-        <span class="chat-time">${timestamp}</span>
-        ${type === 'sent' ? `<span class="chat-read ${isRead ? 'read' : ''}">✓✓</span>` : ''}
-      </div>
-    </div>
-  `;
-}
+**Ejemplo:**
+```astro
+<ConfirmModal
+  open={showDeleteModal}
+  title="Eliminar usuario"
+  message="Esta acción no se puede deshacer"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  variant="danger"
+  onConfirm={handleDelete}
+  onCancel={() => setShowDeleteModal(false)}
+/>
 ```
 
 #### DataTable
-```typescript
-function DataTable({ columns = [], data = [], searchable = false, paginated = false, pageSize = 20 }) {
-  return `
-    <div class="data-table-wrapper">
-      ${searchable ? '<input type="search" class="data-table-search" placeholder="Buscar..." />' : ''}
-      <table class="data-table">
-        <thead>
-          <tr>${columns.map(col => `<th>${col.label}</th>`).join('')}</tr>
-        </thead>
-        <tbody>
-          ${data.map(row => `
-            <tr>${columns.map(col => `<td>${row[col.key] || ''}</td>`).join('')}</tr>
-          `).join('')}
-        </tbody>
-      </table>
-      ${paginated ? `<div class="data-table-pagination">Página 1 de ${Math.ceil(data.length / pageSize)}</div>` : ''}
-    </div>
-  `;
-}
+
+**Props:**
+- `columns` - Array de columnas `{ key, label, sortable? }`
+- `data` - Array de datos
+- `searchable` - Si tiene búsqueda
+- `paginated` - Si tiene paginación
+- `pageSize` - Items por página
+
+**Características:**
+- Ordenamiento por columna
+- Búsqueda en tiempo real
+- Paginación
+- Responsive (scroll horizontal en móvil)
+
+**Ejemplo:**
+```astro
+<DataTable 
+  columns={[
+    { key: 'name', label: 'Nombre', sortable: true },
+    { key: 'email', label: 'Email' },
+    { key: 'role', label: 'Rol' }
+  ]}
+  data={users}
+  searchable
+  paginated
+  pageSize={10}
+/>
 ```
 
 #### LineChart
-```typescript
-function LineChart({ data = [], xKey = 'date', yKey = 'value', label, height = 250 }) {
-  // Implementación con Canvas o SVG
-  return `<div class="line-chart" style="height: ${height}px">
-    <canvas id="chart-${label}" data-x="${xKey}" data-y="${yKey}"></canvas>
-  </div>`;
-}
+
+**Props:**
+- `data` - Array de puntos `{ x, y }`
+- `xKey` - Key para eje X
+- `yKey` - Key para eje Y
+- `label` - Etiqueta del gráfico
+- `height` - Altura en px (default: 250)
+
+**Características:**
+- SVG nativo (sin librerías externas)
+- Auto-scaling
+- Tooltips al hover
+- Responsive
+
+**Ejemplo:**
+```astro
+<LineChart 
+  data={weightHistory}
+  xKey="date"
+  yKey="weight"
+  label="Evolución de Peso"
+  height={250}
+/>
+```
+
+#### ChatBubble
+
+**Props:**
+- `message` - Contenido del mensaje
+- `type` - sent/received
+- `timestamp` - Fecha/hora
+- `isRead` - Si fue leído
+
+**Ejemplo:**
+```astro
+<ChatBubble 
+  message="¡Hola! ¿Cómo va el entrenamiento?"
+  type="sent"
+  timestamp="10:30"
+  isRead={true}
+/>
+```
+
+#### FileUploader
+
+**Props:**
+- `accept` - Tipos de archivo (default: 'image/*')
+- `maxSize` - Tamaño máximo en bytes
+- `label` - Texto del botón
+- `onUpload` - Callback al subir
+
+**Características:**
+- Drag and drop
+- Preview de imagen
+- Validación de tipo y tamaño
+- Progreso de subida
+
+**Ejemplo:**
+```astro
+<FileUploader 
+  accept="image/*"
+  maxSize={5 * 1024 * 1024}  // 5MB
+  label="Subir foto de progreso"
+  onUpload={handlePhotoUpload}
+/>
 ```
 
 ---
 
-## Responsive Breakpoints
+## 4. Responsive Breakpoints
 
 ```css
 /* Tailwind defaults */
@@ -414,26 +764,163 @@ xl: 1280px   /* Desktop */
 /* lg: layout desktop con sidebar permanente */
 ```
 
+### 4.1 Estrategia Mobile-First
+
+1. **Diseño base (móvil):** Layout vertical, navegación inferior
+2. **Tablet (md):** Sidebar colapsable, más espacio horizontal
+3. **Desktop (lg):** Sidebar permanente, layout de 3 columnas
+
+### 4.2 Layouts por Dispositivo
+
+#### Móvil (< 768px)
+- Bottom navigation
+- Cards apiladas verticalmente
+- Modales a pantalla completa
+- Tablas con scroll horizontal
+
+#### Tablet (768px - 1023px)
+- Sidebar colapsable
+- Grid de 2 columnas
+- Modales centrados
+- Tablas adaptadas
+
+#### Desktop (≥ 1024px)
+- Sidebar permanente
+- Grid de 3 columnas
+- Modales centrados
+- Tablas completas
+
 ---
 
-## Iconos
+## 5. Iconos
 
-Usar **Lucide** como librería de iconos principal (versión standalone, sin React):
+### 5.1 Librería
+
+**Lucide Icons** (versión standalone, sin React)
 
 ```bash
 npm install lucide
 ```
 
-Iconos clave del proyecto:
+### 5.2 Iconos por Contexto
+
+#### Rutinas y Ejercicios
 - `Dumbbell` - Rutinas/ejercicios
-- `Apple` - Dietas/nutrición
-- `TrendingUp` - Progreso
-- `MessageCircle` - Chat
-- `Bell` - Alertas/notificaciones
-- `User` - Perfil
-- `Settings` - Configuración
-- `Shield` - Seguridad/Admin
-- `Camera` - Fotos de progreso
-- `Play` - Video
+- `Play` - Iniciar/Reproducir
 - `Check` - Completado
+- `Circle` - Pendiente
+
+#### Nutrición
+- `Apple` - Dietas/nutrición
+- `Utensils` - Comidas
+- `Flame` - Calorías
+- `Beef` - Proteínas
+- `Wheat` - Carbohidratos
+- `Droplets` - Grasas
+
+#### Progreso
+- `TrendingUp` - Progreso
+- `Camera` - Fotos
+- `Scale` - Peso
+- `BarChart3` - Estadísticas
+
+#### Chat y Comunicación
+- `MessageCircle` - Chat
+- `Send` - Enviar mensaje
+- `Bell` - Alertas/notificaciones
 - `AlertTriangle` - Llamados de atención
+
+#### Usuarios y Roles
+- `User` - Perfil
+- `Users` - Grupo de usuarios
+- `Shield` - Seguridad/Admin
+- `Settings` - Configuración
+
+#### Navegación
+- `Home` - Inicio
+- `Menu` - Menú hamburguesa
+- `X` - Cerrar
+- `ChevronLeft` - Atrás
+- `ChevronRight` - Adelante
+- `Search` - Búsqueda
+
+#### Acciones
+- `Plus` - Añadir
+- `Edit` - Editar
+- `Trash2` - Eliminar
+- `Save` - Guardar
+- `RefreshCw` - Recargar
+- `Download` - Descargar
+- `Upload` - Subir
+
+#### Estados
+- `CheckCircle` - Éxito
+- `XCircle` - Error
+- `AlertCircle` - Advertencia
+- `Info` - Información
+- `Loader` - Cargando
+
+### 5.3 Uso de Iconos
+
+```astro
+<!-- Importar icono -->
+<script>
+  import { Dumbbell } from 'lucide';
+</script>
+
+<!-- Usar icono -->
+<Dumbbell size={24} class="text-primary" />
+
+<!-- Con props -->
+<Dumbbell 
+  size={24} 
+  strokeWidth={2}
+  class="theme-text-primary"
+/>
+```
+
+---
+
+## 🎨 Guía de Estilos
+
+### 6.1 Espaciado
+
+- **Mínimo:** 4px (space-1)
+- **Estándar:** 16px (space-4)
+- **Máximo:** 48px (space-12)
+
+### 6.2 Tipografía
+
+- **Títulos:** Bold (700)
+- **Cuerpo:** Normal (400)
+- **Énfasis:** Medium (500)
+
+### 6.3 Colores
+
+- **Primario:** Verde neón (acciones principales)
+- **Secundario:** Azul (información)
+- **Éxito:** Verde
+- **Advertencia:** Amarillo
+- **Error:** Rojo
+
+### 6.4 Sombras
+
+- **Cards:** shadow-md
+- **Modales:** shadow-lg
+- **Elevado:** shadow-lg + glow
+
+---
+
+## 🔗 Referencias
+
+- **Documentación Maestra:** `docs/MASTER.md` (sección 4)
+- **Sistema de Temas:** `docs/THEME.md`
+- **Accesibilidad:** `docs/ACCESIBILIDAD.md`
+- **Tailwind CSS:** https://tailwindcss.com/docs
+- **Lucide Icons:** https://lucide.dev
+
+---
+
+**Documento creado:** 2026-06-13  
+**Última actualización:** 2026-07-31  
+**Mantenido por:** Equipo CampFit
