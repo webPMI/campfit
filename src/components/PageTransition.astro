@@ -41,37 +41,4 @@ const staggerAttr = stagger ? 'data-stagger' : '';
   <slot />
 </div>
 
-<style>
-  .cf-page-transition {
-    width: 100%;
-  }
 
-  .cf-page-transition[data-stagger] .stagger-item {
-    animation: cf-fade-in-up var(--duration-normal) var(--ease-out-expo) both;
-  }
-
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(1) {
-    animation-delay: var(--stagger-1);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(2) {
-    animation-delay: var(--stagger-2);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(3) {
-    animation-delay: var(--stagger-3);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(4) {
-    animation-delay: var(--stagger-4);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(5) {
-    animation-delay: var(--stagger-5);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(6) {
-    animation-delay: var(--stagger-6);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(7) {
-    animation-delay: var(--stagger-7);
-  }
-  .cf-page-transition[data-stagger] .stagger-item:nth-child(8) {
-    animation-delay: var(--stagger-8);
-  }
-</style>

@@ -21,17 +21,17 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="animate-fade-in space-y-6">
         <!-- Header -->
         <div>
-          <h2 class="text-xl font-bold">{t('client.medical.title')}</h2>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.medical.desc')}</p>
+          <h2 data-i18n="client.medical.title" class="text-xl font-bold">{t('client.medical.title')}</h2>
+          <p data-i18n="client.medical.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.medical.desc')}</p>
         </div>
 
         <!-- Success Message -->
-        <div id="successMessage" class="hidden rounded-xl border border-emerald-500/30 bg-[var(--brand-dim)] p-4 text-sm text-[var(--brand)]">
+        <div id="successMessage" data-i18n="client.medical.success" class="hidden rounded-xl border border-emerald-500/30 bg-[var(--brand-dim)] p-4 text-sm text-[var(--brand)]">
           {t('client.medical.success')}
         </div>
 
         <!-- Error Message -->
-        <div id="errorMessage" class="hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] p-4 text-sm text-[var(--danger)]">
+        <div id="errorMessage" data-i18n="client.medical.error" class="hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] p-4 text-sm text-[var(--danger)]">
           {t('client.medical.error')}
         </div>
 
@@ -42,7 +42,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Información básica</h3>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.height')}</label>
+                <label data-i18n="client.medical.height" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.height')}</label>
                 <input
                   id="heightInput"
                   type="number"
@@ -52,7 +52,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.weight')}</label>
+                <label data-i18n="client.medical.weight" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.weight')}</label>
                 <input
                   id="weightInput"
                   type="number"

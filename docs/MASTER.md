@@ -1,9 +1,9 @@
 # 📚 CampFit - Documentación Maestra Unificada
 
-> **Stack:** Astro 7 + Tailwind CSS 4 + Firebase 11 + Nanostores  
+> **Stack:** Astro 5 + Tailwind CSS 4 + Firebase 11 + Nanostores  
 > **Arquitectura:** Vanilla JS (sin React). Compilación y enrutado estático.  
 > **Estado:** En desarrollo activo.  
-> **Última actualización:** 2026-07-31
+> **Última actualización:** 2026-08-01
 
 ---
 

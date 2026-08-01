@@ -24,8 +24,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       <div class="animate-fade-in space-y-6">
         <!-- Header -->
         <div>
-          <h2 class="text-xl font-bold">{t("dashboard.progress")}</h2>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("dashboard.progress.desc")}</p>
+          <h2 data-i18n="dashboard.progress" class="text-xl font-bold">{t("dashboard.progress")}</h2>
+          <p data-i18n="dashboard.progress.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("dashboard.progress.desc")}</p>
         </div>
 
         <!-- Tabs -->

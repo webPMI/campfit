@@ -17,8 +17,8 @@ const { size = 'h-7 w-7', class: extraClass = '' } = Astro.props;
 <svg class={`${size} ${extraClass}`.trim()} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="cf-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
+      <stop offset="0%" stop-color="text-emerald-400"/>
+      <stop offset="100%" stop-color="text-cyan-400"/>
     </linearGradient>
   </defs>
   <!-- Bold geometric C with gradient -->
@@ -29,6 +29,6 @@ const { size = 'h-7 w-7', class: extraClass = '' } = Astro.props;
   <path
     d="M82 38 A34 34 0 1 1 82 90 L90 90 A42 42 0 1 0 90 38 Z"
     fill="currentColor"
-    style="fill: var(--surface-1, #0f1117);"
+    style="fill: var(--surface-1, bg-surface);"
   />
 </svg>

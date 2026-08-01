@@ -8,8 +8,16 @@ export interface User {
   email: string;
   role: 'admin' | 'trainer' | 'client';
   hasActiveAlert: boolean;
+  photoURL?: string;
   assignedTrainerId?: string;
   medicalProfile?: MedicalProfile;
+  isBlocked?: boolean;
+  blockedAt?: any;
+  blockedReason?: string;
+  blockedBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: any;
+  deletedBy?: string;
   lastActivityAt?: any;
   createdAt?: any;
   updatedAt?: any;

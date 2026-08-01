@@ -41,7 +41,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <p class="text-xs font-semibold text-[var(--text-secondary)]">{t("trainer.clients")}</p>
+          <p data-i18n="trainer.clients" class="text-xs font-semibold text-[var(--text-secondary)]">{t("trainer.clients")}</p>
 
           <p id="stat-total-clients" class="mt-0.5 text-xl font-bold text-[var(--brand)]">-</p>
         </div>

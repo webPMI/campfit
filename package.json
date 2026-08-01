@@ -38,7 +38,22 @@
     "lock:release": "bash scripts/agent-lock.sh release",
     "pwa:icons": "node scripts/generate-pwa-icons.mjs",
     "pwa:build": "npm run build && npm run pwa:icons",
-    "pwa:audit": "npx lighthouse https://campfit.com --view --preset=desktop"
+    "pwa:audit": "npx lighthouse https://campfit.com --view --preset=desktop",
+    "audit": "node scripts/audit.mjs",
+    "audit:quick": "node scripts/audit.mjs --quick",
+    "audit:security": "node scripts/audit.mjs --area=security",
+    "audit:quality": "node scripts/audit.mjs --area=quality",
+    "audit:performance": "node scripts/audit.mjs --area=performance",
+    "audit:uiux": "node scripts/audit.mjs --area=uiux",
+    "audit:testing": "node scripts/audit.mjs --area=testing",
+    "audit:i18n": "node scripts/audit.mjs --area=i18n",
+    "fix": "node scripts/fix.mjs",
+    "fix:dry-run": "node scripts/fix.mjs --dry-run",
+    "fix:types": "node scripts/fix.mjs --agent=types",
+    "fix:logger": "node scripts/fix.mjs --agent=logger",
+    "fix:performance": "node scripts/fix.mjs --agent=performance",
+    "fix:colors": "node scripts/fix.mjs --agent=colors",
+    "fix:tests": "node scripts/fix.mjs --agent=tests"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",

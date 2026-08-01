@@ -98,14 +98,14 @@ function readStoredMode(): ThemeMode {
 }
 
 function readStoredFlavor(): ThemeFlavor {
-  if (!isBrowser()) return 'emerald';
+  if (!isBrowser()) return 'onyx';
   try {
     const stored = localStorage.getItem(FLAVOR_KEY);
     if (stored === 'emerald' || stored === 'ocean' || stored === 'sunset' || stored === 'onyx') return stored;
   } catch {
     // Silently fail
   }
-  return 'emerald';
+  return 'onyx';
 }
 
 function persistMode(mode: ThemeMode): void {
@@ -133,7 +133,7 @@ function persistFlavor(flavor: ThemeFlavor): void {
 /** Current theme mode persisted across sessions. Defaults to 'dark'. */
 export const $themeMode = atom<ThemeMode>(readStoredMode());
 
-/** Current theme flavor persisted across sessions. Defaults to 'emerald'. */
+/** Current theme flavor persisted across sessions. Defaults to 'onyx' (Fénix Dorado). */
 export const $themeFlavor = atom<ThemeFlavor>(readStoredFlavor());
 
 /** Current system color scheme preference (dark/light). Updated reactively. */

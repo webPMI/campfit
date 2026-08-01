@@ -26,7 +26,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
             </svg>
           </div>
-          <h1 class="text-lg font-bold text-[var(--brand)]">{t('client.support.title')}</h1>
+          <h1 data-i18n="client.support.title" class="text-lg font-bold text-[var(--brand)]">{t('client.support.title')}</h1>
         </div>
       </div>
     </header>
@@ -36,13 +36,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div class="animate-fade-in space-y-6">
         <!-- Description -->
         <div>
-          <h2 class="text-xl font-bold text-[var(--text-primary)]">{t('client.support.title')}</h2>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.support.desc')}</p>
+          <h2 data-i18n="client.support.title" class="text-xl font-bold text-[var(--text-primary)]">{t('client.support.title')}</h2>
+          <p data-i18n="client.support.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.support.desc')}</p>
         </div>
 
         <!-- FAQ Section -->
         <div>
-          <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('client.support.faq')}</h3>
+          <h3 data-i18n="client.support.faq" class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('client.support.faq')}</h3>
           <div class="space-y-3" id="faqContainer">
             <!-- FAQ items will be rendered by JS -->
           </div>
@@ -57,7 +57,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               </svg>
             </div>
             <div class="flex-1">
-              <h4 class="text-sm font-semibold text-[var(--text-primary)]">{t('client.support.chat')}</h4>
+              <h4 data-i18n="client.support.chat" class="text-sm font-semibold text-[var(--text-primary)]">{t('client.support.chat')}</h4>
               <p class="mt-1 text-xs text-[var(--text-tertiary)]">{t('client.support.chat.desc')}</p>
             </div>
             <a

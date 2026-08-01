@@ -21,8 +21,21 @@
 | 8 | **Auth** | Autenticación, roles, guardias, sesiones | 🟢 Activo | AuthError type (#13) |
 | 9 | **Infra** | Firebase, Firestore, R2, CI/CD, scripts, config | 🟢 Activo | Instalar ESLint (INFRA-001) |
 | 10 | **Mobile** | PWA, Capacitor, Service Worker, app móvil | 🟢 Activo | Verificar PWA en producción (MOBILE-001) |
+| 11 | **Audit Orchestrator** | Coordinación de auditoría multi-agente | 🟢 Activo | Desplegar 6 agentes de auditoría |
+| 12 | **Audit Security** | Seguridad, auth, route guards, firestore rules | 🟢 Activo | Escanear auth y secrets |
+| 13 | **Audit Quality** | Calidad de código, TypeScript, file sizes | 🟢 Activo | Escanear any, console.*, window.__ |
+| 14 | **Audit Performance** | Performance, Firestore queries, memory leaks | 🟢 Activo | Escanear queries sin limit |
+| 15 | **Audit UI/UX** | UI/UX, theme system, accesibilidad | 🟢 Activo | Escanear colores hardcodeados |
+| 16 | **Audit Testing** | Tests, cobertura, placeholders | 🟢 Activo | Escanear tests placeholder |
+| 17 | **Audit i18n** | i18n, traducciones ES/EN | 🟢 Activo | Verificar paridad ES/EN |
+| 18 | **Fix Types** | Reemplazar `any` por `unknown` | 🟢 Activo | Golden Rule #1 |
+| 19 | **Fix Logger** | Reemplazar `console.*` por `logger` | 🟢 Activo | Golden Rule #7 |
+| 20 | **Fix Colors** | Reemplazar colores hardcodeados por tokens | 🟢 Activo | Golden Rule #3 |
+| 21 | **Fix Testing** | Añadir aserciones a tests placeholder | 🟢 Activo | Golden Rule #4 |
+| 22 | **Fix Performance** | Corregir anti-patterns de rendimiento | 🟢 Activo | Golden Rule #10 |
+| 23 | **Fix Theme** | Sincronizar variables light/dark | 🟢 Activo | Golden Rule #3 |
+| 24 | **Fix CSP** | Eliminar bloques `<style>` inline | 🟢 Activo | Golden Rule #3 |
 
----
 
 ## 🚀 Cómo usar este sistema
 
@@ -57,6 +70,20 @@ npm run doctor
 | Scripts, CI/CD, Firebase, config | `infra-agent` | `agents/infra-agent/` |
 | PWA, Capacitor, app móvil | `mobile-agent` | `agents/mobile-agent/` |
 | Coordinar tareas, roadmap | `planner-agent` | `agents/planner-agent/` |
+| Auditoría de seguridad | `audit-security` | `agents/audit-security/` |
+| Auditoría de calidad código | `audit-quality` | `agents/audit-quality/` |
+| Auditoría de performance | `audit-performance` | `agents/audit-performance/` |
+| Auditoría de UI/UX | `audit-uiux` | `agents/audit-uiux/` |
+| Auditoría de testing | `audit-testing` | `agents/audit-testing/` |
+| Auditoría de i18n | `audit-i18n` | `agents/audit-i18n/` |
+| Coordinar auditoría completa | `audit-orchestrator` | `agents/audit-orchestrator/` |
+| Fix tipos `any` → `unknown` | `fix-types` | `agents/fix-types/` |
+| Fix `console.*` → `logger` | `fix-logger` | `agents/fix-logger/` |
+| Fix colores hardcodeados | `fix-colors` | `agents/fix-colors/` |
+| Fix tests placeholder | `fix-testing` | `agents/fix-testing/` |
+| Fix performance anti-patterns | `fix-performance` | `agents/fix-performance/` |
+| Fix theme variables | `fix-theme` | `agents/fix-theme/` |
+| Fix CSP inline styles | `fix-csp` | `agents/fix-csp/` |
 
 ---
 

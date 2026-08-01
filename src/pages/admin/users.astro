@@ -570,7 +570,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       (document.getElementById("modal-trainer") as HTMLSelectElement).value || null;
 
     if (!name) {
-      showToast({ message: "El nombre es obligatorio", type: "error" });
+      showToast({ message: "${getT('trainer.nameRequired')}", type: "error" });
       return;
     }
 

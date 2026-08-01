@@ -145,11 +145,13 @@ export function initPage(options: InitPageOptions): () => void {
         if (!firebaseUser) {
             redirecting = true;
             const path = window.location.pathname;
+            logger.info('InitPage', `No autenticado en ${path}, redirigiendo a login`);
             if (!path.startsWith('/login') && !path.startsWith('/register')) {
                 window.location.href = '/login';
             }
             return;
         }
+        logger.info('InitPage', `Usuario autenticado UID:${firebaseUser.uid.slice(0, 8)}... en ${window.location.pathname}`);
 
         try {
             // Leer de cache o Firestore (una sola vez por sesión)

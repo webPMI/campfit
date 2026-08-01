@@ -3,8 +3,9 @@
  * Maneja el estado global del usuario autenticado.
  *
  * Uso:
- *   import { $user, $isAuthenticated, setUser, clearAuth } from '@/stores/authStore';
- *   $user.subscribe((user) => console.log(user));
+ *   import { logger } from '../lib/debug/consoleFileLogger.js';
+import { $user, $isAuthenticated, setUser, clearAuth } from '@/stores/authStore';
+ *   $user.subscribe((user) => logger.info(user));
  */
 
 import { atom, computed } from 'nanostores';

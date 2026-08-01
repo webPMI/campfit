@@ -35,10 +35,10 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
 <LayoutComponent>
   <div class="mx-auto max-w-4xl px-4 py-8">
     <div class="animate-fade-in">
-      <h1 class="text-2xl font-bold text-[var(--text-primary)]">
+      <h1 data-i18n={role === 'admin' ? 'admin.settings' : role === 'trainer' ? 'trainer.settings' : 'client.settings.title'} class="text-2xl font-bold text-[var(--text-primary)]">
         {role === 'admin' ? t('admin.settings') : role === 'trainer' ? (t('trainer.settings') || 'Configuración') : t('client.settings.title')}
       </h1>
-      <p class="mt-1 text-sm text-[var(--text-tertiary)]">
+      <p data-i18n={role === 'admin' ? 'admin.settings.desc' : role === 'trainer' ? 'trainer.settings.desc' : 'client.settings.desc'} class="mt-1 text-sm text-[var(--text-tertiary)]">
         {role === 'admin' ? t('admin.settings.desc') : role === 'trainer' ? (t('trainer.settings.desc') || 'Configuración de tu cuenta') : t('client.settings.desc')}
       </p>
 
@@ -308,7 +308,7 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
   </div>
 </LayoutComponent>
 
-<script is:inline set:html={`window.__UNIFIED_SETTINGS_TRANSLATIONS__ = ${JSON.stringify(clientTranslations)};`}></script>
+<script is:inline set:html={`window.__ = ${JSON.stringify(clientTranslations)};`}></script>
 
 <script>
   import { initPage } from '@/lib/shared/initPage';

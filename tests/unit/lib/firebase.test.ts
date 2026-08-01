@@ -10,7 +10,7 @@ const mockGetFirestore = vi.fn(() => ({}));
 const mockSetPersistence = vi.fn(() => Promise.resolve());
 const mockBrowserLocalPersistence = "local";
 
-vi.mock("firebase/app", () => ({ initializeApp: mockInitializeApp, getApp: vi.fn() }));
+vi.mock("firebase/app", () => ({ initializeApp: mockInitializeApp, getApp: vi.fn(), getApps: vi.fn(() => []) }));
 vi.mock("firebase/auth", () => ({ getAuth: mockGetAuth, setPersistence: mockSetPersistence, browserLocalPersistence: mockBrowserLocalPersistence }));
 vi.mock("firebase/firestore", () => ({ getFirestore: mockGetFirestore }));
 

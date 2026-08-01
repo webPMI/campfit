@@ -63,6 +63,9 @@ export function subscribeToWeeklyAdherence(
     callback(stats);
   };
 
+  // TODO: PERF - Store unsubscribe return and call in cleanup
+
+
   const unsubMeals = onSnapshot(
     query(
       collection(db, 'progress_logs'),
@@ -90,6 +93,9 @@ export function subscribeToWeeklyAdherence(
       callback(emptyStats());
     },
   );
+
+  // TODO: PERF - Store unsubscribe return and call in cleanup
+
 
   const unsubWorkouts = onSnapshot(
     query(

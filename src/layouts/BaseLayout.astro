@@ -1,5 +1,10 @@
 ---
+export interface Props {
+  title?: string;
+}
+
 export type Language = "es" | "en";
+const { title = "CampFit" } = Astro.props;
 const lang = Astro.params.lang || "es";
 ---
 
@@ -36,13 +41,13 @@ const lang = Astro.params.lang || "es";
       if ("serviceWorker" in navigator && import.meta.env.PROD) {
         window.addEventListener("load", () => {
           navigator.serviceWorker.register("/sw.js").catch((err) => {
-            console.error("Service Worker registration failed:", err);
+            console.error("[SW] Registration failed:", err);
           });
         });
       }
     </script>
 
-    <title>CampFit</title>
+    <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -64,7 +69,7 @@ const lang = Astro.params.lang || "es";
             localStorage.setItem("campfit_theme_flavor", flavor);
           } else {
             mode = localStorage.getItem("campfit_theme_mode") || "dark";
-            flavor = localStorage.getItem("campfit_theme_flavor") || "emerald";
+            flavor = localStorage.getItem("campfit_theme_flavor") || "onyx";
           }
           document.documentElement.setAttribute("data-theme-mode", mode);
           document.documentElement.setAttribute("data-theme-flavor", flavor);
@@ -75,23 +80,72 @@ const lang = Astro.params.lang || "es";
         }
       })();
       (function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const langParam = urlParams.get("lang");
-        if (langParam === "es" || langParam === "en") {
-          localStorage.setItem("campfit_lang", langParam);
-          document.documentElement.lang = langParam;
-        }
+        try {
+          var url = new URL(window.location.href);
+          var urlLang = url.searchParams.get("lang");
+          var storedLang = localStorage.getItem("campfit_lang");
+          var cookieLang = document.cookie.split("; ").find((r) => r.startsWith("cf_lang="));
+          cookieLang = cookieLang ? cookieLang.split("=")[1] : undefined;
+
+          var finalLang;
+          if (urlLang === "es" || urlLang === "en") {
+            finalLang = urlLang;
+            localStorage.setItem("campfit_lang", finalLang);
+          } else if (storedLang === "es" || storedLang === "en") {
+            finalLang = storedLang;
+          } else if (cookieLang === "es" || cookieLang === "en") {
+            finalLang = cookieLang;
+            localStorage.setItem("campfit_lang", finalLang);
+          } else {
+            finalLang = "es";
+            localStorage.setItem("campfit_lang", finalLang);
+          }
+
+          document.cookie = "cf_lang=" + finalLang + ";path=/;max-age=31536000;SameSite=Lax";
+          document.documentElement.lang = finalLang;
+        } catch (e) {}
       })();
+    </script>
+    <script>
+      import { translateDOM } from "@/i18n/client";
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => translateDOM());
+      } else {
+        translateDOM();
+      }
     </script>
     <div class="app-shell">
       <slot />
     </div>
+    <!-- 🛠 DevTools (solo en desarrollo) -->
+    <script>
+      import { initDevTools } from "@/lib/devtools";
+      initDevTools();
+    </script>
   </body>
 </html>
 
 <script>
   import "@/lib/debug/consoleFileLogger";
   import "@/lib/debug/firestoreDebug";
+
+  // Interceptar clicks en enlaces locales para inyectar automáticamente ?lang= si falta
+  document.addEventListener("click", (e) => {
+    const anchor = (e.target as HTMLElement).closest("a");
+    if (anchor && anchor.href && anchor.host === window.location.host) {
+      try {
+        const url = new URL(anchor.href);
+        // Omitir si es un link de logout, auth especial o vacío
+        if (url.pathname.startsWith("/api/") || anchor.getAttribute("download") !== null) return;
+
+        if (!url.searchParams.has("lang")) {
+          const currentLang = localStorage.getItem("campfit_lang") || "es";
+          url.searchParams.set("lang", currentLang);
+          anchor.href = url.toString();
+        }
+      } catch (err) {}
+    }
+  });
 </script>
 
 <style is:global>
@@ -110,7 +164,12 @@ const lang = Astro.params.lang || "es";
     --brand-hover: var(--color-brand-primary-hover, #34d399);
     --brand-dim: var(--color-brand-light, color-mix(in srgb, var(--brand) 15%, transparent));
     --brand-glow: color-mix(in srgb, var(--brand) 25%, transparent);
-    --brand-gradient: linear-gradient(135deg, var(--brand) 0%, var(--brand-hover) 50%, var(--color-brand-secondary, var(--brand-hover)) 100%);
+    --brand-gradient: linear-gradient(
+      135deg,
+      var(--brand) 0%,
+      var(--brand-hover) 50%,
+      var(--color-brand-secondary, var(--brand-hover)) 100%
+    );
     --brand-gradient-subtle: linear-gradient(
       135deg,
       color-mix(in srgb, var(--brand) 30%, transparent) 0%,
@@ -139,7 +198,7 @@ const lang = Astro.params.lang || "es";
     --text-secondary: #a1a1aa;
     --text-tertiary: #909099;
     --text-disabled: #6b6b73;
-    --text-on-brand: #ffffff;
+    --text-on-brand: var(--color-text-inverse, #ffffff);
 
     --border-default: oklch(0.28 0.01 260);
     --border-subtle: oklch(0.22 0.01 260);
@@ -190,7 +249,12 @@ const lang = Astro.params.lang || "es";
     --brand-hover: var(--color-brand-primary-hover, #047857);
     --brand-dim: var(--color-brand-light, color-mix(in srgb, var(--brand) 12%, transparent));
     --brand-glow: color-mix(in srgb, var(--brand) 20%, transparent);
-    --brand-gradient: linear-gradient(135deg, var(--brand) 0%, var(--brand-hover) 50%, var(--color-brand-secondary, var(--brand-hover)) 100%);
+    --brand-gradient: linear-gradient(
+      135deg,
+      var(--brand) 0%,
+      var(--brand-hover) 50%,
+      var(--color-brand-secondary, var(--brand-hover)) 100%
+    );
     --brand-gradient-subtle: linear-gradient(
       135deg,
       color-mix(in srgb, var(--brand) 20%, transparent) 0%,

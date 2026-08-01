@@ -1,15 +1,14 @@
 /**
  * Módulo de servicio para la gestión del flujo de Onboarding del cliente.
- * Encapsula la estructura de datos del perfil inicial y la persistencia en Firestore.
+ * Usa Firebase Client SDK respetando Security Rules.
  *
  * @module client/onboardingService
  */
 
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 
-/** Estructura de datos recopilados durante el onboarding */
 export interface OnboardingData {
   birthdate?: string | null;
   height?: number | null;
@@ -26,31 +25,23 @@ export interface OnboardingData {
 }
 
 /**
- * Persiste los datos recopilados en el onboarding en el documento de usuario en Firestore.
- * Crea/actualiza el objeto `medicalProfile` y marca `onboardingCompleted: true`.
- *
- * @param uid - ID único del usuario autenticado en Firebase
- * @param data - Datos recopilados del formulario de onboarding
- * @returns Promesa que resuelve a `true` si se guardó con éxito o `false` en caso de error
+ * Guarda el perfil médico en Firestore.
  */
 export async function saveOnboardingProfile(
   uid: string,
-  data: OnboardingData
+  data: OnboardingData,
 ): Promise<boolean> {
   if (!uid) {
     logger.error('OnboardingService', 'Intento de guardado sin UID válido');
     return false;
   }
 
-  const medicalProfile: Record<string, unknown> = {
-    updatedAt: serverTimestamp(),
-  };
-
+  const medicalProfile: Record<string, unknown> = { updatedAt: serverTimestamp() };
   if (data.birthdate) medicalProfile.birthDate = data.birthdate;
   if (data.height) medicalProfile.height = data.height;
   if (data.initialWeight) medicalProfile.initialWeight = data.initialWeight;
   if (data.experience) medicalProfile.experience = data.experience;
-  if (data.goals && data.goals.length > 0) medicalProfile.goals = data.goals;
+  if (data.goals?.length) medicalProfile.goals = data.goals;
   if (data.conditions) medicalProfile.conditions = data.conditions;
   if (data.medications) medicalProfile.medications = data.medications;
   if (data.allergies) medicalProfile.allergies = data.allergies;
@@ -60,39 +51,76 @@ export async function saveOnboardingProfile(
   if (data.emergencyPhone) medicalProfile.emergencyPhone = data.emergencyPhone;
 
   try {
-    await updateDoc(doc(db, 'users', uid), {
-      medicalProfile,
-      onboardingCompleted: true,
-      updatedAt: serverTimestamp(),
-    });
-    const { clearUserCache } = await import('@/lib/shared/initPage');
-    clearUserCache();
-    logger.info('OnboardingService', `Perfil de onboarding completado para UID: ${uid}`);
-    return true;
+    const userRef = doc(db, 'users', uid);
+    const { auth } = await import('@/lib/firebase');
+    const authUser = auth.currentUser;
+    logger.info('OnboardingService', `🔍 UID:${uid.slice(0,8)} authUID:${authUser?.uid.slice(0,8)} match:${authUser?.uid === uid}`);
+
+    // Paso 1: setDoc (allow create)
+    try {
+      await setDoc(userRef, {
+        name: 'Nuevo Usuario', email: '', role: 'client', photoURL: '',
+        hasActiveAlert: false, medicalProfile, onboardingCompleted: true,
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+      });
+      logger.info('OnboardingService', '✅ setDoc exitoso');
+      await clearCache();
+      return true;
+    } catch (err1: unknown) {
+      const code1 = (err1 as { code?: string }).code || '';
+      const msg1 = (err1 as { message?: string }).message || String(err1).slice(0, 120);
+      logger.warn('OnboardingService', `❌ setDoc → ${code1}:${msg1}`);
+
+      // Paso 2: updateDoc (allow update)
+      try {
+        await updateDoc(userRef, {
+          medicalProfile, onboardingCompleted: true, updatedAt: serverTimestamp(),
+        });
+        logger.info('OnboardingService', '✅ updateDoc exitoso');
+        await clearCache();
+        return true;
+      } catch (err2: unknown) {
+        const code2 = (err2 as { code?: string }).code || '';
+        const msg2 = (err2 as { message?: string }).message || String(err2).slice(0, 120);
+        logger.error('OnboardingService', `❌ updateDoc → ${code2}:${msg2}`);
+        logger.error('OnboardingService', `📊 create(${code1}) + update(${code2}) ambos fallaron`);
+        return false;
+      }
+    }
   } catch (err) {
-    logger.error('OnboardingService', 'Error al guardar perfil de onboarding en Firestore:', err);
+    logger.error('OnboardingService', `🔥 ${String(err)}`, err);
     return false;
   }
 }
 
-/**
- * Marca el onboarding como completado omitiendo la recolección de datos adicionales.
- *
- * @param uid - ID del usuario
- */
 export async function skipOnboarding(uid: string): Promise<boolean> {
   if (!uid) return false;
   try {
-    await updateDoc(doc(db, 'users', uid), {
-      onboardingCompleted: true,
-      updatedAt: serverTimestamp(),
-    });
-    const { clearUserCache } = await import('@/lib/shared/initPage');
-    clearUserCache();
-    logger.info('OnboardingService', `Onboarding omitido por el usuario UID: ${uid}`);
+    const userRef = doc(db, 'users', uid);
+    try {
+      await setDoc(userRef, {
+        name: 'Nuevo Usuario', email: '', role: 'client', photoURL: '',
+        hasActiveAlert: false, onboardingCompleted: true,
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+      });
+    } catch (err1: unknown) {
+      const code1 = (err1 as { code?: string }).code || '';
+      if (code1.includes('already-exists')) {
+        await updateDoc(userRef, { onboardingCompleted: true, updatedAt: serverTimestamp() });
+      } else {
+        logger.error('OnboardingService', `❌ skip setDoc: ${code1}`);
+        return false;
+      }
+    }
+    await clearCache();
     return true;
   } catch (err) {
-    logger.error('OnboardingService', 'Error al omitir onboarding:', err);
+    logger.error('OnboardingService', 'skip error:', err);
     return false;
   }
+}
+
+async function clearCache(): Promise<void> {
+  const { clearUserCache } = await import('@/lib/shared/initPage');
+  clearUserCache();
 }

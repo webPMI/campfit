@@ -38,6 +38,11 @@ npm run setup            # Initial setup for new agents
 npm run lock:status      # Check agent lock status
 ```
 
+## i18n & Static Build Architecture Rules
+1. **No query param hardcoding**: NEVER hardcode `?lang=${lang}` in static `<a href="...">` links inside layouts/pages. In SSG mode (`output: 'static'`), this bakes `?lang=es` into built HTML and overwrites the user's `localStorage` language selection upon navigation.
+2. **Clean URLs for internal navigation**: Use clean routes (e.g. `href="/client/workouts"`). The stored language in `localStorage` (`campfit_lang`) and `cookie` (`cf_lang`) persists automatically across page transitions.
+3. **Client-side translation**: Place `data-i18n="key.name"` attributes on HTML elements that need client-side translation in SSG pages. `translateDOM()` in `BaseLayout` will auto-hydrate texts when `lang === 'en'`.
+
 ## Documentation
 Full documentation: https://docs.astro.build
 Project docs: `nuevo_proyecto/00_indice.md`

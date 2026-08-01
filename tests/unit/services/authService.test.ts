@@ -134,7 +134,7 @@ describe('authService', () => {
       ).rejects.toThrow('auth/invalid-credential');
     });
 
-    it('⚠️ should throw if user profile not found in Firestore', async () => {
+    it('⚠️ should auto-create profile if user profile not found in Firestore', async () => {
       const mockCredential = createMockUserCredential();
 
       mockSignInWithEmailAndPassword.mockResolvedValue(mockCredential);
@@ -143,9 +143,9 @@ describe('authService', () => {
         data: () => null,
       });
 
-      await expect(
-        authService.loginUser(TEST_CREDENTIALS.email, TEST_CREDENTIALS.password),
-      ).rejects.toThrow('profile/not-found');
+      const user = await authService.loginUser(TEST_CREDENTIALS.email, TEST_CREDENTIALS.password);
+      expect(user.uid).toBe('test-uid-123');
+      expect(user.role).toBe('client');
     });
 
     it('⚠️ should handle network errors', async () => {

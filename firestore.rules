@@ -37,35 +37,33 @@ service cloud.firestore {
     }
 
     // ── Usuarios ─────────────────────────────────────────────────────────────
-
-    // Cada usuario puede leer/escribir su propio perfil.
-    // Admins pueden leer todos los perfiles.
-    // Trainers pueden leer los perfiles de sus clientes asignados.
-    // Solo admins pueden cambiar el rol o bloquear/desbloquear.
-    // Usuarios bloqueados no pueden leer ni escribir nada.
     match /users/{userId} {
-      allow read: if isAuth() && !isBlocked(userId) && (
-      request.auth.uid == userId ||
-      isAdmin() ||
-      (isTrainer() && resource.data.assignedTrainerId == request.auth.uid)
+      allow read: if isAuth() && (
+        request.auth.uid == userId ||
+        isAdmin() ||
+        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid && !isBlocked(userId))
       );
+      
+      // IMPORTANTE: Permitir crear el documento propio
+      // Sin restricciones en los campos que se pueden crear (el registro necesita crear el perfil completo)
       allow create: if isAuth() && request.auth.uid == userId;
-      allow update: if isAuth() && !isBlocked(userId) && (
-      // El propio usuario puede actualizar su perfil, excepto role y isBlocked
-      (request.auth.uid == userId &&
-      !('role' in request.resource.data.diff(resource.data).affectedKeys()) &&
-      !('isBlocked' in request.resource.data.diff(resource.data).affectedKeys())) ||
-      // Admins pueden actualizar cualquier campo (incluyendo role, isBlocked)
-      isAdmin()
+      
+      allow update: if isAuth() && (
+        // El propio usuario puede actualizar su perfil
+        (request.auth.uid == userId &&
+          // No puede cambiarse el rol a sí mismo (solo si incluye el campo)
+          (!('role' in request.resource.data.keys()) || resource.data.role == request.resource.data.role) &&
+          // No puede desbloquearse a sí mismo (solo si incluye el campo)
+          (!('isBlocked' in request.resource.data.keys()) || resource.data.isBlocked == request.resource.data.isBlocked)) ||
+        // Admins pueden actualizar cualquier campo (incluyendo role, isBlocked)
+        (isAdmin() && !isBlocked(userId))
       );
+      
       allow delete: if isAdmin();
     }
 
 
     // ── Rutinas ──────────────────────────────────────────────────────────────
-    // Plantillas (clientId == ''): cualquier usuario autenticado puede leerlas.
-    // Rutinas asignadas (clientId != ''): el cliente asignado, el trainer creador, o admin.
-    // Staff (admin/trainer) puede crear, editar o eliminar.
     match /workouts/{workoutId} {
       allow read: if isAuth() && (
       resource.data.clientId == '' ||
@@ -77,7 +75,6 @@ service cloud.firestore {
     }
 
     // ── Dietas ───────────────────────────────────────────────────────────────
-    // Mismas reglas que rutinas.
     match /diets/{dietId} {
       allow read: if isAuth() && (
       resource.data.clientId == '' ||
@@ -90,10 +87,6 @@ service cloud.firestore {
 
 
     // ── Chat (Mensajes) ───────────────────────────────────────────────────────
-
-    // Colección plana `messages` para facilitar consultas con array-contains.
-    // Solo los participantes del mensaje (array `participants`) pueden leer.
-    // El sender debe ser el usuario autenticado.
     match /messages/{messageId} {
       allow read: if isAuth() && resource.data.participants.hasAny([request.auth.uid]);
 
@@ -104,7 +97,6 @@ service cloud.firestore {
       );
 
       allow update: if isAuth() && resource.data.participants.hasAny([request.auth.uid]) && (
-      // Solo permitir marcar como leído (isRead o read)
       request.resource.data.keys().hasOnly(['isRead', 'read', 'updatedAt']) &&
       request.resource.data.isRead == true
       );
@@ -113,9 +105,6 @@ service cloud.firestore {
     }
 
     // ── Progreso (progress_logs) ──────────────────────────────────────────────
-    // Cliente puede leer/escribir su propio progreso.
-    // Trainer puede leer el progreso de sus clientes asignados.
-    // Admin puede leer todo.
     match /progress_logs/{logId} {
       allow read: if isAuth() && (
       resource.data.clientId == request.auth.uid ||
@@ -134,18 +123,28 @@ service cloud.firestore {
       );
     }
 
-    // ── Biblioteca de ejercicios ──────────────────────────────────────────────
-    // Todos los usuarios autenticados pueden leer.
-    // Solo staff (admin/trainer) puede crear/editar/eliminar.
+    // ── Biblioteca y Plantillas Semilla ──────────────────────────────────────────
+    match /exercise_templates/{templateId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isStaff();
+    }
+
     match /exercises_library/{exerciseId} {
       allow read: if isAuth();
       allow create, update, delete: if isStaff();
     }
 
-    // ── Plantillas de dieta ───────────────────────────────────────────────────
-    // Todos los usuarios autenticados pueden leer.
-    // Solo staff (admin/trainer) puede crear/editar/eliminar.
+    match /meal_templates/{templateId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isStaff();
+    }
+
     match /diet_templates/{templateId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isStaff();
+    }
+
+    match /workout_templates/{templateId} {
       allow read: if isAuth();
       allow create, update, delete: if isStaff();
     }

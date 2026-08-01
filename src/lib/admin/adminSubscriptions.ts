@@ -103,7 +103,8 @@ export function subscribeToUsersByRole(
 /**
  * Se suscribe al conteo de documentos en una colección.
  */
-export function subscribeToCollectionCount(
+export function // TODO: PERF - Replace with firestore count() aggregation
+ subscribeToCollectionCount(
   collectionName: string,
   callback: (count: number) => void,
 ): Unsubscribe {

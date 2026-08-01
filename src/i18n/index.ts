@@ -15,6 +15,7 @@ export {
   getStoredLanguage,
   setStoredLanguage,
   toggleLanguage,
+  translateDOM,
   t as clientT,
 } from './client';
 

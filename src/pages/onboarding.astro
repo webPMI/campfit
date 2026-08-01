@@ -5,7 +5,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
 import UILogoIcon from '@/components/UILogoIcon.astro';
 import { translations, type Language } from '@/i18n/translations';
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+import { getLangFromRequest } from '@/lib/i18n/server';
+const lang = getLangFromRequest(Astro) as Language;
 const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
 const currentPath = Astro.url.pathname;
 ---
@@ -21,17 +22,17 @@ const currentPath = Astro.url.pathname;
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] shadow-lg shadow-[var(--shadow-glow-sm)]">
           <UILogoIcon size="h-7 w-7" class="text-[var(--text-on-brand)]" />
         </div>
-        <h1 class="text-2xl font-bold tracking-tight">{t('onboarding.title')}</h1>
-        <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('onboarding.subtitle')}</p>
+        <h1 data-i18n="onboarding.title" class="text-2xl font-bold tracking-tight">{t('onboarding.title')}</h1>
+        <p data-i18n="onboarding.subtitle" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('onboarding.subtitle')}</p>
       </div>
 
       <!-- Progress Bar -->
       <div class="mb-6">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-[var(--text-tertiary)]">
-            <span id="stepLabel">{t('onboarding.step')} <span id="currentStep">1</span> {t('onboarding.of')} <span id="totalSteps">3</span></span>
+            <span id="stepLabel"><span data-i18n="onboarding.step">{t('onboarding.step')}</span> <span id="currentStep">1</span> <span data-i18n="onboarding.of">{t('onboarding.of')}</span> <span id="totalSteps">3</span></span>
           </span>
-          <button id="skipBtn" class="text-xs text-[var(--text-disabled)] hover:text-[var(--text-secondary)] transition-colors">
+          <button id="skipBtn" data-i18n="onboarding.skip" class="text-xs text-[var(--text-disabled)] hover:text-[var(--text-secondary)] transition-colors">
             {t('onboarding.skip')}
           </button>
         </div>
@@ -44,12 +45,12 @@ const currentPath = Astro.url.pathname;
       <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-8 backdrop-blur-xl">
         <!-- Step 1: Personal Info -->
         <div id="step1" class="step-content">
-          <h2 class="text-lg font-semibold mb-1">{t('onboarding.personal.title')}</h2>
-          <p class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.personal.desc')}</p>
+          <h2 data-i18n="onboarding.personal.title" class="text-lg font-semibold mb-1">{t('onboarding.personal.title')}</h2>
+          <p data-i18n="onboarding.personal.desc" class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.personal.desc')}</p>
 
           <div class="space-y-4">
             <div>
-              <label for="birthdate" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.birthdate')}</label>
+              <label for="birthdate" data-i18n="onboarding.birthdate" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.birthdate')}</label>
               <input
                 id="birthdate"
                 type="date"
@@ -58,7 +59,7 @@ const currentPath = Astro.url.pathname;
             </div>
 
             <div>
-              <label for="height" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.height')}</label>
+              <label for="height" data-i18n="client.medical.height" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.height')}</label>
               <input
                 id="height"
                 type="number"
@@ -69,7 +70,7 @@ const currentPath = Astro.url.pathname;
             </div>
 
             <div>
-              <label for="weight" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.weight')}</label>
+              <label for="weight" data-i18n="client.medical.weight" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.weight')}</label>
               <input
                 id="weight"
                 type="number"
@@ -80,40 +81,40 @@ const currentPath = Astro.url.pathname;
             </div>
 
             <div>
-              <label for="experience" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.experience')}</label>
+              <label for="experience" data-i18n="onboarding.experience" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.experience')}</label>
               <select
                 id="experience"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               >
                 <option value="">Seleccionar</option>
-                <option value="beginner">{t('onboarding.experience.beginner')}</option>
-                <option value="intermediate">{t('onboarding.experience.intermediate')}</option>
-                <option value="advanced">{t('onboarding.experience.advanced')}</option>
+                <option value="beginner" data-i18n="onboarding.experience.beginner">{t('onboarding.experience.beginner')}</option>
+                <option value="intermediate" data-i18n="onboarding.experience.intermediate">{t('onboarding.experience.intermediate')}</option>
+                <option value="advanced" data-i18n="onboarding.experience.advanced">{t('onboarding.experience.advanced')}</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('onboarding.goals')}</label>
+              <label data-i18n="onboarding.goals" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('onboarding.goals')}</label>
               <div class="grid grid-cols-2 gap-2">
                 <label class="flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 cursor-pointer transition-all hover:border-[var(--border-strong)] has-[:checked]:border-[var(--border-brand)] has-[:checked]:bg-[var(--brand-dim)]">
                   <input type="checkbox" value="lose_weight" class="accent-emerald-500" />
-                  <span class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.lose_weight')}</span>
+                  <span data-i18n="onboarding.goals.lose_weight" class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.lose_weight')}</span>
                 </label>
                 <label class="flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 cursor-pointer transition-all hover:border-[var(--border-strong)] has-[:checked]:border-[var(--border-brand)] has-[:checked]:bg-[var(--brand-dim)]">
                   <input type="checkbox" value="gain_muscle" class="accent-emerald-500" />
-                  <span class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.gain_muscle')}</span>
+                  <span data-i18n="onboarding.goals.gain_muscle" class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.gain_muscle')}</span>
                 </label>
                 <label class="flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 cursor-pointer transition-all hover:border-[var(--border-strong)] has-[:checked]:border-[var(--border-brand)] has-[:checked]:bg-[var(--brand-dim)]">
                   <input type="checkbox" value="endurance" class="accent-emerald-500" />
-                  <span class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.endurance')}</span>
+                  <span data-i18n="onboarding.goals.endurance" class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.endurance')}</span>
                 </label>
                 <label class="flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 cursor-pointer transition-all hover:border-[var(--border-strong)] has-[:checked]:border-[var(--border-brand)] has-[:checked]:bg-[var(--brand-dim)]">
                   <input type="checkbox" value="strength" class="accent-emerald-500" />
-                  <span class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.strength')}</span>
+                  <span data-i18n="onboarding.goals.strength" class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.strength')}</span>
                 </label>
                 <label class="col-span-2 flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 cursor-pointer transition-all hover:border-[var(--border-strong)] has-[:checked]:border-[var(--border-brand)] has-[:checked]:bg-[var(--brand-dim)]">
                   <input type="checkbox" value="health" class="accent-emerald-500" />
-                  <span class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.health')}</span>
+                  <span data-i18n="onboarding.goals.health" class="text-sm text-[var(--text-secondary)]">{t('onboarding.goals.health')}</span>
                 </label>
               </div>
             </div>
@@ -122,52 +123,57 @@ const currentPath = Astro.url.pathname;
 
         <!-- Step 2: Medical Profile -->
         <div id="step2" class="step-content hidden">
-          <h2 class="text-lg font-semibold mb-1">{t('onboarding.medical.title')}</h2>
-          <p class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.medical.desc')}</p>
+          <h2 data-i18n="onboarding.medical.title" class="text-lg font-semibold mb-1">{t('onboarding.medical.title')}</h2>
+          <p data-i18n="onboarding.medical.desc" class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.medical.desc')}</p>
 
           <div class="space-y-4">
             <div>
-              <label for="conditions" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.conditions')}</label>
+              <label for="conditions" data-i18n="onboarding.conditions" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.conditions')}</label>
               <textarea
                 id="conditions"
                 rows="2"
                 placeholder="Ej: Asma, diabetes, hipertensión"
+                data-i18n-placeholder="client.medical.conditions.placeholder"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"
               ></textarea>
             </div>
             <div>
-              <label for="medications" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.medications')}</label>
+              <label for="medications" data-i18n="onboarding.medications" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.medications')}</label>
               <textarea
                 id="medications"
                 rows="2"
                 placeholder="Ej: Ibuprofeno, omeprazol"
+                data-i18n-placeholder="client.medical.medications.placeholder"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"
               ></textarea>
             </div>
             <div>
-              <label for="allergies" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.allergies')}</label>
+              <label for="allergies" data-i18n="onboarding.allergies" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.allergies')}</label>
               <textarea
                 id="allergies"
                 rows="2"
                 placeholder="Ej: Polen, mariscos, penicilina"
+                data-i18n-placeholder="client.medical.allergies.placeholder"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"
               ></textarea>
             </div>
             <div>
-              <label for="injuries" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.injuries')}</label>
+              <label for="injuries" data-i18n="onboarding.injuries" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.injuries')}</label>
               <textarea
                 id="injuries"
                 rows="2"
                 placeholder="Ej: Esguince de tobillo, fractura"
+                data-i18n-placeholder="client.medical.injuries.placeholder"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"
               ></textarea>
             </div>
             <div>
-              <label for="surgery" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.surgery')}</label>
+              <label for="surgery" data-i18n="onboarding.surgery" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.surgery')}</label>
               <textarea
                 id="surgery"
                 rows="2"
                 placeholder="Ej: Cirugía de rodilla, apendicitis"
+                data-i18n-placeholder="client.medical.surgery.placeholder"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"
               ></textarea>
             </div>
@@ -176,12 +182,12 @@ const currentPath = Astro.url.pathname;
 
         <!-- Step 3: Emergency Contact -->
         <div id="step3" class="step-content hidden">
-          <h2 class="text-lg font-semibold mb-1">{t('onboarding.emergency.title')}</h2>
-          <p class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.emergency.desc')}</p>
+          <h2 data-i18n="onboarding.emergency.title" class="text-lg font-semibold mb-1">{t('onboarding.emergency.title')}</h2>
+          <p data-i18n="onboarding.emergency.desc" class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.emergency.desc')}</p>
 
           <div class="space-y-4">
             <div>
-              <label for="emergencyName" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.emergency.name')}</label>
+              <label for="emergencyName" data-i18n="client.medical.emergency.name" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.emergency.name')}</label>
               <input
                 id="emergencyName"
                 type="text"
@@ -190,7 +196,7 @@ const currentPath = Astro.url.pathname;
               />
             </div>
             <div>
-              <label for="emergencyPhone" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.emergency.phone')}</label>
+              <label for="emergencyPhone" data-i18n="client.medical.emergency.phone" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.emergency.phone')}</label>
               <input
                 id="emergencyPhone"
                 type="tel"
@@ -205,12 +211,14 @@ const currentPath = Astro.url.pathname;
         <div class="mt-8 flex items-center gap-3">
           <button
             id="backBtn"
+            data-i18n="onboarding.back"
             class="hidden rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-5 py-3 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] active:scale-[0.98]"
           >
             {t('onboarding.back')}
           </button>
           <button
             id="nextBtn"
+            data-i18n="onboarding.next"
             class="flex-1 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]"
           >
             {t('onboarding.next')}
@@ -233,7 +241,15 @@ const currentPath = Astro.url.pathname;
   import { authService } from '@/services/authService';
   import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
   import { db } from '@/lib/firebase';
-  import { t } from '@/i18n/client';
+  import { t, getStoredLanguage, setStoredLanguage } from '@/i18n/client';
+  import type { Language } from '@/i18n/client';
+
+  // Sincronizar idioma: leer de URL o de localStorage
+  const onboardingContainer = document.getElementById('onboardingContainer')!;
+  const urlLang = onboardingContainer.dataset.lang as Language;
+  if (urlLang && urlLang !== getStoredLanguage()) {
+    setStoredLanguage(urlLang);
+  }
 
   // ============================================================
   // State
@@ -371,7 +387,6 @@ const currentPath = Astro.url.pathname;
   // Navigation
   // ============================================================
 
-  const onboardingContainer = document.getElementById('onboardingContainer')!;
   const currentLang = onboardingContainer.dataset.lang || 'es';
 
   nextBtn.addEventListener('click', async () => {

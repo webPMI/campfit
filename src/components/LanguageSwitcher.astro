@@ -28,16 +28,20 @@ const opposite = lang === 'es' ? 'en' : 'es';
 </div>
 
 <script>
+  import { setStoredLanguage, getStoredLanguage } from '@/i18n/client';
+
   const btn = document.getElementById('lang-switcher-btn') as HTMLAnchorElement;
   const label = document.getElementById('lang-label')!;
   if (btn && label) {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const url = new URL(btn.href);
-      const next = url.searchParams.get('lang') === 'es' ? 'es' : 'en';
-      localStorage.setItem('campfit_lang', next);
-      document.documentElement.lang = next;
-      window.location.href = btn.href;
+      const current = getStoredLanguage();
+      const next = current === 'es' ? 'en' : 'es';
+      setStoredLanguage(next);
+      document.cookie = "cf_lang=" + next + ";path=/;max-age=31536000;SameSite=Lax";
+      const url = new URL(window.location.href);
+      url.searchParams.delete('lang');
+      window.location.href = url.toString();
     });
   }
 </script>
