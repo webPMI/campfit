@@ -10721,3 +10721,496 @@ FirebaseError: Firebase: Error (auth/email-already-in-use).
 ============================================================
 [2026-08-01T20:43:07.430Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
 [2026-08-01T20:43:07.494Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-01T20:43:51.427Z
+============================================================
+[2026-08-01T20:44:02.713Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:02.749Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:06.032Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:06.618Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:09.801Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:09.829Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:21.351Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:21.366Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:39.502Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:39.679Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:44.285Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:44.630Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:48.336Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:48.631Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:52.215Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:52.223Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:57.579Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:44:57.632Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-01T20:45:02.292Z
+============================================================
+[2026-08-01T20:49:30.488Z] [CLIENT] [LOG] [/login] [DevTools] Campos rellenados con perfil: 👤 Cliente Test
+[2026-08-01T20:49:33.310Z] [CLIENT] [INFO] [/login] [AuthService] Intentando login: cliente@test.com
+[2026-08-01T20:49:33.683Z] [CLIENT] [ERROR] [/login] [AuthService] Error en login: FirebaseError: Firebase: Error (auth/invalid-credential). FirebaseError: Firebase: Error (auth/invalid-credential).
+FirebaseError: Firebase: Error (auth/invalid-credential).
+    at createErrorInternal (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:440:35)
+    at _fail (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:417:8)
+    at _performFetchWithErrorHandling (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:756:9)
+    at async _performSignInRequest (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:764:25)
+    at async _signInWithCredential (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:4700:19)
+    at async Object.loginUser (http://localhost:4321/src/services/authService.ts:42:23)
+    at async HTMLFormElement.<anonymous> (http://localhost:4321/src/pages/login.astro?astro&type=script&index=0&lang.ts:83:16)
+[2026-08-01T20:49:39.200Z] [CLIENT] [INFO] [/register] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:49:42.236Z] [CLIENT] [LOG] [/register] [DevTools] Campos rellenados con perfil: 👤 Nuevo Cliente
+[2026-08-01T20:49:46.699Z] [CLIENT] [INFO] [/register] [AuthService] Registrando: maria.garcia@test.com (María García López)
+[2026-08-01T20:49:47.100Z] [CLIENT] [ERROR] [/register] [AuthService] Error en registro: FirebaseError: Firebase: Error (auth/email-already-in-use). FirebaseError: Firebase: Error (auth/email-already-in-use).
+FirebaseError: Firebase: Error (auth/email-already-in-use).
+    at createErrorInternal (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:440:35)
+    at _createError (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:420:9)
+    at _makeTaggedError (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:804:16)
+    at _performFetchWithErrorHandling (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:752:55)
+    at async _performSignInRequest (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:764:25)
+    at async createUserWithEmailAndPassword (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:5082:19)
+    at async Object.registerUser (http://localhost:4321/src/services/authService.ts:104:23)
+    at async HTMLFormElement.<anonymous> (http://localhost:4321/src/pages/register.astro?astro&type=script&index=0&lang.ts:210:16)
+[2026-08-01T20:49:51.126Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:49:53.949Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-01T20:50:04.062Z] [CLIENT] [ERROR] [/login] [AuthService] Error en login Google: FirebaseError: Firebase: Error (auth/popup-closed-by-user). FirebaseError: Firebase: Error (auth/popup-closed-by-user).
+FirebaseError: Firebase: Error (auth/popup-closed-by-user).
+    at createErrorInternal (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:440:35)
+    at _createError (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:420:9)
+    at http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=227fd722:7959:18
+[2026-08-01T20:50:10.205Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:50:10.279Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:50:12.457Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-01T20:50:17.808Z
+============================================================
+[2026-08-01T20:50:20.458Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:56:13.776Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:56:18.767Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:56:25.629Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:56:29.977Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-01T20:56:33.842Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-01T20:56:38.661Z
+============================================================
+[2026-08-01T20:56:49.162Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:36:50.411Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:38:12.764Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:38:57.943Z
+============================================================
+[2026-08-02T08:39:19.472Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:22.745Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:23.084Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:27.385Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:29.970Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:34.655Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:51.137Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:39:52.544Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:40:08.315Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:40:13.932Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:40:36.298Z
+============================================================
+[2026-08-02T08:40:53.616Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:40:53.924Z] [CLIENT] [ERROR] [/admin/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:41:01.458Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:41:01.754Z] [CLIENT] [ERROR] [/admin/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:41:04.321Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:41:04.601Z] [CLIENT] [ERROR] [/admin/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:41:05.313Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:41:05.603Z] [CLIENT] [ERROR] [/admin/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:41:27.311Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:41:27.594Z] [CLIENT] [ERROR] [/admin/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:41:35.862Z
+============================================================
+[2026-08-02T08:42:01.329Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:42:01.714Z] [CLIENT] [ERROR] [/admin/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:17.439Z] [CLIENT] [INFO] [/trainer/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:42:17.700Z] [CLIENT] [ERROR] [/trainer/dashboard] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:17.729Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-08-02T08:42:17.729Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 1 documentos:
+[2026-08-02T08:42:17.729Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c full test · medium · 0 ejercicios color: #6b6b73; color: #e4e4e7;
+[2026-08-02T08:42:17.729Z] [CLIENT] [LOG] [/trainer/dashboard]       id: hnT7g6862L3UA5qSmpIc
+[2026-08-02T08:42:17.729Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "hnT7g6862L3UA5qSmpIc",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "exercises": [],
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785435728,
+    "nanoseconds": 468000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431066,
+    "nanoseconds": 232000000
+  },
+  "clientId": "WqJC6DhVsGhNN3hH0LSubETNxQz1",
+  "description": "nueva rotin test",
+  "name": "full test",
+  "difficulty": "medium"
+}
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]    Context: 🏋️ irwYIbTi6O...
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]    📋 2 documentos:
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]    %c1.%c Dieta Recomposición y Mantenimiento (2400 kcal) · normal · 2400 kcal color: #6b6b73; color: #e4e4e7;
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]       id: J5S929IGroR3SGgDIbH6
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "J5S929IGroR3SGgDIbH6",
+  "name": "Dieta Recomposición y Mantenimiento (2400 kcal)",
+  "clientId": "WqJC6DhVsGhNN3hH0LSubETNxQz1",
+  "meals": [
+    {
+      "order": 1,
+      "calories": 380,
+      "carbs": 38,
+      "description": "Tostadas Integrales con Pavo y Aguacate",
+      "name": "breakfast",
+      "id": "m-rec-1",
+      "protein": 24,
+      "fat": 14
+    },
+    {
+      "id": "m-rec-2",
+      "name": "lunch",
+      "order": 2,
+      "calories": 620,
+      "fat": 14,
+      "description": "Almuerzo Ternera Magra con Arroz Basmati",
+      "carbs": 68,
+      "protein": 52
+    },
+    {
+      "calories": 310,
+      "fat": 4,
+      "carbs": 38,
+      "name": "snack",
+      "order": 3,
+      "description": "Batido Post-Entreno Proteína y Plátano",
+      "id": "m-rec-3",
+      "protein": 32
+    },
+    {
+      "protein": 42,
+      "name": "dinner",
+      "order": 4,
+      "id": "m-rec-4",
+      "carbs": 18,
+      "calories": 490,
+      "fat": 26,
+      "description": "Cena Salmón a la Plancha y Espárragos"
+    }
+  ],
+  "totalCalories": 2400,
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785507833,
+    "nanoseconds": 985000000
+  },
+  "type": "normal",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "somatotype": "mesomorph",
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785507833,
+    "nanoseconds": 985000000
+  }
+}
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]    %c2.%c dieta test · advanced · 200 kcal color: #6b6b73; color: #e4e4e7;
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]       id: uri5TNApjZfsNmRiwXe2
+[2026-08-02T08:42:17.730Z] [CLIENT] [LOG] [/trainer/dashboard]       data: {
+  "id": "uri5TNApjZfsNmRiwXe2",
+  "somatotype": "ectomorph",
+  "trainerId": "irwYIbTi6OPL7vZFbKTqzBFsxk73",
+  "type": "advanced",
+  "updatedAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431775,
+    "nanoseconds": 986000000
+  },
+  "createdAt": {
+    "type": "firestore/timestamp/1.0",
+    "seconds": 1785431123,
+    "nanoseconds": 239000000
+  },
+  "clientId": "IOEQ1BhhmBasQzOlBlfcZ3TdlWA2",
+  "meals": [
+    {
+      "fat": 0,
+      "protein": 20,
+      "carbs": 0,
+      "name": "breakfast",
+      "order": 1,
+      "id": "meal-1785431775714-0",
+      "calories": 200,
+      "description": "3 huevo"
+    }
+  ],
+  "name": "dieta test",
+  "totalCalories": 200
+}
+[2026-08-02T08:42:21.892Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:42:22.165Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:45.459Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:45.663Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:45.844Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:46.006Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:46.194Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:46.368Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:46.546Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:46.732Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:46.887Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:47.111Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:47.290Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:47.453Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:47.632Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:47.791Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:47.950Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:48.113Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:48.308Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:48.491Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:48.660Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:48.829Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:48.987Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:49.153Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:49.320Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:49.485Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:49.645Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:49.795Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:49.958Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:50.111Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:50.249Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:50.419Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:50.617Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:50.773Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:50.919Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:51.071Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:51.235Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:51.389Z] [CLIENT] [ERROR] [/trainer/chat] [Trainer] Error al marcar mensaje como leído: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:51.573Z] [CLIENT] [INFO] [/trainer/clients] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:42:51.910Z] [CLIENT] [ERROR] [/trainer/clients] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:42:53.027Z] [CLIENT] [ERROR] [/trainer/clients] [TrainerClients] Error loading profile TypeError: mp.allergies.join is not a function
+TypeError: mp.allergies.join is not a function
+    at showClientDetail (http://localhost:4321/src/pages/trainer/clients.astro?astro&type=script&index=0&lang.ts:191:93)
+[2026-08-02T08:42:55.068Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:42:55.334Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:43:00.419Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:43:00.694Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:43:17.602Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:43:17.873Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:46:03.951Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:04.304Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:46:04.863Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:05.141Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:46:13.260Z
+============================================================
+[2026-08-02T08:46:17.771Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:18.048Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:46:20.897Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:21.193Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:46:22.884Z
+============================================================
+[2026-08-02T08:46:24.505Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:24.761Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:46:26.447Z
+============================================================
+[2026-08-02T08:46:34.598Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:34.899Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:46:35.954Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:36.235Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:46:42.442Z
+============================================================
+[2026-08-02T08:46:49.965Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:50.252Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:46:59.011Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:46:59.257Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:47:12.968Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:47:13.275Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:47:17.637Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:47:17.912Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:47:18.369Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:47:18.655Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:47:30.835Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:47:31.118Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:47:35.267Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:47:35.536Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:47:41.223Z
+============================================================
+[2026-08-02T08:47:52.712Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:47:53.084Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:48:01.723Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:48:19.364Z
+============================================================
+[2026-08-02T08:48:25.263Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:48:25.597Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:48:50.576Z
+============================================================
+[2026-08-02T08:52:18.118Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:52:18.458Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:52:42.851Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:52:43.156Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:53:05.996Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:53:06.392Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:53:32.719Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:53:33.009Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:53:59.960Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:54:00.260Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:54:43.602Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:54:43.924Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:54:54.861Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:54:55.185Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:55:41.549Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:55:41.881Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:55:56.112Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:55:56.401Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:03.585Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:03.881Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:09.245Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:09.525Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:56:11.369Z
+============================================================
+[2026-08-02T08:56:16.321Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:16.597Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:56:18.407Z
+============================================================
+[2026-08-02T08:56:25.116Z] [CLIENT] [INFO] [/trainer/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:25.395Z] [CLIENT] [ERROR] [/trainer/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:29.764Z] [CLIENT] [INFO] [/admin/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:30.056Z] [CLIENT] [ERROR] [/admin/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:30.164Z] [CLIENT] [ERROR] [/admin/chat] [admin/chat] Error al cargar conversaciones: Missing or insufficient permissions. 
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:56:31.033Z
+============================================================
+[2026-08-02T08:56:37.108Z] [CLIENT] [INFO] [/admin/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:37.404Z] [CLIENT] [ERROR] [/admin/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:37.497Z] [CLIENT] [ERROR] [/admin/chat] [admin/chat] Error al cargar conversaciones: Missing or insufficient permissions. 
+[2026-08-02T08:56:42.439Z] [CLIENT] [INFO] [/admin/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:42.716Z] [CLIENT] [ERROR] [/admin/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:42.883Z] [CLIENT] [ERROR] [/admin/chat] [admin/chat] Error al cargar conversaciones: Missing or insufficient permissions. 
+[2026-08-02T08:56:50.681Z] [CLIENT] [INFO] [/admin/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:56:50.884Z] [CLIENT] [ERROR] [/admin/chat] [Chat] Error al suscribirse a conteo de mensajes no leídos: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-02T08:56:51.002Z] [CLIENT] [ERROR] [/admin/chat] [admin/chat] Error al cargar conversaciones: Missing or insufficient permissions. 
+[2026-08-02T08:57:04.661Z] [CLIENT] [INFO] [/admin/chat] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:57:09.953Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:57:19.105Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:57:19.920Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:57:24.089Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:57:27.772Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-02T08:57:27.842Z
+============================================================
+[2026-08-02T08:57:41.188Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-02T08:57:52.432Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.

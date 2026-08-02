@@ -1,82 +1,41 @@
 ---
 /**
- * AdminModeBanner.astro
- * 
- * Banner flotante que aparece SOLO cuando el usuario autenticado es admin
- * navegando por zonas de client o trainer.
- * 
- * - Invisible por defecto (hidden)
- * - El script cliente verifica el rol vía Firebase y lo muestra si es admin
- * - Enlace directo a /admin/dashboard
+ * AdminModeBanner - Shows a banner when admin is previewing as another role.
  */
+import { translations, type Language } from "@/i18n/translations";
+
+const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
+const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
-<!-- Banner oculto por defecto, el script lo muestra si es admin -->
 <div
   id="admin-mode-banner"
-  class="fixed top-3 left-1/2 -translate-x-1/2 z-50 hidden"
-  role="banner"
-  aria-label="Modo administrador activo"
+  class="hidden fixed top-0 left-0 right-0 z-50 bg-[var(--warning-dim)] border-b border-[var(--warning)] px-4 py-2 text-center text-xs text-[var(--warning)] backdrop-blur-xl"
 >
-  <a
-    href="/admin/dashboard"
-    class="flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-400 shadow-lg backdrop-blur-md transition-all duration-200 hover:border-amber-400/70 hover:bg-amber-500/20 hover:text-amber-300 hover:shadow-amber-500/20 active:scale-95"
-  >
-    <!-- Shield icon -->
-    <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-    </svg>
-    <span>Dashboard Admin</span>
-    <!-- Arrow icon -->
-    <svg class="h-3 w-3 shrink-0 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-    </svg>
-  </a>
+  <span>{t("admin.interactAsClient")} · </span>
+  <a href="/admin/dashboard" class="font-bold underline hover:text-[var(--warning)] transition-colors">{t("public.nav.dashboard")}</a>
 </div>
 
 <script>
-  import { auth, db } from '@/lib/firebase';
-  import { doc, getDoc } from 'firebase/firestore';
+  import { authService } from "@/services/authService";
 
-  const BOOTSTRAP_ADMINS = [
-    'servicioweb.pmi@gmail.com',
-    'sevicioweb.pmi@gmail.com',
-  ];
-
-  async function checkAndShowAdminBanner(): Promise<void> {
-    const banner = document.getElementById('admin-mode-banner');
+  authService.onAuthChange(async (firebaseUser) => {
+    const banner = document.getElementById("admin-mode-banner");
     if (!banner) return;
-
-    const user = auth.currentUser;
-    if (!user) return;
-
+    if (!firebaseUser) { banner.classList.add("hidden"); return; }
     try {
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      const role = snap.exists() ? snap.data()?.role : undefined;
-      const email = (user.email || '').toLowerCase();
-      const isBootstrapAdmin = BOOTSTRAP_ADMINS.includes(email);
-      const effectiveRole = role || (isBootstrapAdmin ? 'admin' : null);
-
-      if (effectiveRole === 'admin') {
-        banner.classList.remove('hidden');
-        banner.classList.add('flex');
+      const { db } = await import("@/lib/firebase");
+      const { doc, getDoc } = await import("firebase/firestore");
+      const snap = await getDoc(doc(db, "users", firebaseUser.uid));
+      const role = snap.exists() ? snap.data().role : null;
+      const isClientPath = window.location.pathname.startsWith("/client");
+      if (role === "admin" && isClientPath) {
+        banner.classList.remove("hidden");
+      } else if (role === "admin" && window.location.pathname.startsWith("/trainer")) {
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
       }
-    } catch {
-      // Silently ignore — banner stays hidden on error
-    }
-  }
-
-  // Verificar al cargar (auth.currentUser puede ya estar disponible)
-  if (auth.currentUser) {
-    checkAndShowAdminBanner();
-  } else {
-    // Esperar al primer disparo de onAuthStateChanged
-    const { onAuthStateChanged } = await import('firebase/auth');
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        checkAndShowAdminBanner();
-        unsub();
-      }
-    });
-  }
+    } catch { banner.classList.add("hidden"); }
+  });
 </script>

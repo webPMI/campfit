@@ -6,13 +6,14 @@
  */
 
 import { escapeHtml, getUserInitial, formatTime } from '@/lib/shared/ui';
+import { t } from '@/i18n/client';
 import type { TrainerClient, TrainerWorkout, TrainerDiet, TrainerMessage } from './types';
 
 /**
  * Renderiza una tarjeta de cliente.
  */
 export function renderClientCard(client: TrainerClient, onclick?: string): string {
-  const name = client.name || 'Sin nombre';
+  const name = client.name || t('common.unnamed') || 'Sin nombre';
   const email = client.email || '';
   const hasAlert = client.hasActiveAlert;
   const initial = getUserInitial(name);
@@ -32,7 +33,7 @@ export function renderClientCard(client: TrainerClient, onclick?: string): strin
           <div class="min-w-0">
             <div class="flex items-center gap-2">
               <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(name)}</p>
-              ${hasAlert ? '<span class="h-2 w-2 rounded-full bg-[var(--danger)] bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
+              ${hasAlert ? `<span class="h-2 w-2 rounded-full bg-[var(--danger)] bg-red-500 animate-pulse" title="${escapeHtml(t('trainer.activeAlertTitle') || 'Alerta activa')}"></span>` : ''}
               ${isAdmin ? '<span class="rounded-full bg-[var(--accent-purple-dim)] bg-purple-500/10 px-1.5 py-0.5 text-[10px] font-medium text-[var(--accent-purple)] border border-[var(--accent-purple)] border-opacity-30">Admin</span>' : ''}
             </div>
             <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(email)}</p>
@@ -50,15 +51,17 @@ export function renderClientCard(client: TrainerClient, onclick?: string): strin
  * Renderiza una tarjeta de rutina.
  */
 export function renderWorkoutCard(workout: TrainerWorkout): string {
+  const exercisesText = t('workout.exercises') || 'ejercicios';
+  const exAbbrText = t('workout.exAbbr') || 'ej.';
   return `
     <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(workout.name)}</p>
-          <p class="text-xs text-[var(--text-tertiary)]">${workout.exercises?.length || 0} ejercicios · ${workout.difficulty || 'custom'}</p>
+          <p class="text-xs text-[var(--text-tertiary)]">${workout.exercises?.length || 0} ${exercisesText} · ${workout.difficulty || 'custom'}</p>
         </div>
         <div class="flex items-center gap-2">
-          <span class="rounded-full bg-[var(--info-dim)] px-2 py-0.5 text-xs font-medium text-[var(--info)] border border-[var(--info)] border-opacity-30">${workout.exercises?.length || 0} ej.</span>
+          <span class="rounded-full bg-[var(--info-dim)] px-2 py-0.5 text-xs font-medium text-[var(--info)] border border-[var(--info)] border-opacity-30">${workout.exercises?.length || 0} ${exAbbrText}</span>
         </div>
       </div>
       <div class="mt-2 text-xs text-[var(--text-secondary)]">${workout.description ? escapeHtml(workout.description.substring(0, 80)) + (workout.description.length > 80 ? '...' : '') : ''}</div>
@@ -70,18 +73,20 @@ export function renderWorkoutCard(workout: TrainerWorkout): string {
  * Renderiza una tarjeta de dieta.
  */
 export function renderDietCard(diet: TrainerDiet): string {
+  const mealsText = t('diet.meals') || 'comidas';
+  const typeText = t('common.type') || 'Tipo';
   return `
     <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(diet.name)}</p>
-          <p class="text-xs text-[var(--text-tertiary)]">${diet.meals?.length || 0} comidas · ${diet.totalCalories || 0} kcal</p>
+          <p class="text-xs text-[var(--text-tertiary)]">${diet.meals?.length || 0} ${mealsText} · ${diet.totalCalories || 0} kcal</p>
         </div>
         <div class="flex items-center gap-2">
           <span class="rounded-full bg-[var(--warning-dim)] px-2 py-0.5 text-xs font-medium text-[var(--warning)] border border-[var(--warning)] border-opacity-30">${diet.totalCalories || 0} kcal</span>
         </div>
       </div>
-      <div class="mt-2 text-xs text-[var(--text-secondary)]">Tipo: ${diet.type || 'normal'}</div>
+      <div class="mt-2 text-xs text-[var(--text-secondary)]">${typeText}: ${diet.type || 'normal'}</div>
     </div>
   `;
 }
@@ -110,7 +115,7 @@ export function renderMessageBubble(
            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
            </svg>
-           Llamado de atención
+           ${escapeHtml(t('trainer.attentionAlert') || 'Llamado de atención')}
          </div>`
       : '';
 

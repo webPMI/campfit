@@ -15,8 +15,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold">{t("admin.users")}</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("admin.users.desc")}</p>
+          <h1 data-i18n="admin.users" class="text-2xl font-bold">{t("admin.users")}</h1>
+          <p data-i18n="admin.users.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("admin.users.desc")}</p>
         </div>
         <div class="flex items-center gap-3">
           <!-- Stats summary -->
@@ -36,7 +36,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             id="role-filter"
             class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-sm"
           >
-            <option value="all">{t("admin.all")}</option>
+            <option value="all" data-i18n="admin.all">{t("admin.all")}</option>
             <option value="admin">Admin</option>
             <option value="trainer">Trainer</option>
             <option value="client">Client</option>
@@ -63,6 +63,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           id="search-input"
           type="text"
           placeholder={t("admin.search")}
+          data-i18n-placeholder="admin.search"
           class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
         />
       </div>
@@ -90,7 +91,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ?
             </div>
             <div>
-              <h3 id="modal-title" class="text-lg font-semibold text-[var(--text-primary)]">
+              <h3 id="modal-title" data-i18n="admin.modal.edit.title" class="text-lg font-semibold text-[var(--text-primary)]">
                 {t("admin.modal.edit.title")}
               </h3>
               <p id="modal-role-badge" class="text-xs text-[var(--text-tertiary)]">—</p>
@@ -115,7 +116,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         <div id="modal-body" class="mt-6 space-y-4">
           <!-- Name -->
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
+            <label data-i18n="admin.modal.field.name" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
               >{t("admin.modal.field.name")}</label
             >
             <input
@@ -127,7 +128,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
           <!-- Email -->
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
+            <label data-i18n="admin.modal.field.email" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
               >{t("admin.modal.field.email")}</label
             >
             <input
@@ -139,7 +140,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
           <!-- Role -->
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
+            <label data-i18n="admin.modal.field.role" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
               >{t("admin.modal.field.role")}</label
             >
             <select
@@ -154,14 +155,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
           <!-- Trainer Assignment -->
           <div id="modal-trainer-field" class="hidden">
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
+            <label data-i18n="admin.modal.field.trainer" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5"
               >{t("admin.modal.field.trainer")}</label
             >
             <select
               id="modal-trainer"
               class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
             >
-              <option value="">{t("admin.modal.trainer.none")}</option>
+              <option value="" data-i18n="admin.modal.trainer.none">{t("admin.modal.trainer.none")}</option>
             </select>
           </div>
 
@@ -171,16 +172,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             class="flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-4)] p-3"
           >
             <div>
-              <p class="text-sm font-medium text-[var(--text-secondary)]">
+              <p data-i18n="admin.modal.blocked" class="text-sm font-medium text-[var(--text-secondary)]">
                 {t("admin.modal.blocked")}
               </p>
-              <p id="modal-block-info" class="text-xs text-[var(--text-tertiary)]">
+              <p id="modal-block-info" data-i18n="admin.modal.blocked.info" class="text-xs text-[var(--text-tertiary)]">
                 {t("admin.modal.blocked.info")}
               </p>
             </div>
             <button
               id="modal-block-btn"
               data-action="toggle-block-user"
+              data-i18n="admin.modal.block.btn"
               class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
             >
               {t("admin.modal.block.btn")}
@@ -202,12 +204,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               <button
                 id="modal-save-btn"
                 data-action="save-user-edit"
+                data-i18n="admin.modal.save"
                 class="flex-1 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-medium text-[var(--text-on-brand)] transition-all hover:bg-[var(--brand-hover)] active:scale-[0.98]"
               >
                 {t("admin.modal.save")}
               </button>
               <button
                 data-action="close-user-modal"
+                data-i18n="admin.modal.cancel"
                 class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-3)]"
               >
                 {t("admin.modal.cancel")}
@@ -324,10 +328,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     subscribeToTrainers,
     renderUserCardExtended,
     initGlobalActions,
-    updateUserRole,
+    updateUserProfile,
     deleteUser,
     toggleUserBlock,
-    assignTrainer,
     getUserName,
     type AdminUser,
     type TrainerOption,
@@ -341,7 +344,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     renderEmptyState,
     renderLoadingState,
   } from "@/lib/shared/ui";
-  import { collection, doc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore";
+  import { doc, getDoc } from "firebase/firestore";
   import { db } from "@/lib/firebase";
   import { sendPasswordResetEmail } from "firebase/auth";
   import { auth } from "@/lib/firebase";
@@ -570,7 +573,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       (document.getElementById("modal-trainer") as HTMLSelectElement).value || null;
 
     if (!name) {
-      showToast({ message: "${getT('trainer.nameRequired')}", type: "error" });
+      showToast({ message: "El nombre es obligatorio", type: "error" });
       return;
     }
 
@@ -579,23 +582,18 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     (saveBtn as HTMLButtonElement).disabled = true;
 
     try {
-      const updateData: Record<string, unknown> = {
+      const success = await updateUserProfile(editingUserId, {
         name,
         email,
         role,
-        updatedAt: serverTimestamp(),
-      };
-
-      // Include trainer assignment for clients and admins
-      if (role === "client" || role === "admin") {
-        updateData.assignedTrainerId = assignedTrainerId || null;
+        assignedTrainerId,
+      });
+      if (success) {
+        showToast({ message: "Usuario actualizado correctamente", type: "success" });
+        closeUserModal();
       } else {
-        updateData.assignedTrainerId = null;
+        showToast({ message: "Error al guardar los cambios", type: "error" });
       }
-
-      await updateDoc(doc(db, "users", editingUserId), updateData);
-      showToast({ message: "Usuario actualizado correctamente", type: "success" });
-      closeUserModal();
     } catch (error) {
       logger.error("Admin", "Error saving user:", error);
       showToast({ message: "Error al guardar los cambios", type: "error" });

@@ -1,148 +1,21 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import UILogoIcon from '@/components/UILogoIcon.astro';
-import UIThemeSwitcher from '@/components/UIThemeSwitcher.astro';
-import { translations, type Language } from '@/i18n/translations';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { translations, type Language } from "@/i18n/translations";
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
-const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
-const altLang = lang === 'es' ? 'en' : 'es';
+const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
+const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
-<BaseLayout title={`500 - ${t('error.500.title') || 'Error del servidor'}`}>
-  <div class="flex min-h-screen flex-col bg-[var(--surface-0)] text-[var(--text-primary)] transition-colors duration-200">
-    <!-- Header de navegación superior -->
-    <header class="sticky top-0 z-50 w-full border-b border-[var(--border-default)] bg-[var(--surface-1)]/80 backdrop-blur-md">
-      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <a href={`/?lang=${lang}`} class="flex items-center gap-2.5 transition-opacity hover:opacity-90">
-          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--danger)] to-[var(--danger)] text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
-            <UILogoIcon size="h-5 w-5" />
-          </div>
-          <span class="text-lg font-extrabold tracking-tight text-[var(--text-primary)]">{t('app.name')}</span>
-        </a>
-
-        <div class="flex items-center gap-3">
-          <UIThemeSwitcher />
-          <a
-            href={`/500?lang=${altLang}`}
-            class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] active:scale-95"
-          >
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" />
-            </svg>
-            {altLang === 'en' ? 'EN' : 'ES'}
-          </a>
-        </div>
+<BaseLayout>
+  <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12">
+    <div class="text-center animate-fade-in">
+      <p class="text-8xl font-extrabold text-[var(--danger)] opacity-20">500</p>
+      <h1 class="mt-4 text-2xl font-bold">{t("error.500.title")}</h1>
+      <p class="mt-2 text-sm text-[var(--text-tertiary)]">{t("error.500.desc")}</p>
+      <div class="mt-8 flex items-center gap-3 justify-center">
+        <a href="/" class="rounded-xl bg-[var(--brand-dim)] border border-[var(--border-brand)] px-5 py-2.5 text-sm font-medium text-[var(--brand)] hover:bg-[var(--brand-dim)] transition-all">{t("error.404.goHome")}</a>
+        <button onclick="location.reload()" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-5 py-2.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--surface-3)] transition-all">{t("error.500.retry")}</button>
       </div>
-    </header>
-
-    <!-- Contenido Principal -->
-    <main class="flex-1 flex flex-col items-center justify-center px-4 py-12 text-center relative overflow-hidden">
-      <!-- Glow background -->
-      <div class="pointer-events-none absolute inset-0 overflow-hidden">
-        <div class="absolute -left-20 top-1/4 h-72 w-72 rounded-full bg-[var(--danger)] opacity-[0.05] blur-3xl"></div>
-        <div class="absolute -right-20 bottom-1/4 h-72 w-72 rounded-full bg-[var(--danger)] opacity-[0.05] blur-3xl"></div>
-      </div>
-
-      <!-- Badge 500 -->
-      <div class="relative z-10">
-        <div class="relative inline-block">
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="h-32 w-32 rounded-full bg-[var(--danger-dim)] blur-2xl"></div>
-          </div>
-          <h1 class="relative text-7xl sm:text-9xl font-black tracking-tight text-[var(--danger)] select-none drop-shadow-sm">
-            500
-          </h1>
-        </div>
-
-        <div class="mt-4 animate-fade-in max-w-md mx-auto">
-          <h2 data-i18n="error.500.title" class="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
-            {t('error.500.title') || 'Error del servidor'}
-          </h2>
-          <p data-i18n="error.500.desc" class="mt-2 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-            {t('error.500.desc') || 'Ocurrió un problema inesperado en el servidor. Estamos trabajando para solucionarlo.'}
-          </p>
-        </div>
-
-        <!-- Acciones Dinámicas basadas en sesión -->
-        <div id="authActions" class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-delay max-w-md mx-auto">
-          <button
-            onclick="location.reload()"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--danger)] to-[var(--danger)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all hover:brightness-105 active:scale-[0.98]"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
-            <span data-i18n="error.500.retry">{t('error.500.retry') || 'Reintentar'}</span>
-          </button>
-
-          <a
-            id="primaryActionBtn"
-            href="/"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-6 py-3 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] active:scale-[0.98]"
-          >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-            </svg>
-            <span id="primaryActionText" data-i18n="error.404.goHome">{t('error.404.goHome') || 'Volver al inicio'}</span>
-          </a>
-        </div>
-
-        <!-- Indicador de sesión activa -->
-        <div id="userBadge" class="mt-6 hidden items-center justify-center gap-2 text-xs text-[var(--text-tertiary)]">
-          <span class="h-2 w-2 rounded-full bg-[var(--success)]"></span>
-          <span>Sesión activa como <strong id="userEmail" class="text-[var(--text-secondary)]"></strong></span>
-        </div>
-      </div>
-    </main>
-
-    <!-- Footer sencillo -->
-    <footer class="border-t border-[var(--border-default)] bg-[var(--surface-1)] py-6 text-center text-xs text-[var(--text-tertiary)]">
-      <div class="mx-auto flex max-w-7xl flex-wrap justify-center gap-6 px-4">
-        <a href={`/?lang=${lang}`} class="hover:text-[var(--text-primary)] transition-colors">Inicio</a>
-        <a href={`/contact?lang=${lang}`} class="hover:text-[var(--text-primary)] transition-colors">Soporte y Contacto</a>
-        <a href={`/privacy?lang=${lang}`} class="hover:text-[var(--text-primary)] transition-colors">Privacidad</a>
-        <a href={`/terms?lang=${lang}`} class="hover:text-[var(--text-primary)] transition-colors">Términos</a>
-      </div>
-    </footer>
+    </div>
   </div>
-
-  <script>
-    import { authService } from '@/services/authService';
-    import { doc, getDoc } from 'firebase/firestore';
-    import { db } from '@/lib/firebase';
-
-    const langParam = new URLSearchParams(window.location.search).get('lang') || 'es';
-
-    authService.onAuthChange(async (user) => {
-      const primaryBtn = document.getElementById('primaryActionBtn') as HTMLAnchorElement | null;
-      const primaryText = document.getElementById('primaryActionText');
-      const userBadge = document.getElementById('userBadge');
-      const userEmailEl = document.getElementById('userEmail');
-
-      if (user && primaryBtn) {
-        let dashboardUrl = `/dashboard?lang=${langParam}`;
-        try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            const role = userDoc.data()?.role;
-            if (role === 'admin') dashboardUrl = `/admin/dashboard?lang=${langParam}`;
-            else if (role === 'trainer') dashboardUrl = `/trainer/dashboard?lang=${langParam}`;
-            else if (role === 'client') dashboardUrl = `/client/dashboard?lang=${langParam}`;
-          }
-        } catch {
-          // fallback
-        }
-
-        primaryBtn.href = dashboardUrl;
-        if (primaryText) primaryText.textContent = langParam === 'en' ? 'Go to My Dashboard' : 'Ir a mi panel';
-
-        if (userBadge && userEmailEl) {
-          userEmailEl.textContent = user.email || user.displayName || 'Usuario';
-          userBadge.classList.remove('hidden');
-          userBadge.classList.add('flex');
-        }
-      }
-    });
-  </script>
 </BaseLayout>

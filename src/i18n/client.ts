@@ -5,8 +5,12 @@ export type Language = 'es' | 'en';
 const STORAGE_KEY = 'campfit_lang';
 
 export function getStoredLanguage(): Language {
-  if (typeof window === 'undefined') return 'es';
-  return (localStorage.getItem(STORAGE_KEY) as Language) || 'es';
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined' || !localStorage || typeof localStorage.getItem !== 'function') return 'es';
+  try {
+    return (localStorage.getItem(STORAGE_KEY) as Language) || 'es';
+  } catch (e) {
+    return 'es';
+  }
 }
 
 export function setStoredLanguage(lang: Language): void {

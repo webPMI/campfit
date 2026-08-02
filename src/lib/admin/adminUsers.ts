@@ -94,6 +94,37 @@ export async function assignTrainer(clientId: string, trainerId: string | null):
 }
 
 /**
+ * Actualiza el perfil de un usuario (nombre, email, rol, trainer).
+ */
+export async function updateUserProfile(
+  uid: string,
+  data: { name: string; email: string; role: string; assignedTrainerId?: string | null },
+): Promise<boolean> {
+  try {
+    const updateData: Record<string, unknown> = {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      updatedAt: serverTimestamp(),
+    };
+
+    if (data.role === 'client' || data.role === 'admin') {
+      updateData.assignedTrainerId = data.assignedTrainerId || null;
+    } else {
+      updateData.assignedTrainerId = null;
+    }
+
+    await updateDoc(doc(db, 'users', uid), updateData);
+    logger.info('Admin', `Perfil actualizado para ${uid}: ${data.name} (${data.role})`);
+    return true;
+  } catch (error) {
+    logger.error('Admin', 'Error al actualizar perfil:', error);
+    showToast({ message: 'Error al actualizar el perfil', type: 'error' });
+    return false;
+  }
+}
+
+/**
  * Elimina un usuario de Firestore.
  */
 export async function deleteUser(uid: string): Promise<boolean> {
@@ -158,6 +189,8 @@ export async function getUserProfile(userId: string): Promise<AdminUser | null> 
         role: data.role || 'client',
         assignedTrainerId: data.assignedTrainerId,
         hasActiveAlert: data.hasActiveAlert ?? false,
+        isBlocked: data.isBlocked ?? false,
+        blockedAt: data.blockedAt ?? null,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
       } as AdminUser;

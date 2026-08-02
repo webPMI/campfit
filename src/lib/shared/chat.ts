@@ -7,7 +7,7 @@
  * @module shared/chat
  */
 
-import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, limit } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, getDoc, serverTimestamp, limit, getDocs } from 'firebase/firestore';
 import type { Unsubscribe } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/shared/logger';
@@ -27,9 +27,151 @@ export interface ChatMessage {
   createdAt: any;
 }
 
+export interface ChatContact {
+  uid: string;
+  name: string;
+  email: string;
+  role: 'client' | 'trainer' | 'admin';
+  assignedTrainerId?: string;
+  hasActiveAlert?: boolean;
+}
+
+// ============================================================
+// Suscripciones y Contactos
+// ============================================================
+
+/**
+ * Se suscribe a la lista de contactos disponibles según el rol del usuario conectado.
+ * @param currentUserId - UID del usuario actual
+ * @param currentUserRole - Rol del usuario ('client' | 'trainer' | 'admin')
+ * @param callback - Función que recibe la lista de contactos
+ * @returns Función de cancelación de suscripción
+ */
+export function subscribeToChatContacts(
+  currentUserId: string,
+  currentUserRole: 'client' | 'trainer' | 'admin',
+  callback: (contacts: ChatContact[]) => void,
+): Unsubscribe {
+  if (!currentUserId) {
+    callback([]);
+    return () => {};
+  }
+
+  const q = query(
+    collection(db, 'users'),
+    orderBy('createdAt', 'desc'),
+    limit(100),
+  );
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const allUsers = snapshot.docs
+        .map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            uid: docSnap.id,
+            name: data.name || data.email || 'Usuario',
+            email: data.email || '',
+            role: (data.role as 'client' | 'trainer' | 'admin') || 'client',
+            assignedTrainerId: data.assignedTrainerId,
+            hasActiveAlert: data.hasActiveAlert ?? false,
+          } as ChatContact;
+        })
+        .filter((user) => user.uid !== currentUserId);
+
+      if (currentUserRole === 'trainer') {
+        const filtered = allUsers.filter(
+          (u) =>
+            u.role === 'admin' ||
+            u.role === 'trainer' ||
+            (u.role === 'client' && u.assignedTrainerId === currentUserId),
+        );
+        callback(filtered);
+      } else if (currentUserRole === 'client') {
+        const filtered = allUsers.filter(
+          (u) => u.role === 'admin' || u.role === 'trainer',
+        );
+        callback(filtered);
+      } else {
+        callback(allUsers);
+      }
+    },
+    (error) => {
+      logger.error('Chat', 'Error al suscribirse a contactos:', error);
+      callback([]);
+    },
+  );
+}
+
+/**
+ * Obtiene el perfil básico de un contacto por su UID.
+ */
+export async function getUserProfile(uid: string): Promise<ChatContact | null> {
+  if (!uid) return null;
+  try {
+    const snap = await getDoc(doc(db, 'users', uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      return {
+        uid: snap.id,
+        name: data.name || data.email || 'Usuario',
+        email: data.email || '',
+        role: (data.role as 'client' | 'trainer' | 'admin') || 'client',
+        assignedTrainerId: data.assignedTrainerId,
+        hasActiveAlert: data.hasActiveAlert ?? false,
+      };
+    }
+    return null;
+  } catch (error) {
+    logger.error('Chat', 'Error obteniendo perfil de usuario:', error);
+    return null;
+  }
+}
+
 // ============================================================
 // Suscripciones
 // ============================================================
+
+/**
+ * Se suscribe al conteo y lista de mensajes no leídos dirigidos a un usuario.
+ * @param userId - ID del usuario receptor
+ * @param callback - Función invocada con el número total de mensajes no leídos y los mensajes
+ * @param onError - Callback opcional de error
+ * @returns Función para cancelar la suscripción
+ */
+export function subscribeToUnreadCount(
+  userId: string,
+  callback: (unreadCount: number, unreadMessages: ChatMessage[]) => void,
+  onError?: (error: Error) => void,
+): Unsubscribe {
+  if (!userId) {
+    callback(0, []);
+    return () => {};
+  }
+
+  const q = query(
+    collection(db, 'messages'),
+    where('receiverId', '==', userId),
+    where('isRead', '==', false),
+  );
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const messages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ChatMessage[];
+      callback(messages.length, messages);
+    },
+    (error) => {
+      logger.error('Chat', 'Error al suscribirse a conteo de mensajes no leídos:', error);
+      if (onError) onError(error);
+      callback(0, []);
+    },
+  );
+}
 
 /**
  * Se suscribe a todos los mensajes de un usuario (para lista de conversaciones).
@@ -171,3 +313,37 @@ export async function markAsRead(messageId: string): Promise<void> {
     logger.error('Chat', 'Error al marcar mensaje como leído:', error);
   }
 }
+
+function docRef(messageId: string) {
+  return doc(db, 'messages', messageId);
+}
+
+/**
+ * Marca como leídos todos los mensajes recibidos de un remitente específico.
+ * @param receiverId - ID del receptor actual
+ * @param senderId - ID del remitente
+ */
+export async function markAllMessagesFromSenderAsRead(
+  receiverId: string,
+  senderId: string,
+): Promise<void> {
+  if (!receiverId || !senderId) return;
+
+  try {
+    const q = query(
+      collection(db, 'messages'),
+      where('receiverId', '==', receiverId),
+      where('senderId', '==', senderId),
+      where('isRead', '==', false),
+    );
+
+    const snapshot = await getDocs(q);
+    const updates = snapshot.docs.map((docSnap) =>
+      updateDoc(doc(db, 'messages', docSnap.id), { isRead: true }),
+    );
+    await Promise.all(updates);
+  } catch (error) {
+    logger.error('Chat', 'Error marcando mensajes como leídos:', error);
+  }
+}
+

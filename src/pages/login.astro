@@ -51,12 +51,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         <form id="loginForm" class="flex flex-col gap-4">
           <!-- Email -->
           <div>
-            <label for="email" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t("auth.email")}</label>
+            <label for="email" data-i18n="auth.email" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t("auth.email")}</label>
             <div class="relative">
               <input
                 id="email"
                 type="email"
                 placeholder={t("auth.email.placeholder")}
+                data-i18n-placeholder="auth.email.placeholder"
                 required
                 autocomplete="email"
                 aria-describedby="emailHelp"
@@ -66,18 +67,19 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             </div>
-            <p id="emailHelp" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("auth.help.email")}</p>
+            <p id="emailHelp" data-i18n="auth.help.email" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("auth.help.email")}</p>
             <p id="emailError" class="mt-1 hidden text-xs text-[var(--danger)]"></p>
           </div>
 
           <!-- Contraseña con toggle -->
           <div>
-            <label for="password" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t("auth.password")}</label>
+            <label for="password" data-i18n="auth.password" class="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">{t("auth.password")}</label>
             <div class="relative">
               <input
                 id="password"
                 type="password"
                 placeholder={t("auth.password.placeholder")}
+                data-i18n-placeholder="auth.password.placeholder"
                 required
                 autocomplete="current-password"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-2.5 pr-12 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all duration-200 focus:border-[var(--brand)] focus:bg-[var(--surface-3)] focus:shadow-[0_0_0_3px_var(--brand-dim)]"
@@ -101,6 +103,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           <button
             id="loginBtn"
             type="submit"
+            data-i18n="auth.login.btn"
             class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all duration-200 hover:shadow-[var(--shadow-glow-md)] hover:brightness-105 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
           >
             {t("auth.login.btn")}
@@ -122,14 +125,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       <p class="mt-6 text-center text-sm">
         <a
           href={`/recover?lang=${lang}`}
+          data-i18n="auth.forgot.password"
           class="text-sm text-[var(--text-tertiary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
         >{t("auth.forgot.password")}</a>
       </p>
 
       <p class="mt-4 text-center text-sm text-[var(--text-tertiary)]">
-        {t("auth.no.account")}
+        <span data-i18n="auth.no.account">{t("auth.no.account")}</span>
         <a
           href={`/register?lang=${lang}`}
+          data-i18n="auth.create.link"
           class="font-medium text-[var(--brand)] transition-colors duration-200 hover:text-[var(--brand-hover)]"
         >{t("auth.create.link")}</a>
       </p>

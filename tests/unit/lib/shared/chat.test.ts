@@ -84,7 +84,7 @@ vi.mock('@/lib/shared/logger', () => ({
 // chatService.ts re-exporta desde @/lib/shared/chat, así que importamos
 // directamente desde shared/chat para evitar problemas con re-exports mockeados.
 
-import { subscribeToUserMessages, sendMessage } from '../../../../src/lib/shared/chat';
+import { subscribeToUserMessages, sendMessage, subscribeToUnreadCount, markAllMessagesFromSenderAsRead } from '../../../../src/lib/shared/chat';
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
@@ -96,6 +96,79 @@ describe('chatService (shared)', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  // ── subscribeToUnreadCount ──────────────────────────────────────────────
+
+  describe('subscribeToUnreadCount', () => {
+    const mockMessageSnapshot = (messages: Record<string, unknown>[]) => ({
+      docs: messages.map((msg) => ({
+        id: msg.id as string || 'msg-1',
+        data: () => msg,
+      })),
+      forEach: (fn: (doc: unknown) => void) => messages.forEach((msg) => fn({ id: msg.id || 'msg-1', data: () => msg })),
+      size: messages.length,
+      empty: messages.length === 0,
+    });
+
+    it('should query unread messages for specific receiverId', () => {
+      const callback = vi.fn();
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot([]));
+        return () => {};
+      });
+
+      subscribeToUnreadCount('user-receiver', callback);
+
+      expect(mockFns.where).toHaveBeenCalledWith('receiverId', '==', 'user-receiver');
+      expect(mockFns.where).toHaveBeenCalledWith('isRead', '==', false);
+      expect(callback).toHaveBeenCalledWith(0, []);
+    });
+
+    it('should return unread count and messages on snapshot update', () => {
+      const callback = vi.fn();
+      const mockUnread = [
+        { id: 'u-1', senderId: 'trainer-1', receiverId: 'user-receiver', isRead: false, content: 'Hola!' },
+      ];
+      // @ts-expect-error - mockImplementation con firma simplificada para tests
+      mockFns.onSnapshot.mockImplementation((_query: unknown, cb: (snapshot: unknown) => void) => {
+        cb(mockMessageSnapshot(mockUnread));
+        return () => {};
+      });
+
+      subscribeToUnreadCount('user-receiver', callback);
+
+      expect(callback).toHaveBeenCalledWith(1, expect.arrayContaining([expect.objectContaining({ id: 'u-1' })]));
+    });
+
+    it('should return 0 count when userId is empty', () => {
+      const callback = vi.fn();
+      const unsub = subscribeToUnreadCount('', callback);
+      expect(callback).toHaveBeenCalledWith(0, []);
+      expect(typeof unsub).toBe('function');
+    });
+  });
+
+  // ── markAllMessagesFromSenderAsRead ────────────────────────────────────────
+
+  describe('markAllMessagesFromSenderAsRead', () => {
+    it('should query and update unread messages from sender', async () => {
+      mockFns.getDocs.mockResolvedValue({
+        docs: [
+          { id: 'msg-1', data: () => ({ id: 'msg-1' }) },
+          { id: 'msg-2', data: () => ({ id: 'msg-2' }) },
+        ],
+      });
+      mockFns.updateDoc.mockResolvedValue(undefined);
+
+      await markAllMessagesFromSenderAsRead('receiver-1', 'sender-1');
+
+      expect(mockFns.where).toHaveBeenCalledWith('receiverId', '==', 'receiver-1');
+      expect(mockFns.where).toHaveBeenCalledWith('senderId', '==', 'sender-1');
+      expect(mockFns.where).toHaveBeenCalledWith('isRead', '==', false);
+      expect(mockFns.updateDoc).toHaveBeenCalledTimes(2);
+    });
   });
 
   // ── subscribeToUserMessages ──────────────────────────────────────────────

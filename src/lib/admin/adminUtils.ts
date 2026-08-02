@@ -12,6 +12,7 @@ export {
   createUser,
   updateUserRole,
   assignTrainer,
+  updateUserProfile,
   deleteUser,
   toggleUserBlock,
   getUserName,

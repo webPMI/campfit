@@ -51,9 +51,12 @@ export interface TrainerDiet {
   clientId: string;
   trainerId: string;
   name: string;
-  type: 'normal' | 'advanced';
-  somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph';
+  type: string;
+  somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph' | string;
   totalCalories: number;
+  totalProtein?: number;
+  totalCarbs?: number;
+  totalFat?: number;
   meals: Meal[];
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
@@ -61,7 +64,7 @@ export interface TrainerDiet {
 
 export interface Meal {
   id: string;
-  name: 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other';
+  name: string;
   description: string;
   calories: number;
   protein: number;

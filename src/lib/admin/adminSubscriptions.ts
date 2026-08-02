@@ -47,6 +47,7 @@ export function subscribeToUsers(
           role: data.role || 'client',
           assignedTrainerId: data.assignedTrainerId,
           hasActiveAlert: data.hasActiveAlert ?? false,
+          isBlocked: data.isBlocked ?? false,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
         } as AdminUser;
@@ -87,6 +88,7 @@ export function subscribeToUsersByRole(
           role: data.role || 'client',
           assignedTrainerId: data.assignedTrainerId,
           hasActiveAlert: data.hasActiveAlert ?? false,
+          isBlocked: data.isBlocked ?? false,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
         } as AdminUser;
@@ -104,10 +106,10 @@ export function subscribeToUsersByRole(
  * Se suscribe al conteo de documentos en una colección.
  */
 export function // TODO: PERF - Replace with firestore count() aggregation
- subscribeToCollectionCount(
-  collectionName: string,
-  callback: (count: number) => void,
-): Unsubscribe {
+  subscribeToCollectionCount(
+    collectionName: string,
+    callback: (count: number) => void,
+  ): Unsubscribe {
   const q = query(collection(db, collectionName));
   return onSnapshot(
     q,
@@ -144,6 +146,7 @@ export function subscribeToRecentUsers(
           role: data.role || 'client',
           assignedTrainerId: data.assignedTrainerId,
           hasActiveAlert: data.hasActiveAlert ?? false,
+          isBlocked: data.isBlocked ?? false,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
         } as AdminUser;

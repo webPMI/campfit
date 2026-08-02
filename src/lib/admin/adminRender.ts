@@ -135,10 +135,38 @@ export function renderUserForm(
 }
 
 /**
- * Renderiza una tarjeta de usuario (alias de renderUserRow para dashboard).
+ * Renderiza una tarjeta de usuario compacta para el dashboard (sin chevron de navegación).
  */
 export function renderUserCard(user: AdminUser): string {
-  return renderUserRow(user);
+  const name = user.name || 'Sin nombre';
+  const email = user.email || '';
+  const initial = getUserInitial(name);
+  const roleColors: Record<string, string> = {
+    admin: 'bg-[var(--accent-purple-dim)] bg-purple-500/10 text-[var(--accent-purple)] text-purple-400 border-[var(--accent-purple)] border-purple-500/20',
+    trainer: 'bg-[var(--info-dim)] bg-blue-500/10 text-[var(--info)] text-blue-400 border-[var(--info)] border-blue-500/20',
+    client: 'bg-[var(--brand-dim)] bg-emerald-500/10 text-[var(--brand)] text-emerald-400 border-[var(--brand)] border-emerald-500/20',
+  };
+  const roleColor = roleColors[user.role] || 'bg-[var(--surface-3)] text-[var(--text-secondary)] border-[var(--border-default)]';
+
+  return `
+    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium bg-[var(--surface-3)] text-[var(--text-primary)]">
+            ${initial}
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(name)}</p>
+              ${user.hasActiveAlert ? '<span class="h-2 w-2 rounded-full bg-[var(--danger)] bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
+            </div>
+            <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(email)}</p>
+          </div>
+        </div>
+        <span class="rounded-full px-2 py-0.5 text-[10px] font-medium border border-opacity-30 ${roleColor} shrink-0">${user.role}</span>
+      </div>
+    </div>
+  `;
 }
 
 /**
