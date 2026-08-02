@@ -40,13 +40,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h1 data-i18n="app.name" class="text-lg font-bold text-[var(--brand)]">
-            {t("app.name")}
-          </h1>
+          <h1 class="text-lg font-bold text-[var(--brand)]">{t("app.name")}</h1>
         </div>
         <button
           id="logoutBtn"
-          data-i18n="dashboard.logout"
           class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] active:scale-[0.98]"
         >
           {t("dashboard.logout")}
@@ -60,12 +57,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         <div class="space-y-6">
           <!-- Greeting -->
           <div>
-            <h2 class="text-xl font-bold" id="greeting" data-i18n="client.greeting">
-              {t("client.greeting")}...
-            </h2>
-            <p data-i18n="app.tagline" class="mt-1 text-sm text-[var(--text-tertiary)]">
-              {t("app.tagline")}
-            </p>
+            <h2 class="text-xl font-bold" id="greeting">{t("client.greeting")}...</h2>
+            <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("app.tagline")}</p>
           </div>
 
           <!-- Stat Cards -->
@@ -76,10 +69,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             >
               <div class="flex items-center justify-between">
                 <div>
-                  <p
-                    data-i18n="client.workout.progress"
-                    class="text-sm font-medium text-[var(--text-secondary)]"
-                  >
+                  <p class="text-sm font-medium text-[var(--text-secondary)]">
                     {t("client.workout.progress")}
                   </p>
                   <p class="mt-3 text-2xl font-bold text-[var(--brand)]" id="workoutProgress">
@@ -112,10 +102,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 >
                 </div>
               </div>
-              <p
-                data-i18n="client.workout.progress.desc"
-                class="mt-2 text-xs text-[var(--text-disabled)]"
-              >
+              <p class="mt-2 text-xs text-[var(--text-disabled)]">
                 {t("client.workout.progress.desc")}
               </p>
             </div>
@@ -126,10 +113,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             >
               <div class="flex items-center justify-between">
                 <div>
-                  <p
-                    data-i18n="client.diet.adherence"
-                    class="text-sm font-medium text-[var(--text-secondary)]"
-                  >
+                  <p class="text-sm font-medium text-[var(--text-secondary)]">
                     {t("client.diet.adherence")}
                   </p>
                   <p class="mt-3 text-2xl font-bold text-[var(--brand)]" id="dietAdherence">--%</p>
@@ -160,10 +144,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 >
                 </div>
               </div>
-              <p
-                data-i18n="client.diet.adherence.desc"
-                class="mt-2 text-xs text-[var(--text-disabled)]"
-              >
+              <p class="mt-2 text-xs text-[var(--text-disabled)]">
                 {t("client.diet.adherence.desc")}
               </p>
             </div>
@@ -251,8 +232,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 <p class="text-xs text-[var(--text-tertiary)]">{t("client.stats.weight")}</p>
                 <p class="mt-1 text-lg font-bold text-[var(--text-primary)]" id="lastWeight">
                   -- <span class="text-sm font-normal text-[var(--text-tertiary)]"
-                    >{t("client.stats.kg")}</span
-                  >
+                    >{t("client.stats.kg")}</span>
                 </p>
               </div>
               <div
@@ -261,8 +241,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 <p class="text-xs text-[var(--text-tertiary)]">{t("client.stats.calories")}</p>
                 <p class="mt-1 text-lg font-bold text-[var(--text-primary)]" id="todayCalories">
                   -- <span class="text-sm font-normal text-[var(--text-tertiary)]"
-                    >{t("client.stats.kcal")}</span
-                  >
+                    >{t("client.stats.kcal")}</span>
                 </p>
               </div>
               <div
@@ -293,41 +272,41 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     import { subscribeToProgress } from "@/lib/client/progressService";
     import { t } from "@/i18n/client";
 
-    const loadingScreen = document.getElementById("loadingScreen");
-    const dashboardContent = document.getElementById("dashboardContent");
-    const greeting = document.getElementById("greeting");
-    const logoutBtn = document.getElementById("logoutBtn");
+    const loadingScreen = document.getElementById("loadingScreen")!;
+    const dashboardContent = document.getElementById("dashboardContent")!;
+    const greeting = document.getElementById("greeting")!;
+    const logoutBtn = document.getElementById("logoutBtn")!;
 
-    const workoutProgress = document.getElementById("workoutProgress");
-    const workoutBar = document.getElementById("workoutBar");
-    const dietAdherence = document.getElementById("dietAdherence");
-    const dietBar = document.getElementById("dietBar");
-    const lastWeight = document.getElementById("lastWeight");
-    const todayCalories = document.getElementById("todayCalories");
-    const avgRpe = document.getElementById("avgRpe");
-    const activeDays = document.getElementById("activeDays");
+    const workoutProgress = document.getElementById("workoutProgress")!;
+    const workoutBar = document.getElementById("workoutBar")!;
+    const dietAdherence = document.getElementById("dietAdherence")!;
+    const dietBar = document.getElementById("dietBar")!;
+    const lastWeight = document.getElementById("lastWeight")!;
+    const todayCalories = document.getElementById("todayCalories")!;
+    const avgRpe = document.getElementById("avgRpe")!;
+    const activeDays = document.getElementById("activeDays")!;
 
     // ─── Inicialización única (auth + Firestore con cache) ────────────────────
-    console.log("[Dashboard] Iniciando carga...");
     const cleanup = initPage({
+      // Admins y trainers también pueden ver la vista cliente
       allowedRoles: ["client", "admin", "trainer"],
       onReady: async (firebaseUser, userData) => {
-        console.log("[Dashboard] onReady, user:", userData?.name, userData?.role);
         const userName =
           userData?.name || firebaseUser.displayName || firebaseUser.email || "Usuario";
         greeting.textContent = `${t("client.greeting")}, ${userName}! 👋`;
 
         loadingScreen.classList.add("hidden");
         dashboardContent.classList.remove("hidden");
-        console.log("[Dashboard] Contenido visible");
 
+        // ─── State para adherencia real de dietas ────────────────────────────
         let currentMealsCount = 0;
-        let unsubTodayMeals = null;
+        let unsubTodayMeals: (() => void) | null = null;
 
+        // Suscribirse a streams en tiempo real
         subscribeToWorkouts(firebaseUser.uid, (workouts) => {
           if (workouts.length > 0 && workouts[0]) {
             const workout = workouts[0];
-            const completed = workout.exercises?.filter((ex) => ex.completed)?.length || 0;
+            const completed = workout.exercises?.filter((ex: any) => ex.completed)?.length || 0;
             const total = workout.exercises?.length || 0;
             const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
             workoutProgress.textContent = `${pct}%`;
@@ -338,11 +317,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           }
         });
 
+        // Suscribirse a la dieta actual para obtener el total de comidas
         subscribeToDiets(firebaseUser.uid, (diets) => {
           if (diets.length > 0 && diets[0]) {
             const diet = diets[0];
             currentMealsCount = diet.meals?.length || 0;
             todayCalories.textContent = `${diet.totalCalories || "--"} ${t("client.stats.kcal")}`;
+
+            // Si no hay suscripción a comidas de hoy, crearla
             if (!unsubTodayMeals) {
               unsubTodayMeals = subscribeToTodayMeals(firebaseUser.uid, (completedIds) => {
                 const pct =
@@ -365,7 +347,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           "weight",
           (logs) => {
             if (logs.length > 0 && logs[0]) {
-              const w = logs[0].value?.weight;
+              const latest = logs[0];
+              const w = latest.value?.weight;
               lastWeight.textContent = w ? `${w} ${t("client.stats.kg")}` : t("client.no.weight");
             } else {
               lastWeight.textContent = t("client.no.weight");
@@ -374,9 +357,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           1
         );
 
+        // Stats simuladas (se actualizarán con datos reales después)
         avgRpe.textContent = "--";
         activeDays.textContent = "--";
-        console.log("[Dashboard] Suscripciones activadas");
       },
     });
 
