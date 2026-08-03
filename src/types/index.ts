@@ -2,6 +2,8 @@
  * Tipos globales de CampFit
  */
 
+import type { FoodCategory } from '@/lib/shared/foodLibrary';
+
 export interface User {
   uid: string;
   name: string;
@@ -69,6 +71,15 @@ export interface MedicalProfile {
 
   // Metadatos
   updatedAt?: any;
+
+  // 🔒 CRÍTICO: Alimentos excluidos granularmente por el cliente.
+  // Referencia al ID del alimento en foods_library.
+  // NUNCA eliminar — se usa en checkDietConflicts() al asignar dietas.
+  excludedFoods?: string[];            // Array de foodItem IDs
+
+  // 🔒 CRÍTICO: Categorías de alimentos excluidas por el cliente.
+  // Complementa (no reemplaza) los flags existentes en dietaryRestrictions.
+  excludedFoodCategories?: FoodCategory[];
 }
 
 export interface LoginForm {
@@ -82,7 +93,27 @@ export interface RegisterForm {
   password: string;
 }
 
-export interface AuthError {
+/**
+ * Error de autenticación tipado.
+ * Extiende Error para mantener compatibilidad con `instanceof Error`,
+ * y añade `code` para identificar el error de Firebase (ej: 'auth/invalid-credential').
+ *
+ * @example
+ * try {
+ *   await authService.loginUser(email, password);
+ * } catch (err) {
+ *   if (err instanceof AuthError) {
+ *     showToast(err.code); // 'auth/invalid-credential'
+ *   }
+ * }
+ */
+export class AuthError extends Error {
+  /** Código de error de Firebase (ej: 'auth/invalid-credential') */
   code: string;
-  message: string;
+
+  constructor(code: string, message?: string) {
+    super(message || code);
+    this.name = 'AuthError';
+    this.code = code;
+  }
 }

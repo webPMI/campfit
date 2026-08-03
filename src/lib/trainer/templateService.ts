@@ -1,4 +1,4 @@
-r/**
+/**
  * Servicio de consumo de plantillas para Entrenadores.
  * Permite a los entrenadores consultar plantillas de dietas/rutinas y asignarlas a sus clientes.
  *

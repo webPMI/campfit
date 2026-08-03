@@ -161,5 +161,15 @@ service cloud.firestore {
       allow read: if isAuth();
       allow create, update, delete: if isStaff();
     }
+
+    // ── Biblioteca de Alimentos ──────────────────────────────────────────────
+    // 🔒 CRÍTICO: Cualquier usuario autenticado puede LEER foods_library.
+    // Solo staff (admin/trainer) puede CREAR o ACTUALIZAR alimentos.
+    // NUNCA permitir delete físico — soft delete con isActive: false.
+    match /foods_library/{foodId} {
+      allow read: if isAuth();
+      allow create, update: if isStaff();
+      allow delete: if false; // 🔒 CRÍTICO: Soft delete only. NUNCA delete físico.
+    }
   }
-}
+}

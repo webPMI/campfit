@@ -25,29 +25,27 @@ import {
 } from '@/lib/firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import type { User } from '@/types';
+import { AuthError } from '@/types';
 import { logger } from '@/lib/shared/logger';
 
 /**
- * Convierte un error de Firebase en un Error con el code como mensaje.
+ * Convierte un error de Firebase en un {@link AuthError} tipado.
  * Los tests y el UI esperan el code string (ej: 'auth/invalid-credential').
+ *
+ * @param err - Error original de Firebase o desconocido.
+ * @returns Un {@link AuthError} con el `code` de Firebase y mensaje legible.
  */
-function toAuthError(err: unknown): Error {
+function toAuthError(err: unknown): AuthError {
   if (err && typeof err === 'object') {
     const e = err as Record<string, unknown>;
     if (typeof e.code === 'string') {
-      const error = new Error(e.code);
-      (error as unknown as { code: string }).code = e.code;
-      return error;
+      return new AuthError(e.code, typeof e.message === 'string' ? e.message : e.code);
     }
     if (typeof e.message === 'string' && e.message.startsWith('auth/')) {
-      const error = new Error(e.message);
-      (error as unknown as { code: string }).code = e.message;
-      return error;
+      return new AuthError(e.message, e.message);
     }
   }
-  const unknownError = new Error('auth/unknown');
-  (unknownError as unknown as { code: string }).code = 'auth/unknown';
-  return unknownError;
+  return new AuthError('auth/unknown', 'Error de autenticación desconocido');
 }
 
 export const authService = {

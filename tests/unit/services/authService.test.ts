@@ -38,7 +38,7 @@ const {
   const mockCreateUserWithEmailAndPassword = vi.fn();
   const mockSignOut = vi.fn();
   const mockSendPasswordResetEmail = vi.fn();
-  const mockOnAuthStateChanged = vi.fn(() => () => {});
+  const mockOnAuthStateChanged = vi.fn(() => () => { });
   const mockSignInWithPopup = vi.fn();
   const mockGetDoc = vi.fn();
   const mockSetDoc = vi.fn();
@@ -66,6 +66,14 @@ vi.mock('@/lib/firebase', () => ({
 // Mock de @/types
 vi.mock('@/types', () => ({
   User: {},
+  AuthError: class AuthError extends Error {
+    code: string;
+    constructor(code: string, message?: string) {
+      super(message || code);
+      this.name = 'AuthError';
+      this.code = code;
+    }
+  },
 }));
 
 // Mock del wrapper @/lib/firebase/auth

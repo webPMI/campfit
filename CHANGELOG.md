@@ -5,6 +5,22 @@ Todos los cambios notables de este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Sin versión] - 2026-08-03
+
+### Actualizado
+- **docs/THEME.md**: Reescrito completamente para reflejar el Theme v2.0 real. Se documentaron: modos `'light' | 'dark' | 'auto'`, flavors (`emerald/ocean/sunset/onyx`), `$systemPreference`, `$resolvedMode`, `$flavorName`, `$themeDisplayName`, acciones nuevas (`setThemeMode`, `toggleThemeMode`, `followSystemTheme`, `setThemeFlavor`, `cycleThemeFlavor`, `watchSystemTheme`, `unwatchSystemTheme`, `registerFlavorShortcut`), persistencia con keys `campfit_theme_mode`/`campfit_theme_flavor` + migración legacy, tokens v2 (`--brand`, `--surface-*`, `--accent-*`, motion system), atajos de teclado (Ctrl+Shift+T/F), y aliases backward-compatibles deprecados.
+
+### Mejorado
+- **src/types/index.ts**: `AuthError` convertido de interface a clase que extiende `Error` con propiedad `code` tipada. Ahora soporta `instanceof AuthError` y mantiene compatibilidad con los consumidores que usan `.code`.
+- **src/services/authService.ts**: `toAuthError()` ahora devuelve `AuthError` tipado (clase) en lugar de `Error` con cast. Se añadió JSDoc con `@param` y `@returns`.
+- **tests/unit/services/authService.test.ts**: Añadido mock de `AuthError` en `vi.mock('@/types')` para que los 16 tests pasen con la nueva clase.
+
+### Verificado
+- Tests authService: 16/16 passed ✅
+- Suite completa: 604 passed, 2 fallos preexistentes (templateService.ts corrupto con `r/**` al inicio, y paridad i18n `admin.modal.resetPwd` faltante en en.ts) — no relacionados con estos cambios.
+
+---
+
 ## [Sin versión] - 2026-02-02
 
 ### Corregido

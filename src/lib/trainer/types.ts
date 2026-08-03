@@ -71,12 +71,20 @@ export interface Meal {
   // El cliente (dietService.ts) usa la misma union; si se relaja, se rompe la consistencia.
   name: 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other';
   description: string;
+  // 🔒 CRÍTICO: Referencia al alimento en foods_library.
+  // Si se seleccionó de la lista → foodId apunta al documento.
+  // Si es texto libre → foodId es undefined. NUNCA eliminar.
+  // Lo usa checkDietConflicts() en intoleranceChecker.ts para detección granular.
+  foodId?: string;          // Ref a foods_library/{foodId}
+  portionGrams?: number;    // Cantidad en gramos (si se seleccionó de la lista)
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
   order: number;
   // 🔒 CRÍTICO: Campo allergens. NUNCA eliminar.
+  // Si foodId existe: se copia automáticamente de FoodItem.allergens al seleccionar.
+  // Si no hay foodId: el trainer los marca manualmente.
   // Lo usa intoleranceChecker.ts para detectar conflictos con alergias del cliente.
   allergens?: string[];
 }

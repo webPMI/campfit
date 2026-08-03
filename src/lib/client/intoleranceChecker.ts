@@ -176,3 +176,189 @@ export function getIntoleranceSeverity(
   const intolerances = getIntolerantSubstances(medicalProfile);
   return intolerances.get(normal)?.severity || null;
 }
+
+// ── Detección extendida con foods_library ─────────────────────────────────────
+
+import type { FoodItem } from '@/lib/shared/foodLibrary';
+import { getFoodName } from '@/lib/shared/foodLibrary';
+import type { Meal } from '@/lib/trainer/types';
+
+/**
+ * Tipo de conflicto dietético.
+ * 🔒 CRÍTICO: NUNCA reducir los tipos sin revisar todos los consumidores.
+ * Se usa en trainer/diets.astro para mostrar el modal de conflictos.
+ */
+export interface DietConflict {
+  type: 'allergen' | 'excluded_food' | 'excluded_category' | 'vegan' | 'vegetarian';
+  severity: 'severe' | 'moderate' | 'mild';
+  mealName: string;      // Nombre de la comida donde ocurre el conflicto
+  foodName: string;      // Nombre del alimento (en el idioma del cliente)
+  foodId?: string;       // ID del alimento en foods_library (si aplica)
+  message: string;       // Mensaje legible para mostrar al trainer
+  suggestion?: string;   // Nombre del sustituto sugerido
+  suggestionId?: string; // ID del sustituto en foods_library
+}
+
+/**
+ * Verifica todos los conflictos de una dieta contra el perfil médico del cliente.
+ * Cubre 5 tipos: alérgenos, alimento excluido, categoría excluida, vegano, vegetariano.
+ *
+ * 🔒 CRÍTICO: NUNCA eliminar ninguno de los 5 checks sin revisar el sistema completo.
+ * El check de alérgenos (1) funciona incluso sin foodId — cubre dietas legacy.
+ * Los checks 2-5 solo aplican si la comida tiene foodId (alimento del catálogo).
+ *
+ * @param meals - Comidas de la dieta a verificar
+ * @param foods - Catálogo completo ya cargado en memoria (de subscribeToFoods)
+ * @param medicalProfile - Perfil médico del cliente
+ * @param lang - Idioma para los nombres de alimentos y mensajes
+ */
+export function checkDietConflicts(
+  meals: Meal[],
+  foods: FoodItem[],
+  medicalProfile: MedicalProfile,
+  lang: 'es' | 'en' | 'ca' = 'es'
+): DietConflict[] {
+  if (!medicalProfile) return [];
+
+  const conflicts: DietConflict[] = [];
+  const getFoodById = (id: string) => foods.find((f) => f.id === id);
+
+  for (const meal of meals) {
+    const food = meal.foodId ? getFoodById(meal.foodId) : undefined;
+    const mealLabel = meal.name;
+
+    // ── Check 1: Alérgenos (sistema existente, funciona con y sin foodId) ────
+    // Usa los alérgenos de la comida: si hay foodId, se copiaron del alimento;
+    // si no, el trainer los marcó manualmente.
+    const allergenSrc = meal.allergens ?? (food?.allergens ?? []);
+    const allergenConflicts = checkMealAllergens(allergenSrc, mealLabel, medicalProfile);
+    conflicts.push(
+      ...allergenConflicts.map((c) => ({
+        type: 'allergen' as const,
+        severity: c.severity,
+        mealName: mealLabel,
+        foodName: food ? getFoodName(food, lang) : meal.description,
+        foodId: meal.foodId,
+        message: c.message,
+      }))
+    );
+
+    // Los checks 2–5 requieren alimento del catálogo
+    if (!food) continue;
+
+    // ── Check 2: Alimento excluido explícitamente por el cliente ─────────────
+    const excludedFoods = medicalProfile.excludedFoods ?? [];
+    if (excludedFoods.includes(food.id)) {
+      conflicts.push({
+        type: 'excluded_food',
+        severity: 'moderate',
+        mealName: mealLabel,
+        foodName: getFoodName(food, lang),
+        foodId: food.id,
+        message: `⚠️ ${getFoodName(food, lang)} está en la lista de exclusiones del cliente.`,
+      });
+    }
+
+    // ── Check 3: Categoría excluida ───────────────────────────────────────────
+    const excludedCategories = medicalProfile.excludedFoodCategories ?? [];
+    if (excludedCategories.includes(food.category as any)) {
+      conflicts.push({
+        type: 'excluded_category',
+        severity: 'moderate',
+        mealName: mealLabel,
+        foodName: getFoodName(food, lang),
+        foodId: food.id,
+        message: `⚠️ ${getFoodName(food, lang)} pertenece a la categoría "${food.category}" que el cliente ha excluido.`,
+      });
+    }
+
+    // ── Check 4: Cliente vegano → alimento no vegano ─────────────────────────
+    // 🔒 CRÍTICO: Cubre el GAP del sistema anterior que no detectaba esto.
+    if (medicalProfile.dietaryRestrictions?.vegan && !food.isVegan) {
+      conflicts.push({
+        type: 'vegan',
+        severity: 'severe',
+        mealName: mealLabel,
+        foodName: getFoodName(food, lang),
+        foodId: food.id,
+        message: `🔴 ${getFoodName(food, lang)} no es vegano. El cliente sigue una dieta vegana.`,
+      });
+    }
+
+    // ── Check 5: Cliente vegetariano → alimento no vegetariano ───────────────
+    if (medicalProfile.dietaryRestrictions?.vegetarian && !food.isVegetarian) {
+      conflicts.push({
+        type: 'vegetarian',
+        severity: 'severe',
+        mealName: mealLabel,
+        foodName: getFoodName(food, lang),
+        foodId: food.id,
+        message: `🔴 ${getFoodName(food, lang)} no es vegetariano. El cliente sigue una dieta vegetariana.`,
+      });
+    }
+  }
+
+  return conflicts;
+}
+
+/**
+ * Sugiere sustitutos para un alimento en conflicto, compatibles con el perfil del cliente.
+ *
+ * Orden de prioridad:
+ * 1. Sustitutos pre-configurados en food.substitutes[] que no generen conflictos.
+ * 2. Si ninguno es válido: alimentos de la misma categoría con macros similares (±20% proteína).
+ *
+ * @param conflictedFood - El alimento que generó el conflicto
+ * @param allFoods - Catálogo completo de alimentos activos
+ * @param medicalProfile - Perfil médico del cliente
+ * @param lang - Idioma para nombres de alimentos
+ * @param maxResults - Máximo de sustitutos a devolver (default: 3)
+ */
+export function suggestSubstitutes(
+  conflictedFood: FoodItem,
+  allFoods: FoodItem[],
+  medicalProfile: MedicalProfile,
+  lang: 'es' | 'en' | 'ca' = 'es',
+  maxResults = 3
+): FoodItem[] {
+  // Helper interno: construye un Meal mínimo para testear conflictos
+  const makeMockMeal = (f: FoodItem): Meal => ({
+    id: f.id,
+    name: 'other',
+    description: getFoodName(f, lang),
+    foodId: f.id,
+    portionGrams: f.defaultPortion,
+    calories: f.defaultCalories,
+    protein: f.defaultProtein,
+    carbs: f.defaultCarbs,
+    fat: f.defaultFat,
+    order: 0,
+    allergens: f.allergens,
+  });
+
+  const isCompatible = (f: FoodItem): boolean =>
+    f.isActive &&
+    f.id !== conflictedFood.id &&
+    checkDietConflicts([makeMockMeal(f)], allFoods, medicalProfile, lang).length === 0;
+
+  // 1. Intentar sustitutos pre-configurados
+  const preconfigured = (conflictedFood.substitutes ?? [])
+    .map((id) => allFoods.find((f) => f.id === id))
+    .filter((f): f is FoodItem => f !== undefined)
+    .filter(isCompatible);
+
+  if (preconfigured.length >= maxResults) return preconfigured.slice(0, maxResults);
+
+  // 2. Fallback: misma categoría + perfil nutricional similar (±20% proteína)
+  const baseProtein = conflictedFood.protein100g || 1;
+  const fallback = allFoods
+    .filter(
+      (f) =>
+        f.category === conflictedFood.category &&
+        Math.abs(f.protein100g - conflictedFood.protein100g) / baseProtein <= 0.2 &&
+        isCompatible(f)
+    )
+    .slice(0, maxResults - preconfigured.length);
+
+  return [...preconfigured, ...fallback].slice(0, maxResults);
+}
