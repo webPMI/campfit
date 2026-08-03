@@ -31,6 +31,23 @@ export interface AdherenceStats {
   streakDays: number;
 }
 
+interface MealProgressLog {
+  clientId: string;
+  type: 'meal';
+  date: Date | { toDate: () => Date };
+  value: {
+    completed: boolean;
+    mealId?: string;
+    mealName?: string;
+  };
+}
+
+interface WorkoutProgressLog {
+  clientId: string;
+  completed: boolean;
+  completedAt: Date | { toDate: () => Date };
+}
+
 /**
  * Se suscribe a los stats de adherencia semanal de un cliente.
  * Combina progress_logs (comidas) y workouts (completados) en tiempo real.
@@ -55,8 +72,8 @@ export function subscribeToWeeklyAdherence(
   weekAgo.setHours(0, 0, 0, 0);
 
   // ─── Subscribe to meal completions ───────────────────────────────────────────
-  let mealsData: any[] = [];
-  let workoutsData: any[] = [];
+  let mealsData: MealProgressLog[] = [];
+  let workoutsData: WorkoutProgressLog[] = [];
 
   const computeAndEmit = () => {
     const stats = computeStats(mealsData, workoutsData, totalMealsPerDay);
@@ -144,8 +161,8 @@ function toDateString(date: Date): string {
 }
 
 function computeStats(
-  mealsData: any[],
-  workoutsData: any[],
+  mealsData: MealProgressLog[],
+  workoutsData: WorkoutProgressLog[],
   totalMealsPerDay: number,
 ): AdherenceStats {
   const mealDays = new Set<string>();

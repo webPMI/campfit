@@ -1,5 +1,31 @@
 # CampFit - Agent Instructions
 
+## 🚨 CRITICAL: Read Before Any Code Change
+
+**MANDATORY reading order before modifying ANY source file:**
+1. `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` — Lista de funcionalidades que NUNCA deben eliminarse
+2. `.clinerules` — Golden Rules (especialmente reglas 11-23: Anti-Regression)
+3. `CONTEXT.md` — Project context
+4. `TASK.md` — Current task
+
+### 🛡️ Anti-Deletion Rules (STRICT ENFORCEMENT)
+
+**NEVER delete the following without explicit user approval:**
+- Firestore query clauses (`where`, `orderBy`, `limit`) — each exists for a business/performance reason
+- Security validations (`isStaff`, `isAdmin`, `isTrainer`, `isBlocked`, `isBootstrapAdminEmail`)
+- Ownership checks (`trainerId == request.auth.uid`)
+- `serverTimestamp()` in `createdAt`/`updatedAt`
+- Error handling (`showToast`, `logger.error`)
+- Subscription cleanup (`unsubClients?.()`, `unsubDiets?.()`)
+- Strict union types (`type: 'normal' | 'advanced'` NOT `type: string`)
+- Critical optional fields (`allergens?: string[]`)
+- i18n translation keys
+- Validation functions (`isValidEmail`, `isValidPassword`)
+
+**If you detect "duplicate" or "unnecessary" code, ASK FIRST. Better safe than sorry.**
+
+**Add inline comments `// 🔒 CRÍTICO: ...` to sensitive code to warn future agents.**
+
 ## Development
 When starting the dev server, use background mode:
 ```
@@ -8,15 +34,24 @@ astro dev --background
 Manage with: `astro dev stop`, `astro dev status`, `astro dev logs`
 
 ## Quick Start for Agents
-1. Read `CONTEXT.md` - Project context
-2. Read `TASK.md` - Current task
-3. Read `.clinerules` - Golden Rules
-4. Read `AGENTS_GUIDE.md` - Complete agent guide
+1. Read `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` — Critical functionalities (MANDATORY)
+2. Read `CONTEXT.md` - Project context
+3. Read `TASK.md` - Current task
+4. Read `.clinerules` - Golden Rules
+5. Read `AGENTS_GUIDE.md` - Complete agent guide
 
 ## Before Making Changes
 ```bash
 bash scripts/agent-lock.sh check  # Check if another agent is working
 git pull origin master --allow-unrelated-histories --no-edit
+```
+
+### After Making Changes (MANDATORY)
+```bash
+git diff -- src/lib/          # Verify no query clauses/imports/logic were deleted
+git diff -- firestore.rules    # Verify security rules weren't weakened
+npm run type-check             # TypeScript check
+npm test                       # Unit tests
 ```
 
 ## Before Commit

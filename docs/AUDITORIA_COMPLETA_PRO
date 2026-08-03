@@ -1,0 +1,464 @@
+# 🔍 Auditoría Completa del Proyecto CampFit
+
+> **Fecha:** 2026-08-02  
+> **Alcance:** Proyecto completo (código, docs, tests, agentes, CI/CD, factores humanos)  
+> **Estado:** 📊 Análisis estratégico
+
+---
+
+## 📊 Estadísticas del Proyecto
+
+| Métrica | Cantidad | Estado |
+|---------|----------|--------|
+| Páginas (.astro) | 36 | ✅ Completo |
+| Componentes (.astro) | 34 | ⚠️ Duplicados |
+| Layouts | 6 | ✅ |
+| Libs/Servicios (.ts) | 57 | ⚠️ Algunos >300 líneas |
+| Services | 2 | ⚠️ Insuficiente |
+| Stores | 2 | ✅ |
+| Tests unitarios | 56 | ⚠️ Cobertura parcial |
+| Tests E2E | 16 | ⚠️ Solo render |
+| Tests integración | 1 | ❌ Insuficiente |
+| Documentos | 29 | ⚠️ Desorganizados |
+| Agentes | 53 archivos | ⚠️ Sin coordinación |
+| CI/CD | 0 | ❌ **CRÍTICO** |
+
+---
+
+## 🚨 HALLAZGOS CRÍTICOS (P0)
+
+### 1. ❌ NO HAY CI/CD CONFIGURADO
+
+**Problema:** No existe `.github/workflows/`. El `.clinerules` menciona "CI/CD: GitHub Actions" pero **no hay workflows configurados**.
+
+**Impacto:**
+- No hay validación automática en PRs
+- No hay tests automáticos antes de merge
+- No hay deploy automático
+- Cualquier commit puede romper producción sin detección
+
+**Corrección:** Crear `.github/workflows/ci.yml` con:
+- `npm run type-check`
+- `npm test`
+- `npm run lint`
+- `npm run build`
+- Bloquear merge si falla
+
+---
+
+### 2. ❌ NO HAY `.env.example` COMPLETO
+
+**Problema:** Existe `.env.example` pero no se ha verificado que contenga todas las variables necesarias.
+
+**Corrección:** Auditar `.env.example` y asegurar que documenta todas las variables de Firebase, R2, Sentry, PostHog.
+
+---
+
+### 3. ❌ NO HAY GESTIÓN DE ERRORES EN PRODUCCIÓN
+
+**Problema:** No hay Sentry, no hay Error Boundary global, no hay logging remoto.
+
+**Impacto:** Los errores en producción son invisibles. Los usuarios encuentran bugs que nunca se reportan.
+
+**Corrección:**
+- Integrar Sentry para capturar errores en producción
+- Crear ErrorBoundary global en `BaseLayout.astro`
+- Añadir logging remoto para errores críticos
+
+---
+
+### 4. ❌ NO HAY ANALYTICS
+
+**Problema:** No hay PostHog, no hay Google Analytics, no hay tracking de eventos.
+
+**Impacto:** No sabemos qué features usan los usuarios, dónde abandonan, qué páginas son más visitadas.
+
+**Corrección:** Integrar PostHog para tracking de eventos y funnels.
+
+---
+
+## 🟠 HALLAZGOS DE ARQUITECTURA (P1)
+
+### 5. ⚠️ DUPLICACIÓN DE COMPONENTES UI
+
+**Problema:** Hay dos sistemas de componentes UI paralelos:
+
+| Sistema | Componentes | Estado |
+|---------|-------------|--------|
+| Componentes antiguos | `Button.astro`, `Card.astro`, `Input.astro`, `Icon.astro` | ⚠️ Legacy |
+| Componentes UI nuevos | `UIButton.astro`, `UICard.astro`, `UIInput.astro`, `UIBadge.astro` | ✅ Actuales |
+
+**Impacto:** Confusión sobre cuál usar, mantenimiento duplicado, inconsistencia visual.
+
+**Corrección:** Eliminar componentes legacy y usar solo los `UI*`.
+
+---
+
+### 6. ⚠️ SERVICIOS INSUFICIENTES
+
+**Problema:** Solo hay 2 servicios (`authService.ts`, `adminService.ts`). Toda la lógica de trainer y client está en `src/lib/`.
+
+**Estado actual:**
+```
+src/services/
+├── authService.ts     # Auth centralizado
+└── adminService.ts    # Admin CRUD
+```
+
+**Falta:**
+- `trainerService.ts` — Lógica de trainer centralizada
+- `clientService.ts` — Lógica de cliente centralizada
+- `dietService.ts` — Ya existe en `lib/client/` pero debería estar en `services/`
+- `notificationService.ts` — Ya existe en `lib/notifications/` pero debería estar en `services/`
+
+**Corrección:** Mover servicios de `lib/` a `services/` para centralizar.
+
+---
+
+### 7. ⚠️ ARCHIVOS >300 LÍNEAS (Regla de Oro)
+
+**Archivos que violan la regla:**
+
+| Archivo | Líneas | Acción |
+|---------|--------|--------|
+| `src/pages/trainer/diets.astro` | ~700 | Extraer editor a componente |
+| `src/pages/client/diets.astro` | ~415 | Extraer render a módulo |
+| `src/pages/admin/diets.astro` | ~338 | Extraer render a módulo |
+| `src/lib/devtools/seedData.ts` | ~900+ | Dividir por categoría |
+| `src/lib/shared/ui.ts` | ~290 | Cerca del límite |
+
+---
+
+### 8. ⚠️ DOCUMENTACIÓN DESORGANIZADA
+
+**Problema:** 29 documentos en `docs/` sin estructura clara. Hay auditorías, diseños, reportes, guías y módulos mezclados.
+
+**Documentos redundantes/obsoletos:**
+- `AUDIT_REPORT.md` vs `AUDITORIA_COMPLETA_CAMPFIT.md` vs `AUDITORIA_DIETAS_TRAINER.md` vs `11_auditoria_problemas.md`
+- `THEME.md` vs `THEME_STATUS.md`
+- `UI_UX_FINAL_PLAN.md` vs `UI_UX_MIGRATION_PLAN.md`
+
+**Corrección:** Reorganizar en subdirectorios:
+```
+docs/
+├── arquitectura/      # Diseño técnico
+├── auditorias/        # Reportes de auditoría
+├── guias/             # Guías de desarrollo
+├── modulos/           # Docs por módulo
+└── planes/            # Planes de mejora
+```
+
+---
+
+### 9. ⚠️ AGENTES SIN COORDINACIÓN
+
+**Problema:** 53 archivos de agentes en `agents/` pero:
+- No hay `agents/COORDINATION.md` que defina cómo trabajan juntos
+- No hay sistema de bloqueo entre agentes (el `agent-lock.sh` existe pero no se usa consistentemente)
+- Los agentes `fix-*` no tienen CHECKLIST ni TASKS
+- Los agentes `audit-*` solo tienen GUIDE
+
+**Corrección:**
+- Crear `agents/COORDINATION.md` con protocolo de coordinación
+- Asegurar que todos los agentes tengan CHECKLIST + GUIDE + RULES + TASKS
+- Usar `agent-lock.sh` obligatoriamente antes de cualquier cambio
+
+---
+
+## 🟡 HALLAZGOS DE CALIDAD (P2)
+
+### 10. ⚠️ TESTS E2E SOLO VERIFICAN RENDER
+
+**Problema:** Los 16 tests E2E solo verifican que las páginas rendericen `body`. No prueban flujos completos.
+
+**Faltan tests E2E para:**
+- Login → Dashboard → Crear dieta → Ver en cliente
+- Register → Onboarding → Ver dieta asignada
+- Trainer crea workout → Cliente ve workout
+- Admin bloquea usuario → Usuario no puede acceder
+- Cambiar idioma → Textos se traducen
+- Marcar comida completada → Adherencia actualiza
+
+---
+
+### 11. ⚠️ TESTS UNITARIOS FALTAN EN ÁREAS CLAVE
+
+**Sin tests:**
+- `src/lib/client/intoleranceChecker.ts` — Sin tests (función crítica)
+- `src/lib/client/onboardingService.ts` — Sin tests
+- `src/lib/client/supportService.ts` — Sin tests
+- `src/lib/client/achievementsService.ts` — Sin tests
+- `src/lib/client/adherenceService.ts` — Sin tests
+- `src/lib/storage/r2Service.ts` — Sin tests
+- `src/lib/shared/settingsService.ts` — Sin tests
+- `src/lib/shared/profileService.ts` — Sin tests
+
+---
+
+### 12. ⚠️ NO HAY `.eslintrc` ESTRICTO
+
+**Problema:** Existe `.eslintrc.cjs` pero no se ha verificado que prohíba `any`, `console.log`, etc.
+
+**Corrección:** Configurar reglas estrictas:
+- `@typescript-eslint/no-explicit-any: error`
+- `no-console: error` (excepto logger)
+- `@typescript-eslint/explicit-function-return-type: warn`
+
+---
+
+## 🟡 FACTORES HUMANOS NO CONSIDERADOS (P2)
+
+### 13. ⚠️ NO HAY ONBOARDING PARA TRAINERS
+
+**Problema:** Los trainers no tienen un flujo de onboarding. Se registran y van directo al dashboard sin saber cómo:
+- Asignar clientes
+- Crear dietas
+- Crear rutinas
+- Usar el chat
+
+**Corrección:** Crear `/trainer/onboarding` con tutorial guiado.
+
+---
+
+### 14. ⚠️ NO HAY GESTIÓN DE ERRORES PARA EL USUARIO
+
+**Problema:** Cuando Firebase falla, el usuario ve un toast genérico "Error al cargar". No hay:
+- Página de error 500 con retry
+- Estado offline (sin conexión a internet)
+- Mensajes de error específicos por tipo
+- Recuperación automática de suscripciones
+
+---
+
+### 15. ⚠️ NO HAY FEEDBACK DE CARGA EN ACCIONES
+
+**Problema:** Al crear/editar/eliminar, no hay feedback visual de que la acción está en progreso. El usuario puede hacer doble click.
+
+**Corrección:** Añadir estado `loading` en botones de guardar/eliminar.
+
+---
+
+### 16. ⚠️ NO HAY CONFIRMACIÓN DE ELIMINACIÓN CONSISTENTE
+
+**Problema:** Algunas eliminaciones usan `confirm()` nativo del navegador, otras usan `ConfirmModal.astro`. Inconsistencia.
+
+**Corrección:** Usar `ConfirmModal.astro` en todas las eliminaciones.
+
+---
+
+### 17. ⚠️ NO HAY PÁGINA DE AYUDA/FAQ
+
+**Problema:** No hay página de ayuda, FAQ, o soporte para usuarios finales.
+
+**Corrección:** Crear `/help` con FAQ y guía de uso.
+
+---
+
+### 18. ⚠️ NO HAY TÉRMINOS Y CONDICIONES LEGALES
+
+**Problema:** Existe `terms.astro` pero no se ha verificado que contenga:
+- Política de privacidad (GDPR)
+- Términos de servicio
+- Consentimiento de datos médicos
+- Política de cookies
+
+---
+
+### 19. ⚠️ NO HAY GESTIÓN DE SESIÓN EXPIRADA
+
+**Problema:** Si el token de Firebase expira mientras el usuario está usando la app, no hay manejo graceful. La app simplemente deja de funcionar silenciosamente.
+
+**Corrección:** Detectar token expirado y mostrar modal "Tu sesión ha expirado, inicia sesión de nuevo".
+
+---
+
+### 20. ⚠️ NO HAY PWA COMPLETO
+
+**Problema:** Hay `manifest.json` y `sw.js` pero:
+- No hay offline fallback page
+- No hay push notifications
+- No hay install prompt
+- No hay cache strategy para datos críticos
+
+---
+
+## 🟢 HALLAZGOS DE MEJORA (P3)
+
+### 21. ✅ MEJORAR `CHANGELOG.md`
+
+**Problema:** El CHANGELOG existe pero no se actualiza consistentemente.
+
+**Corrección:** Automatizar con `commitizen` o `standard-version`.
+
+---
+
+### 22. ✅ MEJORAR `CONTEXT.md`
+
+**Problema:** No se ha verificado que `CONTEXT.md` esté actualizado con el estado actual del proyecto.
+
+---
+
+### 23. ✅ AÑADIR `CONTRIBUTING.md`
+
+**Problema:** No hay guía de contribución para desarrolladores humanos.
+
+---
+
+### 24. ✅ AÑADIR `SECURITY.md`
+
+**Problema:** No hay política de seguridad para reportar vulnerabilidades.
+
+---
+
+### 25. ✅ AÑADIR `CODE_OF_CONDUCT.md`
+
+**Problema:** No hay código de conducta para contribuidores.
+
+---
+
+## 📋 PLAN DE ACCIÓN RECOMENDADO
+
+### Fase 1 — CRÍTICO (Semana 1)
+- [ ] **P0** Crear `.github/workflows/ci.yml` con CI/CD
+- [ ] **P0** Verificar `.env.example` completo
+- [ ] **P0** Integrar Sentry para errores en producción
+- [ ] **P0** Crear ErrorBoundary global
+
+### Fase 2 — Arquitectura (Semana 2)
+- [ ] **P1** Eliminar componentes UI duplicados (legacy)
+- [ ] **P1** Mover servicios de `lib/` a `services/`
+- [ ] **P1** Refactorizar archivos >300 líneas
+- [ ] **P1** Reorganizar documentación en subdirectorios
+- [ ] **P1** Crear `agents/COORDINATION.md`
+
+### Fase 3 — Calidad (Semana 3)
+- [ ] **P2** Añadir tests para intoleranceChecker, onboardingService, etc.
+- [ ] **P2** Ampliar tests E2E con flujos completos
+- [ ] **P2** Configurar ESLint estricto
+- [ ] **P2** Añadir estado loading en botones de acción
+- [ ] **P2** Unificar confirmación de eliminación con ConfirmModal
+
+### Fase 4 — Factores Humanos (Semana 4)
+- [ ] **P2** Crear onboarding para trainers
+- [ ] **P2** Mejorar mensajes de error para usuarios
+- [ ] **P2** Detectar sesión expirada con modal
+- [ ] **P2** Crear página de ayuda/FAQ
+- [ ] **P2** Verificar términos legales (GDPR)
+
+### Fase 5 — Mejora Continua
+- [ ] **P3** Automatizar CHANGELOG
+- [ ] **P3** Actualizar CONTEXT.md
+- [ ] **P3** Crear CONTRIBUTING.md
+- [ ] **P3** Crear SECURITY.md
+- [ ] **P3** Completar PWA (offline, push, install)
+
+---
+
+## 🏗️ ARQUITECTURA IDEAL PROPUESTA
+
+```
+campfit/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml              # Type-check + Tests + Lint + Build
+│       └── deploy.yml          # Deploy automático
+├── src/
+│   ├── components/
+│   │   ├── ui/                 # Componentes UI unificados (UI*)
+│   │   ├── layout/             # Layout components
+│   │   └── features/           # Componentes por feature
+│   ├── layouts/
+│   ├── pages/
+│   │   ├── (public)/           # Grupo público
+│   │   ├── (auth)/             # Grupo auth
+│   │   ├── client/
+│   │   ├── trainer/
+│   │   └── admin/
+│   ├── services/               # TODA la lógica de negocio aquí
+│   │   ├── authService.ts
+│   │   ├── trainerService.ts
+│   │   ├── clientService.ts
+│   │   ├── dietService.ts
+│   │   ├── workoutService.ts
+│   │   ├── notificationService.ts
+│   │   └── adminService.ts
+│   ├── stores/
+│   ├── lib/                    # Solo utilidades puras
+│   │   ├── validators.ts
+│   │   ├── formatters.ts
+│   │   └── helpers/
+│   ├── types/
+│   └── i18n/
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+├── docs/
+│   ├── arquitectura/
+│   ├── auditorias/
+│   ├── guias/
+│   ├── modulos/
+│   └── planes/
+└── agents/
+    ├── COORDINATION.md
+    └── [agentes con CHECKLIST + GUIDE + RULES + TASKS]
+```
+
+---
+
+## 🧠 FACTORES HUMANOS: LO QUE NO ESTAMOS CONSIDERANDO
+
+### 1. **Curva de aprendizaje del trainer**
+Los trainers no son técnicos. Necesitan:
+- Tutorial interactivo al primer login
+- Tooltips contextuales
+- Plantillas pre-hechas para empezar rápido
+- Videos cortos integrados en la UI
+
+### 2. **Friction del cliente**
+El cliente debe tener:
+- Acceso rápido a "mi dieta de hoy"
+- Notificación cuando el trainer asigna/modifica dieta
+- Posibilidad de feedback ("no me gusta esta comida")
+- Recordatorios de comidas (push notifications)
+
+### 3. **Confianza del admin**
+El admin necesita:
+- Dashboard con métricas reales (no mocks)
+- Auditoría de acciones (quién creó/modificó qué)
+- Capacidad de deshacer acciones críticas
+- Alertas de seguridad (logins sospechosos)
+
+### 4. **Accesibilidad**
+- No hay `aria-label` en muchos botones
+- No hay navegación por teclado verificada
+- No hay contraste de colores verificado
+- No hay soporte para lectores de pantalla
+
+### 5. **Internacionalización real**
+- Las fechas se muestran en formato español硬coded
+- Los números no se formatean según locale
+- No hay soporte RTL (right-to-left) si se añade árabe
+- Los emojis pueden tener significados diferentes en culturas
+
+### 6. **Privacidad de datos médicos**
+- Los datos médicos del cliente son sensibles (GDPR)
+- No hay cifrado en reposo de medicalProfile
+- No hay log de quién accede a qué perfil médico
+- No hay consentimiento explícito de compartir datos con trainer
+
+### 7. **Conciliación trabajo-vida del trainer**
+- Los trainers trabajan en horarios irregulares
+- Necesitan modo offline para revisar dietas
+- Necesitan exportar dietas a PDF para imprimir
+- Necesitan acceso rápido desde móvil
+
+### 8. **Retención del cliente**
+- No hay gamificación (logros, streaks visuales)
+- No hay recordatorios de progreso
+- No hay comparación con semanas anteriores
+- No hay celebración de hitos (ej: "¡Has completado 7 días seguidos!")
+
+---
+
+**Este documento debe revisarse periódicamente y actualizarse conforme se implementen las mejoras.**

@@ -1,4 +1,4 @@
-/**
+r/**
  * Servicio de consumo de plantillas para Entrenadores.
  * Permite a los entrenadores consultar plantillas de dietas/rutinas y asignarlas a sus clientes.
  *
@@ -21,6 +21,30 @@ import { db } from '@/lib/firebase';
 import type { DietTemplate, WorkoutTemplate } from '@/lib/devtools/types';
 
 /**
+ * 🔒 CRÍTICO: Verifica que un cliente esté asignado al trainer.
+ * Sin esta verificación, cualquier trainer podría asignar plantillas a clientes de otros trainers.
+ * @param clientId - UID del cliente
+ * @param trainerId - UID del trainer
+ * @returns true si el cliente está asignado al trainer
+ */
+async function isClientAssignedToTrainer(clientId: string, trainerId: string): Promise<boolean> {
+  try {
+    const callerSnap = await getDoc(doc(db, 'users', trainerId));
+    if (callerSnap.exists() && callerSnap.data().role === 'admin') return true;
+
+    const clientSnap = await getDoc(doc(db, 'users', clientId));
+    if (!clientSnap.exists()) return false;
+    const data = clientSnap.data();
+    return data.assignedTrainerId === trainerId;
+  } catch (err) {
+    logger.error('templateService', `Error verificando asignación de cliente ${clientId}:`, err);
+    return false;
+  }
+}
+
+import { seedDietTemplates, seedWorkoutTemplates } from '@/lib/devtools/seedService';
+
+/**
  * Suscribirse a la lista de plantillas de dietas disponibles.
  */
 export function subscribeToDietTemplates(
@@ -29,7 +53,14 @@ export function subscribeToDietTemplates(
   const q = collection(db, 'diet_templates');
   return onSnapshot(
     q,
-    (snapshot) => {
+    async (snapshot) => {
+      if (snapshot.empty) {
+        try {
+          await seedDietTemplates();
+        } catch (e) {
+          logger.warn('templateService', 'Auto-seed diet templates error', e);
+        }
+      }
       const templates = snapshot.docs.map((d) => ({
         id: d.id,
         ...d.data(),
@@ -52,7 +83,14 @@ export function subscribeToWorkoutTemplates(
   const q = collection(db, 'workout_templates');
   return onSnapshot(
     q,
-    (snapshot) => {
+    async (snapshot) => {
+      if (snapshot.empty) {
+        try {
+          await seedWorkoutTemplates();
+        } catch (e) {
+          logger.warn('templateService', 'Auto-seed workout templates error', e);
+        }
+      }
       const templates = snapshot.docs.map((d) => ({
         id: d.id,
         ...d.data(),
@@ -74,6 +112,13 @@ export async function applyDietTemplateToClient(
   clientId: string,
   trainerId: string,
 ): Promise<string> {
+  // 🔒 CRÍTICO: Valida ownership antes de clonar la plantilla.
+  // Sin esto, un trainer podría asignar dietas a clientes que no son suyos.
+  const isAssigned = await isClientAssignedToTrainer(clientId, trainerId);
+  if (!isAssigned) {
+    throw new Error('El cliente no está asignado a este entrenador.');
+  }
+
   const templateRef = doc(db, 'diet_templates', templateId);
   const templateSnap = await getDoc(templateRef);
 
@@ -107,6 +152,13 @@ export async function applyWorkoutTemplateToClient(
   clientId: string,
   trainerId: string,
 ): Promise<string> {
+  // 🔒 CRÍTICO: Valida ownership antes de clonar la plantilla.
+  // Sin esto, un trainer podría asignar rutinas a clientes que no son suyos.
+  const isAssigned = await isClientAssignedToTrainer(clientId, trainerId);
+  if (!isAssigned) {
+    throw new Error('El cliente no está asignado a este entrenador.');
+  }
+
   const templateRef = doc(db, 'workout_templates', templateId);
   const templateSnap = await getDoc(templateRef);
 

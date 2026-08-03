@@ -26,11 +26,10 @@ const currentPath = Astro.url.pathname;
         CampFit
       </a>
       <div class="flex items-center gap-2">
+        <AdminModeBanner />
         <LanguageSwitcherDropdown currentPath={currentPath} lang={lang} />
       </div>
     </header>
-
-    <AdminModeBanner />
 
     <!-- Page content with top offset padding -->
     <div class="pt-14 pb-20">

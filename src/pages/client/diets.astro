@@ -1,16 +1,21 @@
 ---
-import ClientLayout from '@/layouts/ClientLayout.astro';
-import { translations, type Language } from '@/i18n/translations';
+import ClientLayout from "@/layouts/ClientLayout.astro";
+import { translations, type Language } from "@/i18n/translations";
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
-const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
+const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
 <ClientLayout>
   <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
     <div class="text-center animate-fade-in">
-      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
-      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t('dashboard.loading')}</p>
+      <div
+        class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"
+      >
+      </div>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">
+        {t("dashboard.loading")}
+      </p>
     </div>
   </div>
 
@@ -18,42 +23,171 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <main class="mx-auto max-w-4xl px-4 py-6">
       <div class="animate-fade-in space-y-6">
         <!-- Header -->
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 data-i18n="client.nav.diets" class="text-xl font-bold">{t('client.nav.diets')}</h2>
-            <p data-i18n="client.diet.sub" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.diet.sub')}</p>
+            <h2 data-i18n="client.nav.diets" class="text-xl font-bold">{t("client.nav.diets")}</h2>
+            <p data-i18n="client.diet.sub" class="mt-1 text-sm text-[var(--text-tertiary)]">
+              {t("client.diet.sub")}
+            </p>
           </div>
           <!-- Historial button -->
-          <button id="btn-history" class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all hidden">
-            <svg class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          <button
+            id="btn-history"
+            class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all hidden"
+          >
+            <svg
+              class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
             </svg>
-            <span data-i18n="client.diet.history">{t('client.diet.history')}</span>
+            <span data-i18n="client.diet.history">{t("client.diet.history")}</span>
           </button>
         </div>
 
-        <!-- Diet Adherence Bar -->
-        <div id="adherence-bar" class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <div class="flex items-center justify-between mb-2">
-            <p data-i18n="client.diet.dailyProgress" class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">{t('client.diet.dailyProgress')}</p>
-            <p id="adherence-text" class="text-xs text-[var(--brand)] font-medium">0%</p>
+        <!-- Water Tracker (Control de Hidratación) -->
+        <div
+          class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-3"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <div
+                class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 text-lg"
+              >
+                💧
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">
+                  {t("client.waterTracker.title")}
+                </h3>
+                <p class="text-[11px] text-[var(--text-tertiary)]">
+                  {t("client.waterTracker.goal")} (<span id="water-glasses">0</span> / 8 {
+                    t("client.waterTracker.glasses")
+                  })
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                id="btn-sub-water"
+                class="flex h-8 w-8 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-4)] active:scale-95 transition-all"
+              >
+                -
+              </button>
+              <span
+                id="water-current"
+                class="text-base font-bold text-blue-400 min-w-[65px] text-center">0 ml</span
+              >
+              <button
+                type="button"
+                id="btn-add-water"
+                class="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500 text-white text-sm font-bold shadow-md shadow-blue-500/20 hover:bg-blue-600 active:scale-95 transition-all"
+              >
+                +
+              </button>
+            </div>
           </div>
+
+          <!-- Barra de agua -->
           <div class="h-2 overflow-hidden rounded-full bg-[var(--surface-3)]">
-            <div id="adherence-fill" class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+            <div
+              id="water-bar-fill"
+              class="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500"
+              style="width: 0%"
+            >
+            </div>
+          </div>
+        </div>
+
+        <!-- Diet Adherence & Macro Summary -->
+        <div
+          id="adherence-bar"
+          class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-4"
+        >
+          <div class="flex items-center justify-between">
+            <p
+              data-i18n="client.diet.dailyProgress"
+              class="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider"
+            >
+              {t("client.diet.dailyProgress")}
+            </p>
+            <p id="adherence-text" class="text-sm text-[var(--brand)] font-bold">0%</p>
+          </div>
+
+          <!-- General Adherence Progress Bar -->
+          <div class="h-2.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
+            <div
+              id="adherence-fill"
+              class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500"
+              style="width: 0%"
+            >
+            </div>
+          </div>
+
+          <!-- Desglose de Objetivos de Macronutrientes -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2 text-xs">
+            <div class="rounded-xl border border-amber-500/20 bg-amber-500/10 p-2.5">
+              <span class="text-[10px] text-amber-400 font-semibold uppercase"
+                >{t("client.macros.calories")}</span
+              >
+              <p class="text-sm font-bold text-amber-400 mt-0.5">
+                <span id="consumed-kcal">0</span> / <span id="target-kcal">0</span> kcal
+              </p>
+            </div>
+            <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5">
+              <span class="text-[10px] text-emerald-400 font-semibold uppercase"
+                >{t("client.macros.protein")}</span
+              >
+              <p class="text-sm font-bold text-emerald-400 mt-0.5">
+                <span id="consumed-protein">0</span> / <span id="target-protein">0</span>g
+              </p>
+            </div>
+            <div class="rounded-xl border border-blue-500/20 bg-blue-500/10 p-2.5">
+              <span class="text-[10px] text-blue-400 font-semibold uppercase"
+                >{t("client.macros.carbs")}</span
+              >
+              <p class="text-sm font-bold text-blue-400 mt-0.5">
+                <span id="consumed-carbs">0</span> / <span id="target-carbs">0</span>g
+              </p>
+            </div>
+            <div class="rounded-xl border border-purple-500/20 bg-purple-500/10 p-2.5">
+              <span class="text-[10px] text-purple-400 font-semibold uppercase"
+                >{t("client.macros.fat")}</span
+              >
+              <p class="text-sm font-bold text-purple-400 mt-0.5">
+                <span id="consumed-fat">0</span> / <span id="target-fat">0</span>g
+              </p>
+            </div>
           </div>
         </div>
 
         <!-- Diet Card -->
-        <div id="dietCard" class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
-          <div class="flex items-center justify-between mb-4">
+        <div
+          id="dietCard"
+          class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl"
+        >
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div>
               <h3 id="dietName" class="text-lg font-bold text-[var(--text-primary)]"></h3>
-              <div class="flex items-center gap-2 mt-1">
-                <span id="dietType" class="inline-block rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-medium text-[var(--brand)]"></span>
-                <span id="dietSomatotype" class="inline-block rounded-full bg-[var(--info-dim)] px-3 py-1 text-xs font-medium text-[var(--info)] hidden"></span>
+              <div class="flex items-center gap-2 mt-1 flex-wrap">
+                <span
+                  id="dietType"
+                  class="inline-block rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-medium text-[var(--brand)] border border-[var(--border-brand)]"
+                ></span>
+                <span
+                  id="dietSomatotype"
+                  class="inline-block rounded-full bg-[var(--info-dim)] px-3 py-1 text-xs font-medium text-[var(--info)] border border-[var(--info)] border-opacity-30 hidden"
+                ></span>
               </div>
             </div>
-            <p id="dietCalories" class="text-sm text-[var(--text-tertiary)]"></p>
+            <p id="dietCalories" class="text-base font-bold text-[var(--brand)]"></p>
           </div>
 
           <div class="space-y-3" id="mealsList">
@@ -61,13 +195,29 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </div>
 
           <!-- Totals -->
-          <div id="mealTotals" class="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4">
-            <p data-i18n="client.diet.dailyTotals" class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">{t('client.diet.dailyTotals')}</p>
-            <div class="mt-2 flex flex-wrap gap-4 text-sm">
-              <span class="text-[var(--text-secondary)]">Cal: <strong id="totalCal" class="text-[var(--brand)]">0</strong></span>
-              <span class="text-[var(--text-secondary)]">P: <strong id="totalProtein" class="text-[var(--brand)]">0</strong>g</span>
-              <span class="text-[var(--text-secondary)]">C: <strong id="totalCarbs" class="text-[var(--brand)]">0</strong>g</span>
-              <span class="text-[var(--text-secondary)]">G: <strong id="totalFat" class="text-[var(--brand)]">0</strong>g</span>
+          <div
+            id="mealTotals"
+            class="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4"
+          >
+            <p
+              data-i18n="client.diet.dailyTotals"
+              class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider"
+            >
+              {t("client.diet.dailyTotals")}
+            </p>
+            <div class="mt-2 flex flex-wrap gap-4 text-sm font-semibold">
+              <span class="text-[var(--text-secondary)]"
+                >Cal: <strong id="totalCal" class="text-amber-400">0</strong></span
+              >
+              <span class="text-[var(--text-secondary)]"
+                >P: <strong id="totalProtein" class="text-emerald-400">0</strong>g</span
+              >
+              <span class="text-[var(--text-secondary)]"
+                >C: <strong id="totalCarbs" class="text-blue-400">0</strong>g</span
+              >
+              <span class="text-[var(--text-secondary)]"
+                >G: <strong id="totalFat" class="text-purple-400">0</strong>g</span
+              >
             </div>
           </div>
         </div>
@@ -75,190 +225,330 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <!-- History View -->
         <div id="historyView" class="hidden space-y-3">
           <div class="flex items-center justify-between">
-            <h3 data-i18n="client.diet.historyTitle" class="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('client.diet.historyTitle')}</h3>
-            <button id="btn-back-current" class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">
-              <svg class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+            <h3
+              data-i18n="client.diet.historyTitle"
+              class="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider"
+            >
+              {t("client.diet.historyTitle")}
+            </h3>
+            <button
+              id="btn-back-current"
+              class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
+            >
+              <svg
+                class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"></path>
               </svg>
-              <span data-i18n="client.diet.current">{t('client.diet.current')}</span>
+              <span data-i18n="client.diet.current">{t("client.diet.current")}</span>
             </button>
           </div>
           <div id="historyList" class="space-y-2"></div>
         </div>
 
         <!-- Empty State -->
-        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
-          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
-            <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
-            </svg>
+        <div
+          id="emptyState"
+          class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center"
+        >
+          <div
+            class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)] text-2xl"
+          >
+            🥗
           </div>
-          <h3 data-i18n="client.no.diet" class="mt-4 text-lg font-semibold text-[var(--text-secondary)]">{t('client.no.diet')}</h3>
-          <p data-i18n="client.diet.assigned.desc" class="mt-2 text-sm text-[var(--text-disabled)]">{t('client.diet.assigned.desc')}</p>
+          <h3
+            data-i18n="client.no.diet"
+            class="mt-4 text-lg font-semibold text-[var(--text-secondary)]"
+          >
+            {t("client.no.diet")}
+          </h3>
+          <p data-i18n="client.diet.assigned.desc" class="mt-2 text-sm text-[var(--text-disabled)]">
+            {t("client.diet.assigned.desc")}
+          </p>
         </div>
       </div>
     </main>
   </div>
 
   <!-- Toast -->
-  <div id="diet-toast" class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-6 py-3 text-sm font-medium backdrop-blur-xl shadow-2xl hidden"></div>
+  <div
+    id="diet-toast"
+    class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-6 py-3 text-sm font-medium backdrop-blur-xl shadow-2xl hidden"
+  >
+  </div>
 </ClientLayout>
 
 <script>
-  import { initPage } from '@/lib/shared/initPage';
-  import { subscribeToDiets, subscribeToDietHistory, subscribeToTodayMeals, registerMealComplete } from '@/lib/client/dietService';
-  import { t } from '@/i18n/client';
+  import { initPage } from "@/lib/shared/initPage";
+  import {
+    subscribeToDiets,
+    subscribeToDietHistory,
+    subscribeToTodayMeals,
+    registerMealComplete,
+    type Diet,
+    type Meal,
+  } from "@/lib/client/dietService";
+  import { t } from "@/i18n/client";
 
   // ─── DOM refs ────────────────────────────────────────────────────────────────
-  const loadingScreen = document.getElementById('loadingScreen')!;
-  const loadingText = document.getElementById('loadingText')!;
-  const dietsContent = document.getElementById('dietsContent')!;
-  const dietCard = document.getElementById('dietCard')!;
-  const emptyState = document.getElementById('emptyState')!;
-  const dietName = document.getElementById('dietName')!;
-  const dietType = document.getElementById('dietType')!;
-  const dietSomatotype = document.getElementById('dietSomatotype')!;
-  const dietCalories = document.getElementById('dietCalories')!;
-  const mealsList = document.getElementById('mealsList')!;
-  const totalCal = document.getElementById('totalCal')!;
-  const totalProtein = document.getElementById('totalProtein')!;
-  const totalCarbs = document.getElementById('totalCarbs')!;
-  const totalFat = document.getElementById('totalFat')!;
-  const adherenceBar = document.getElementById('adherence-bar')!;
-  const adherenceFill = document.getElementById('adherence-fill')!;
-  const adherenceText = document.getElementById('adherence-text')!;
-  const btnHistory = document.getElementById('btn-history')!;
-  const historyView = document.getElementById('historyView')!;
-  const historyList = document.getElementById('historyList')!;
-  const btnBackCurrent = document.getElementById('btn-back-current')!;
-  const toast = document.getElementById('diet-toast')!;
+  const loadingScreen = document.getElementById("loadingScreen")!;
+  const loadingText = document.getElementById("loadingText")!;
+  const dietsContent = document.getElementById("dietsContent")!;
+  const dietCard = document.getElementById("dietCard")!;
+  const emptyState = document.getElementById("emptyState")!;
+  const dietName = document.getElementById("dietName")!;
+  const dietType = document.getElementById("dietType")!;
+  const dietSomatotype = document.getElementById("dietSomatotype")!;
+  const dietCalories = document.getElementById("dietCalories")!;
+  const mealsList = document.getElementById("mealsList")!;
+  const totalCal = document.getElementById("totalCal")!;
+  const totalProtein = document.getElementById("totalProtein")!;
+  const totalCarbs = document.getElementById("totalCarbs")!;
+  const totalFat = document.getElementById("totalFat")!;
+  const adherenceBar = document.getElementById("adherence-bar")!;
+  const adherenceFill = document.getElementById("adherence-fill")!;
+  const adherenceText = document.getElementById("adherence-text")!;
+  const btnHistory = document.getElementById("btn-history")!;
+  const historyView = document.getElementById("historyView")!;
+  const historyList = document.getElementById("historyList")!;
+  const btnBackCurrent = document.getElementById("btn-back-current")!;
+  const toast = document.getElementById("diet-toast")!;
+
+  // Water Tracker refs
+  const btnAddWater = document.getElementById("btn-add-water")!;
+  const btnSubWater = document.getElementById("btn-sub-water")!;
+  const waterCurrentEl = document.getElementById("water-current")!;
+  const waterGlassesEl = document.getElementById("water-glasses")!;
+  const waterBarFill = document.getElementById("water-bar-fill")!;
+
+  // Consumed Macro refs
+  const consumedKcalEl = document.getElementById("consumed-kcal")!;
+  const targetKcalEl = document.getElementById("target-kcal")!;
+  const consumedProtEl = document.getElementById("consumed-protein")!;
+  const targetProtEl = document.getElementById("target-protein")!;
+  const consumedCarbsEl = document.getElementById("consumed-carbs")!;
+  const targetCarbsEl = document.getElementById("target-carbs")!;
+  const consumedFatEl = document.getElementById("consumed-fat")!;
+  const targetFatEl = document.getElementById("target-fat")!;
 
   // ─── State ───────────────────────────────────────────────────────────────────
   let currentDietId: string | null = null;
   let currentMealsCount = 0;
+  let currentClientId = "";
+  let currentUserRole = "";
   let unsubDiets: (() => void) | null = null;
   let unsubHistory: (() => void) | null = null;
   let unsubTodayMeals: (() => void) | null = null;
-  let allDiets: any[] = [];
+  let allDiets: Diet[] = [];
+  let currentDietObj: Diet | null = null;
+  let activeCompletedMealIds: string[] = [];
+
+  // Water Tracker State (2,500 ml target)
+  const WATER_GOAL_ML = 2500;
+  let currentWaterMl = 0;
+
+  function getWaterStorageKey(): string {
+    const todayStr = new Date().toISOString().substring(0, 10);
+    return `cf_water_${currentClientId}_${todayStr}`;
+  }
+
+  function initWaterTracker(): void {
+    if (!currentClientId) return;
+    const key = getWaterStorageKey();
+    const stored = localStorage.getItem(key);
+    currentWaterMl = stored ? parseInt(stored, 10) || 0 : 0;
+    renderWaterTracker();
+  }
+
+  function renderWaterTracker(): void {
+    waterCurrentEl.textContent = `${currentWaterMl} ml`;
+    const glasses = Math.floor(currentWaterMl / 300);
+    waterGlassesEl.textContent = String(glasses);
+    const pct = Math.min(100, Math.round((currentWaterMl / WATER_GOAL_ML) * 100));
+    waterBarFill.style.width = `${pct}%`;
+  }
+
+  btnAddWater?.addEventListener("click", () => {
+    currentWaterMl += 250;
+    localStorage.setItem(getWaterStorageKey(), String(currentWaterMl));
+    renderWaterTracker();
+    showToast("💧 Vasos de agua añadidos");
+  });
+
+  btnSubWater?.addEventListener("click", () => {
+    if (currentWaterMl >= 250) {
+      currentWaterMl -= 250;
+      localStorage.setItem(getWaterStorageKey(), String(currentWaterMl));
+      renderWaterTracker();
+    }
+  });
 
   // ─── Toast helper ────────────────────────────────────────────────────────────
-  function showToast(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+  function showToast(message: string, type: "success" | "error" | "info" = "success"): void {
     const colors = {
-      success: 'border-emerald-500/30 bg-[var(--brand-dim)] text-[var(--brand)]',
-      error: 'border-red-500/30 bg-[var(--danger-dim)] text-[var(--danger)]',
-      info: 'border-blue-500/30 bg-[var(--info-dim)] text-[var(--info)]',
+      success: "border-emerald-500/30 bg-[var(--brand-dim)] text-[var(--brand)]",
+      error: "border-red-500/30 bg-[var(--danger-dim)] text-[var(--danger)]",
+      info: "border-blue-500/30 bg-[var(--info-dim)] text-[var(--info)]",
     };
     toast.className = `fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border px-6 py-3 text-sm font-medium backdrop-blur-xl shadow-2xl animate-slide-up ${colors[type]}`;
     toast.textContent = message;
-    toast.classList.remove('hidden');
+    toast.classList.remove("hidden");
 
     setTimeout(() => {
-      toast.classList.add('animate-fade-out');
+      toast.classList.add("animate-fade-out");
       setTimeout(() => {
-        toast.classList.add('hidden');
-        toast.classList.remove('animate-fade-out');
+        toast.classList.add("hidden");
+        toast.classList.remove("animate-fade-out");
       }, 300);
     }, 2500);
   }
 
   // ─── Init ────────────────────────────────────────────────────────────────────
-  loadingText.textContent = t('dashboard.loading');
+  loadingText.textContent = t("dashboard.loading");
 
   const cleanup = initPage({
-    allowedRoles: ['client', 'admin', 'trainer'],
-    onReady: async (firebaseUser) => {
+    allowedRoles: ["client", "admin", "trainer"],
+    onReady: async (firebaseUser, userData) => {
       const clientId = firebaseUser.uid;
+      currentClientId = clientId;
+      currentUserRole = userData?.role || "client";
 
-    // Suscribirse a la dieta actual (última)
-    unsubDiets = subscribeToDiets(clientId, (diets) => {
-      allDiets = diets;
-      if (diets.length > 0 && diets[0]) {
-        renderCurrentDiet(diets[0]);
-        btnHistory.classList.remove('hidden');
-      } else {
-        dietCard.classList.add('hidden');
-        emptyState.classList.remove('hidden');
-        btnHistory.classList.add('hidden');
-      }
-    });
+      initWaterTracker();
 
-    // Suscribirse a comidas completadas hoy para adherencia
-    unsubTodayMeals = subscribeToTodayMeals(clientId, (completedIds) => {
-      updateAdherence(completedIds);
-    });
+      // Suscribirse a la dieta actual
+      unsubDiets = subscribeToDiets(clientId, (diets) => {
+        allDiets = diets;
+        if (diets.length > 0 && diets[0]) {
+          renderCurrentDiet(diets[0]);
+          btnHistory.classList.remove("hidden");
+        } else {
+          dietCard.classList.add("hidden");
+          emptyState.classList.remove("hidden");
+          btnHistory.classList.add("hidden");
+        }
+      });
 
-    // History toggle
-    btnHistory.addEventListener('click', () => {
-      showHistory(clientId);
-    });
+      // Suscribirse a comidas completadas hoy para adherencia
+      unsubTodayMeals = subscribeToTodayMeals(clientId, (completedIds) => {
+        activeCompletedMealIds = completedIds;
+        updateAdherence(completedIds);
+      });
 
-      btnBackCurrent.addEventListener('click', () => {
-      historyView.classList.add('hidden');
-      dietCard.classList.remove('hidden');
-      btnHistory.classList.remove('hidden');
-      if (unsubHistory) {
-        unsubHistory();
-        unsubHistory = null;
-      }
-    });
+      // History toggle
+      btnHistory.addEventListener("click", () => {
+        showHistory(clientId);
+      });
+
+      btnBackCurrent.addEventListener("click", () => {
+        historyView.classList.add("hidden");
+        dietCard.classList.remove("hidden");
+        btnHistory.classList.remove("hidden");
+        if (unsubHistory) {
+          unsubHistory();
+          unsubHistory = null;
+        }
+      });
     },
   });
 
+  // ─── Helper traducción de comidas ──────────────────────────────────────────
+  function getMealLabel(name: string): string {
+    const map: Record<string, string> = {
+      breakfast: "Desayuno",
+      lunch: "Almuerzo",
+      snack: "Merienda",
+      dinner: "Cena",
+      other: "Otra toma",
+    };
+    return map[name] || name;
+  }
+
   // ─── Render current diet ─────────────────────────────────────────────────────
-  function renderCurrentDiet(d: any): void {
+  function renderCurrentDiet(d: Diet): void {
+    currentDietObj = d;
     currentDietId = d.id;
     currentMealsCount = d.meals?.length || 0;
 
     dietName.textContent = d.name;
-    dietType.textContent = d.type === 'advanced' ? 'Avanzada' : 'Normal';
+
+    const typeLabels: Record<string, string> = {
+      normal: "Normocalórica",
+      definition: "Definición Muscular",
+      volume: "Volumen",
+      keto: "Keto",
+      vegan: "Vegana",
+      custom: "Personalizada",
+    };
+    dietType.textContent = typeLabels[d.type] || d.type || "Personalizada";
 
     if (d.somatotype) {
-      dietSomatotype.classList.remove('hidden');
+      dietSomatotype.classList.remove("hidden");
       const somaLabels: Record<string, string> = {
-        ectomorph: 'Ectomorfo',
-        mesomorph: 'Mesomorfo',
-        endomorph: 'Endomorfo',
+        ectomorph: "Ectomorfo",
+        mesomorph: "Mesomorfo",
+        endomorph: "Endomorfo",
       };
       dietSomatotype.textContent = somaLabels[d.somatotype] || d.somatotype;
     } else {
-      dietSomatotype.classList.add('hidden');
+      dietSomatotype.classList.add("hidden");
     }
 
-    dietCalories.textContent = `${d.totalCalories} kcal`;
+    dietCalories.textContent = `${d.totalCalories || 0} kcal`;
 
-    let sumCal = 0, sumP = 0, sumC = 0, sumF = 0;
+    let sumCal = 0,
+      sumP = 0,
+      sumC = 0,
+      sumF = 0;
 
-    mealsList.innerHTML = '';
+    mealsList.innerHTML = "";
     if (d.meals && d.meals.length > 0) {
-      d.meals.forEach((meal: any) => {
+      d.meals.forEach((meal: Meal) => {
         sumCal += meal.calories || 0;
         sumP += meal.protein || 0;
         sumC += meal.carbs || 0;
         sumF += meal.fat || 0;
 
-        const div = document.createElement('div');
-        div.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm transition-all';
+        const isCompleted = activeCompletedMealIds.includes(meal.id);
+
+        const div = document.createElement("div");
+        div.className = `rounded-xl border p-4 backdrop-blur-sm transition-all ${
+          isCompleted
+            ? "border-emerald-500/40 bg-[var(--brand-dim)]"
+            : "border-[var(--border-subtle)] bg-[var(--surface-2)]"
+        }`;
         div.id = `meal-${meal.id}`;
         div.innerHTML = `
-          <div class="flex items-start justify-between">
+          <div class="flex items-start justify-between gap-3">
             <div class="flex-1">
               <div class="flex items-center gap-2">
-                <h4 class="font-medium text-[var(--text-primary)] capitalize">${getMealLabel(meal.name)}</h4>
-                <span class="text-[10px] text-[var(--text-disabled)]">#${meal.order || ''}</span>
+                <h4 class="font-bold text-sm text-[var(--text-primary)] capitalize">${getMealLabel(meal.name)}</h4>
+                <span class="text-[10px] text-[var(--text-disabled)] font-medium">#${meal.order || ""}</span>
+                 ${isCompleted ? `<span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-[var(--brand)]">${t("client.meal.completed")}</span>` : ""}
               </div>
-              ${meal.description ? `<p class="mt-1 text-xs text-[var(--text-disabled)]">${escapeHtml(meal.description)}</p>` : ''}
-              <div class="mt-2 flex flex-wrap gap-3 text-xs text-[var(--text-tertiary)]">
-                <span>Cal: ${meal.calories || 0}</span>
-                <span>P: ${meal.protein || 0}g</span>
-                <span>C: ${meal.carbs || 0}g</span>
-                <span>G: ${meal.fat || 0}g</span>
+              ${meal.description ? `<p class="mt-1.5 text-xs text-[var(--text-tertiary)]">${escapeHtml(meal.description)}</p>` : ""}
+              <div class="mt-2.5 flex flex-wrap gap-2.5 text-xs font-semibold">
+                <span class="rounded-md bg-amber-500/10 px-2 py-0.5 text-amber-400 border border-amber-500/20">${meal.calories || 0} kcal</span>
+                <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-emerald-400 border border-emerald-500/20">Prot: ${meal.protein || 0}g</span>
+                <span class="rounded-md bg-blue-500/10 px-2 py-0.5 text-blue-400 border border-blue-500/20">Carbs: ${meal.carbs || 0}g</span>
+                <span class="rounded-md bg-purple-500/10 px-2 py-0.5 text-purple-400 border border-purple-500/20">Grasas: ${meal.fat || 0}g</span>
               </div>
             </div>
-            <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-3 rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-2.5 py-1.5 text-xs text-[var(--text-tertiary)] hover:text-[var(--brand)] hover:border-emerald-500/30 transition-all">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </button>
+             ${
+               currentUserRole === "client"
+                 ? `
+             <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--brand)] hover:border-emerald-500/30 transition-all ${isCompleted ? "border-emerald-500 text-[var(--brand)] bg-emerald-500/10" : ""}">
+               ${isCompleted ? t("client.meal.markDone") : t("client.meal.mark")}
+             </button>
+             `
+                 : ""
+             }
           </div>
         `;
         mealsList.appendChild(div);
@@ -270,143 +560,118 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     totalCarbs.textContent = `${sumC}`;
     totalFat.textContent = `${sumF}`;
 
-    dietCard.classList.remove('hidden');
-    emptyState.classList.add('hidden');
+    targetKcalEl.textContent = `${d.totalCalories || sumCal}`;
+    targetProtEl.textContent = `${sumP}`;
+    targetCarbsEl.textContent = `${sumC}`;
+    targetFatEl.textContent = `${sumF}`;
 
-    // Attach click handlers for meal complete buttons
-    mealsList.querySelectorAll('.btn-complete').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const mealId = btn.getAttribute('data-meal-id');
-        const mealName = btn.getAttribute('data-meal-name');
+    dietCard.classList.remove("hidden");
+    emptyState.classList.add("hidden");
+
+    // Handler de completado de comidas
+    mealsList.querySelectorAll(".btn-complete").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const mealId = btn.getAttribute("data-meal-id");
+        const mealName = btn.getAttribute("data-meal-name");
         if (!mealId || !currentDietId) return;
 
-        // Deshabilitar botón temporalmente
-        btn.setAttribute('disabled', 'true');
-        btn.classList.add('opacity-50');
+        btn.setAttribute("disabled", "true");
+        btn.classList.add("opacity-50");
 
         const result = await registerMealComplete(
-          '', // clientId se obtiene del auth
+          currentClientId,
           currentDietId,
           mealId,
-          mealName || '',
+          mealName || ""
         );
 
         if (result) {
-          showToast('Comida marcada como completada ✅', 'success');
-          // Marcar visualmente
-          const row = btn.closest('[class*="rounded-xl"]');
-          if (row) {
-            row.classList.add('border-emerald-500/30', 'bg-[var(--brand-dim)]');
-          }
-          btn.innerHTML = `
-            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-          `;
-          btn.classList.remove('opacity-50');
+          showToast(t("client.meal.registered"));
         } else {
-          showToast('Error al marcar la comida', 'error');
-          btn.removeAttribute('disabled');
-          btn.classList.remove('opacity-50');
+          showToast(t("client.meal.error"), "error");
+          btn.removeAttribute("disabled");
+          btn.classList.remove("opacity-50");
         }
       });
     });
+
+    updateMacroProgress();
   }
 
-  // ─── Adherence ───────────────────────────────────────────────────────────────
+  function updateMacroProgress(): void {
+    if (!currentDietObj || !currentDietObj.meals) return;
+
+    let consumedKcal = 0,
+      consumedP = 0,
+      consumedC = 0,
+      consumedF = 0;
+
+    currentDietObj.meals.forEach((m) => {
+      if (activeCompletedMealIds.includes(m.id)) {
+        consumedKcal += m.calories || 0;
+        consumedP += m.protein || 0;
+        consumedC += m.carbs || 0;
+        consumedF += m.fat || 0;
+      }
+    });
+
+    consumedKcalEl.textContent = String(consumedKcal);
+    consumedProtEl.textContent = String(consumedP);
+    consumedCarbsEl.textContent = String(consumedC);
+    consumedFatEl.textContent = String(consumedF);
+  }
+
   function updateAdherence(completedIds: string[]): void {
+    activeCompletedMealIds = completedIds;
+
     if (currentMealsCount === 0) {
-      adherenceBar.classList.add('hidden');
+      adherenceBar.classList.add("hidden");
       return;
     }
 
-    adherenceBar.classList.remove('hidden');
-    const pct = Math.round((completedIds.length / currentMealsCount) * 100);
+    adherenceBar.classList.remove("hidden");
+    const pct = Math.min(100, Math.round((completedIds.length / currentMealsCount) * 100));
+
     adherenceFill.style.width = `${pct}%`;
     adherenceText.textContent = `${pct}% (${completedIds.length}/${currentMealsCount})`;
 
-    // Marcar visualmente las comidas completadas
-    completedIds.forEach((mealId) => {
-      const mealRow = document.getElementById(`meal-${mealId}`);
-      if (mealRow) {
-        mealRow.classList.add('border-emerald-500/30', 'bg-[var(--brand-dim)]');
-        const btn = mealRow.querySelector('.btn-complete') as HTMLButtonElement;
-        if (btn) {
-          btn.innerHTML = `
-            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-          `;
-          btn.setAttribute('disabled', 'true');
-          btn.classList.add('opacity-50');
-        }
-      }
-    });
+    if (currentDietObj) {
+      renderCurrentDiet(currentDietObj);
+    }
   }
 
-  // ─── History ─────────────────────────────────────────────────────────────────
   function showHistory(clientId: string): void {
-    dietCard.classList.add('hidden');
-    btnHistory.classList.add('hidden');
-    historyView.classList.remove('hidden');
-
-    if (unsubHistory) unsubHistory();
+    dietCard.classList.add("hidden");
+    historyView.classList.remove("hidden");
+    historyList.innerHTML = `<div class="p-4 text-center text-xs text-[var(--text-tertiary)]">${t("dashboard.loading")}</div>`;
 
     unsubHistory = subscribeToDietHistory(clientId, (diets) => {
       if (diets.length === 0) {
-        historyList.innerHTML = '<p class="text-xs text-[var(--text-disabled)] py-4 text-center">No hay dietas en el historial</p>';
+        historyList.innerHTML = `<div class="p-4 text-center text-xs text-[var(--text-disabled)]">${t("client.diet.noHistory")}</div>`;
         return;
       }
 
-      historyList.innerHTML = diets.map((d, i) => {
-        const isCurrent = i === 0;
-        const dateStr = d.createdAt?.toDate
-          ? d.createdAt.toDate().toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })
-          : 'Fecha desconocida';
-        return `
-          <div class="rounded-xl border ${isCurrent ? 'border-emerald-500/30 bg-[var(--brand-dim)]' : 'border-[var(--border-subtle)] bg-[var(--surface-2)]'} p-4 backdrop-blur-sm transition-all hover:border-[var(--border-default)]">
-            <div class="flex items-center justify-between">
+      historyList.innerHTML = diets
+        .map((d) => {
+          const isCurrent = d.id === currentDietId;
+          const dateStr =
+            d.createdAt && typeof (d.createdAt as any).toDate === "function"
+              ? (d.createdAt as any).toDate().toLocaleDateString()
+              : "Anterior";
+
+          return `
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(d.name)}</p>
-                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">
-                  ${d.meals?.length || 0} comidas · ${d.totalCalories || 0} kcal
-                  ${isCurrent ? '<span class="text-[var(--brand)] ml-2">● Actual</span>' : ''}
-                </p>
+                <p class="text-sm font-semibold text-[var(--text-primary)]">${escapeHtml(d.name)}</p>
+                <p class="text-xs text-[var(--text-tertiary)]">${d.totalCalories} kcal · ${dateStr}</p>
               </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--text-tertiary)]">${dateStr}</p>
-                <p class="text-[10px] text-[var(--text-disabled)] mt-0.5">${d.type === 'advanced' ? 'Avanzada' : 'Normal'}</p>
-              </div>
+              ${isCurrent ? '<span class="rounded-full bg-[var(--brand-dim)] px-2.5 py-0.5 text-xs font-bold text-[var(--brand)]">Actual</span>' : ""}
             </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        })
+        .join("");
     });
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
-  function getMealLabel(name: string): string {
-    const labels: Record<string, string> = {
-      breakfast: 'Desayuno',
-      lunch: 'Almuerzo',
-      snack: 'Snack',
-      dinner: 'Cena',
-      other: 'Otro',
-    };
-    return labels[name] || name;
-  }
-
-  function escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // Cleanup on page unload
-  document.addEventListener('astro:before-swap', () => {
-    cleanup();
-    unsubDiets?.();
-    unsubHistory?.();
-    unsubTodayMeals?.();
-  });
+  document.addEventListener("astro:before-swap", cleanup);
 </script>

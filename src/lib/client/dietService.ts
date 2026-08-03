@@ -43,6 +43,8 @@ export function subscribeToDiets(
     return () => {};
   }
 
+  // 🔒 CRÍTICO: limit(1) obtiene solo la dieta más reciente del cliente.
+  // Si se elimina, el cliente descargará TODAS las dietas históricas en cada carga de página.
   const q = query(
     collection(db, 'diets'),
     where('clientId', '==', clientId),
@@ -149,7 +151,8 @@ export function subscribeToTodayMeals(
     return () => {};
   }
 
-  // Normalizar a UTC para evitar race conditions con zonas horarias
+  // 🔒 CRÍTICO: Normaliza fechas a UTC para evitar race conditions con zonas horarias.
+  // Si se elimina, las comidas completadas cerca de medianoche se contarán en el día equivocado.
   const now = new Date();
   const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
   const todayEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999));

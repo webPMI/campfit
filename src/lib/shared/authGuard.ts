@@ -20,7 +20,8 @@ import { doc, getDoc, type Unsubscribe } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { showToast } from '@/lib/shared/ui';
 
-// 🚫 Rutas que nunca deben ser redirigidas (páginas públicas)
+// 🔒 CRÍTICO: Rutas públicas que nunca deben ser redirigidas.
+// Si se elimina una ruta, los usuarios no autenticados serán redirigidos a /login en bucle.
 const PUBLIC_PATHS = ['/login', '/register', '/recover', '/', '/onboarding'];
 
 /** Verifica si la ruta actual es pública (no necesita autenticación) */
@@ -87,7 +88,8 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
       const role = docSnap.exists() ? docSnap.data()?.role : undefined;
       const email = (user.email || '').toLowerCase();
 
-      // Bootstrap admins: correos de administrador conocidos
+      // 🔒 CRÍTICO: Bootstrap admins permiten acceso admin sin documento Firestore.
+      // Si se elimina, los admins iniciales no podrán acceder al panel de administración.
       const isBootstrapAdmin =
         email === 'servicioweb.pmi@gmail.com' ||
         email === 'sevicioweb.pmi@gmail.com';
@@ -121,6 +123,71 @@ export function requireAdmin(callback: (user: FirebaseUser) => void): Unsubscrib
   // Suscribirse para detectar cambios futuros (logout, expiración de token)
   return onAuthStateChanged(auth, async (user) => {
     if (!callbackFired) await checkAdmin(user);
+  });
+}
+
+/**
+ * 🛡️ Verifica que el usuario autenticado tenga uno de los roles permitidos.
+ * Redirige al dashboard correcto según el rol si no tiene acceso.
+ *
+ * @param allowedRoles - Lista de roles permitidos (ej: ['trainer', 'admin'])
+ * @param callback - Función a ejecutar con el usuario autenticado
+ * @returns Función para cancelar la suscripción
+ */
+export function requireRole(
+  allowedRoles: string[],
+  callback: (user: FirebaseUser) => void,
+): Unsubscribe {
+  let callbackFired = false;
+
+  async function checkRole(user: FirebaseUser | null): Promise<void> {
+    if (!user) {
+      if (!isPublicPath()) window.location.replace('/login');
+      return;
+    }
+
+    if (callbackFired) return;
+
+    try {
+      const docSnap = await getDoc(doc(db, 'users', user.uid));
+      const role = docSnap.exists() ? docSnap.data()?.role : undefined;
+      const email = (user.email || '').toLowerCase();
+
+      // Bootstrap admins: correos de administrador conocidos
+      const isBootstrapAdmin =
+        email === 'servicioweb.pmi@gmail.com' ||
+        email === 'sevicioweb.pmi@gmail.com';
+
+      const effectiveRole = role || (isBootstrapAdmin ? 'admin' : null);
+
+      if (!effectiveRole || !allowedRoles.includes(effectiveRole)) {
+        logger.warn('AuthGuard', `Acceso denegado: ${user.uid} rol=${effectiveRole}`);
+        // Redirigir al dashboard correcto según el rol real
+        const target =
+          effectiveRole === 'trainer' ? '/trainer/dashboard' :
+            effectiveRole === 'client' ? '/client/dashboard' :
+              effectiveRole === 'admin' ? '/admin/dashboard' : '/login';
+        window.location.replace(target);
+        return;
+      }
+
+      callbackFired = true;
+      callback(user);
+    } catch (error) {
+      logger.error('AuthGuard', 'Error al verificar rol:', error);
+      showToast({ message: 'Error al verificar permisos', type: 'error' });
+      window.location.replace('/login');
+    }
+  }
+
+  // Verificar sincrónicamente si ya hay sesión activa (caso post-login)
+  if (auth.currentUser) {
+    checkRole(auth.currentUser);
+  }
+
+  // Suscribirse para detectar cambios futuros (logout, expiración de token)
+  return onAuthStateChanged(auth, async (user) => {
+    if (!callbackFired) await checkRole(user);
   });
 }
 

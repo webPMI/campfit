@@ -1,1 +1,1 @@
-export { requireAuth, signOutUser } from '@/lib/shared/authGuard';  
+export { requireAuth, requireAdmin, requireRole, signOutUser } from '@/lib/shared/authGuard';

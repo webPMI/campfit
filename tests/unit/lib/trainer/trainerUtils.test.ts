@@ -177,12 +177,12 @@ describe('lib/trainer/trainerUtils', () => {
         clientId: 'c1',
         trainerId: 't1',
         name: 'Advanced Diet',
-        type: 'advanced' as const,
+        type: 'custom' as const,
         totalCalories: 3000,
         meals: [],
       };
       const html = renderDietCard(diet);
-      expect(html).toContain('advanced');
+      expect(html).toContain('custom');
     });
   });
 

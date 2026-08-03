@@ -7,23 +7,257 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 ---
 
 <ClientLayout>
-  <div class="mx-auto max-w-4xl px-4 py-8">
-    <div class="animate-fade-in">
-      <h1 class="text-2xl font-bold">{t("client.nav.chat")}</h1>
-      <div id="chat-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm">
-          <svg class="mx-auto h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-          <p class="mt-2 text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
-        </div>
-      </div>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t("dashboard.loading")}</p>
     </div>
+  </div>
+
+  <!-- Chat Content Container -->
+  <div id="chatContent" class="hidden">
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="animate-fade-in space-y-4">
+        
+        <!-- Header del Entrenador Asignado -->
+        <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-3">
+            <div id="trainerAvatar" class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand)] to-emerald-400 text-lg font-bold text-white shadow-md">
+              💬
+            </div>
+            <div>
+              <h2 id="trainerName" class="text-base font-bold text-[var(--text-primary)]">{t("client.assignedTrainer")}</h2>
+              <p id="trainerStatus" class="text-xs text-[var(--brand)] font-semibold">{t("common.loading")}</p>
+            </div>
+          </div>
+          <span data-i18n="client.chatOnline" class="rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-bold text-[var(--brand)] border border-[var(--border-brand)]">
+            {t("client.chatOnline")}
+          </span>
+        </div>
+
+        <!-- Caja de Mensajes -->
+        <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl flex flex-col h-[520px]">
+          <!-- Contenedor Scrollable de Mensajes -->
+          <div id="messagesContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-thin scrollbar-thumb-zinc-700">
+            <div class="flex justify-center pt-8">
+              <p data-i18n="chat.loading" class="text-sm text-[var(--text-tertiary)] font-medium">{t("chat.loading")}</p>
+            </div>
+          </div>
+
+          <!-- Formulario de Envío de Mensaje -->
+          <div class="pt-3 border-t border-[var(--border-subtle)] mt-3">
+            <form id="chatForm" class="flex items-center gap-2">
+              <input
+                id="chatInput"
+                type="text"
+                placeholder={t("chat.placeholderTrainer")}
+                class="flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)] transition-all"
+                autocomplete="off"
+              />
+              <button
+                id="sendBtn"
+                type="submit"
+                class="flex items-center justify-center gap-1.5 rounded-xl bg-[var(--brand)] px-5 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+              >
+                <span data-i18n="chat.send">{t("chat.send")}</span>
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 </ClientLayout>
 
 <script>
-  import { requireAuth } from "@/lib/shared/authGuard";
+  import { auth, db } from "@/lib/firebase";
+  import { onAuthStateChanged } from "firebase/auth";
+  import { doc, getDoc, collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
   import { t } from "@/i18n/client";
-  requireAuth(async (user) => {
-    document.getElementById("chat-container")!.innerHTML = `<div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm"><p class="text-sm text-[var(--text-tertiary)]">${t("trainer.chat.empty")}</p></div>`;
+  import { escapeHtml } from "@/lib/shared/ui";
+  import { setUser } from "@/stores/authStore";
+
+  const loadingScreen = document.getElementById("loadingScreen")!;
+  const loadingText = document.getElementById("loadingText")!;
+  const chatContent = document.getElementById("chatContent")!;
+  const messagesContainer = document.getElementById("messagesContainer")!;
+  const chatForm = document.getElementById("chatForm") as HTMLFormElement;
+  const chatInput = document.getElementById("chatInput") as HTMLInputElement;
+  const sendBtn = document.getElementById("sendBtn") as HTMLButtonElement;
+  const trainerAvatar = document.getElementById("trainerAvatar")!;
+  const trainerName = document.getElementById("trainerName")!;
+  const trainerStatus = document.getElementById("trainerStatus")!;
+
+  loadingText.textContent = t("dashboard.loading");
+
+  let unsubMessages: (() => void) | null = null;
+  let activeTrainerId = "admin";
+
+  const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+    if (!firebaseUser) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+      const userData = userDoc.data();
+
+      setUser({
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        name: userData?.name || firebaseUser.displayName || "Usuario",
+        role: userData?.role || "client",
+        hasActiveAlert: userData?.hasActiveAlert ?? false,
+        assignedTrainerId: userData?.assignedTrainerId,
+        medicalProfile: userData?.medicalProfile,
+      });
+
+      let trainerDisplayName = t("client.assignedTrainer");
+      activeTrainerId = userData?.assignedTrainerId || "admin";
+
+      if (userData?.assignedTrainerId) {
+        try {
+          const trainerDoc = await getDoc(doc(db, "users", userData.assignedTrainerId));
+          if (trainerDoc.exists()) {
+            const tData = trainerDoc.data();
+            const nameParts = [tData.firstName, tData.lastName].filter(Boolean).join(" ");
+            trainerDisplayName = tData.name || nameParts || t("client.assignedTrainer");
+          }
+        } catch (e) {
+          console.warn("Error al cargar datos del trainer:", e);
+        }
+      }
+
+      trainerAvatar.textContent = trainerDisplayName.charAt(0).toUpperCase();
+      trainerName.textContent = trainerDisplayName;
+      trainerStatus.textContent = userData?.assignedTrainerId ? t("client.assignedTrainer") : t("client.generalSupport");
+
+      loadingScreen.classList.add("hidden");
+      chatContent.classList.remove("hidden");
+
+      const chatQuery = query(
+        collection(db, "messages"),
+        where("participants", "array-contains", firebaseUser.uid),
+        orderBy("createdAt", "asc")
+      );
+
+      if (unsubMessages) unsubMessages();
+
+      unsubMessages = onSnapshot(chatQuery, (snapshot) => {
+        messagesContainer.innerHTML = "";
+        if (snapshot.empty) {
+          messagesContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full text-center space-y-2 py-12">
+              <span class="text-3xl">👋</span>
+              <p class="text-sm font-bold text-[var(--text-secondary)]">${t("chat.noMessages")}</p>
+              <p class="text-xs text-[var(--text-tertiary)]">${t("chat.firstMessagePrompt")}</p>
+            </div>
+          `;
+          return;
+        }
+
+        snapshot.docs.forEach((docSnap) => {
+          const msg = docSnap.data();
+          const isMine = msg.senderId === firebaseUser.uid;
+          const time = msg.createdAt && msg.createdAt.toDate
+            ? msg.createdAt.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+            : t("chat.justNow");
+
+          if (!isMine && !msg.isRead) {
+            updateDoc(doc(db, "messages", docSnap.id), { isRead: true }).catch(() => {});
+          }
+
+          const div = document.createElement("div");
+          div.className = "flex " + (isMine ? "justify-end" : "justify-start");
+
+          let bubbleClass = isMine
+            ? "bg-[var(--brand)] text-[var(--text-on-brand)] font-medium rounded-br-none shadow-md"
+            : "bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border-subtle)] rounded-bl-none";
+
+          if (msg.type === "alert") {
+            bubbleClass = isMine
+              ? "bg-amber-600 text-white font-medium rounded-br-none shadow-md border border-amber-400/30"
+              : "bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-bl-none font-medium";
+          }
+
+          const timeClass = isMine ? "text-right" : "text-left";
+
+          const alertIconHtml = msg.type === "alert" ? `
+            <div class="flex items-center gap-1.5 mb-1 text-xs font-bold text-amber-400">
+              <span>⚠️ ${t("trainer.attentionAlert")}</span>
+            </div>
+          ` : "";
+
+          div.innerHTML = `
+            <div class="max-w-[80%] space-y-1">
+              <div class="rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${bubbleClass}">
+                ${alertIconHtml}
+                <p class="break-words">${escapeHtml(msg.content)}</p>
+              </div>
+              <p class="text-[10px] text-[var(--text-tertiary)] px-1 ${timeClass}">${time}</p>
+            </div>
+          `;
+
+          messagesContainer.appendChild(div);
+        });
+
+        setTimeout(() => {
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 50);
+      }, (error) => {
+        console.error("Error al escuchar mensajes:", error);
+        messagesContainer.innerHTML = `
+          <div class="flex justify-center p-6">
+            <p class="text-xs text-[var(--danger)]">${t("chat.errorLoading")}</p>
+          </div>
+        `;
+      });
+
+    } catch (err) {
+      console.error("Error inicializando chat cliente:", err);
+      loadingScreen.classList.add("hidden");
+      chatContent.classList.remove("hidden");
+    }
+  });
+
+  async function handleSendMessage(e: Event) {
+    e.preventDefault();
+    const content = chatInput.value.trim();
+    if (!content || !auth.currentUser) return;
+
+    chatInput.value = "";
+    sendBtn.disabled = true;
+
+    try {
+      const senderId = auth.currentUser.uid;
+      const participants = [senderId, activeTrainerId].sort();
+
+      await addDoc(collection(db, "messages"), {
+        senderId,
+        receiverId: activeTrainerId,
+        participants,
+        content,
+        type: "text",
+        isRead: false,
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error("Error al enviar mensaje:", err);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  chatForm.addEventListener("submit", handleSendMessage);
+
+  document.addEventListener("astro:before-swap", () => {
+    unsubscribeAuth();
+    if (unsubMessages) unsubMessages();
   });
 </script>

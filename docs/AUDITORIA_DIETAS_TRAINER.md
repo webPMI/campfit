@@ -285,6 +285,118 @@ Existen **~30 claves de traducción** en `es.ts`, `en.ts`, `ca.ts` para el edito
 
 ---
 
+## 🔬 Análisis Profundo (Nuevos Hallazgos)
+
+### 13. 🟠 `authService.loginUser` auto-crea perfil con rol `client` — riesgo de escalada
+
+**Archivo:** `src/services/authService.ts` (líneas 69-99)
+
+```typescript
+if (!userDoc.exists()) {
+  if (isBootstrapAdmin) { ... return { role: 'admin' }; }
+  // Auto-crea perfil con rol 'client'
+  const profile = { ..., role: 'client' as const, ... };
+  await setDoc(doc(db, 'users', uid), profile);
+  return { ..., role: 'client', ... };
+}
+```
+
+**Problema:** Si un usuario con email de trainer (pero sin documento Firestore) inicia sesión, se le asigna rol `client` automáticamente. Esto no es un riesgo de escalada directo, pero **no hay mecanismo para que un usuario se convierta en trainer** sin intervención de admin. Además, `firestore.rules` permite `create` con `request.auth.uid == userId` sin restringir el campo `role`, por lo que un cliente podría crear su propio documento con `role: 'trainer'` si el cliente SDK lo permite (aunque `authService` lo fuerza a `client`, un atacante con SDK directo podría).
+
+**Corrección:** En `firestore.rules`, restringir `create` para que `request.resource.data.role == 'client'` (o que no incluya `role`).
+
+---
+
+### 14. 🟠 `adherenceService` usa `any[]` y tiene TODOs de rendimiento sin resolver
+
+**Archivo:** `src/lib/client/adherenceService.ts`
+
+```typescript
+let mealsData: any[] = [];
+let workoutsData: any[] = [];
+// TODO: PERF - Store unsubscribe return and call in cleanup
+```
+
+**Problemas:**
+1. `any[]` viola la regla de oro "No usar any"
+2. Los TODOs de PERF indican que el cleanup de suscripciones internas no está optimizado (aunque la función retorna un cleanup que sí llama `unsubMeals()` y `unsubWorkouts()`)
+3. **`subscribeToWeeklyAdherence` NO se usa en `client/diets.astro`** — la página usa `subscribeToTodayMeals` (solo hoy) en lugar de la adherencia semanal. Hay lógica duplicada/inconsistente.
+
+---
+
+### 15. 🟠 `client/diets.astro` permite acceso a trainers/admins (vista cliente)
+
+**Archivo:** `src/pages/client/diets.astro` (línea 168)
+
+```typescript
+const cleanup = initPage({
+  allowedRoles: ['client', 'admin', 'trainer'],  // ← trainer/admin pueden ver dietas de clientes
+  ...
+});
+```
+
+**Problema:** Un trainer puede ver la vista de dietas de un cliente (aunque las reglas de Firestore lo permiten si es su cliente asignado). Esto es intencional para que el trainer pueda previsualizar, pero **no hay indicación visual de que está en modo "vista cliente"** y el botón "marcar comida completada" permitiría al trainer registrar comidas como completadas en nombre del cliente (si el bug del `clientId` vacío se corrige).
+
+**Corrección:** Si la intención es que el trainer solo previsualice, ocultar el botón de completar comida cuando el rol no es `client`.
+
+---
+
+### 16. 🟠 `templateService.applyDietTemplateToClient` no valida ownership del cliente
+
+**Archivo:** `src/lib/trainer/templateService.ts` (líneas 72-100)
+
+```typescript
+export async function applyDietTemplateToClient(
+  templateId: string,
+  clientId: string,
+  trainerId: string,
+): Promise<string> {
+  // NO verifica que clientId esté asignado a trainerId
+  const templateRef = doc(db, 'diet_templates', templateId);
+  ...
+  const newDiet = { clientId, trainerId, ... };
+  const dietRef = await addDoc(collection(db, 'diets'), newDiet);
+}
+```
+
+**Problema:** Cualquier trainer puede asignar una plantilla de dieta a **cualquier cliente** (incluso clientes de otros trainers). Las reglas de Firestore no lo impiden porque `create` solo verifica `isStaff()`.
+
+**Corrección:** Verificar en el servicio que `clientId` esté asignado a `trainerId` (consultar `users/{clientId}` y comprobar `assignedTrainerId == trainerId`), y reforzar en `firestore.rules`.
+
+---
+
+### 17. 🟡 Duplicación de tests de renderizado
+
+**Archivos:**
+- `tests/unit/lib/trainer/trainerRender.test.ts` (170 líneas)
+- `tests/unit/lib/trainer/trainerUtils.test.ts` (239 líneas)
+
+Ambos testean las mismas funciones (`renderClientCard`, `renderWorkoutCard`, `renderDietCard`, `renderMessageBubble`) con datos casi idénticos. Esto es redundante y duplica el mantenimiento.
+
+**Corrección:** Consolidar en un solo archivo de test (recomendado: `trainerRender.test.ts` ya que es el módulo fuente real; `trainerUtils.test.ts` solo re-exporta).
+
+---
+
+### 18. 🟡 `templateService.test.ts` no cubre el caso de plantilla inexistente
+
+**Archivo:** `tests/unit/lib/trainer/templateService.test.ts`
+
+`applyDietTemplateToClient` lanza `new Error('La plantilla de dieta especificada no existe.')` si `templateSnap.exists()` es false, pero **no hay test para este caso**. Tampoco hay test para el caso de error de Firestore.
+
+---
+
+### 19. 🟡 `authStore` tiene `$isTrainer` pero no se usa en `trainer/diets.astro`
+
+**Archivo:** `src/stores/authStore.ts` (línea 40)
+
+```typescript
+export const $isTrainer = computed($userRole, (role) => role === 'trainer');
+```
+
+`trainer/diets.astro` usa `requireAuth` (solo autenticación) en lugar de verificar `$isTrainer` o `$isAdmin`. El store ya tiene los computados necesarios para verificar rol, pero no se utilizan en la página.
+
+---
+
 ## 📋 Plan de Acción Recomendado
 
 ### Fase 1 - Seguridad (URGENTE)
@@ -299,10 +411,17 @@ Existen **~30 claves de traducción** en `es.ts`, `en.ts`, `ca.ts` para el edito
 - [ ] **P1** Restaurar unions estrictas en `TrainerDiet.type` y `Meal.name`
 - [ ] **P1** Refactorizar `trainer/diets.astro` (<300 líneas) - extraer editor a componente/module
 - [ ] **P1** Añadir estado de error con retry (`renderErrorState`)
-- [ ] **P2** Eliminar `any` en `client/diets.astro`
+- [ ] **P1** Restringir `create` en `firestore.rules` para que `role == 'client'` (evitar escalada)
+- [ ] **P1** Validar ownership del cliente en `templateService.applyDietTemplateToClient`
+- [ ] **P1** Ocultar botón "completar comida" en `client/diets.astro` cuando el rol no es `client`
+- [ ] **P2** Eliminar `any` en `client/diets.astro` y `adherenceService.ts`
 - [ ] **P2** Refactorizar `client/diets.astro` (<300 líneas)
 - [ ] **P2** Ampliar tests unitarios para cubrir funciones del editor
 - [ ] **P2** Añadir tests E2E de CRUD de dietas del trainer
+- [ ] **P2** Consolidar tests duplicados de renderizado (`trainerRender.test.ts` + `trainerUtils.test.ts`)
+- [ ] **P2** Añadir test de plantilla inexistente en `templateService.test.ts`
+- [ ] **P2** Usar `$isTrainer`/`$isAdmin` del authStore en `trainer/diets.astro`
+- [ ] **P3** Decidir si usar `subscribeToWeeklyAdherence` en `client/diets.astro` (hoy usa solo `subscribeToTodayMeals`)
 
 ---
 
@@ -329,7 +448,16 @@ Existen **~30 claves de traducción** en `es.ts`, `en.ts`, `ca.ts` para el edito
 | `src/i18n/locales/en.ts` | - | ⚠️ Claves huérfanas |
 | `src/i18n/locales/ca.ts` | - | ⚠️ Claves huérfanas |
 | `tests/unit/lib/trainer/trainerDiets.test.ts` | 195 | ⚠️ Desactualizado |
+| `tests/unit/lib/trainer/trainerRender.test.ts` | 170 | ⚠️ Duplicado con trainerUtils.test |
+| `tests/unit/lib/trainer/trainerUtils.test.ts` | 239 | ⚠️ Duplicado con trainerRender.test |
+| `tests/unit/lib/trainer/templateService.test.ts` | 88 | ⚠️ Sin test de plantilla inexistente |
 | `tests/e2e/trainer-pages.e2e.ts` | 37 | ⚠️ Solo render |
+| `src/services/authService.ts` | 256 | ⚠️ Auto-crea rol client |
+| `src/stores/authStore.ts` | 67 | ⚠️ $isTrainer sin usar |
+| `src/lib/client/adherenceService.ts` | 197 | ⚠️ any[] + TODOs PERF |
+| `src/lib/client/clientInit.ts` | 195 | ✅ OK |
+| `nuevo_proyecto/05_reglas_seguridad.md` | 238 | ⚠️ Desactualizado vs firestore.rules |
+| `nuevo_proyecto/firebase_rules.md` | 202 | ❌ Confirma problema isStaff |
 | `docs/07_modulo_trainer.md` | 635 | ✅ Alineado |
 | `nuevo_proyecto/04_modelo_datos_firestore.md` | 248 | ✅ Alineado |
 

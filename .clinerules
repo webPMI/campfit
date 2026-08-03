@@ -92,21 +92,39 @@ campfit-astro/
 9. **Cleanup de suscripciones** - onSnapshot unsubscribe en useEffect return.
 10. **Manejo de concurrencia** - AbortController para fetch, race conditions en stores.
 
+### 🛡️ ANTI-REGRESSION RULES (NUNCA VIOLAR EN AUDITORÍAS)
+11. **Nunca eliminar `orderBy`, `where`, `limit` de queries Firestore** - Cada cláusula existe por una razón de negocio/rendimiento. Si no entiendes por qué está, no la toques.
+12. **Nunca hacer `replace_in_file` con SEARCH blocks genéricos** - Si el SEARCH match es ambiguo (ej: `</div>` común), usar bloques más específicos o considerar `write_to_file` con el contenido completo verificado.
+13. **Nunca reescribir un archivo .astro sin before/after snapshot** - Antes de modificar una página, leer sus líneas 1-10 para verificar que tienes el archivo correcto (no una versión minificada).
+14. **Nunca delegar renderizado HTML a string replace sobre otro render** - Las funciones de render deben ser autónomas. Si `renderUserCardExtended` necesita HTML de `renderUserRow`, que `renderUserRow` acepte un parámetro `extraActions: string` en lugar de hacer string replace frágil.
+15. **Siempre verificar `git diff` después de modificar services/libs** - Ejecutar `git diff -- src/lib/` y revisar que no se hayan eliminado cláusulas de query, imports necesarios, o lógica de negocio.
+16. **Siempre ejecutar `npm run type-check` y `npm test` después de cada cambio** - Si hay errores nuevos, revertir y analizar antes de continuar.
+17. **Nunca confiar en caché del IDE** - Si el `read_file` muestra contenido inesperado (minificado, sin cambios previos), verificar con `git status` y `git diff` antes de editar.
+18. **Documentar cada cambio en CHANGELOG.md** - Todo fix, refactor, o nueva feature debe quedar registrado con fecha y archivos modificados.
+
+### 🚨 CRITICAL PROTECTION RULES (VIOLACIÓN = REVERSIÓN INMEDIATA)
+19. **Nunca eliminar funcionalidades completas sin autorización expresa** - Si vas a eliminar una función, modal, botón, o flujo completo, DEBES consultar primero. No hay excepciones.
+20. **Nunca minificar/reformatear código como "mejora"** - Cambiar comillas simples a dobles, reescribir SVG paths, o reformatear HTML no es una mejora, es destrucción de contexto. No lo hagas.
+21. **Nunca asumir que un archivo está "viejo" o "malo" sin evidencia** - Si el código funciona y tiene tests verdes, déjalo intacto. Tu trabajo es mejorar, no reescribir.
+22. **Siempre preguntar antes de eliminar código funcional** - Si detectas código "duplicado" o "innecesario", pregunta primero. Mejor prevenir que lamentar.
+23. **Los comentarios de protección son obligatorios** - Antes de modificar código crítico, agrega comentarios explicando qué hace y por qué es importante. Esto ayuda a futuros agentes a entender la sensibilidad.
+
 ## Documentation Order
 Before implementing, read:
-1. nuevo_proyecto/00_indice.md
-2. nuevo_proyecto/01_vision_objetivos.md
-3. nuevo_proyecto/02_requisitos_funcionales.md
-4. nuevo_proyecto/03_arquitectura_tecnica.md
-5. nuevo_proyecto/04_modelo_datos_firestore.md
-6. nuevo_proyecto/05_reglas_seguridad.md
-7. nuevo_proyecto/06_design_system.md
-8. nuevo_proyecto/07_flujos_navegacion.md
-9. nuevo_proyecto/13_setup_guide.md
-10. nuevo_proyecto/14_agent_instructions.md
-11. nuevo_proyecto/15_api_contracts.md
-12. nuevo_proyecto/16_implementacion_incremental.md
-13. [Specific module doc]
+1. **docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md** — ⚠️ OBLIGATORIO: Lista de funcionalidades que NUNCA deben eliminarse
+2. nuevo_proyecto/00_indice.md
+3. nuevo_proyecto/01_vision_objetivos.md
+4. nuevo_proyecto/02_requisitos_funcionales.md
+5. nuevo_proyecto/03_arquitectura_tecnica.md
+6. nuevo_proyecto/04_modelo_datos_firestore.md
+7. nuevo_proyecto/05_reglas_seguridad.md
+8. nuevo_proyecto/06_design_system.md
+9. nuevo_proyecto/07_flujos_navegacion.md
+10. nuevo_proyecto/13_setup_guide.md
+11. nuevo_proyecto/14_agent_instructions.md
+12. nuevo_proyecto/15_api_contracts.md
+13. nuevo_proyecto/16_implementacion_incremental.md
+14. [Specific module doc]
 
 ## MCP Servers Available
 - @firebase-mcp - Firebase Auth, Firestore operations

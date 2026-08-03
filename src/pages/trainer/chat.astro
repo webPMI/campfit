@@ -8,18 +8,146 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
 <TrainerLayout>
   <div class="mx-auto max-w-4xl px-4 py-8">
-    <div class="animate-fade-in">
-      <div class="flex items-center justify-between">
+    <div class="animate-fade-in space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 class="text-2xl font-bold">{t("trainer.chat")}</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("trainer.chat.desc")}</p>
+          <h1 data-i18n="trainer.chat" class="text-2xl font-bold">{t("trainer.chat")}</h1>
+          <p data-i18n="trainer.chat.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("trainer.chat.desc")}</p>
+        </div>
+        <button
+          id="btn-open-new-chat"
+          class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2.5 text-xs font-semibold text-white shadow-md transition-all hover:opacity-95 active:scale-95"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span data-i18n="chat.newChat">{t("chat.newChat")}</span>
+        </button>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <!-- Lista de Conversaciones -->
+        <div class="lg:col-span-1">
+          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] backdrop-blur-sm overflow-hidden flex flex-col">
+            <!-- Búsqueda y Filtros por Rol -->
+            <div class="border-b border-[var(--border-subtle)] p-3 space-y-2">
+              <input
+                id="chat-search"
+                type="text"
+                placeholder={t("chat.searchRolePlaceholder")}
+                data-i18n-placeholder="chat.searchRolePlaceholder"
+                class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]"
+              />
+              <div class="flex items-center justify-between gap-1 text-[10px]">
+                <button data-filter="all" data-i18n="admin.all" class="chat-filter-btn px-2 py-1 rounded-md font-medium transition-all bg-[var(--brand-dim)] text-[var(--brand)]">{t("admin.all")}</button>
+                <button data-filter="client" data-i18n="admin.totalClients" class="chat-filter-btn px-2 py-1 rounded-md font-medium transition-all text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">{t("admin.totalClients")}</button>
+                <button data-filter="trainer" data-i18n="admin.totalTrainers" class="chat-filter-btn px-2 py-1 rounded-md font-medium transition-all text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">{t("admin.totalTrainers")}</button>
+                <button data-filter="admin" class="chat-filter-btn px-2 py-1 rounded-md font-medium transition-all text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">Admins</button>
+              </div>
+            </div>
+
+            <div id="conversation-list" class="divide-y divide-zinc-800/40 max-h-[70vh] overflow-y-auto">
+              <div class="p-6 text-center">
+                <p data-i18n="chat.loadingConversations" class="text-xs text-[var(--text-tertiary)]">{t("chat.loadingConversations")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vista del Chat Activo -->
+        <div class="lg:col-span-2">
+          <div
+            id="chat-view"
+            class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] backdrop-blur-sm overflow-hidden flex flex-col"
+            style="height: min(70vh, 600px);"
+          >
+            <!-- Cabecera del Chat -->
+            <div id="chat-header" class="flex items-center gap-3 border-b border-[var(--border-subtle)] p-4">
+              <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-dim)] text-sm font-medium text-[var(--brand)]">
+                ?
+              </div>
+              <div>
+                <p data-i18n="chat.selectChat" class="text-sm font-medium text-[var(--text-primary)]">{t("chat.selectChat")}</p>
+                <p data-i18n="chat.startConversation" class="text-xs text-[var(--text-tertiary)]">{t("chat.startConversation")}</p>
+              </div>
+            </div>
+
+            <!-- Mensajes -->
+            <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-3">
+              <div class="flex h-full items-center justify-center">
+                <p data-i18n="chat.selectFromList" class="text-sm text-[var(--text-disabled)]">{t("chat.selectFromList")}</p>
+              </div>
+            </div>
+
+            <!-- Caja de Entrada -->
+            <div class="border-t border-[var(--border-subtle)] p-3">
+              <div class="flex items-center gap-2">
+                <input
+                  id="chat-input"
+                  type="text"
+                  placeholder={t("chat.input.placeholder")}
+                  data-i18n-placeholder="chat.input.placeholder"
+                  class="flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]"
+                />
+                <button
+                  id="btn-send-message"
+                  class="rounded-xl bg-[var(--brand-dim)] border border-[var(--border-brand)] px-4 py-2.5 text-sm font-medium text-[var(--brand)] hover:bg-[var(--brand-dim)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                  </svg>
+                </button>
+                <button
+                  id="btn-send-alert"
+                  class="rounded-xl bg-[var(--danger-dim)] border border-[var(--danger)] px-3 py-2.5 text-sm font-medium text-[var(--danger)] hover:bg-[var(--danger-dim)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  title="Enviar llamado de atención"
+                  disabled
+                >
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State Inicial -->
+          <div
+            id="chat-empty"
+            class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-8 text-center backdrop-blur-sm flex flex-col items-center justify-center"
+            style="height: min(70vh, 600px);"
+          >
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
+              <svg class="h-7 w-7 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+              </svg>
+            </div>
+            <p data-i18n="chat.selectFromList" class="text-sm text-[var(--text-tertiary)]">{t("chat.selectFromList")}</p>
+          </div>
         </div>
       </div>
-      <div id="chat-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm">
-          <svg class="mx-auto h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-          <p class="mt-2 text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
-        </div>
+    </div>
+  </div>
+
+  <!-- Modal Nuevo Chat -->
+  <div id="new-chat-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
+    <div class="w-full max-w-md rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 shadow-2xl animate-fade-in">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <h3 data-i18n="chat.newConversationModal" class="text-base font-bold text-[var(--text-primary)]">{t("chat.newConversationModal")}</h3>
+        <button id="btn-close-new-chat" class="text-[var(--text-tertiary)] hover:text-white text-lg">&times;</button>
+      </div>
+      <div class="py-3">
+        <input
+          id="new-chat-search"
+          type="text"
+          placeholder={t("chat.searchContactPlaceholder")}
+          data-i18n-placeholder="chat.searchContactPlaceholder"
+          class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]"
+        />
+      </div>
+      <div id="new-chat-contacts-list" class="max-h-60 overflow-y-auto divide-y divide-zinc-800/40 py-1">
+        <div class="p-4 text-center text-xs text-[var(--text-tertiary)]" data-i18n="chat.loadingContacts">{t("chat.loadingContacts")}</div>
       </div>
     </div>
   </div>
@@ -28,35 +156,358 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 <script>
   import { logger } from "@/lib/shared/logger";
   import { requireAuth } from "@/lib/shared/authGuard";
-  import { t } from "@/i18n/client";
-  import { escapeHtml } from "@/lib/shared/ui";
-  import { subscribeToConversations, sendMessage } from "@/lib/trainer/trainerUtils";
+  import { escapeHtml, getUserInitial, formatTime } from "@/lib/shared/ui";
+  import {
+    subscribeToConversations,
+    subscribeToConversation,
+    sendMessage,
+    markAsRead,
+    renderMessageBubble,
+    type TrainerMessage,
+  } from "@/lib/trainer/trainerUtils";
+  import { subscribeToChatContacts, getUserProfile, type ChatContact } from "@/lib/shared/chat";
 
-  let unsubMessages = null;
-  let currentTrainerId = "";
+  let unsubContacts: (() => void) | null = null;
+  let unsubConversations: (() => void) | null = null;
+  let allContacts: ChatContact[] = [];
+  let conversations: { contactId: string; lastMessage: TrainerMessage | null; unread: number }[] = [];
+  let selectedContact: ChatContact | null = null;
+  let currentUnsub: (() => void) | null = null;
+  let trainerId: string = "";
+  let currentRoleFilter: 'all' | 'client' | 'trainer' | 'admin' = 'all';
 
-  requireAuth(async (user) => { initChat(user.uid); });
-  window.addEventListener("beforeunload", () => { unsubMessages?.(); });
+  requireAuth(async (user) => {
+    initChat(user.uid);
+  });
 
-  async function initChat(trainerId) {
-    currentTrainerId = trainerId;
-    const container = document.getElementById("chat-container")!;
-    unsubMessages = subscribeToConversations(trainerId, (messages) => {
-      if (messages.length === 0) {
-        container.innerHTML = `<div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm"><p class="text-sm text-[var(--text-tertiary)]">${t("trainer.chat.no.messages")}</p></div>`;
-      } else {
-        const grouped = {};
-        messages.forEach(m => {
-          const otherId = m.senderId === trainerId ? m.receiverId : m.senderId;
-          if (!grouped[otherId]) grouped[otherId] = [];
-          grouped[otherId].push(m);
+  window.addEventListener("beforeunload", () => {
+    unsubContacts?.();
+    unsubConversations?.();
+    currentUnsub?.();
+  });
+
+  function getRoleBadgeHtml(role: string): string {
+    if (role === 'admin') {
+      return `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">ADMIN</span>`;
+    }
+    if (role === 'trainer') {
+      return `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">TRAINER</span>`;
+    }
+    return `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-zinc-500/20 text-zinc-300 border border-zinc-500/30">CLIENTE</span>`;
+  }
+
+  async function initChat(uid: string): Promise<void> {
+    trainerId = uid;
+    const conversationList = document.getElementById("conversation-list")!;
+    const chatView = document.getElementById("chat-view")!;
+    const chatEmpty = document.getElementById("chat-empty")!;
+    const messagesContainer = document.getElementById("messages-container")!;
+    const chatInput = document.getElementById("chat-input") as HTMLInputElement;
+    const btnSend = document.getElementById("btn-send-message")!;
+    const btnAlert = document.getElementById("btn-send-alert")!;
+    const chatSearch = document.getElementById("chat-search") as HTMLInputElement;
+
+    const newChatModal = document.getElementById("new-chat-modal")!;
+    const btnOpenNewChat = document.getElementById("btn-open-new-chat")!;
+    const btnCloseNewChat = document.getElementById("btn-close-new-chat")!;
+    const newChatSearch = document.getElementById("new-chat-search") as HTMLInputElement;
+
+    unsubContacts = subscribeToChatContacts(trainerId, 'trainer', (contacts) => {
+      allContacts = contacts;
+      renderConversations();
+      renderNewChatContacts();
+    });
+
+    unsubConversations = subscribeToConversations(trainerId, async (messages) => {
+      const contactMap = new Map<string, TrainerMessage[]>();
+      messages.forEach((m) => {
+        const contactId = m.senderId === trainerId ? m.receiverId : m.senderId;
+        if (!contactMap.has(contactId)) contactMap.set(contactId, []);
+        contactMap.get(contactId)!.push(m);
+      });
+
+      for (const contactId of contactMap.keys()) {
+        if (!allContacts.some((c) => c.uid === contactId)) {
+          const profile = await getUserProfile(contactId);
+          if (profile) {
+            allContacts.push(profile);
+          }
+        }
+      }
+
+      conversations = Array.from(contactMap.entries())
+        .map(([contactId, msgs]) => {
+          const sorted = msgs.sort((a, b) => {
+            const timeA = a.createdAt?.toDate?.()?.getTime() || 0;
+            const timeB = b.createdAt?.toDate?.()?.getTime() || 0;
+            return timeB - timeA;
+          });
+          return {
+            contactId,
+            lastMessage: sorted[0] || null,
+            unread: msgs.filter((m) => m.receiverId === trainerId && !m.isRead).length,
+          };
+        })
+        .sort((a, b) => {
+          const timeA = a.lastMessage?.createdAt?.toDate?.()?.getTime() || 0;
+          const timeB = b.lastMessage?.createdAt?.toDate?.()?.getTime() || 0;
+          return timeB - timeA;
         });
-        container.innerHTML = Object.entries(grouped).map(([uid, msgs]) => {
-          const last = msgs[msgs.length-1];
-          const unread = msgs.filter(m => m.receiverId === trainerId && !m.isRead).length;
-          return `<div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm cursor-pointer hover:bg-[var(--surface-3)] transition-all" onclick="window.location.href='/admin/chat?clientId=${uid}'"><div class="flex items-center justify-between"><div><p class="text-sm font-medium text-[var(--text-primary)]">${escapeHtml(last.senderName || t("common.client"))} ${unread ? `<span class="text-xs text-[var(--danger)]">(${unread})</span>` : ""}</p><p class="text-xs text-[var(--text-tertiary)]">${escapeHtml(last.content?.slice(0, 60) || "")}</p></div><svg class="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></div></div>`;
-        }).join("");
+
+      renderConversations();
+    });
+
+    chatSearch.addEventListener("input", () => renderConversations());
+
+    document.querySelectorAll<HTMLButtonElement>('.chat-filter-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.chat-filter-btn').forEach((b) => {
+          b.classList.remove('bg-[var(--brand-dim)]', 'text-[var(--brand)]');
+          b.classList.add('text-[var(--text-tertiary)]');
+        });
+        btn.classList.add('bg-[var(--brand-dim)]', 'text-[var(--brand)]');
+        btn.classList.remove('text-[var(--text-tertiary)]');
+
+        currentRoleFilter = (btn.dataset.filter || 'all') as 'all' | 'client' | 'trainer' | 'admin';
+        renderConversations();
+      });
+    });
+
+    btnOpenNewChat.addEventListener("click", () => {
+      newChatModal.classList.remove("hidden");
+      renderNewChatContacts();
+      newChatSearch.focus();
+    });
+
+    btnCloseNewChat.addEventListener("click", () => {
+      newChatModal.classList.add("hidden");
+    });
+
+    newChatModal.addEventListener("click", (e) => {
+      if (e.target === newChatModal) newChatModal.classList.add("hidden");
+    });
+
+    newChatSearch.addEventListener("input", () => renderNewChatContacts());
+
+    btnSend.addEventListener("click", async () => {
+      const content = chatInput.value.trim();
+      if (!content || !selectedContact) return;
+      const ok = await sendMessage(trainerId, selectedContact.uid, content, "text");
+      if (ok) {
+        chatInput.value = "";
+        scrollToBottom();
       }
     });
+
+    btnAlert.addEventListener("click", async () => {
+      const content = chatInput.value.trim();
+      if (!content || !selectedContact) return;
+      const ok = await sendMessage(trainerId, selectedContact.uid, content, "alert");
+      if (ok) {
+        chatInput.value = "";
+        scrollToBottom();
+      }
+    });
+
+    chatInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") btnSend.click();
+    });
+  }
+
+  function renderConversations(): void {
+    const conversationList = document.getElementById("conversation-list")!;
+    const searchTerm = (document.getElementById("chat-search") as HTMLInputElement).value.toLowerCase();
+
+    let displayItems = conversations.filter((c) => {
+      const contact = allContacts.find((cl) => cl.uid === c.contactId);
+      const name = contact?.name?.toLowerCase() || "";
+      const role = contact?.role || "client";
+      const matchesSearch = name.includes(searchTerm) || role.includes(searchTerm);
+      const matchesFilter = currentRoleFilter === 'all' || role === currentRoleFilter;
+      return matchesSearch && matchesFilter;
+    });
+
+    if (displayItems.length === 0 && conversations.length === 0) {
+      conversationList.innerHTML = `
+        <div class="p-6 text-center">
+          <p class="text-xs text-[var(--text-tertiary)]">Sin conversaciones aún</p>
+          <p class="text-xs text-[var(--text-disabled)] mt-1">Haz clic en "+ Nuevo Chat" para iniciar un chat</p>
+        </div>
+      `;
+      return;
+    }
+
+    if (displayItems.length === 0) {
+      conversationList.innerHTML = `<div class="p-6 text-center"><p class="text-xs text-[var(--text-tertiary)]">Sin resultados para el filtro seleccionado</p></div>`;
+      return;
+    }
+
+    conversationList.innerHTML = displayItems
+      .map((c) => {
+        const contact = allContacts.find((cl) => cl.uid === c.contactId);
+        const name = contact?.name || "Usuario";
+        const role = contact?.role || "client";
+        const initial = getUserInitial(name);
+        const hasAlert = contact?.hasActiveAlert;
+        const lastMsg = c.lastMessage?.content || "Sin mensajes";
+        const time = c.lastMessage ? formatTime(c.lastMessage.createdAt) : "";
+        const isSelected = selectedContact?.uid === c.contactId;
+
+        return `
+          <div class="flex items-center gap-3 p-3 cursor-pointer transition-all hover:bg-[var(--surface-3)] ${isSelected ? "bg-[var(--surface-3)]" : ""}" data-action="selectConversation" data-contact-id="${c.contactId}">
+            <div class="relative shrink-0">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-dim)] text-sm font-medium text-[var(--brand)]">
+                ${initial}
+              </div>
+              ${hasAlert ? '<div class="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-red-500 animate-pulse border-2 border-[var(--surface-2)]"></div>' : ""}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5 truncate">
+                  <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(name)}</p>
+                  ${getRoleBadgeHtml(role)}
+                </div>
+                <span class="text-[10px] text-[var(--text-disabled)] shrink-0 ml-2">${time}</span>
+              </div>
+              <div class="flex items-center justify-between mt-0.5">
+                <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(lastMsg.substring(0, 35))}${lastMsg.length > 35 ? "..." : ""}</p>
+                ${c.unread > 0 ? `<span class="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--brand)] text-[9px] font-bold text-white shrink-0 ml-2">${c.unread}</span>` : ""}
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  function renderNewChatContacts(): void {
+    const container = document.getElementById("new-chat-contacts-list");
+    if (!container) return;
+
+    const searchTerm = (document.getElementById("new-chat-search") as HTMLInputElement)?.value.toLowerCase() || "";
+
+    const filtered = allContacts.filter((c) => {
+      const name = c.name.toLowerCase();
+      const email = c.email.toLowerCase();
+      return name.includes(searchTerm) || email.includes(searchTerm);
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="p-4 text-center text-xs text-[var(--text-tertiary)]">No se encontraron contactos</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered
+      .map((c) => `
+        <div class="flex items-center justify-between p-2.5 cursor-pointer rounded-xl hover:bg-[var(--surface-3)] transition-all" data-action="startNewChat" data-contact-id="${c.uid}">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-semibold text-[var(--brand)] shrink-0">
+              ${getUserInitial(c.name)}
+            </div>
+            <div class="min-w-0">
+              <p class="text-xs font-semibold text-[var(--text-primary)] truncate">${escapeHtml(c.name)}</p>
+              <p class="text-[10px] text-[var(--text-tertiary)] truncate">${escapeHtml(c.email)}</p>
+            </div>
+          </div>
+          <div class="shrink-0 ml-2">
+            ${getRoleBadgeHtml(c.role)}
+          </div>
+        </div>
+      `)
+      .join("");
+  }
+
+  async function selectConversation(contactId: string): Promise<void> {
+    let contact = allContacts.find((c) => c.uid === contactId);
+    if (!contact) {
+      contact = (await getUserProfile(contactId)) || undefined;
+      if (contact) allContacts.push(contact);
+    }
+    if (!contact) return;
+    selectedContact = contact;
+
+    const chatView = document.getElementById("chat-view")!;
+    const chatEmpty = document.getElementById("chat-empty")!;
+    const messagesContainer = document.getElementById("messages-container")!;
+    const chatHeader = document.getElementById("chat-header")!;
+    const chatInput = document.getElementById("chat-input") as HTMLInputElement;
+    const btnSend = document.getElementById("btn-send-message")!;
+    const btnAlert = document.getElementById("btn-send-alert")!;
+    const newChatModal = document.getElementById("new-chat-modal")!;
+
+    newChatModal.classList.add("hidden");
+    chatView.classList.remove("hidden");
+    chatEmpty.classList.add("hidden");
+    btnSend.removeAttribute("disabled");
+    btnAlert.removeAttribute("disabled");
+    chatInput.removeAttribute("disabled");
+    chatInput.focus();
+
+    chatHeader.innerHTML = `
+      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-dim)] text-sm font-medium text-[var(--brand)] shrink-0">
+        ${getUserInitial(contact.name)}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(contact.name)}</p>
+          ${getRoleBadgeHtml(contact.role)}
+        </div>
+        <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(contact.email)}</p>
+      </div>
+    `;
+
+    if (currentUnsub) currentUnsub();
+    currentUnsub = null;
+
+    currentUnsub = subscribeToConversation(trainerId, contactId, (messages) => {
+      if (messages.length === 0) {
+        messagesContainer.innerHTML = `
+          <div class="flex h-full items-center justify-center">
+            <p class="text-sm text-[var(--text-disabled)]">No hay mensajes aún. ¡Envía el primero!</p>
+          </div>
+        `;
+        return;
+      }
+
+      messages.forEach((m) => {
+        if (m.receiverId === trainerId && !m.isRead) {
+          markAsRead(m.id);
+        }
+      });
+
+      messagesContainer.innerHTML = messages
+        .map((m, idx) => {
+          const isOwn = m.senderId === trainerId;
+          const prevMsg = idx > 0 ? messages[idx - 1] : null;
+          const isFirstOfBlock = !prevMsg || prevMsg.senderId !== m.senderId;
+          return renderMessageBubble(m, isOwn, contact!.name, isFirstOfBlock);
+        })
+        .join("");
+
+      scrollToBottom();
+    });
+
+    renderConversations();
+  }
+
+  document.addEventListener("click", (e) => {
+    const btnConv = (e.target as HTMLElement).closest('[data-action="selectConversation"]') as HTMLElement | null;
+    if (btnConv && btnConv.dataset.contactId) {
+      selectConversation(btnConv.dataset.contactId);
+      return;
+    }
+
+    const btnNewChat = (e.target as HTMLElement).closest('[data-action="startNewChat"]') as HTMLElement | null;
+    if (btnNewChat && btnNewChat.dataset.contactId) {
+      selectConversation(btnNewChat.dataset.contactId);
+      return;
+    }
+  });
+
+  function scrollToBottom(): void {
+    const container = document.getElementById("messages-container")!;
+    setTimeout(() => {
+      container.scrollTop = container.scrollHeight;
+    }, 50);
   }
 </script>

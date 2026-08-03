@@ -85,16 +85,14 @@ const lang = Astro.params.lang || "es";
           var urlLang = url.searchParams.get("lang");
           var storedLang = localStorage.getItem("campfit_lang");
           var cookieLang = document.cookie.split("; ").find((r) => r.startsWith("cf_lang="));
-          cookieLang = cookieLang ? cookieLang.split("=")[1] : undefined;
-
-          var finalLang;
-          if (urlLang === "es" || urlLang === "en") {
-            finalLang = urlLang;
-            localStorage.setItem("campfit_lang", finalLang);
-          } else if (storedLang === "es" || storedLang === "en") {
+          cookieLang = cookieLang ? cookieLang.split("=")[1] : undefined;          var finalLang;
+          if (storedLang === "es" || storedLang === "en") {
             finalLang = storedLang;
           } else if (cookieLang === "es" || cookieLang === "en") {
             finalLang = cookieLang;
+            localStorage.setItem("campfit_lang", finalLang);
+          } else if (urlLang === "es" || urlLang === "en") {
+            finalLang = urlLang;
             localStorage.setItem("campfit_lang", finalLang);
           } else {
             finalLang = "es";
@@ -128,24 +126,6 @@ const lang = Astro.params.lang || "es";
 <script>
   import "@/lib/debug/consoleFileLogger";
   import "@/lib/debug/firestoreDebug";
-
-  // Interceptar clicks en enlaces locales para inyectar automáticamente ?lang= si falta
-  document.addEventListener("click", (e) => {
-    const anchor = (e.target as HTMLElement).closest("a");
-    if (anchor && anchor.href && anchor.host === window.location.host) {
-      try {
-        const url = new URL(anchor.href);
-        // Omitir si es un link de logout, auth especial o vacío
-        if (url.pathname.startsWith("/api/") || anchor.getAttribute("download") !== null) return;
-
-        if (!url.searchParams.has("lang")) {
-          const currentLang = localStorage.getItem("campfit_lang") || "es";
-          url.searchParams.set("lang", currentLang);
-          anchor.href = url.toString();
-        }
-      } catch (err) {}
-    }
-  });
 </script>
 
 <style is:global>

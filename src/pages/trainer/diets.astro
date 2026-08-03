@@ -21,37 +21,78 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          Nueva Dieta
+          {t("trainer.diets.new")}
         </button>
       </div>
 
-      <!-- Buscador y filtro por cliente -->
+      <!-- Preset Diet Templates Quick-Deploy Banner -->
+      <div id="template-banner" class="mt-6 rounded-2xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4 backdrop-blur-xl space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">⚡</span>
+            <div>
+              <h3 data-i18n="admin.quickDeploy.defaultDiets" class="text-sm font-bold text-[var(--brand)]">{t("admin.quickDeploy.defaultDiets")}</h3>
+              <p data-i18n="admin.quickDeploy.defaultDiets.desc" class="text-xs text-[var(--text-tertiary)]">{t("admin.quickDeploy.defaultDiets.desc")}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-[var(--border-subtle)]">
+          <select id="preset-diet-template-select" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
+            <option value="" data-i18n="trainer.selectPresetDiet">{t("trainer.selectPresetDiet")}</option>
+          </select>
+
+          <select id="preset-diet-client-select" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
+            <option value="" data-i18n="diet.editor.client.select">{t("diet.editor.client.select")}</option>
+          </select>
+
+          <button id="btn-apply-preset-diet" class="rounded-xl bg-amber-500 text-white px-4 py-2 text-xs font-bold shadow-md hover:bg-amber-600 transition-all">
+            🥗 <span data-i18n="admin.quickDeploy.defaultDiets.desc">{t("admin.quickDeploy.defaultDiets.desc")}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search and filter -->
       <div class="mt-6 flex flex-wrap items-center gap-3">
         <input
           id="diet-search"
           type="text"
-          placeholder="Buscar dietas..."
+          placeholder={t("admin.diets.search") || "Buscar dietas..."}
           class="flex-1 min-w-[200px] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]"
         />
         <select
           id="filter-client"
           class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
         >
-          <option value="">Todos los clientes</option>
+          <option value="">{t("trainer.selectClient") || "Todos los clientes"}</option>
         </select>
       </div>
 
-      <!-- Editor de Dieta -->
+      <!-- Diet Editor -->
       <div id="diet-editor" class="hidden mt-6"></div>
 
-      <!-- Lista de Dietas -->
+      <!-- Diets List -->
       <div id="diets-container" class="mt-6 space-y-3">
-        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm">
-          <svg class="mx-auto h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p class="mt-2 text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
+        <div
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm"
+        >
+          <svg
+            class="mx-auto h-5 w-5 animate-spin text-[var(--brand)]"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"></circle
+            ><path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg
+          ><p class="mt-2 text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
         </div>
       </div>
     </div>
@@ -60,8 +101,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
 <script>
   import { logger } from "@/lib/shared/logger";
-  import { requireAuth } from "@/lib/shared/authGuard";
-  import { ICONS, escapeHtml, renderEmptyState, showToast } from "@/lib/shared/ui";
+  import { requireRole } from "@/lib/shared/authGuard";
+  import { t } from "@/i18n/client";
+  import { ICONS, escapeHtml, renderEmptyState, showToast, renderErrorState } from "@/lib/shared/ui";
   import {
     subscribeToClients,
     subscribeToDietsByTrainer,
@@ -69,23 +111,31 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     updateDiet,
     deleteDiet,
   } from "@/lib/trainer/trainerUtils";
+  import {
+    subscribeToDietTemplates,
+    applyDietTemplateToClient,
+  } from "@/lib/trainer/templateService";
+  import type { DietTemplate } from "@/lib/devtools/types";
   import type { TrainerClient, TrainerDiet, Meal } from "@/lib/trainer/types";
 
   let unsubClients: (() => void) | null = null;
   let unsubDiets: (() => void) | null = null;
+  let unsubTemplates: (() => void) | null = null;
   let allClients: TrainerClient[] = [];
   let allDiets: TrainerDiet[] = [];
+  let allTemplates: DietTemplate[] = [];
   let currentTrainerId = "";
   let editingDiet: TrainerDiet | null = null;
   let currentMeals: Meal[] = [];
 
-  requireAuth(async (user) => {
+  requireRole(["trainer", "admin"], async (user) => {
     initDiets(user.uid);
   });
 
   window.addEventListener("beforeunload", () => {
     unsubClients?.();
     unsubDiets?.();
+    unsubTemplates?.();
   });
 
   function initDiets(trainerId: string): void {
@@ -95,15 +145,55 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const searchInput = document.getElementById("diet-search") as HTMLInputElement;
     const filterClientSelect = document.getElementById("filter-client") as HTMLSelectElement;
 
+    const presetDietTemplateSelect = document.getElementById("preset-diet-template-select") as HTMLSelectElement;
+    const presetDietClientSelect = document.getElementById("preset-diet-client-select") as HTMLSelectElement;
+    const btnApplyPresetDiet = document.getElementById("btn-apply-preset-diet") as HTMLButtonElement;
+
     unsubClients = subscribeToClients(trainerId, (clients) => {
       allClients = clients;
       populateClientFilter();
+      if (presetDietClientSelect) {
+        presetDietClientSelect.innerHTML = `<option value="">${t("diet.editor.client.select")}</option>` +
+          clients.map(c => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join("");
+      }
       renderDiets();
     });
 
     unsubDiets = subscribeToDietsByTrainer(trainerId, (diets) => {
       allDiets = diets;
       renderDiets();
+    });
+
+    unsubTemplates = subscribeToDietTemplates((templates) => {
+      allTemplates = templates;
+      if (presetDietTemplateSelect) {
+        if (templates.length === 0) {
+          presetDietTemplateSelect.innerHTML = `<option value="">${t("trainer.noTemplates") || "Sin plantillas disponibles"}</option>`;
+        } else {
+          presetDietTemplateSelect.innerHTML = `<option value="">${t("trainer.selectPresetDiet")} (${templates.length})...</option>` +
+            templates.map(tmpl => `<option value="${tmpl.id}">${escapeHtml(tmpl.name)} (${tmpl.totalCalories || 0} kcal)</option>`).join("");
+        }
+      }
+    });
+
+    btnApplyPresetDiet?.addEventListener("click", async () => {
+      const templateId = presetDietTemplateSelect.value;
+      const clientId = presetDietClientSelect.value;
+      if (!templateId || !clientId) {
+        showToast({ message: "Por favor selecciona una plantilla y un cliente", type: "error" });
+        return;
+      }
+      try {
+        btnApplyPresetDiet.disabled = true;
+        showToast({ message: "Desplegando dieta predeterminada...", type: "info" });
+        await applyDietTemplateToClient(templateId, clientId, trainerId);
+        showToast({ message: "¡Dieta asignada exitosamente! Ya la puedes personalizar.", type: "success" });
+        presetDietTemplateSelect.value = "";
+      } catch (err: any) {
+        showToast({ message: err.message || "Error al asignar plantilla", type: "error" });
+      } finally {
+        btnApplyPresetDiet.disabled = false;
+      }
     });
 
     btnCreate.addEventListener("click", () => showEditor(null));
@@ -122,12 +212,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         showEditor(diet);
       }
       if (action === "delete" && diet) {
-        if (confirm(`¿Eliminar la dieta "${diet.name}"?`)) {
+        if (confirm(t("trainer.deleteDiet") + ": " + diet.name + "?")) {
           deleteDiet(diet.id)
             .then((ok) => {
-              if (ok) showToast({ message: "Dieta eliminada correctamente", type: "success" });
+              if (ok) showToast({ message: t("trainer.diets.delete") + " OK", type: "success" });
             })
-            .catch((err) => logger.error("TrainerDiets", "Error deleting diet", err));
+            .catch((err) => {
+              logger.error("TrainerDiets", "Error deleting diet", err);
+              showToast({ message: t("common.error"), type: "error" });
+            });
         }
       }
     });
@@ -137,7 +230,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const filterClientSelect = document.getElementById("filter-client") as HTMLSelectElement;
     if (!filterClientSelect) return;
     const currentVal = filterClientSelect.value;
-    filterClientSelect.innerHTML = `<option value="">Todos los clientes</option>` +
+    filterClientSelect.innerHTML =
+      `<option value="">${t("trainer.selectClient") || "Todos los clientes"}</option>` +
       allClients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join("");
     filterClientSelect.value = currentVal;
   }
@@ -156,14 +250,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     });
 
     if (filteredDiets.length === 0) {
-      container.innerHTML = renderEmptyState(ICONS.diets, "No hay dietas registradas.");
+      container.innerHTML = renderEmptyState(ICONS.diets, t("trainer.client.no.diets"));
       return;
     }
 
     container.innerHTML = filteredDiets
       .map((d) => {
         const client = allClients.find((c) => c.uid === d.clientId);
-        const clientName = client ? client.name : "Cliente sin asignar";
+        const clientName = client ? client.name : t("common.client");
         const mealCount = d.meals?.length || 0;
         const calories = d.totalCalories || 0;
 
@@ -172,7 +266,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         const fat = d.meals?.reduce((sum, m) => sum + (m.fat || 0), 0) || d.totalFat || 0;
 
         const typeLabels: Record<string, string> = {
-          normal: "Normocalórica",
+          normal: t("diet.editor.type.normal") || "Normocalórica",
           definition: "Definición",
           volume: "Volumen",
           keto: "Keto",
@@ -195,7 +289,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   </svg>
                   ${escapeHtml(clientName)}
                   <span>•</span>
-                  <span>${mealCount} comida${mealCount !== 1 ? 's' : ''}</span>
+                  <span>${mealCount} ${mealCount !== 1 ? (t("diet.meals") || "comidas") : (t("diet.meal") || "comida")}</span>
                 </p>
 
                 <!-- Macros resume bar -->
@@ -203,7 +297,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   <span class="rounded-md bg-amber-500/10 px-2 py-0.5 font-medium text-amber-400 border border-amber-500/20">${calories} kcal</span>
                   <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-medium text-emerald-400 border border-emerald-500/20">Prot: ${protein}g</span>
                   <span class="rounded-md bg-blue-500/10 px-2 py-0.5 font-medium text-blue-400 border border-blue-500/20">Carbs: ${carbs}g</span>
-                  <span class="rounded-md bg-purple-500/10 px-2 py-0.5 font-medium text-purple-400 border border-purple-500/20">Grasas: ${fat}g</span>
+                  <span class="rounded-md bg-purple-500/10 px-2 py-0.5 font-medium text-purple-400 border border-purple-500/20">${t("client.macros.fat") || "Grasas"}: ${fat}g</span>
                 </div>
               </div>
 
@@ -213,14 +307,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   data-diet-id="${d.id}"
                   class="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all"
                 >
-                  Editar
+                  ${t("common.edit")}
                 </button>
                 <button
                   data-action="delete"
                   data-diet-id="${d.id}"
                   class="rounded-lg border border-red-500/30 bg-[var(--danger-dim)] px-3 py-1.5 text-xs font-medium text-[var(--danger)] hover:bg-[var(--danger-dim)] transition-all"
                 >
-                  Eliminar
+                  ${t("common.delete")}
                 </button>
               </div>
             </div>
@@ -241,67 +335,85 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 shadow-2xl backdrop-blur-xl animate-fade-in space-y-5">
         <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
           <h3 class="text-lg font-bold text-[var(--text-primary)]">
-            ${isEditing ? 'Editar Plan Nutricional' : 'Nuevo Plan Nutricional'}
+            ${isEditing ? t("diet.editor.title.edit") : t("diet.editor.title.new")}
           </h3>
           <button id="btn-cancel-diet-top" class="text-[var(--text-tertiary)] hover:text-white text-xl">&times;</button>
         </div>
 
+        <!-- Template selection (only for new diets) -->
+        ${!isEditing && allTemplates.length > 0 ? `
+          <div class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <p class="text-sm font-semibold text-[var(--brand)]">${t("trainer.selectPresetDiet") || "Seleccionar plantilla"}</p>
+                <p class="text-xs text-[var(--text-tertiary)]">${allTemplates.length} ${t("trainer.templates") || "plantillas disponibles"}</p>
+              </div>
+              <select id="diet-template" class="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-sm">
+                <option value="">${t("common.select") || "Seleccionar..."}</option>
+                ${allTemplates.map((tmpl) => `<option value="${tmpl.id}">${escapeHtml(tmpl.name)} (${tmpl.totalCalories || 0} kcal)</option>`).join("")}
+              </select>
+            </div>
+          </div>
+        ` : ""}
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">Nombre de la Dieta *</label>
+            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">${t("diet.editor.name.label")}</label>
             <input
               id="diet-name"
               type="text"
-              value="${escapeHtml(diet?.name || '')}"
-              placeholder="Ej: Dieta de Definición 2200 kcal"
+              value="${escapeHtml(diet?.name || "")}"
+              placeholder="${t("diet.editor.name.placeholder")}"
               class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]"
             />
+            <p id="diet-name-error" class="mt-1 text-xs text-[var(--danger)] hidden">${t("diet.editor.name.error")}</p>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">Cliente Asignado *</label>
+            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">${t("diet.editor.client.label")}</label>
             <select
               id="diet-client"
               class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
             >
-              <option value="">Selecciona un cliente...</option>
-              ${allClients.map((c) => `<option value="${c.uid}" ${c.uid === diet?.clientId ? 'selected' : ''}>${escapeHtml(c.name)} (${escapeHtml(c.email)})</option>`).join('')}
+              <option value="">${t("diet.editor.client.select")}</option>
+              ${allClients.map((c) => `<option value="${c.uid}" ${c.uid === diet?.clientId ? "selected" : ""}>${escapeHtml(c.name)} (${escapeHtml(c.email)})</option>`).join("")}
             </select>
+            <p id="diet-client-error" class="mt-1 text-xs text-[var(--danger)] hidden">${t("diet.editor.client.error")}</p>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">Tipo de Dieta</label>
+            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">${t("diet.editor.type.label")}</label>
             <select
               id="diet-type"
               class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
             >
-              <option value="normal" ${diet?.type === 'normal' ? 'selected' : ''}>Normocalórica</option>
-              <option value="definition" ${diet?.type === 'definition' ? 'selected' : ''}>Definición Muscular</option>
-              <option value="volume" ${diet?.type === 'volume' ? 'selected' : ''}>Volumen / Ganancia</option>
-              <option value="keto" ${diet?.type === 'keto' ? 'selected' : ''}>Cetogénica (Keto)</option>
-              <option value="vegan" ${diet?.type === 'vegan' ? 'selected' : ''}>Vegana / Vegetariana</option>
-              <option value="custom" ${diet?.type === 'custom' ? 'selected' : ''}>Personalizada</option>
+              <option value="normal" ${diet?.type === "normal" ? "selected" : ""}>${t("diet.editor.type.normal")}</option>
+              <option value="definition" ${diet?.type === "definition" ? "selected" : ""}>Definición Muscular</option>
+              <option value="volume" ${diet?.type === "volume" ? "selected" : ""}>Volumen / Ganancia</option>
+              <option value="keto" ${diet?.type === "keto" ? "selected" : ""}>Cetogénica (Keto)</option>
+              <option value="vegan" ${diet?.type === "vegan" ? "selected" : ""}>Vegana / Vegetariana</option>
+              <option value="custom" ${diet?.type === "custom" ? "selected" : ""}>Personalizada</option>
             </select>
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">Somatotipo Recomendado</label>
+            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">${t("diet.editor.somatotype.label")}</label>
             <select
               id="diet-somatotype"
               class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
             >
-              <option value="">Sin especificar</option>
-              <option value="ectomorph" ${diet?.somatotype === 'ectomorph' ? 'selected' : ''}>Ectomorfo</option>
-              <option value="mesomorph" ${diet?.somatotype === 'mesomorph' ? 'selected' : ''}>Mesomorfo</option>
-              <option value="endomorph" ${diet?.somatotype === 'endomorph' ? 'selected' : ''}>Endomorfo</option>
+              <option value="">${t("diet.editor.somatotype.none")}</option>
+              <option value="ectomorph" ${diet?.somatotype === "ectomorph" ? "selected" : ""}>${t("diet.editor.somatotype.ectomorph")}</option>
+              <option value="mesomorph" ${diet?.somatotype === "mesomorph" ? "selected" : ""}>${t("diet.editor.somatotype.mesomorph")}</option>
+              <option value="endomorph" ${diet?.somatotype === "endomorph" ? "selected" : ""}>${t("diet.editor.somatotype.endomorph")}</option>
             </select>
           </div>
         </div>
 
-        <!-- Banner de Macronutrientes Calculados -->
+        <!-- Macronutrients banner -->
         <div class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4">
           <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
-            <span class="font-bold text-[var(--brand)] uppercase tracking-wider text-[10px]">Totales de la Dieta:</span>
+            <span class="font-bold text-[var(--brand)] uppercase tracking-wider text-[10px]">${t("diet.editor.calories.label")}:</span>
             <div class="flex items-center gap-3 font-semibold text-[var(--text-primary)] flex-wrap">
               <span>🔥 <span id="calc-calories">0</span> kcal</span>
               <span>🥩 Prot: <span id="calc-protein">0</span>g</span>
@@ -311,51 +423,77 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           </div>
         </div>
 
-        <!-- Sección de Comidas -->
+        <!-- Meals section -->
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h4 class="text-sm font-bold text-[var(--text-primary)]">Desglose de Comidas Diarias</h4>
+            <h4 class="text-sm font-bold text-[var(--text-primary)]">${t("diet.editor.meals.title")}</h4>
             <button
               type="button"
               id="btn-add-meal"
               class="flex items-center gap-1 text-xs font-semibold text-[var(--brand)] hover:underline"
             >
-              + Añadir Comida
+              + {t("diet.editor.meals.addBtn")}
             </button>
           </div>
 
           <div id="meals-editor-container" class="space-y-3"></div>
         </div>
 
-        <!-- Botones de Acción -->
+        <!-- Action buttons -->
         <div class="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)]">
           <button
             id="btn-save-diet"
             class="flex-1 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-5 py-2.5 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all hover:opacity-95"
           >
-            ${isEditing ? 'Guardar Cambios' : 'Crear Plan Nutricional'}
+            ${isEditing ? t("diet.editor.save.edit") : t("diet.editor.save.new")}
           </button>
           <button
             id="btn-cancel-diet"
             class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-5 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:text-white"
           >
-            Cancelar
+            {t("diet.editor.cancel")}
           </button>
         </div>
       </div>
     `;
 
     editor.classList.remove("hidden");
-    editor.scrollIntoView({ behavior: 'smooth' });
+    editor.scrollIntoView({ behavior: "smooth" });
 
     renderMealsEditor();
+    updateCalculatedMacros();
 
     // Event listeners
+    const templateSelect = document.getElementById("diet-template") as HTMLSelectElement;
+    if (templateSelect) {
+      templateSelect.addEventListener("change", async () => {
+        const templateId = templateSelect.value;
+        if (!templateId) return;
+
+        const clientId = (document.getElementById("diet-client") as HTMLSelectElement).value;
+        if (!clientId) {
+          showToast({ message: t("diet.editor.client.error"), type: "error" });
+          templateSelect.value = "";
+          return;
+        }
+
+        try {
+          showToast({ message: t("diet.editor.saving"), type: "info" });
+          const newDietId = await applyDietTemplateToClient(templateId, clientId, currentTrainerId);
+          showToast({ message: t("trainer.templates.load") || "Plantilla cargada", type: "success" });
+          closeEditor();
+        } catch (err) {
+          logger.error("TrainerDiets", "Error loading template", err);
+          showToast({ message: t("common.error"), type: "error" });
+        }
+      });
+    }
+
     document.getElementById("btn-add-meal")!.addEventListener("click", () => {
       const newMeal: Meal = {
-        id: 'm-' + Date.now() + '-' + Math.random().toString(36).substring(2, 5),
-        name: 'Desayuno',
-        description: '',
+        id: "m-" + Date.now() + "-" + Math.random().toString(36).substring(2, 5),
+        name: "breakfast",
+        description: "",
         calories: 400,
         protein: 25,
         carbs: 45,
@@ -364,6 +502,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       };
       currentMeals.push(newMeal);
       renderMealsEditor();
+      updateCalculatedMacros();
     });
 
     document.getElementById("btn-cancel-diet-top")!.addEventListener("click", closeEditor);
@@ -377,51 +516,255 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       const name = nameInput.value.trim();
       const clientId = clientSelect.value;
-      const type = typeSelect.value || "normal";
-      const somatotype = somatotypeSelect.value || undefined;
+      const type = typeSelect.value as TrainerDiet["type"];
+      const somatotype = somatotypeSelect.value as TrainerDiet["somatotype"];
 
-      if (!name || !clientId) {
-        showToast({ message: "Por favor completa el nombre de la dieta y selecciona un cliente.", type: "error" });
-        if (!name) nameInput.classList.add("border-red-500");
-        if (!clientId) clientSelect.classList.add("border-red-500");
+      // Validation
+      let isValid = true;
+
+      if (!name) {
+        document.getElementById("diet-name-error")!.classList.remove("hidden");
+        nameInput.classList.add("border-[var(--danger)]");
+        isValid = false;
+      } else {
+        document.getElementById("diet-name-error")!.classList.add("hidden");
+        nameInput.classList.remove("border-[var(--danger)]");
+      }
+
+      if (!clientId) {
+        document.getElementById("diet-client-error")!.classList.remove("hidden");
+        clientSelect.classList.add("border-[var(--danger)]");
+        isValid = false;
+      } else {
+        document.getElementById("diet-client-error")!.classList.add("hidden");
+        clientSelect.classList.remove("border-[var(--danger)]");
+      }
+
+      if (!isValid) {
+        showToast({ message: t("common.validationError") || "Por favor corrige los errores", type: "error" });
         return;
       }
 
-      // Guardar valores actuales de los inputs de comidas
-      saveMealsFromDOM();
-
-      const totalCalories = currentMeals.reduce((sum, m) => sum + (Number(m.calories) || 0), 0);
-      const totalProtein = currentMeals.reduce((sum, m) => sum + (Number(m.protein) || 0), 0);
-      const totalCarbs = currentMeals.reduce((sum, m) => sum + (Number(m.carbs) || 0), 0);
-      const totalFat = currentMeals.reduce((sum, m) => sum + (Number(m.fat) || 0), 0);
-
-      const payload = {
-        name,
-        clientId,
-        trainerId: currentTrainerId,
-        type,
-        somatotype,
-        totalCalories,
-        totalProtein,
-        totalCarbs,
-        totalFat,
-        meals: currentMeals,
-      };
+      const totalCalories = currentMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
+      const totalProtein = currentMeals.reduce((sum, m) => sum + (m.protein || 0), 0);
+      const totalCarbs = currentMeals.reduce((sum, m) => sum + (m.carbs || 0), 0);
+      const totalFat = currentMeals.reduce((sum, m) => sum + (m.fat || 0), 0);
 
       try {
         if (isEditing && diet) {
-          const ok = await updateDiet(diet.id, payload);
-          if (ok) showToast({ message: "Dieta actualizada correctamente ✅", type: "success" });
+          await updateDiet(diet.id, {
+            name,
+            clientId,
+            trainerId: currentTrainerId,
+            type,
+            somatotype,
+            totalCalories,
+            totalProtein,
+            totalCarbs,
+            totalFat,
+            meals: currentMeals,
+          });
+          showToast({ message: t("diet.editor.save.edit") + " OK", type: "success" });
         } else {
-          const id = await createDiet(payload);
-          if (id) showToast({ message: "Dieta creada correctamente ✅", type: "success" });
+          await createDiet({
+            clientId,
+            trainerId: currentTrainerId,
+            name,
+            type,
+            somatotype,
+            totalCalories,
+            totalProtein,
+            totalCarbs,
+            totalFat,
+            meals: currentMeals,
+          });
+          showToast({ message: t("diet.editor.save.new") + " OK", type: "success" });
         }
         closeEditor();
       } catch (err) {
         logger.error("TrainerDiets", "Error saving diet", err);
-        showToast({ message: "Error al guardar la dieta", type: "error" });
+        showToast({ message: t("common.error"), type: "error" });
       }
     });
+  }
+
+  function renderMealsEditor(): void {
+    const container = document.getElementById("meals-editor-container")!;
+    if (currentMeals.length === 0) {
+      container.innerHTML = `<p class="text-xs text-[var(--text-tertiary)] text-center py-4">${t("diet.editor.meals.empty")}</p>`;
+      return;
+    }
+
+    container.innerHTML = currentMeals
+      .map(
+        (meal, index) => `
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <select
+              class="meal-name rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium"
+              data-meal-index="${index}"
+            >
+              <option value="breakfast" ${meal.name === "breakfast" ? "selected" : ""}>${t("diet.editor.meal.breakfast")}</option>
+              <option value="lunch" ${meal.name === "lunch" ? "selected" : ""}>${t("diet.editor.meal.lunch")}</option>
+              <option value="snack" ${meal.name === "snack" ? "selected" : ""}>${t("diet.editor.meal.snack")}</option>
+              <option value="dinner" ${meal.name === "dinner" ? "selected" : ""}>${t("diet.editor.meal.dinner")}</option>
+              <option value="other" ${meal.name === "other" ? "selected" : ""}>${t("diet.editor.meal.other")}</option>
+            </select>
+            <button
+              class="text-xs text-[var(--danger)] hover:underline"
+              data-action="remove-meal"
+              data-meal-index="${index}"
+            >
+              ${t("common.delete")}
+            </button>
+          </div>
+          <textarea
+            class="meal-desc w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-2 text-xs resize-none"
+            rows="2"
+            placeholder="${t("diet.editor.meal.descPlaceholder")}"
+            data-meal-index="${index}"
+          >${escapeHtml(meal.description || "")}</textarea>
+          <div class="grid grid-cols-4 gap-2">
+            <div>
+              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.calories")}</label>
+              <input
+                type="number"
+                class="meal-calories w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
+                value="${meal.calories || 0}"
+                data-meal-index="${index}"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.protein")}</label>
+              <input
+                type="number"
+                class="meal-protein w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
+                value="${meal.protein || 0}"
+                data-meal-index="${index}"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.carbs")}</label>
+              <input
+                type="number"
+                class="meal-carbs w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
+                value="${meal.carbs || 0}"
+                data-meal-index="${index}"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.fat")}</label>
+              <input
+                type="number"
+                class="meal-fat w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
+                value="${meal.fat || 0}"
+                data-meal-index="${index}"
+              />
+            </div>
+          </div>
+
+          <!-- Allergens -->
+          <div class="pt-1">
+            <label class="block text-[10px] text-[var(--text-tertiary)] mb-1">${t("diet.editor.meal.allergens")}</label>
+            <div class="flex flex-wrap gap-2">
+              ${["gluten", "lactose", "nuts", "shellfish", "egg", "soy", "fish"].map((allergen) => `
+                <label class="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    class="meal-allergen accent-[var(--brand)]"
+                    value="${allergen}"
+                    data-meal-index="${index}"
+                    ${(meal.allergens || []).includes(allergen) ? "checked" : ""}
+                  />
+                  ${allergen}
+                </label>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `
+      )
+      .join("");
+
+    // Add event listeners
+    container.querySelectorAll("[data-action='remove-meal']").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        currentMeals.splice(index, 1);
+        renderMealsEditor();
+        updateCalculatedMacros();
+      });
+    });
+
+    container.querySelectorAll(".meal-name").forEach((select) => {
+      select.addEventListener("change", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        if (currentMeals[index]) {
+          currentMeals[index].name = (e.target as HTMLSelectElement).value as Meal["name"];
+        }
+      });
+    });
+
+    container.querySelectorAll(".meal-desc").forEach((textarea) => {
+      textarea.addEventListener("input", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        if (currentMeals[index]) {
+          currentMeals[index].description = (e.target as HTMLTextAreaElement).value;
+        }
+      });
+    });
+
+    container.querySelectorAll(".meal-calories, .meal-protein, .meal-carbs, .meal-fat").forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        const field = (e.target as HTMLElement).classList.contains("meal-calories")
+          ? "calories"
+          : (e.target as HTMLElement).classList.contains("meal-protein")
+            ? "protein"
+            : (e.target as HTMLElement).classList.contains("meal-carbs")
+              ? "carbs"
+              : "fat";
+        if (currentMeals[index]) {
+          currentMeals[index][field] = parseInt((e.target as HTMLInputElement).value) || 0;
+        }
+        updateCalculatedMacros();
+      });
+    });
+
+    // Allergen checkboxes
+    container.querySelectorAll(".meal-allergen").forEach((checkbox) => {
+      checkbox.addEventListener("change", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        const allergen = (e.target as HTMLInputElement).value;
+        const checked = (e.target as HTMLInputElement).checked;
+        if (!currentMeals[index]) return;
+        const allergens = currentMeals[index].allergens || [];
+        if (checked) {
+          if (!allergens.includes(allergen)) allergens.push(allergen);
+        } else {
+          const idx = allergens.indexOf(allergen);
+          if (idx !== -1) allergens.splice(idx, 1);
+        }
+        currentMeals[index].allergens = allergens;
+      });
+    });
+  }
+
+  function updateCalculatedMacros(): void {
+    const totalCalories = currentMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
+    const totalProtein = currentMeals.reduce((sum, m) => sum + (m.protein || 0), 0);
+    const totalCarbs = currentMeals.reduce((sum, m) => sum + (m.carbs || 0), 0);
+    const totalFat = currentMeals.reduce((sum, m) => sum + (m.fat || 0), 0);
+
+    const calEl = document.getElementById("calc-calories");
+    const protEl = document.getElementById("calc-protein");
+    const carbsEl = document.getElementById("calc-carbs");
+    const fatEl = document.getElementById("calc-fat");
+
+    if (calEl) calEl.textContent = String(totalCalories);
+    if (protEl) protEl.textContent = String(totalProtein);
+    if (carbsEl) carbsEl.textContent = String(totalCarbs);
+    if (fatEl) fatEl.textContent = String(totalFat);
   }
 
   function closeEditor(): void {
@@ -430,144 +773,5 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     editor.innerHTML = "";
     editingDiet = null;
     currentMeals = [];
-  }
-
-  function saveMealsFromDOM(): void {
-    const container = document.getElementById("meals-editor-container");
-    if (!container) return;
-
-    const mealCards = container.querySelectorAll(".meal-card");
-    mealCards.forEach((card, idx) => {
-      const nameSelect = card.querySelector(".meal-name") as HTMLInputElement | HTMLSelectElement;
-      const descInput = card.querySelector(".meal-desc") as HTMLInputElement;
-      const kcalInput = card.querySelector(".meal-kcal") as HTMLInputElement;
-      const protInput = card.querySelector(".meal-prot") as HTMLInputElement;
-      const carbsInput = card.querySelector(".meal-carbs") as HTMLInputElement;
-      const fatInput = card.querySelector(".meal-fat") as HTMLInputElement;
-
-      if (currentMeals[idx]) {
-        currentMeals[idx].name = nameSelect?.value || "Comida";
-        currentMeals[idx].description = descInput?.value || "";
-        currentMeals[idx].calories = Number(kcalInput?.value) || 0;
-        currentMeals[idx].protein = Number(protInput?.value) || 0;
-        currentMeals[idx].carbs = Number(carbsInput?.value) || 0;
-        currentMeals[idx].fat = Number(fatInput?.value) || 0;
-        currentMeals[idx].order = idx + 1;
-      }
-    });
-  }
-
-  function updateMacroTotals(): void {
-    saveMealsFromDOM();
-    const totKcal = currentMeals.reduce((sum, m) => sum + (Number(m.calories) || 0), 0);
-    const totProt = currentMeals.reduce((sum, m) => sum + (Number(m.protein) || 0), 0);
-    const totCarbs = currentMeals.reduce((sum, m) => sum + (Number(m.carbs) || 0), 0);
-    const totFat = currentMeals.reduce((sum, m) => sum + (Number(m.fat) || 0), 0);
-
-    const elKcal = document.getElementById("calc-calories");
-    const elProt = document.getElementById("calc-protein");
-    const elCarbs = document.getElementById("calc-carbs");
-    const elFat = document.getElementById("calc-fat");
-
-    if (elKcal) elKcal.textContent = String(totKcal);
-    if (elProt) elProt.textContent = String(totProt);
-    if (elCarbs) elCarbs.textContent = String(totCarbs);
-    if (elFat) elFat.textContent = String(totFat);
-  }
-
-  function renderMealsEditor(): void {
-    const container = document.getElementById("meals-editor-container");
-    if (!container) return;
-
-    if (currentMeals.length === 0) {
-      container.innerHTML = `
-        <div class="p-4 text-center border border-dashed border-[var(--border-subtle)] rounded-xl">
-          <p class="text-xs text-[var(--text-tertiary)]">No has añadido comidas a esta dieta.</p>
-        </div>
-      `;
-      updateMacroTotals();
-      return;
-    }
-
-    const mealTypes = [
-      "Desayuno",
-      "Almuerzo",
-      "Merienda",
-      "Cena",
-      "Snack",
-      "Pre-entrenamiento",
-      "Post-entrenamiento",
-      "Otro",
-    ];
-
-    container.innerHTML = currentMeals
-      .map((meal, idx) => `
-        <div class="meal-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 space-y-3" data-index="${idx}">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)]">${idx + 1}</span>
-              <select class="meal-name rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-4)] px-2.5 py-1 text-xs font-semibold text-[var(--text-primary)]">
-                ${mealTypes.map((t) => `<option value="${t}" ${meal.name === t ? 'selected' : ''}>${t}</option>`).join('')}
-              </select>
-            </div>
-            <button
-              type="button"
-              data-action="remove-meal"
-              data-index="${idx}"
-              class="text-xs text-red-400 hover:text-red-300 transition-all font-medium"
-            >
-              &times; Eliminar
-            </button>
-          </div>
-
-          <div>
-            <input
-              type="text"
-              class="meal-desc w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-4)] px-3 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
-              placeholder="Descripción de alimentos (ej: 150g pechuga de pollo, 100g arroz integral)"
-              value="${escapeHtml(meal.description || '')}"
-            />
-          </div>
-
-          <div class="grid grid-cols-4 gap-2 text-xs">
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">Kcal</label>
-              <input type="number" class="meal-kcal w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-4)] px-2 py-1 text-xs text-[var(--text-primary)]" value="${meal.calories || 0}" />
-            </div>
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">Prot (g)</label>
-              <input type="number" class="meal-prot w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-4)] px-2 py-1 text-xs text-[var(--text-primary)]" value="${meal.protein || 0}" />
-            </div>
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">Carbs (g)</label>
-              <input type="number" class="meal-carbs w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-4)] px-2 py-1 text-xs text-[var(--text-primary)]" value="${meal.carbs || 0}" />
-            </div>
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">Grasas (g)</label>
-              <input type="number" class="meal-fat w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-4)] px-2 py-1 text-xs text-[var(--text-primary)]" value="${meal.fat || 0}" />
-            </div>
-          </div>
-        </div>
-      `)
-      .join("");
-
-    // Listeners de inputs para recalcular totales en directo
-    container.querySelectorAll("input, select").forEach((input) => {
-      input.addEventListener("input", updateMacroTotals);
-    });
-
-    // Handler de eliminación de comidas
-    container.querySelectorAll('[data-action="remove-meal"]').forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        saveMealsFromDOM();
-        const index = Number((e.currentTarget as HTMLElement).getAttribute("data-index"));
-        if (!isNaN(index) && index >= 0) {
-          currentMeals.splice(index, 1);
-          renderMealsEditor();
-        }
-      });
-    });
-
-    updateMacroTotals();
   }
 </script>

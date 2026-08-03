@@ -13,32 +13,23 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 <AdminLayout>
   <div class="mx-auto max-w-4xl px-4 py-8">
     <PageTransition animation="fade-up" stagger>
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h1 class="text-2xl font-bold">{t("admin.dashboard")}</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("admin.dashboard.desc")}</p>
-        </div>
-        <div class="flex flex-col items-end gap-2">
-          <a
-            href="/client/dashboard"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--brand)] text-white text-sm font-medium hover:opacity-90 transition"
-          >
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
+          <div class="flex items-center gap-3">
+            <h1 data-i18n="admin.dashboard" class="text-2xl font-bold">{t("admin.dashboard")}</h1>
+            <a
+              href="/client/dashboard"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-dim)] text-[var(--brand)] border border-[var(--border-brand)] text-xs font-semibold hover:bg-[var(--brand)] hover:text-white transition-all shadow-sm"
+              title="Ir al Dashboard de Cliente"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-              ></path>
-            </svg>
-            <span data-i18n="admin.interactAsClient">{t("admin.interactAsClient")}</span>
-          </a>
-          <div id="last-update" class="text-xs text-[var(--text-disabled)]">Actualizado: --</div>
+              <span>👁️</span>
+              <span data-i18n="admin.view.client">{t("admin.view.client")}</span>
+            </a>
+          </div>
+          <p data-i18n="admin.dashboard.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("admin.dashboard.desc")}</p>
+        </div>
+        <div id="last-update" class="text-xs text-[var(--text-disabled)] font-medium">
+          <span data-i18n="admin.updated">{t("admin.updated")}</span>: --
         </div>
       </div>
 
@@ -68,7 +59,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             {t("admin.users")}
           </h3>
           <p id="stat-total-users" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Total usuarios</p>
+          <p data-i18n="admin.totalUsers" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalUsers")}</p>
         </div>
 
         <div
@@ -91,9 +82,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h3 class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.trainers")}</h3>
+          <h3 data-i18n="admin.trainers" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.trainers")}</h3>
           <p id="stat-total-trainers" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Entrenadores</p>
+          <p data-i18n="admin.totalTrainers" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalTrainers")}</p>
         </div>
 
         <div
@@ -116,9 +107,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h3 class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.clients")}</h3>
+          <h3 data-i18n="admin.clients" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.clients")}</h3>
           <p id="stat-total-clients" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Clientes</p>
+          <p data-i18n="admin.totalClients" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalClients")}</p>
         </div>
 
         <div
@@ -141,9 +132,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h3 class="text-sm font-semibold text-[var(--text-primary)]">Bloqueados</h3>
+          <h3 data-i18n="admin.blocked" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.blocked")}</h3>
           <p id="stat-total-blocked" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Usuarios bloqueados</p>
+          <p data-i18n="admin.totalBlocked" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalBlocked")}</p>
         </div>
       </div>
 
@@ -169,9 +160,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h3 class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.workouts")}</h3>
+          <h3 data-i18n="admin.workouts" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.workouts")}</h3>
           <p id="stat-total-workouts" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Rutinas creadas</p>
+          <p data-i18n="admin.totalWorkouts" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalWorkouts")}</p>
         </div>
 
         <div
@@ -194,9 +185,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h3 class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.diets")}</h3>
+          <h3 data-i18n="admin.diets" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.diets")}</h3>
           <p id="stat-total-diets" class="mt-1 text-2xl font-bold text-[var(--warning)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Dietas creadas</p>
+          <p data-i18n="admin.totalDiets" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalDiets")}</p>
         </div>
 
         <div
@@ -219,34 +210,110 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ></path>
             </svg>
           </div>
-          <h3 class="text-sm font-semibold text-[var(--text-primary)]">Alertas</h3>
+          <h3 data-i18n="admin.alerts" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.alerts")}</h3>
           <p id="stat-total-alerts" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
-          <p class="mt-1 text-xs text-[var(--text-tertiary)]">Alertas activas</p>
+          <p data-i18n="admin.totalAlerts" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalAlerts")}</p>
+        </div>
+      </div>
+
+      <!-- Seccion de Despliegue Rápido de Plantillas & DevTools -->
+      <div
+        class="mt-8 card-glow rounded-2xl border border-[var(--border-brand)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-4"
+      >
+        <div
+          class="flex items-center justify-between flex-wrap gap-3 border-b border-[var(--border-subtle)] pb-3"
+        >
+          <div class="flex items-center gap-2.5">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-dim)] text-xl font-bold text-[var(--brand)]"
+            >
+              ⚡
+            </div>
+            <div>
+              <h2 data-i18n="admin.quickDeploy.title" class="text-base font-bold text-[var(--text-primary)]">
+                {t("admin.quickDeploy.title")}
+              </h2>
+              <p data-i18n="admin.quickDeploy.desc" class="text-xs text-[var(--text-tertiary)]">{t("admin.quickDeploy.desc")}</p>
+            </div>
+          </div>
+          <a
+            href="/admin/devtools"
+            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[var(--brand)] text-[var(--text-on-brand)] text-xs font-bold shadow-md hover:opacity-90 transition-all"
+          >
+            <span data-i18n="admin.quickDeploy.openDevTools">{t("admin.quickDeploy.openDevTools")}</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <a
+            href="/trainer/workouts"
+            class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:border-[var(--border-brand)] hover:bg-[var(--surface-3)] transition-all shadow-sm group"
+          >
+            <span class="text-2xl group-hover:scale-110 transition-transform">🏋️</span>
+            <div>
+              <p data-i18n="admin.quickDeploy.defaultWorkouts" class="text-xs font-bold text-[var(--text-primary)]">
+                {t("admin.quickDeploy.defaultWorkouts")}
+              </p>
+              <p data-i18n="admin.quickDeploy.defaultWorkouts.desc" class="text-[10px] text-[var(--text-tertiary)]">
+                {t("admin.quickDeploy.defaultWorkouts.desc")}
+              </p>
+            </div>
+          </a>
+
+          <a
+            href="/trainer/diets"
+            class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:border-amber-400/40 hover:bg-[var(--surface-3)] transition-all shadow-sm group"
+          >
+            <span class="text-2xl group-hover:scale-110 transition-transform">🥗</span>
+            <div>
+              <p data-i18n="admin.quickDeploy.defaultDiets" class="text-xs font-bold text-[var(--text-primary)]">
+                {t("admin.quickDeploy.defaultDiets")}
+              </p>
+              <p data-i18n="admin.quickDeploy.defaultDiets.desc" class="text-[10px] text-[var(--text-tertiary)]">
+                {t("admin.quickDeploy.defaultDiets.desc")}
+              </p>
+            </div>
+          </a>
+
+          <a
+            href="/admin/users"
+            class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:border-blue-400/40 hover:bg-[var(--surface-3)] transition-all shadow-sm group"
+          >
+            <span class="text-2xl group-hover:scale-110 transition-transform">👥</span>
+            <div>
+              <p data-i18n="admin.quickDeploy.clientManagement" class="text-xs font-bold text-[var(--text-primary)]">
+                {t("admin.quickDeploy.clientManagement")}
+              </p>
+              <p data-i18n="admin.quickDeploy.clientManagement.desc" class="text-[10px] text-[var(--text-tertiary)]">
+                {t("admin.quickDeploy.clientManagement.desc")}
+              </p>
+            </div>
+          </a>
         </div>
       </div>
 
       <!-- Alertas Recientes -->
       <div class="mt-8">
-        <h2 class="text-lg font-semibold text-[var(--text-primary)]">Alertas Recientes</h2>
+        <h2 data-i18n="admin.recentAlerts" class="text-lg font-semibold text-[var(--text-primary)]">{t("admin.recentAlerts")}</h2>
         <div id="recent-alerts" class="mt-4 space-y-3">
           <div
             class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm"
           >
-            <p class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
+            <p data-i18n="admin.loading" class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
           </div>
         </div>
       </div>
 
       <!-- Usuarios Recientes -->
       <div class="mt-8">
-        <h2 class="text-lg font-semibold text-[var(--text-primary)]">
+        <h2 data-i18n="admin.recent.users" class="text-lg font-semibold text-[var(--text-primary)]">
           {t("admin.recent.users")}
         </h2>
         <div id="recent-users" class="mt-4 space-y-3">
           <div
             class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm"
           >
-            <p class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
+            <p data-i18n="admin.loading" class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
           </div>
         </div>
       </div>
@@ -257,10 +324,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     import { requireAdmin } from "@/lib/shared/authGuard";
     import {
       subscribeToUsers,
-      subscribeToCollectionCount,
       renderUserCard,
     } from "@/lib/admin/adminUtils";
     import { ICONS, renderEmptyState } from "@/lib/shared/ui";
+    import { t } from "@/i18n/client";
 
     let unsubUsers: (() => void) | null = null;
     let unsubWorkouts: (() => void) | null = null;
@@ -270,7 +337,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       initDashboard();
     });
 
-    // Cleanup subscriptions on page unload
     window.addEventListener("beforeunload", () => {
       unsubUsers?.();
       unsubWorkouts?.();
@@ -291,7 +357,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       function updateTimestamp(): void {
         const now = new Date();
-        lastUpdateEl.textContent = `Actualizado: ${now.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}`;
+        lastUpdateEl.innerHTML = `<span data-i18n="admin.updated">${t("admin.updated")}</span>: ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
       }
 
       unsubUsers = subscribeToUsers((users) => {
@@ -307,6 +373,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         statTotalBlocked.textContent = String(totalBlocked);
         statTotalAlerts.textContent = String(usersWithAlerts.length);
 
+        updateTimestamp();
+
         // Renderizar alertas
         if (usersWithAlerts.length === 0) {
           alertsContainer.innerHTML = `
@@ -317,7 +385,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
               </div>
-              <p class="text-sm text-[var(--text-tertiary)]">No hay alertas activas</p>
+               <p data-i18n="admin.no.alerts" class="text-sm text-[var(--text-tertiary)]">${t("admin.no.alerts")}</p>
             </div>
           </div>`;
         } else {
@@ -333,8 +401,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 </svg>
               </div>
               <div>
-                <p class="text-sm font-medium text-[var(--text-primary)]">${user.name}</p>
-                <p class="text-xs text-[var(--text-tertiary)]">Alerta activa</p>
+                 <p class="text-sm font-medium text-[var(--text-primary)]">${user.name}</p>
+                 <p data-i18n="admin.alert.status" class="text-xs text-[var(--text-tertiary)]">${t("admin.alert.status")}</p>
               </div>
             </div>
           </div>
@@ -343,23 +411,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             .join("");
         }
 
-        // Derivar usuarios recientes de la misma suscripción (evita listener duplicado)
         const recentUsers = users.slice(0, 5);
         if (recentUsers.length === 0) {
-          recentContainer.innerHTML = renderEmptyState(ICONS.users, "Sin usuarios registrados");
+          recentContainer.innerHTML = renderEmptyState(ICONS.users, t("admin.no.users") || "Sin usuarios registrados");
         } else {
           recentContainer.innerHTML = recentUsers.map((user) => renderUserCard(user)).join("");
         }
-
-        updateTimestamp();
-      });
-
-      unsubWorkouts = subscribeToCollectionCount("workouts", (count) => {
-        statTotalWorkouts.textContent = String(count);
-      });
-
-      unsubDiets = subscribeToCollectionCount("diets", (count) => {
-        statTotalDiets.textContent = String(count);
       });
     }
   </script>

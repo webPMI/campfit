@@ -178,6 +178,7 @@ export async function getTrainerClientCount(trainerId: string): Promise<number> 
 }
 
 /**
+ * 🚨 CRITICAL: Esta función alimenta el dropdown de asignación de trainers en admin/users.astro
  * Se suscribe a todos los usuarios que pueden actuar como entrenadores:
  * usuarios con rol 'trainer' y usuarios con rol 'admin'.
  *
@@ -186,6 +187,9 @@ export async function getTrainerClientCount(trainerId: string): Promise<number> 
  *
  * @param callback - Función que recibe la lista combinada de trainers + admins
  * @returns Función de limpieza que cancela ambas suscripciones
+ *
+ * @protection NO ELIMINAR orderBy('name', 'asc') - Es crítico para el ordenamiento del dropdown.
+ * @protection NO ELIMINAR el fallback sin orderBy - Maneja el caso donde el índice compuesto está en creación.
  */
 export function subscribeToTrainers(
   callback: (trainers: TrainerOption[]) => void,
@@ -200,32 +204,47 @@ export function subscribeToTrainers(
   }
 
   function makeQuery(role: 'trainer' | 'admin'): Unsubscribe {
-    const q = query(
+    const qWithOrder = query(
       collection(db, 'users'),
       where('role', '==', role),
       orderBy('name', 'asc'),
     );
-    return onSnapshot(
-      q,
-      (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'removed') {
-            map.delete(change.doc.id);
-          } else {
-            const data = change.doc.data();
-            map.set(change.doc.id, {
-              uid: change.doc.id,
-              name: data.name || 'Sin nombre',
-              role,
-            });
-          }
-        });
-        emit();
-      },
+
+    let unsub: Unsubscribe = () => { };
+
+    const handleSnapshot = (snapshot: any) => {
+      snapshot.docChanges().forEach((change: any) => {
+        if (change.type === 'removed') {
+          map.delete(change.doc.id);
+        } else {
+          const data = change.doc.data();
+          map.set(change.doc.id, {
+            uid: change.doc.id,
+            name: data.name || 'Sin nombre',
+            role,
+          });
+        }
+      });
+      emit();
+    };
+
+    unsub = onSnapshot(
+      qWithOrder,
+      handleSnapshot,
       (error) => {
-        logger.error('Admin', `Error al suscribirse a ${role}s:`, error);
+        // Fallback si el índice compuesto está en proceso de creación en Firebase Console
+        logger.warn('Admin', `Índice compuesto en proceso para ${role}s, usando fallback sin ordenar en Firestore:`, error.message);
+        const qFallback = query(
+          collection(db, 'users'),
+          where('role', '==', role),
+        );
+        unsub = onSnapshot(qFallback, handleSnapshot, (err) => {
+          logger.error('Admin', `Error al suscribirse a ${role}s:`, err);
+        });
       },
     );
+
+    return () => unsub();
   }
 
   const unsubTrainers = makeQuery('trainer');

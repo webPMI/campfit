@@ -94,7 +94,9 @@ export async function assignTrainer(clientId: string, trainerId: string | null):
 }
 
 /**
- * Actualiza el perfil de un usuario (nombre, email, rol, trainer).
+ * 🚨 CRITICAL: Actualiza el perfil de un usuario (nombre, email, rol, trainer).
+ * @protection Esta función es llamada desde admin/users.astro para editar usuarios.
+ * @protection NO ELIMINAR la lógica de updateDoc ni el mapeo de campos - Es la única forma de editar usuarios.
  */
 export async function updateUserProfile(
   uid: string,

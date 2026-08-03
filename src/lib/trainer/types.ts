@@ -51,8 +51,11 @@ export interface TrainerDiet {
   clientId: string;
   trainerId: string;
   name: string;
-  type: string;
-  somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph' | string;
+  // 🔒 CRÍTICO: Union estricta de tipos de dieta. NUNCA cambiar a `string`.
+  // Si se relaja a string, se pierde el type-safety y el editor no validará los valores.
+  type: 'normal' | 'definition' | 'volume' | 'keto' | 'vegan' | 'custom';
+  // 🔒 CRÍTICO: Union estricta de somatotipos. NUNCA añadir `| string`.
+  somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph';
   totalCalories: number;
   totalProtein?: number;
   totalCarbs?: number;
@@ -64,13 +67,18 @@ export interface TrainerDiet {
 
 export interface Meal {
   id: string;
-  name: string;
+  // 🔒 CRÍTICO: Union estricta de nombres de comida. NUNCA cambiar a `string`.
+  // El cliente (dietService.ts) usa la misma union; si se relaja, se rompe la consistencia.
+  name: 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other';
   description: string;
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
   order: number;
+  // 🔒 CRÍTICO: Campo allergens. NUNCA eliminar.
+  // Lo usa intoleranceChecker.ts para detectar conflictos con alergias del cliente.
+  allergens?: string[];
 }
 
 export interface TrainerMessage {
@@ -92,5 +100,32 @@ export interface ProgressLog {
   calories?: number;
   rpe?: number;
   notes?: string;
+  createdAt?: { toDate: () => Date } | null;
+}
+
+export interface ExerciseExecutionLog {
+  exerciseId: string;
+  exerciseName: string;
+  status: 'completed' | 'partial' | 'skipped';
+  targetSets?: number;
+  targetReps?: number;
+  actualSets?: number;
+  actualReps?: number;
+  actualWeight?: number;
+  rpe?: number;
+  notes?: string;
+}
+
+export interface WorkoutSessionLog {
+  id: string;
+  clientId: string;
+  workoutId: string;
+  workoutName: string;
+  date: { toDate: () => Date } | null;
+  dayOfWeek: number;
+  status: 'completed' | 'partial' | 'skipped';
+  overallRpe?: number;
+  notes?: string;
+  exercises: ExerciseExecutionLog[];
   createdAt?: { toDate: () => Date } | null;
 }

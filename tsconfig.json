@@ -15,5 +15,5 @@
     "types": ["vitest/globals"]
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist", "scripts", "*.cjs", "**/*.cjs"]
 }

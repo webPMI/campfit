@@ -6,7 +6,7 @@ import { logger } from '@/lib/shared/logger';
 export interface ProgressLog {
   id: string;
   clientId: string;
-  type: 'workout' | 'meal' | 'weight' | 'photo';
+  type: 'workout' | 'meal' | 'weight' | 'photo' | 'checklist';
   date: Timestamp | Date;
   value: Record<string, unknown>;
   createdAt: Timestamp;
@@ -14,7 +14,7 @@ export interface ProgressLog {
 
 export function subscribeToProgress(
   clientId: string,
-  type: 'weight' | 'photo',
+  type: 'weight' | 'photo' | 'checklist',
   callback: (logs: ProgressLog[]) => void,
   limitCount: number = 30,
   onError?: (error: Error) => void
@@ -53,8 +53,63 @@ export async function registerWeight(clientId: string, weight: number, notes?: s
   return addDoc(collection(db, 'progress_logs'), {
     clientId,
     type: 'weight',
-    date: new Date(), // Fecha real del cliente, no serverTimestamp
+    date: new Date(),
     value: { weight, notes: notes?.trim() || '' },
+    createdAt: serverTimestamp(),
+  });
+}
+
+/**
+ * Registra una foto de evolución corporal subida (almacenada en Cloudflare R2 o previsualización).
+ */
+export async function registerProgressPhoto(
+  clientId: string,
+  photoUrl: string,
+  angle: 'front' | 'side' | 'back',
+  notes?: string
+) {
+  if (!clientId || !photoUrl) {
+    throw new Error('clientId y photoUrl son requeridos');
+  }
+
+  return addDoc(collection(db, 'progress_logs'), {
+    clientId,
+    type: 'photo',
+    date: new Date(),
+    value: {
+      photoUrl,
+      angle,
+      notes: notes?.trim() || '',
+      storageProvider: 'cloudflare_r2',
+    },
+    createdAt: serverTimestamp(),
+  });
+}
+
+/**
+ * Registra el resultado del checklist diario de hábitos y estado de ánimo del cliente.
+ */
+export async function registerDailyChecklist(
+  clientId: string,
+  checklist: {
+    waterMet: boolean;
+    dietMet: boolean;
+    workoutMet: boolean;
+    sleepHours: number;
+    stepsCount: number;
+    mood: 'excellent' | 'good' | 'neutral' | 'tired';
+    notes?: string;
+  }
+) {
+  if (!clientId) {
+    throw new Error('clientId es requerido');
+  }
+
+  return addDoc(collection(db, 'progress_logs'), {
+    clientId,
+    type: 'checklist',
+    date: new Date(),
+    value: checklist,
     createdAt: serverTimestamp(),
   });
 }

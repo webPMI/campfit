@@ -1,9 +1,9 @@
 # 🔍 CampFit Multi-Agent Audit Report
 
-> **Fecha:** 2026-07-31T15:17:16.188Z  
+> **Fecha:** 2026-08-02T20:16:31.118Z  
 > **Agentes desplegados:** 6  
-> **Archivos escaneados:** 544  
-> **Duración total:** 0.44s  
+> **Archivos escaneados:** 571  
+> **Duración total:** 0.38s  
 
 ---
 
@@ -11,27 +11,27 @@
 
 | Severidad | Cantidad |
 |-----------|----------|
-| 🔴 CRÍTICO | 12 |
-| 🟡 MEDIO | 66 |
-| 🟢 BAJO | 207 |
-| **TOTAL** | **285** |
+| 🔴 CRÍTICO | 13 |
+| 🟡 MEDIO | 74 |
+| 🟢 BAJO | 190 |
+| **TOTAL** | **277** |
 
 ### Por Agente
 
 | Agente | Findings | Críticos | Medios | Bajos | Archivos | Duración |
 |--------|---------|----------|--------|-------|----------|----------|
-| audit-security | 3 | 3 | 0 | 0 | 145 | 0.11s |
-| audit-quality | 57 | 9 | 47 | 1 | 141 | 0.08s |
-| audit-performance | 5 | 0 | 5 | 0 | 66 | 0.04s |
-| audit-uiux | 4 | 0 | 1 | 3 | 76 | 0.05s |
-| audit-testing | 155 | 0 | 13 | 142 | 80 | 0.15s |
-| audit-i18n | 61 | 0 | 0 | 61 | 36 | 0.02s |
+| audit-security | 7 | 3 | 0 | 4 | 154 | 0.09s |
+| audit-quality | 66 | 10 | 55 | 1 | 150 | 0.06s |
+| audit-performance | 5 | 0 | 5 | 0 | 74 | 0.03s |
+| audit-uiux | 14 | 0 | 1 | 13 | 77 | 0.04s |
+| audit-testing | 168 | 0 | 13 | 155 | 80 | 0.15s |
+| audit-i18n | 17 | 0 | 0 | 17 | 36 | 0.02s |
 
 ---
 
 ## 🤖 Security (audit-security)
 
-**Archivos escaneados:** 145 | **Duración:** 0.11s
+**Archivos escaneados:** 154 | **Duración:** 0.09s
 
 ### 🔴 CRÍTICO (3)
 
@@ -50,88 +50,115 @@
 - **Descripción:** La ruta /client/settings no aparece en routeGuards.ts. Cualquier usuario autenticado podría acceder.
 - **Recomendación:** Agregar /client/settings a las rutas protegidas en routeGuards.ts
 
+### 🟢 BAJO (4)
+
+#### SEC-004: Catch genérico con console.* en lugar de logger
+- **Archivo:** `src\lib\devtools\detector.ts`:107
+- **Descripción:** Bloque catch usa console.* en lugar del logger estructurado.
+- **Recomendación:** Usar logger.error con contexto tipado
+
+#### SEC-005: Catch genérico con console.* en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:132
+- **Descripción:** Bloque catch usa console.* en lugar del logger estructurado.
+- **Recomendación:** Usar logger.error con contexto tipado
+
+#### SEC-006: Catch genérico con console.* en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:222
+- **Descripción:** Bloque catch usa console.* en lugar del logger estructurado.
+- **Recomendación:** Usar logger.error con contexto tipado
+
+#### SEC-007: Catch genérico con console.* en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:222
+- **Descripción:** Bloque catch usa console.* en lugar del logger estructurado.
+- **Recomendación:** Usar logger.error con contexto tipado
+
 ---
 
 ## 🤖 Code Quality (audit-quality)
 
-**Archivos escaneados:** 141 | **Duración:** 0.08s
+**Archivos escaneados:** 150 | **Duración:** 0.06s
 
-### 🔴 CRÍTICO (9)
+### 🔴 CRÍTICO (10)
 
 #### QUAL-001: Archivo > 300 líneas (591 líneas)
 - **Archivo:** `src\components\settings\UnifiedSettingsView.astro`:591
 - **Descripción:** El archivo tiene 591 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-003: Archivo > 300 líneas (503 líneas)
-- **Archivo:** `src\i18n\locales\ca.ts`:503
-- **Descripción:** El archivo tiene 503 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-003: Archivo > 300 líneas (504 líneas)
+- **Archivo:** `src\i18n\locales\ca.ts`:504
+- **Descripción:** El archivo tiene 504 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-004: Archivo > 300 líneas (580 líneas)
-- **Archivo:** `src\i18n\locales\en.ts`:580
-- **Descripción:** El archivo tiene 580 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-004: Archivo > 300 líneas (752 líneas)
+- **Archivo:** `src\i18n\locales\en.ts`:752
+- **Descripción:** El archivo tiene 752 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-005: Archivo > 300 líneas (580 líneas)
-- **Archivo:** `src\i18n\locales\es.ts`:580
-- **Descripción:** El archivo tiene 580 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-005: Archivo > 300 líneas (979 líneas)
+- **Archivo:** `src\i18n\locales\es.ts`:979
+- **Descripción:** El archivo tiene 979 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-006: Archivo > 300 líneas (757 líneas)
-- **Archivo:** `src\layouts\BaseLayout.astro`:757
-- **Descripción:** El archivo tiene 757 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-006: Archivo > 300 líneas (771 líneas)
+- **Archivo:** `src\layouts\BaseLayout.astro`:771
+- **Descripción:** El archivo tiene 771 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-019: Archivo > 300 líneas (924 líneas)
+#### QUAL-025: Archivo > 300 líneas (924 líneas)
 - **Archivo:** `src\lib\devtools\seedData.ts`:924
 - **Descripción:** El archivo tiene 924 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-033: Archivo > 300 líneas (823 líneas)
-- **Archivo:** `src\pages\admin\users.astro`:823
-- **Descripción:** El archivo tiene 823 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-039: Archivo > 300 líneas (822 líneas)
+- **Archivo:** `src\pages\admin\users.astro`:822
+- **Descripción:** El archivo tiene 822 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-050: Archivo > 300 líneas (583 líneas)
-- **Archivo:** `src\pages\trainer\diets.astro`:583
-- **Descripción:** El archivo tiene 583 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-047: Archivo > 300 líneas (678 líneas)
+- **Archivo:** `src\pages\client\diets.astro`:678
+- **Descripción:** El archivo tiene 678 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-051: Archivo > 300 líneas (530 líneas)
-- **Archivo:** `src\pages\trainer\workouts.astro`:530
-- **Descripción:** El archivo tiene 530 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-052: Archivo > 300 líneas (513 líneas)
+- **Archivo:** `src\pages\trainer\chat.astro`:513
+- **Descripción:** El archivo tiene 513 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-### 🟡 MEDIO (47)
+#### QUAL-054: Archivo > 300 líneas (772 líneas)
+- **Archivo:** `src\pages\trainer\diets.astro`:772
+- **Descripción:** El archivo tiene 772 líneas, violando Golden Rule #9 (máximo 300).
+- **Recomendación:** Refactorizar en componentes/archivos más pequeños
+
+### 🟡 MEDIO (55)
 
 #### QUAL-002: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\components\settings\UnifiedSettingsView.astro`:333
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-008: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\lib\client\achievementsService.ts`:38
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
+#### QUAL-007: console.error en lugar de logger
+- **Archivo:** `src\layouts\BaseLayout.astro`:44
+- **Descripción:** Usa console.error() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
 
 #### QUAL-009: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\lib\client\adherenceService.ts`:58
+- **Archivo:** `src\lib\admin\adminSubscriptions.ts`:215
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
 #### QUAL-010: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\lib\client\adherenceService.ts`:59
+- **Archivo:** `src\lib\admin\adminSubscriptions.ts`:216
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
 #### QUAL-011: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\lib\client\adherenceService.ts`:147
+- **Archivo:** `src\lib\client\achievementsService.ts`:38
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
 #### QUAL-012: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\lib\client\adherenceService.ts`:148
+- **Archivo:** `src\lib\client\clientInit.ts`:26
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
@@ -141,208 +168,248 @@
 - **Recomendación:** Crear una interface o usar un tipo específico
 
 #### QUAL-014: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\lib\client\clientInit.ts`:26
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-015: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\debug\debugDataLogger.ts`:96
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-016: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-015: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\debug\debugDataLogger.ts`:127
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-017: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-016: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\debug\debugDataLogger.ts`:145
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-018: Archivo > 300 líneas (485 líneas)
+#### QUAL-017: Archivo > 300 líneas (485 líneas)
 - **Archivo:** `src\lib\debug\firestoreDebug.ts`:485
 - **Descripción:** El archivo tiene 485 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-020: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-018: console.warn en lugar de logger
+- **Archivo:** `src\lib\devtools\detector.ts`:65
+- **Descripción:** Usa console.warn() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-019: console.warn en lugar de logger
+- **Archivo:** `src\lib\devtools\detector.ts`:108
+- **Descripción:** Usa console.warn() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-020: console.log en lugar de logger
+- **Archivo:** `src\lib\devtools\detector.ts`:145
+- **Descripción:** Usa console.log() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-021: console.info en lugar de logger
+- **Archivo:** `src\lib\devtools\logStore.ts`:71
+- **Descripción:** Usa console.info() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-022: console.log en lugar de logger
+- **Archivo:** `src\lib\devtools\panel.ts`:174
+- **Descripción:** Usa console.log() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-023: console.log en lugar de logger
+- **Archivo:** `src\lib\devtools\panel.ts`:188
+- **Descripción:** Usa console.log() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-024: console.log en lugar de logger
+- **Archivo:** `src\lib\devtools\panel.ts`:199
+- **Descripción:** Usa console.log() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-026: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\notifications\notificationService.ts`:127
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-021: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-027: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\notifications\notificationService.ts`:145
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-022: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-028: Archivo > 300 líneas (350 líneas)
+- **Archivo:** `src\lib\shared\chat.ts`:350
+- **Descripción:** El archivo tiene 350 líneas, violando Golden Rule #9 (máximo 300).
+- **Recomendación:** Refactorizar en componentes/archivos más pequeños
+
+#### QUAL-029: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\shared\chat.ts`:27
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-023: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-030: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\shared\initPage.ts`:24
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-024: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-031: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\shared\initPage.ts`:24
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-025: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-032: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\shared\initPage.ts`:37
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-026: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-033: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\lib\shared\initPage.ts`:49
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-027: Archivo > 300 líneas (380 líneas)
+#### QUAL-034: Archivo > 300 líneas (380 líneas)
 - **Archivo:** `src\lib\shared\profileService.ts`:380
 - **Descripción:** El archivo tiene 380 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-028: Archivo > 300 líneas (367 líneas)
+#### QUAL-035: Archivo > 300 líneas (367 líneas)
 - **Archivo:** `src\pages\admin\clinical.astro`:367
 - **Descripción:** El archivo tiene 367 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-029: Archivo > 300 líneas (355 líneas)
-- **Archivo:** `src\pages\admin\dashboard.astro`:355
-- **Descripción:** El archivo tiene 355 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-036: Archivo > 300 líneas (424 líneas)
+- **Archivo:** `src\pages\admin\dashboard.astro`:424
+- **Descripción:** El archivo tiene 424 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-030: Archivo > 300 líneas (322 líneas)
-- **Archivo:** `src\pages\admin\devtools.astro`:322
-- **Descripción:** El archivo tiene 322 líneas, violando Golden Rule #9 (máximo 300).
-- **Recomendación:** Refactorizar en componentes/archivos más pequeños
-
-#### QUAL-031: Archivo > 300 líneas (339 líneas)
+#### QUAL-037: Archivo > 300 líneas (339 líneas)
 - **Archivo:** `src\pages\admin\diets.astro`:339
 - **Descripción:** El archivo tiene 339 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-032: Archivo > 300 líneas (317 líneas)
+#### QUAL-038: Archivo > 300 líneas (317 líneas)
 - **Archivo:** `src\pages\admin\progress.astro`:317
 - **Descripción:** El archivo tiene 317 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-034: Archivo > 300 líneas (318 líneas)
+#### QUAL-040: Archivo > 300 líneas (318 líneas)
 - **Archivo:** `src\pages\admin\workouts.astro`:318
 - **Descripción:** El archivo tiene 318 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-035: Archivo > 300 líneas (380 líneas)
-- **Archivo:** `src\pages\client\dashboard.astro`:380
-- **Descripción:** El archivo tiene 380 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-041: console.warn en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:133
+- **Descripción:** Usa console.warn() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-042: console.error en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:214
+- **Descripción:** Usa console.error() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-043: console.error en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:223
+- **Descripción:** Usa console.error() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-044: console.error en lugar de logger
+- **Archivo:** `src\pages\client\chat.astro`:251
+- **Descripción:** Usa console.error() en lugar del sistema de logging estructurado.
+- **Recomendación:** Usar logger.info/warn/error con contexto
+
+#### QUAL-045: Archivo > 300 líneas (417 líneas)
+- **Archivo:** `src\pages\client\dashboard.astro`:417
+- **Descripción:** El archivo tiene 417 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-036: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\pages\client\dashboard.astro`:309
+#### QUAL-046: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\pages\client\dashboard.astro`:353
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-037: Archivo > 300 líneas (413 líneas)
-- **Archivo:** `src\pages\client\diets.astro`:413
-- **Descripción:** El archivo tiene 413 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-048: Archivo > 300 líneas (403 líneas)
+- **Archivo:** `src\pages\client\workouts.astro`:403
+- **Descripción:** El archivo tiene 403 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-038: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\pages\client\diets.astro`:142
+#### QUAL-049: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\pages\client\workouts.astro`:397
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-039: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\pages\client\diets.astro`:208
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-040: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\pages\client\diets.astro`:233
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-041: Archivo > 300 líneas (307 líneas)
-- **Archivo:** `src\pages\client\medical-profile.astro`:307
-- **Descripción:** El archivo tiene 307 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-050: Archivo > 300 líneas (424 líneas)
+- **Archivo:** `src\pages\onboarding.astro`:424
+- **Descripción:** El archivo tiene 424 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-042: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\pages\client\workouts.astro`:96
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-043: Archivo > 300 líneas (409 líneas)
-- **Archivo:** `src\pages\onboarding.astro`:409
-- **Descripción:** El archivo tiene 409 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-051: Archivo > 300 líneas (499 líneas)
+- **Archivo:** `src\pages\register.astro`:499
+- **Descripción:** El archivo tiene 499 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-044: Archivo > 300 líneas (342 líneas)
-- **Archivo:** `src\pages\register.astro`:342
-- **Descripción:** El archivo tiene 342 líneas, violando Golden Rule #9 (máximo 300).
-- **Recomendación:** Refactorizar en componentes/archivos más pequeños
-
-#### QUAL-045: Archivo > 300 líneas (421 líneas)
-- **Archivo:** `src\pages\trainer\chat.astro`:421
-- **Descripción:** El archivo tiene 421 líneas, violando Golden Rule #9 (máximo 300).
-- **Recomendación:** Refactorizar en componentes/archivos más pequeños
-
-#### QUAL-046: Archivo > 300 líneas (409 líneas)
-- **Archivo:** `src\pages\trainer\clients.astro`:409
-- **Descripción:** El archivo tiene 409 líneas, violando Golden Rule #9 (máximo 300).
-- **Recomendación:** Refactorizar en componentes/archivos más pequeños
-
-#### QUAL-047: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\pages\trainer\clients.astro`:362
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-048: Archivo > 300 líneas (358 líneas)
+#### QUAL-053: Archivo > 300 líneas (358 líneas)
 - **Archivo:** `src\pages\trainer\clinical.astro`:358
 - **Descripción:** El archivo tiene 358 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-049: Archivo > 300 líneas (360 líneas)
-- **Archivo:** `src\pages\trainer\dashboard.astro`:360
-- **Descripción:** El archivo tiene 360 líneas, violando Golden Rule #9 (máximo 300).
+#### QUAL-055: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\pages\trainer\diets.astro`:192
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-056: Archivo > 300 líneas (342 líneas)
+- **Archivo:** `src\pages\trainer\workouts.astro`:342
+- **Descripción:** El archivo tiene 342 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-052: Archivo > 300 líneas (396 líneas)
+#### QUAL-057: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\pages\trainer\workouts.astro`:152
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-058: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\pages\trainer\workouts.astro`:319
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-059: Archivo > 300 líneas (396 líneas)
 - **Archivo:** `src\stores\themeStore.ts`:396
 - **Descripción:** El archivo tiene 396 líneas, violando Golden Rule #9 (máximo 300).
 - **Recomendación:** Refactorizar en componentes/archivos más pequeños
 
-#### QUAL-053: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\types\index.ts`:13
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-054: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\types\index.ts`:14
-- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
-- **Recomendación:** Crear una interface o usar un tipo específico
-
-#### QUAL-055: Uso de `any` (Golden Rule #1 violada)
+#### QUAL-060: Uso de `any` (Golden Rule #1 violada)
 - **Archivo:** `src\types\index.ts`:15
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-056: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\types\index.ts`:38
+#### QUAL-061: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\types\index.ts`:19
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
-#### QUAL-057: Uso de `any` (Golden Rule #1 violada)
-- **Archivo:** `src\types\index.ts`:63
+#### QUAL-062: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\types\index.ts`:21
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-063: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\types\index.ts`:22
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-064: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\types\index.ts`:23
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-065: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\types\index.ts`:46
+- **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
+- **Recomendación:** Crear una interface o usar un tipo específico
+
+#### QUAL-066: Uso de `any` (Golden Rule #1 violada)
+- **Archivo:** `src\types\index.ts`:71
 - **Descripción:** Tipo `any` detectado. Debe tiparse explícitamente.
 - **Recomendación:** Crear una interface o usar un tipo específico
 
 ### 🟢 BAJO (1)
 
-#### QUAL-007: Bloque <style> inline (CSP)
+#### QUAL-008: Bloque <style> inline (CSP)
 - **Archivo:** `src\layouts\BaseLayout.astro`
 - **Descripción:** El bloque <style> inline puede romper la política CSP.
 - **Recomendación:** Mover estilos a archivos CSS externos o usar Tailwind
@@ -351,7 +418,7 @@
 
 ## 🤖 Performance (audit-performance)
 
-**Archivos escaneados:** 66 | **Duración:** 0.04s
+**Archivos escaneados:** 74 | **Duración:** 0.03s
 
 ### 🟡 MEDIO (5)
 
@@ -366,17 +433,17 @@
 - **Recomendación:** Reemplazar con firestore().collection().count().get()
 
 #### PERF-003: onSnapshot sin unsubscribe visible
-- **Archivo:** `src\lib\client\dietService.ts`:166
+- **Archivo:** `src\lib\client\dietService.ts`:169
 - **Descripción:** Suscripción onSnapshot sin unsubscribe explícito puede causar memory leaks.
 - **Recomendación:** Guardar el return de onSnapshot y llamar unsubscribe en cleanup
 
 #### PERF-004: onSnapshot sin unsubscribe visible
-- **Archivo:** `src\lib\client\workoutService.ts`:47
+- **Archivo:** `src\lib\client\workoutService.ts`:102
 - **Descripción:** Suscripción onSnapshot sin unsubscribe explícito puede causar memory leaks.
 - **Recomendación:** Guardar el return de onSnapshot y llamar unsubscribe en cleanup
 
 #### PERF-005: onSnapshot sin unsubscribe visible
-- **Archivo:** `src\lib\trainer\templateService.ts`:53
+- **Archivo:** `src\lib\trainer\templateService.ts`:84
 - **Descripción:** Suscripción onSnapshot sin unsubscribe explícito puede causar memory leaks.
 - **Recomendación:** Guardar el return de onSnapshot y llamar unsubscribe en cleanup
 
@@ -384,30 +451,80 @@
 
 ## 🤖 UI/UX (audit-uiux)
 
-**Archivos escaneados:** 76 | **Duración:** 0.05s
+**Archivos escaneados:** 77 | **Duración:** 0.04s
 
 ### 🟡 MEDIO (1)
 
-#### UIUX-004: Variables light/dark asimétricas
+#### UIUX-014: Variables light/dark asimétricas
 - **Archivo:** `public/theme-tokens.css`
 - **Descripción:** :root tiene 95 variables, .dark tiene 0. Falta sincronización.
 - **Recomendación:** Sincronizar variables entre light y dark mode
 
-### 🟢 BAJO (3)
+### 🟢 BAJO (13)
 
 #### UIUX-001: Color hardcodeado: text-gray-500
-- **Archivo:** `src\pages\admin\devtools.astro`:162
+- **Archivo:** `src\pages\admin\devtools.astro`:45
 - **Descripción:** Usa text-gray-* en lugar de tokens del theme system.
 - **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
 
 #### UIUX-002: Color hardcodeado: text-gray-300
-- **Archivo:** `src\pages\admin\devtools.astro`:208
+- **Archivo:** `src\pages\admin\devtools.astro`:53
 - **Descripción:** Usa text-gray-* en lugar de tokens del theme system.
 - **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
 
 #### UIUX-003: Color hardcodeado: text-gray-500
-- **Archivo:** `src\pages\admin\devtools.astro`:318
+- **Archivo:** `src\pages\admin\devtools.astro`:62
 - **Descripción:** Usa text-gray-* en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-004: Color hardcodeado: #4285F4
+- **Archivo:** `src\pages\login.astro`:35
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-005: Color hardcodeado: #34A853
+- **Archivo:** `src\pages\login.astro`:36
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-006: Color hardcodeado: #FBBC05
+- **Archivo:** `src\pages\login.astro`:37
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-007: Color hardcodeado: #EA4335
+- **Archivo:** `src\pages\login.astro`:38
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-008: Color hardcodeado: #4285F4
+- **Archivo:** `src\pages\login.astro`:290
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-009: Color hardcodeado: #34A853
+- **Archivo:** `src\pages\login.astro`:291
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-010: Color hardcodeado: #FBBC05
+- **Archivo:** `src\pages\login.astro`:292
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-011: Color hardcodeado: #EA4335
+- **Archivo:** `src\pages\login.astro`:293
+- **Descripción:** Usa hex color en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-012: Color hardcodeado: bg-zinc-500
+- **Archivo:** `src\pages\trainer\chat.astro`:196
+- **Descripción:** Usa bg-zinc-* en lugar de tokens del theme system.
+- **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
+
+#### UIUX-013: Color hardcodeado: text-zinc-300
+- **Archivo:** `src\pages\trainer\chat.astro`:196
+- **Descripción:** Usa text-zinc-* en lugar de tokens del theme system.
 - **Recomendación:** Usar clases del theme system (bg-surface, text-content, etc.)
 
 ---
@@ -483,7 +600,7 @@
 - **Descripción:** Test placeholder sin aserción real.
 - **Recomendación:** Reemplazar con aserciones reales sobre el comportamiento
 
-### 🟢 BAJO (142)
+### 🟢 BAJO (155)
 
 #### TEST-002: Test saltado (.skip)
 - **Archivo:** `tests\integration\auth.flow.test.ts`:22
@@ -765,433 +882,498 @@
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-070: Test sin aserciones: should add a message document to Firesto
-- **Archivo:** `tests\unit\lib\shared\chat.test.ts`:191
+#### TEST-070: Test sin aserciones: should query and update unread messages 
+- **Archivo:** `tests\unit\lib\shared\chat.test.ts`:156
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-071: Test sin aserciones: should trim content before sending
-- **Archivo:** `tests\unit\lib\shared\chat.test.ts`:209
+#### TEST-071: Test sin aserciones: should add a message document to Firesto
+- **Archivo:** `tests\unit\lib\shared\chat.test.ts`:264
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-072: Test sin aserciones: debe funcionar con admin
+#### TEST-072: Test sin aserciones: should trim content before sending
+- **Archivo:** `tests\unit\lib\shared\chat.test.ts`:282
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-073: Test sin aserciones: debe funcionar con admin
 - **Archivo:** `tests\unit\lib\shared\initPage.test.ts`:31
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-073: Test sin aserciones: debe redirigir si rol no está en allowed
+#### TEST-074: Test sin aserciones: debe redirigir si rol no está en allowed
 - **Archivo:** `tests\unit\lib\shared\initPage.test.ts`:40
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-074: Test sin aserciones: debería renderizar la vista de perfil si
+#### TEST-075: Test sin aserciones: debería renderizar la vista de perfil si
 - **Archivo:** `tests\unit\lib\shared\settingsService.test.ts`:63
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-075: Test sin aserciones: debería enviar el formulario de perfil c
+#### TEST-076: Test sin aserciones: debería enviar el formulario de perfil c
 - **Archivo:** `tests\unit\lib\shared\settingsService.test.ts`:102
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-076: Test sin aserciones: debería mostrar error si el nombre está 
+#### TEST-077: Test sin aserciones: debería mostrar error si el nombre está 
 - **Archivo:** `tests\unit\lib\shared\settingsService.test.ts`:143
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-077: Test sin aserciones: debería cambiar la contraseña correctame
+#### TEST-078: Test sin aserciones: debería cambiar la contraseña correctame
 - **Archivo:** `tests\unit\lib\shared\settingsService.test.ts`:167
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-078: Test sin aserciones: debería mostrar error si las contraseñas
+#### TEST-079: Test sin aserciones: debería mostrar error si las contraseñas
 - **Archivo:** `tests\unit\lib\shared\settingsService.test.ts`:195
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-079: Test sin aserciones: debería llamar al callback cuando el usu
+#### TEST-080: Test sin aserciones: ✅ debería clonar dieta para cliente asig
+- **Archivo:** `tests\unit\lib\trainer\templateService.test.ts`:60
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-081: Test sin aserciones: ❌ debería lanzar error si el cliente NO 
+- **Archivo:** `tests\unit\lib\trainer\templateService.test.ts`:97
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-082: Test sin aserciones: ❌ debería lanzar error si el cliente no 
+- **Archivo:** `tests\unit\lib\trainer\templateService.test.ts`:115
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-083: Test sin aserciones: ❌ debería lanzar error si la plantilla n
+- **Archivo:** `tests\unit\lib\trainer\templateService.test.ts`:133
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-084: Test sin aserciones: ✅ debería clonar rutina para cliente asi
+- **Archivo:** `tests\unit\lib\trainer\templateService.test.ts`:158
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-085: Test sin aserciones: ❌ debería lanzar error si el cliente NO 
+- **Archivo:** `tests\unit\lib\trainer\templateService.test.ts`:194
+- **Descripción:** Test sin llamadas a expect() o assert().
+- **Recomendación:** Agregar aserciones que validen el comportamiento
+
+#### TEST-086: Test sin aserciones: debería llamar al callback cuando el usu
 - **Archivo:** `tests\unit\lib\trainer\trainerAuth.test.ts`:47
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-080: Test sin aserciones: debería cerrar sesión y redirigir a /log
+#### TEST-087: Test sin aserciones: debería cerrar sesión y redirigir a /log
 - **Archivo:** `tests\unit\lib\trainer\trainerAuth.test.ts`:67
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-081: Test sin aserciones: debería manejar errores al cerrar sesión
+#### TEST-088: Test sin aserciones: debería manejar errores al cerrar sesión
 - **Archivo:** `tests\unit\lib\trainer\trainerAuth.test.ts`:77
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-082: Test sin aserciones: debería suscribirse a las conversaciones
+#### TEST-089: Test sin aserciones: debería suscribirse a las conversaciones
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:92
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-083: Test sin aserciones: debería filtrar mensajes entre dos usuar
+#### TEST-090: Test sin aserciones: debería filtrar mensajes entre dos usuar
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:118
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-084: Test sin aserciones: debería enviar un mensaje de texto
+#### TEST-091: Test sin aserciones: debería enviar un mensaje de texto
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:141
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-085: Test sin aserciones: debería enviar un mensaje de alerta
+#### TEST-092: Test sin aserciones: debería enviar un mensaje de alerta
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:160
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-086: Test sin aserciones: debería retornar null si falla el envío
+#### TEST-093: Test sin aserciones: debería retornar null si falla el envío
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:169
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-087: Test sin aserciones: debería marcar un mensaje como leído
+#### TEST-094: Test sin aserciones: debería marcar un mensaje como leído
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:180
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-088: Test sin aserciones: debería retornar false si falla
+#### TEST-095: Test sin aserciones: debería retornar false si falla
 - **Archivo:** `tests\unit\lib\trainer\trainerChat.test.ts`:193
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-089: Test sin aserciones: debería suscribirse a los clientes de un
+#### TEST-096: Test sin aserciones: debería suscribirse a los clientes de un
 - **Archivo:** `tests\unit\lib\trainer\trainerClients.test.ts`:92
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-090: Test sin aserciones: debería manejar errores de suscripción
+#### TEST-097: Test sin aserciones: debería manejar errores de suscripción
 - **Archivo:** `tests\unit\lib\trainer\trainerClients.test.ts`:136
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-091: Test sin aserciones: debería retornar el perfil del cliente
+#### TEST-098: Test sin aserciones: debería retornar el perfil del cliente
 - **Archivo:** `tests\unit\lib\trainer\trainerClients.test.ts`:152
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-092: Test sin aserciones: debería retornar null si el cliente no e
+#### TEST-099: Test sin aserciones: debería retornar null si el cliente no e
 - **Archivo:** `tests\unit\lib\trainer\trainerClients.test.ts`:174
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-093: Test sin aserciones: debería retornar null si falla la consul
+#### TEST-100: Test sin aserciones: debería retornar null si falla la consul
 - **Archivo:** `tests\unit\lib\trainer\trainerClients.test.ts`:187
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-094: Test sin aserciones: debería suscribirse a las dietas del ent
+#### TEST-101: Test sin aserciones: debería suscribirse a las dietas del ent
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:103
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-095: Test sin aserciones: debería suscribirse a las dietas de un c
+#### TEST-102: Test sin aserciones: debería suscribirse a las dietas de un c
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:121
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-096: Test sin aserciones: debería crear una dieta exitosamente
+#### TEST-103: Test sin aserciones: debería crear una dieta exitosamente
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:137
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-097: Test sin aserciones: debería retornar null si falla la creaci
+#### TEST-104: Test sin aserciones: debería retornar null si falla la creaci
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:146
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-098: Test sin aserciones: debería actualizar una dieta exitosament
+#### TEST-105: Test sin aserciones: debería actualizar una dieta exitosament
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:157
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-099: Test sin aserciones: debería retornar false si falla
+#### TEST-106: Test sin aserciones: debería retornar false si falla
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:166
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-100: Test sin aserciones: debería eliminar una dieta exitosamente
+#### TEST-107: Test sin aserciones: debería eliminar una dieta exitosamente
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:177
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-101: Test sin aserciones: debería retornar false si falla
+#### TEST-108: Test sin aserciones: debería retornar false si falla
 - **Archivo:** `tests\unit\lib\trainer\trainerDiets.test.ts`:186
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-102: Test sin aserciones: debería establecer __trainerId en window
+#### TEST-109: Test sin aserciones: debería establecer __trainerId en window
 - **Archivo:** `tests\unit\lib\trainer\trainerInit.test.ts`:16
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-103: Test sin aserciones: debería suscribirse al progreso de un cl
+#### TEST-110: Test sin aserciones: debería suscribirse al progreso de un cl
 - **Archivo:** `tests\unit\lib\trainer\trainerProgress.test.ts`:92
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-104: Test sin aserciones: debería manejar errores de suscripción
+#### TEST-111: Test sin aserciones: debería manejar errores de suscripción
 - **Archivo:** `tests\unit\lib\trainer\trainerProgress.test.ts`:136
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-105: Test sin aserciones: debería renderizar una tarjeta de client
+#### TEST-112: Test sin aserciones: debería renderizar una tarjeta de client
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:66
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-106: Test sin aserciones: debería incluir onclick si se proporcion
+#### TEST-113: Test sin aserciones: debería incluir onclick si se proporcion
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:75
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-107: Test sin aserciones: debería mostrar badge de alerta activa
+#### TEST-114: Test sin aserciones: debería mostrar badge de alerta activa
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:83
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-108: Test sin aserciones: debería mostrar badge de admin si el rol
+#### TEST-115: Test sin aserciones: debería mostrar badge de admin si el rol
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:91
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-109: Test sin aserciones: debería renderizar una tarjeta de rutina
+#### TEST-116: Test sin aserciones: debería renderizar una tarjeta de rutina
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:101
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-110: Test sin aserciones: debería mostrar la descripción truncada
+#### TEST-117: Test sin aserciones: debería mostrar la descripción truncada
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:110
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-111: Test sin aserciones: debería renderizar una tarjeta de dieta
+#### TEST-118: Test sin aserciones: debería renderizar una tarjeta de dieta
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:119
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-112: Test sin aserciones: debería renderizar un mensaje propio (al
+#### TEST-119: Test sin aserciones: debería renderizar un mensaje propio (al
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:131
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-113: Test sin aserciones: debería renderizar un mensaje de otro (a
+#### TEST-120: Test sin aserciones: debería renderizar un mensaje de otro (a
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:141
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-114: Test sin aserciones: debería mostrar badge de alerta para men
+#### TEST-121: Test sin aserciones: debería mostrar badge de alerta para men
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:150
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-115: Test sin aserciones: no debería mostrar nombre del remitente 
+#### TEST-122: Test sin aserciones: no debería mostrar nombre del remitente 
 - **Archivo:** `tests\unit\lib\trainer\trainerRender.test.ts`:163
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-116: Test sin aserciones: debería suscribirse a las rutinas del en
+#### TEST-123: Test sin aserciones: debería suscribirse a las rutinas del en
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:103
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-117: Test sin aserciones: debería suscribirse a las rutinas de un 
+#### TEST-124: Test sin aserciones: debería suscribirse a las rutinas de un 
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:128
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-118: Test sin aserciones: debería crear una rutina exitosamente
+#### TEST-125: Test sin aserciones: debería crear una rutina exitosamente
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:144
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-119: Test sin aserciones: debería retornar null si falla la creaci
+#### TEST-126: Test sin aserciones: debería retornar null si falla la creaci
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:154
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-120: Test sin aserciones: debería actualizar una rutina exitosamen
+#### TEST-127: Test sin aserciones: debería actualizar una rutina exitosamen
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:165
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-121: Test sin aserciones: debería retornar false si falla la actua
+#### TEST-128: Test sin aserciones: debería retornar false si falla la actua
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:174
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-122: Test sin aserciones: debería eliminar una rutina exitosamente
+#### TEST-129: Test sin aserciones: debería eliminar una rutina exitosamente
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:185
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-123: Test sin aserciones: debería retornar false si falla la elimi
+#### TEST-130: Test sin aserciones: debería retornar false si falla la elimi
 - **Archivo:** `tests\unit\lib\trainer\trainerWorkouts.test.ts`:194
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-124: Test sin aserciones: ✅ should return all users with correct s
+#### TEST-131: Test sin aserciones: ✅ should return all users with correct s
 - **Archivo:** `tests\unit\services\adminService.test.ts`:92
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-125: Test sin aserciones: ✅ should handle missing fields gracefull
+#### TEST-132: Test sin aserciones: ✅ should handle missing fields gracefull
 - **Archivo:** `tests\unit\services\adminService.test.ts`:108
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-126: Test sin aserciones: ✅ should return empty array when no user
+#### TEST-133: Test sin aserciones: ✅ should return empty array when no user
 - **Archivo:** `tests\unit\services\adminService.test.ts`:127
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-127: Test sin aserciones: ✅ should filter users by role
+#### TEST-134: Test sin aserciones: ✅ should filter users by role
 - **Archivo:** `tests\unit\services\adminService.test.ts`:143
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-128: Test sin aserciones: ✅ should return empty array when no user
+#### TEST-135: Test sin aserciones: ✅ should return empty array when no user
 - **Archivo:** `tests\unit\services\adminService.test.ts`:156
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-129: Test sin aserciones: ✅ should calculate correct stats from us
+#### TEST-136: Test sin aserciones: ✅ should calculate correct stats from us
 - **Archivo:** `tests\unit\services\adminService.test.ts`:218
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-130: Test sin aserciones: ✅ should return zeros when no users exis
+#### TEST-137: Test sin aserciones: ✅ should return zeros when no users exis
 - **Archivo:** `tests\unit\services\adminService.test.ts`:237
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-131: Test sin aserciones: ✅ should return user data on successful 
+#### TEST-138: Test sin aserciones: ✅ should return user data on successful 
 - **Archivo:** `tests\unit\services\authService.test.ts`:104
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-132: Test sin aserciones: ⚠️ should throw if user profile not foun
+#### TEST-139: Test sin aserciones: ⚠️ should auto-create profile if user pr
 - **Archivo:** `tests\unit\services\authService.test.ts`:137
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-133: Test sin aserciones: ✅ should create user in Firebase Auth an
+#### TEST-140: Test sin aserciones: ✅ should create user in Firebase Auth an
 - **Archivo:** `tests\unit\services\authService.test.ts`:163
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-134: Test sin aserciones: ✅ should login with Google and return ex
+#### TEST-141: Test sin aserciones: ✅ should login with Google and return ex
 - **Archivo:** `tests\unit\services\authService.test.ts`:246
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-135: Test sin aserciones: ✅ should create new profile if user does
+#### TEST-142: Test sin aserciones: ✅ should create new profile if user does
 - **Archivo:** `tests\unit\services\authService.test.ts`:264
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-136: Test sin aserciones: ✅ should load profile successfully
+#### TEST-143: Test sin aserciones: ✅ should load profile successfully
 - **Archivo:** `tests\unit\services\profileService.test.ts`:137
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-137: Test sin aserciones: ✅ should load profile with assigned trai
+#### TEST-144: Test sin aserciones: ✅ should load profile with assigned trai
 - **Archivo:** `tests\unit\services\profileService.test.ts`:161
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-138: Test sin aserciones: ✅ should return null when document does 
+#### TEST-145: Test sin aserciones: ✅ should return null when document does 
 - **Archivo:** `tests\unit\services\profileService.test.ts`:190
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-139: Test sin aserciones: ✅ should update profile successfully
+#### TEST-146: Test sin aserciones: ✅ should update profile successfully
 - **Archivo:** `tests\unit\services\profileService.test.ts`:211
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-140: Test sin aserciones: ⚠️ should return error result on Firesto
+#### TEST-147: Test sin aserciones: ⚠️ should return error result on Firesto
 - **Archivo:** `tests\unit\services\profileService.test.ts`:226
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-141: Test sin aserciones: ✅ should change password successfully
+#### TEST-148: Test sin aserciones: ✅ should change password successfully
 - **Archivo:** `tests\unit\services\profileService.test.ts`:257
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-142: Test sin aserciones: ⚠️ should return error result on auth er
+#### TEST-149: Test sin aserciones: ⚠️ should return error result on auth er
 - **Archivo:** `tests\unit\services\profileService.test.ts`:267
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-143: Test sin aserciones: todas las keys en es deben existir en en
+#### TEST-150: Test sin aserciones: todas las keys en es deben existir en en
 - **Archivo:** `tests\unit\utils\translations.test.ts`:233
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-144: Test sin aserciones: todas las keys en en deben existir en es
+#### TEST-151: Test sin aserciones: todas las keys en en deben existir en es
 - **Archivo:** `tests\unit\utils\translations.test.ts`:241
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-145: Test sin aserciones: todas las keys en es deben existir en en
+#### TEST-152: Test sin aserciones: todas las keys en es deben existir en en
 - **Archivo:** `tests\unit\utils\translations.test.ts`:249
 - **Descripción:** Test sin llamadas a expect() o assert().
 - **Recomendación:** Agregar aserciones que validen el comportamiento
 
-#### TEST-146: Archivo sin test: src\lib\admin\adminTranslations.ts
+#### TEST-153: Archivo sin test: src\lib\admin\adminTranslations.ts
 - **Archivo:** `src\lib\admin\adminTranslations.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-147: Archivo sin test: src\lib\auth\sessionHelper.ts
+#### TEST-154: Archivo sin test: src\lib\auth\sessionHelper.ts
 - **Archivo:** `src\lib\auth\sessionHelper.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-148: Archivo sin test: src\lib\auth\userWatcher.ts
+#### TEST-155: Archivo sin test: src\lib\auth\userWatcher.ts
 - **Archivo:** `src\lib\auth\userWatcher.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-149: Archivo sin test: src\lib\client\achievementsService.ts
+#### TEST-156: Archivo sin test: src\lib\client\achievementsService.ts
 - **Archivo:** `src\lib\client\achievementsService.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-150: Archivo sin test: src\lib\client\adherenceService.ts
+#### TEST-157: Archivo sin test: src\lib\client\adherenceService.ts
 - **Archivo:** `src\lib\client\adherenceService.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-151: Archivo sin test: src\lib\client\animations.ts
+#### TEST-158: Archivo sin test: src\lib\client\animations.ts
 - **Archivo:** `src\lib\client\animations.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-152: Archivo sin test: src\lib\client\intoleranceChecker.ts
+#### TEST-159: Archivo sin test: src\lib\client\intoleranceChecker.ts
 - **Archivo:** `src\lib\client\intoleranceChecker.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-153: Archivo sin test: src\lib\client\onboardingService.ts
+#### TEST-160: Archivo sin test: src\lib\client\onboardingService.ts
 - **Archivo:** `src\lib\client\onboardingService.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-154: Archivo sin test: src\lib\client\supportService.ts
+#### TEST-161: Archivo sin test: src\lib\client\supportService.ts
 - **Archivo:** `src\lib\client\supportService.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
-#### TEST-155: Archivo sin test: src\lib\devtools\seedData.ts
+#### TEST-162: Archivo sin test: src\lib\devtools\autofillers.ts
+- **Archivo:** `src\lib\devtools\autofillers.ts`
+- **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
+- **Recomendación:** Crear test file en tests/unit/ con la misma estructura
+
+#### TEST-163: Archivo sin test: src\lib\devtools\detector.ts
+- **Archivo:** `src\lib\devtools\detector.ts`
+- **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
+- **Recomendación:** Crear test file en tests/unit/ con la misma estructura
+
+#### TEST-164: Archivo sin test: src\lib\devtools\logStore.ts
+- **Archivo:** `src\lib\devtools\logStore.ts`
+- **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
+- **Recomendación:** Crear test file en tests/unit/ con la misma estructura
+
+#### TEST-165: Archivo sin test: src\lib\devtools\panel.ts
+- **Archivo:** `src\lib\devtools\panel.ts`
+- **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
+- **Recomendación:** Crear test file en tests/unit/ con la misma estructura
+
+#### TEST-166: Archivo sin test: src\lib\devtools\seedData.ts
 - **Archivo:** `src\lib\devtools\seedData.ts`
+- **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
+- **Recomendación:** Crear test file en tests/unit/ con la misma estructura
+
+#### TEST-167: Archivo sin test: src\lib\i18n\server.ts
+- **Archivo:** `src\lib\i18n\server.ts`
+- **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
+- **Recomendación:** Crear test file en tests/unit/ con la misma estructura
+
+#### TEST-168: Archivo sin test: src\lib\storage\r2Service.ts
+- **Archivo:** `src\lib\storage\r2Service.ts`
 - **Descripción:** Archivo de código fuente sin archivo de test correspondiente.
 - **Recomendación:** Crear test file en tests/unit/ con la misma estructura
 
@@ -1201,7 +1383,7 @@
 
 **Archivos escaneados:** 36 | **Duración:** 0.02s
 
-### 🟢 BAJO (61)
+### 🟢 BAJO (17)
 
 #### I18N-001: Texto hardcodeado: "No hay conversaciones..."
 - **Archivo:** `src\pages\admin\chat.astro`:81
@@ -1213,298 +1395,78 @@
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-003: Texto hardcodeado: "Usuarios bloqueados..."
-- **Archivo:** `src\pages\admin\dashboard.astro`:131
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-004: Texto hardcodeado: "Alertas activas..."
-- **Archivo:** `src\pages\admin\dashboard.astro`:209
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-005: Texto hardcodeado: "No hay alertas activas..."
-- **Archivo:** `src\pages\admin\dashboard.astro`:308
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-006: Texto hardcodeado: "Alerta activa..."
-- **Archivo:** `src\pages\admin\dashboard.astro`:325
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-007: Texto hardcodeado: "Principiante..."
-- **Archivo:** `src\pages\admin\devtools.astro`:140
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-008: Texto hardcodeado: "No hay dietas registradas..."
+#### I18N-003: Texto hardcodeado: "No hay dietas registradas..."
 - **Archivo:** `src\pages\admin\diets.astro`:103
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-009: Texto hardcodeado: "No hay datos de progreso..."
+#### I18N-004: Texto hardcodeado: "No hay datos de progreso..."
 - **Archivo:** `src\pages\admin\progress.astro`:100
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-010: Texto hardcodeado: "Los clientes aún no han registrado datos..."
+#### I18N-005: Texto hardcodeado: "Los clientes aún no han registrado datos..."
 - **Archivo:** `src\pages\admin\progress.astro`:101
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-011: Texto hardcodeado: "Cargando perfil médico......"
-- **Archivo:** `src\pages\admin\users.astro`:310
+#### I18N-006: Texto hardcodeado: "Usuario no encontrado..."
+- **Archivo:** `src\pages\admin\users.astro`:655
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-012: Texto hardcodeado: "Usuario no encontrado..."
-- **Archivo:** `src\pages\admin\users.astro`:656
+#### I18N-007: Texto hardcodeado: "Este cliente no ha completado su perfil ..."
+- **Archivo:** `src\pages\admin\users.astro`:665
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-013: Texto hardcodeado: "Este cliente no ha completado su perfil ..."
-- **Archivo:** `src\pages\admin\users.astro`:666
+#### I18N-008: Texto hardcodeado: "No hay alertas médicas registradas..."
+- **Archivo:** `src\pages\admin\users.astro`:727
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-014: Texto hardcodeado: "No hay alertas médicas registradas..."
-- **Archivo:** `src\pages\admin\users.astro`:728
+#### I18N-009: Texto hardcodeado: "Error al cargar el perfil médico..."
+- **Archivo:** `src\pages\admin\users.astro`:736
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-015: Texto hardcodeado: "Error al cargar el perfil médico..."
-- **Archivo:** `src\pages\admin\users.astro`:737
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-016: Texto hardcodeado: "No hay rutinas registradas..."
+#### I18N-010: Texto hardcodeado: "No hay rutinas registradas..."
 - **Archivo:** `src\pages\admin\workouts.astro`:100
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-017: Texto hardcodeado: "Los entrenadores aún no han creado rutin..."
+#### I18N-011: Texto hardcodeado: "Los entrenadores aún no han creado rutin..."
 - **Archivo:** `src\pages\admin\workouts.astro`:101
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-018: Texto hardcodeado: "Chat con tu entrenador..."
-- **Archivo:** `src\pages\client\chat.astro`:27
+#### I18N-012: Texto hardcodeado: "Próximamente..."
+- **Archivo:** `src\pages\client\progress.astro`:112
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-019: Texto hardcodeado: "Disponible en horario de atencion..."
-- **Archivo:** `src\pages\client\chat.astro`:28
+#### I18N-013: Texto hardcodeado: "Tus datos personales y médicos se almace..."
+- **Archivo:** `src\pages\terms.astro`:20
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-020: Texto hardcodeado: "Cargando mensajes......"
-- **Archivo:** `src\pages\client\chat.astro`:36
+#### I18N-014: Texto hardcodeado: "Sin conversaciones aún..."
+- **Archivo:** `src\pages\trainer\chat.astro`:333
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-021: Texto hardcodeado: "Progreso del día..."
-- **Archivo:** `src\pages\client\diets.astro`:38
+#### I18N-015: Texto hardcodeado: "Sin resultados para el filtro selecciona..."
+- **Archivo:** `src\pages\trainer\chat.astro`:341
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-022: Texto hardcodeado: "Totales del día..."
-- **Archivo:** `src\pages\client\diets.astro`:65
+#### I18N-016: Texto hardcodeado: "No se encontraron contactos..."
+- **Archivo:** `src\pages\trainer\chat.astro`:396
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
-#### I18N-023: Texto hardcodeado: "Historial de dietas..."
-- **Archivo:** `src\pages\client\diets.astro`:78
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-024: Texto hardcodeado: "No hay dietas en el historial..."
-- **Archivo:** `src\pages\client\diets.astro`:357
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-025: Texto hardcodeado: "Desconocido..."
-- **Archivo:** `src\pages\client\medical-profile.astro`:91
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-026: Texto hardcodeado: "Historial médico..."
-- **Archivo:** `src\pages\client\medical-profile.astro`:107
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-027: Texto hardcodeado: "Contacto de emergencia..."
-- **Archivo:** `src\pages\client\medical-profile.astro`:159
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-028: Texto hardcodeado: "Registrar peso..."
-- **Archivo:** `src\pages\client\progress.astro`:51
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-029: Texto hardcodeado: "Sin registros de peso aún...."
-- **Archivo:** `src\pages\client\progress.astro`:78
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-030: Texto hardcodeado: "Próximamente..."
-- **Archivo:** `src\pages\client\progress.astro`:109
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-031: Texto hardcodeado: "Revisa tu correo para restablecer tu con..."
-- **Archivo:** `src\pages\recover.astro`:54
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-032: Texto hardcodeado: "Cargando......"
-- **Archivo:** `src\pages\trainer\chat.astro`:38
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-033: Texto hardcodeado: "Selecciona un chat..."
-- **Archivo:** `src\pages\trainer\chat.astro`:62
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-034: Texto hardcodeado: "Inicia una conversación..."
-- **Archivo:** `src\pages\trainer\chat.astro`:63
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-035: Texto hardcodeado: "Sin conversaciones aún..."
-- **Archivo:** `src\pages\trainer\chat.astro`:283
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-036: Texto hardcodeado: "Los mensajes aparecerán aquí..."
-- **Archivo:** `src\pages\trainer\chat.astro`:284
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-037: Texto hardcodeado: "Sin resultados..."
-- **Archivo:** `src\pages\trainer\chat.astro`:298
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-038: Texto hardcodeado: "Cargando......"
-- **Archivo:** `src\pages\trainer\clients.astro`:216
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-039: Texto hardcodeado: "Crear rutina..."
-- **Archivo:** `src\pages\trainer\clients.astro`:225
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-040: Texto hardcodeado: "Cargando......"
-- **Archivo:** `src\pages\trainer\clients.astro`:233
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-041: Texto hardcodeado: "Crear dieta..."
-- **Archivo:** `src\pages\trainer\clients.astro`:242
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-042: Texto hardcodeado: "Cargando......"
-- **Archivo:** `src\pages\trainer\clients.astro`:250
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-043: Texto hardcodeado: "Cargando......"
-- **Archivo:** `src\pages\trainer\clients.astro`:264
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-044: Texto hardcodeado: "Condiciones..."
-- **Archivo:** `src\pages\trainer\clients.astro`:309
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-045: Texto hardcodeado: "No especificados..."
-- **Archivo:** `src\pages\trainer\clients.astro`:314
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-046: Texto hardcodeado: "Experiencia..."
-- **Archivo:** `src\pages\trainer\clients.astro`:317
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-047: Texto hardcodeado: "Error al cargar perfil..."
-- **Archivo:** `src\pages\trainer\clients.astro`:330
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-048: Texto hardcodeado: "Sin registros de progreso..."
-- **Archivo:** `src\pages\trainer\clients.astro`:358
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-049: Texto hardcodeado: "Sin alertas activas..."
-- **Archivo:** `src\pages\trainer\dashboard.astro`:276
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-050: Texto hardcodeado: "Eliminar dieta..."
-- **Archivo:** `src\pages\trainer\diets.astro`:176
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-051: Texto hardcodeado: "Diseña el plan de alimentación y desglos..."
-- **Archivo:** `src\pages\trainer\diets.astro`:290
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-052: Texto hardcodeado: "Añade platos, ingredientes y desglose nu..."
-- **Archivo:** `src\pages\trainer\diets.astro`:343
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-053: Texto hardcodeado: "Eliminar rutina..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:179
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-054: Texto hardcodeado: "Nombre de la rutina..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:298
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-055: Texto hardcodeado: "El nombre es obligatorio..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:300
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-056: Texto hardcodeado: "Seleccionar cliente..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:305
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-057: Texto hardcodeado: "Debes seleccionar un cliente..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:308
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-058: Texto hardcodeado: "Personalizado..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:319
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-059: Texto hardcodeado: "Descripción..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:331
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-060: Texto hardcodeado: "Ejercicios..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:338
-- **Descripción:** Texto en español directamente en HTML sin usar i18n.
-- **Recomendación:** Usar getT() y agregar clave a translations.ts
-
-#### I18N-061: Texto hardcodeado: "No hay ejercicios agregados..."
-- **Archivo:** `src\pages\trainer\workouts.astro`:349
+#### I18N-017: Texto hardcodeado: "Personalizada..."
+- **Archivo:** `src\pages\trainer\diets.astro`:395
 - **Descripción:** Texto en español directamente en HTML sin usar i18n.
 - **Recomendación:** Usar getT() y agregar clave a translations.ts
 
@@ -1518,34 +1480,34 @@
 | 2 | SEC-002 | 🔴 CRITICAL | Ruta no protegida: /client/support | `src/lib/routeGuards.ts` | audit-security |
 | 3 | SEC-003 | 🔴 CRITICAL | Ruta no protegida: /client/settings | `src/lib/routeGuards.ts` | audit-security |
 | 4 | QUAL-001 | 🔴 CRITICAL | Archivo > 300 líneas (591 líneas) | `src\components\settings\UnifiedSettingsView.astro` | audit-quality |
-| 5 | QUAL-003 | 🔴 CRITICAL | Archivo > 300 líneas (503 líneas) | `src\i18n\locales\ca.ts` | audit-quality |
-| 6 | QUAL-004 | 🔴 CRITICAL | Archivo > 300 líneas (580 líneas) | `src\i18n\locales\en.ts` | audit-quality |
-| 7 | QUAL-005 | 🔴 CRITICAL | Archivo > 300 líneas (580 líneas) | `src\i18n\locales\es.ts` | audit-quality |
-| 8 | QUAL-006 | 🔴 CRITICAL | Archivo > 300 líneas (757 líneas) | `src\layouts\BaseLayout.astro` | audit-quality |
-| 9 | QUAL-019 | 🔴 CRITICAL | Archivo > 300 líneas (924 líneas) | `src\lib\devtools\seedData.ts` | audit-quality |
-| 10 | QUAL-033 | 🔴 CRITICAL | Archivo > 300 líneas (823 líneas) | `src\pages\admin\users.astro` | audit-quality |
-| 11 | QUAL-050 | 🔴 CRITICAL | Archivo > 300 líneas (583 líneas) | `src\pages\trainer\diets.astro` | audit-quality |
-| 12 | QUAL-051 | 🔴 CRITICAL | Archivo > 300 líneas (530 líneas) | `src\pages\trainer\workouts.astro` | audit-quality |
-| 13 | QUAL-002 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\components\settings\UnifiedSettingsView.astro` | audit-quality |
-| 14 | QUAL-008 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\achievementsService.ts` | audit-quality |
-| 15 | QUAL-009 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\adherenceService.ts` | audit-quality |
-| 16 | QUAL-010 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\adherenceService.ts` | audit-quality |
-| 17 | QUAL-011 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\adherenceService.ts` | audit-quality |
-| 18 | QUAL-012 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\adherenceService.ts` | audit-quality |
-| 19 | QUAL-013 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\clientInit.ts` | audit-quality |
-| 20 | QUAL-014 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\clientInit.ts` | audit-quality |
-| 21 | QUAL-015 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\debug\debugDataLogger.ts` | audit-quality |
-| 22 | QUAL-016 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\debug\debugDataLogger.ts` | audit-quality |
-| 23 | QUAL-017 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\debug\debugDataLogger.ts` | audit-quality |
-| 24 | QUAL-018 | 🟡 MEDIUM | Archivo > 300 líneas (485 líneas) | `src\lib\debug\firestoreDebug.ts` | audit-quality |
-| 25 | QUAL-020 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\notifications\notificationService.ts` | audit-quality |
-| 26 | QUAL-021 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\notifications\notificationService.ts` | audit-quality |
-| 27 | QUAL-022 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\shared\chat.ts` | audit-quality |
-| 28 | QUAL-023 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\shared\initPage.ts` | audit-quality |
-| 29 | QUAL-024 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\shared\initPage.ts` | audit-quality |
-| 30 | QUAL-025 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\shared\initPage.ts` | audit-quality |
+| 5 | QUAL-003 | 🔴 CRITICAL | Archivo > 300 líneas (504 líneas) | `src\i18n\locales\ca.ts` | audit-quality |
+| 6 | QUAL-004 | 🔴 CRITICAL | Archivo > 300 líneas (752 líneas) | `src\i18n\locales\en.ts` | audit-quality |
+| 7 | QUAL-005 | 🔴 CRITICAL | Archivo > 300 líneas (979 líneas) | `src\i18n\locales\es.ts` | audit-quality |
+| 8 | QUAL-006 | 🔴 CRITICAL | Archivo > 300 líneas (771 líneas) | `src\layouts\BaseLayout.astro` | audit-quality |
+| 9 | QUAL-025 | 🔴 CRITICAL | Archivo > 300 líneas (924 líneas) | `src\lib\devtools\seedData.ts` | audit-quality |
+| 10 | QUAL-039 | 🔴 CRITICAL | Archivo > 300 líneas (822 líneas) | `src\pages\admin\users.astro` | audit-quality |
+| 11 | QUAL-047 | 🔴 CRITICAL | Archivo > 300 líneas (678 líneas) | `src\pages\client\diets.astro` | audit-quality |
+| 12 | QUAL-052 | 🔴 CRITICAL | Archivo > 300 líneas (513 líneas) | `src\pages\trainer\chat.astro` | audit-quality |
+| 13 | QUAL-054 | 🔴 CRITICAL | Archivo > 300 líneas (772 líneas) | `src\pages\trainer\diets.astro` | audit-quality |
+| 14 | QUAL-002 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\components\settings\UnifiedSettingsView.astro` | audit-quality |
+| 15 | QUAL-007 | 🟡 MEDIUM | console.error en lugar de logger | `src\layouts\BaseLayout.astro` | audit-quality |
+| 16 | QUAL-009 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\admin\adminSubscriptions.ts` | audit-quality |
+| 17 | QUAL-010 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\admin\adminSubscriptions.ts` | audit-quality |
+| 18 | QUAL-011 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\achievementsService.ts` | audit-quality |
+| 19 | QUAL-012 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\clientInit.ts` | audit-quality |
+| 20 | QUAL-013 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\client\clientInit.ts` | audit-quality |
+| 21 | QUAL-014 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\debug\debugDataLogger.ts` | audit-quality |
+| 22 | QUAL-015 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\debug\debugDataLogger.ts` | audit-quality |
+| 23 | QUAL-016 | 🟡 MEDIUM | Uso de `any` (Golden Rule #1 violada) | `src\lib\debug\debugDataLogger.ts` | audit-quality |
+| 24 | QUAL-017 | 🟡 MEDIUM | Archivo > 300 líneas (485 líneas) | `src\lib\debug\firestoreDebug.ts` | audit-quality |
+| 25 | QUAL-018 | 🟡 MEDIUM | console.warn en lugar de logger | `src\lib\devtools\detector.ts` | audit-quality |
+| 26 | QUAL-019 | 🟡 MEDIUM | console.warn en lugar de logger | `src\lib\devtools\detector.ts` | audit-quality |
+| 27 | QUAL-020 | 🟡 MEDIUM | console.log en lugar de logger | `src\lib\devtools\detector.ts` | audit-quality |
+| 28 | QUAL-021 | 🟡 MEDIUM | console.info en lugar de logger | `src\lib\devtools\logStore.ts` | audit-quality |
+| 29 | QUAL-022 | 🟡 MEDIUM | console.log en lugar de logger | `src\lib\devtools\panel.ts` | audit-quality |
+| 30 | QUAL-023 | 🟡 MEDIUM | console.log en lugar de logger | `src\lib\devtools\panel.ts` | audit-quality |
 
-> ... y 255 más (ver secciones detalladas arriba)
+> ... y 247 más (ver secciones detalladas arriba)
 
 ---
 

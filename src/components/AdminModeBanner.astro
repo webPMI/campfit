@@ -8,12 +8,16 @@ const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
 const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
-<div
-  id="admin-mode-banner"
-  class="hidden fixed top-0 left-0 right-0 z-50 bg-[var(--warning-dim)] border-b border-[var(--warning)] px-4 py-2 text-center text-xs text-[var(--warning)] backdrop-blur-xl"
->
-  <span>{t("admin.interactAsClient")} · </span>
-  <a href="/admin/dashboard" class="font-bold underline hover:text-[var(--warning)] transition-colors">{t("public.nav.dashboard")}</a>
+<div id="admin-mode-banner" class="hidden">
+  <a
+    href="/admin/dashboard"
+    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[11px] font-bold hover:bg-amber-500 hover:text-black transition-all shadow-sm"
+    title={t("admin.interactAsClient")}
+  >
+    <span>🛡️</span>
+    <span data-i18n="admin.mode.preview">{t("admin.mode.preview")}</span>
+    <span class="opacity-75 font-normal hidden sm:inline">| <span data-i18n="admin.mode.return">{t("admin.mode.return")}</span> →</span>
+  </a>
 </div>
 
 <script>
@@ -22,7 +26,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   authService.onAuthChange(async (firebaseUser) => {
     const banner = document.getElementById("admin-mode-banner");
     if (!banner) return;
-    if (!firebaseUser) { banner.classList.add("hidden"); return; }
+    if (!firebaseUser) {
+      banner.classList.add("hidden");
+      return;
+    }
     try {
       const { db } = await import("@/lib/firebase");
       const { doc, getDoc } = await import("firebase/firestore");
@@ -36,6 +43,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       } else {
         banner.classList.add("hidden");
       }
-    } catch { banner.classList.add("hidden"); }
+    } catch {
+      banner.classList.add("hidden");
+    }
   });
 </script>

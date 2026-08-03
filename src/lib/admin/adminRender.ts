@@ -11,7 +11,7 @@ import type { AdminUser } from './types';
 /**
  * Renderiza una fila de usuario en la lista.
  */
-export function renderUserRow(user: AdminUser, onclick?: string): string {
+export function renderUserRow(user: AdminUser, extraActionsOrOnClick?: string): string {
   const name = user.name || 'Sin nombre';
   const email = user.email || '';
   const initial = getUserInitial(name);
@@ -22,9 +22,13 @@ export function renderUserRow(user: AdminUser, onclick?: string): string {
   };
   const roleColor = roleColors[user.role] || 'bg-[var(--surface-3)] text-[var(--text-secondary)] border-[var(--border-default)]';
 
+  const isHtml = extraActionsOrOnClick && extraActionsOrOnClick.trim().startsWith('<');
+  const onClickAttr = extraActionsOrOnClick && !isHtml ? `onclick="${extraActionsOrOnClick}"` : '';
+  const cursorClass = extraActionsOrOnClick && !isHtml ? 'cursor-pointer hover:border-[var(--border-strong)]' : '';
+  const extraHtml = isHtml ? extraActionsOrOnClick : '';
+
   return `
-    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)] ${onclick ? 'cursor-pointer hover:bg-[var(--surface-2)]' : ''}"
-         ${onclick ? `onclick="${onclick}"` : ''}>
+    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)] ${cursorClass}" ${onClickAttr}>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3 min-w-0">
           <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium bg-[var(--surface-3)] text-[var(--text-primary)]">
@@ -40,6 +44,7 @@ export function renderUserRow(user: AdminUser, onclick?: string): string {
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <span class="rounded-full px-2 py-0.5 text-[10px] font-medium border border-opacity-30 ${roleColor}">${user.role}</span>
+          ${extraHtml}
           <svg class="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
@@ -170,45 +175,18 @@ export function renderUserCard(user: AdminUser): string {
 }
 
 /**
- * Renderiza una tarjeta de usuario extendida con botón de editar.
+ * 🚨 CRITICAL: Renderiza una tarjeta de usuario extendida con botón de editar opcional.
+ * @protection Delega en renderUserRow para evitar duplicación de código.
+ * @protection NO ELIMINAR el parámetro showEdit - Es usado por admin/users.astro para mostrar/ocultar el botón de editar.
  */
 export function renderUserCardExtended(user: AdminUser, showEdit: boolean = false): string {
-  const name = user.name || 'Sin nombre';
-  const email = user.email || '';
-  const initial = getUserInitial(name);
-  const roleColors: Record<string, string> = {
-    admin: 'bg-[var(--accent-purple-dim)] bg-purple-500/10 text-[var(--accent-purple)] text-purple-400 border-[var(--accent-purple)] border-purple-500/20',
-    trainer: 'bg-[var(--info-dim)] bg-blue-500/10 text-[var(--info)] text-blue-400 border-[var(--info)] border-blue-500/20',
-    client: 'bg-[var(--brand-dim)] bg-emerald-500/10 text-[var(--brand)] text-emerald-400 border-[var(--brand)] border-emerald-500/20',
-  };
-  const roleColor = roleColors[user.role] || 'bg-[var(--surface-3)] text-[var(--text-secondary)] border-[var(--border-default)]';
+  const editBtn = showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-all">
+    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+    </svg>
+  </button>` : '';
 
-  return `
-    <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium bg-[var(--surface-3)] text-[var(--text-primary)]">
-            ${initial}
-          </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <p class="text-sm font-medium text-[var(--text-primary)] truncate">${escapeHtml(name)}</p>
-              ${user.hasActiveAlert ? '<span class="h-2 w-2 rounded-full bg-[var(--danger)] bg-red-500 animate-pulse" title="Alerta activa"></span>' : ''}
-            </div>
-            <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(email)}</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <span class="rounded-full px-2 py-0.5 text-[10px] font-medium border border-opacity-30 ${roleColor}">${user.role}</span>
-          ${showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-all">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-            </svg>
-          </button>` : ''}
-        </div>
-      </div>
-    </div>
-  `;
+  return renderUserRow(user, editBtn);
 }
 
 /**
@@ -233,7 +211,7 @@ export function renderClientCard(client: AdminUser & { assignedTrainerName?: str
           </div>
         </div>
         <div class="text-right shrink-0">
-          <p class="text-xs text-[var(--text-tertiary)]">Trainer: <span class="text-[var(--text-secondary)] font-medium">${escapeHtml(trainerName)}</span></p>
+          <p class="text-xs text-[var(--text-tertiary)]"><span data-i18n="admin.modal.field.trainer">Trainer</span>: <span class="text-[var(--text-secondary)] font-medium">${escapeHtml(trainerName)}</span></p>
         </div>
       </div>
     </div>
@@ -263,7 +241,7 @@ export function renderTrainerCard(trainer: AdminUser & { clientCount?: number })
         </div>
         <div class="text-right shrink-0">
           <p class="text-sm font-semibold text-[var(--info)] text-blue-400">${clientCount}</p>
-          <p class="text-xs text-[var(--text-tertiary)]">clientes</p>
+          <p data-i18n="admin.totalClients" class="text-xs text-[var(--text-tertiary)]">clientes</p>
         </div>
       </div>
     </div>

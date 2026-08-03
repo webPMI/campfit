@@ -22,7 +22,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <!-- Hero Card -->
     <UICard variant="glass" padding="lg" class="animate-pulse-glow">
       <h2 class="text-2xl font-bold tracking-tight sm:text-3xl text-[var(--text-primary)]">
-        {t('hero.title')}{' '}
+        <span data-i18n="hero.title">{t('hero.title')}</span>{' '}
         <span data-i18n="hero.title.highlight" class="text-[var(--brand)]">{t('hero.title.highlight')}</span>
       </h2>
 

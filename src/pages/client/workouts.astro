@@ -1,16 +1,16 @@
 ---
-import ClientLayout from '@/layouts/ClientLayout.astro';
-import { translations, type Language } from '@/i18n/translations';
+import ClientLayout from "@/layouts/ClientLayout.astro";
+import { translations, type Language } from "@/i18n/translations";
 
-const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
-const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
+const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
 <ClientLayout>
   <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
     <div class="text-center animate-fade-in">
       <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
-      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t('dashboard.loading')}</p>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t("dashboard.loading")}</p>
     </div>
   </div>
 
@@ -18,111 +18,386 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <main class="mx-auto max-w-4xl px-4 py-6">
       <div class="animate-fade-in space-y-6">
         <!-- Header -->
-        <div>
-          <h2 data-i18n="dashboard.routines" class="text-xl font-bold">{t('dashboard.routines')}</h2>
-          <p data-i18n="dashboard.routines.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('dashboard.routines.desc')}</p>
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h2 data-i18n="dashboard.routines" class="text-xl font-bold">{t("dashboard.routines")}</h2>
+            <p data-i18n="dashboard.routines.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("dashboard.routines.desc")}</p>
+          </div>
         </div>
 
-        <!-- Workout Card -->
-        <div id="workoutCard" class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
-          <div class="flex items-center justify-between mb-4">
+        <!-- Navegación por Días de la Semana (Lunes a Domingo) -->
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-3 backdrop-blur-xl">
+          <div class="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2 px-1 flex items-center justify-between">
+            <span data-i18n="client.weeklySchedule">{t("client.weeklySchedule")}</span>
+            <span id="active-day-label" class="text-[var(--brand)] font-bold text-xs"></span>
+          </div>
+          <div class="grid grid-cols-7 gap-1.5 text-center text-xs" id="days-tabs-container">
+            <!-- Tabs renderizadas por JS -->
+          </div>
+        </div>
+
+        <!-- Tarjeta Principal de Rutina -->
+        <div id="workoutCard" class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-6">
+          <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4 flex-wrap gap-2">
             <div>
-              <h3 id="workoutName" class="text-lg font-bold text-[var(--text-primary)]"></h3>
-              <span id="workoutDifficulty" class="mt-1 inline-block rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-medium text-[var(--brand)]"></span>
+              <div class="flex items-center gap-2">
+                <h3 id="workoutName" class="text-lg font-bold text-[var(--text-primary)]"></h3>
+                <span id="workoutDifficulty" class="rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-medium text-[var(--brand)] border border-[var(--border-brand)]"></span>
+              </div>
+              <p id="workoutDescription" class="mt-1 text-xs text-[var(--text-tertiary)]"></p>
             </div>
-            <p id="workoutDescription" class="text-sm text-[var(--text-tertiary)] max-w-xs text-right"></p>
           </div>
 
-          <div class="space-y-3" id="exercisesList">
-            <!-- Exercises rendered by JS -->
+          <!-- Banner de Resumen de Chequeo de la Sesión -->
+          <div class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-3 flex items-center justify-between text-xs flex-wrap gap-2">
+            <span data-i18n="workout.sessionProgress" class="font-bold text-[var(--brand)]">{t("workout.sessionProgress")}</span>
+            <div class="flex items-center gap-3 font-medium text-[var(--text-primary)]">
+              <span>✅ <span id="count-completed">0</span></span>
+              <span>⚠️ <span id="count-partial">0</span></span>
+              <span>❌ <span id="count-skipped">0</span></span>
+            </div>
           </div>
 
-          <button
-            id="completeWorkoutBtn"
-            class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]"
-          >
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <span data-i18n="client.workout.complete">{t('client.workout.complete')}</span>
-          </button>
+          <!-- Lista de Ejercicios del Día -->
+          <div class="space-y-4" id="exercisesList">
+            <!-- Ejercicios renderizados por JS -->
+          </div>
+
+          <!-- Formulario Final de Registro de Sesión -->
+          <div class="pt-4 border-t border-[var(--border-subtle)] space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label data-i18n="workout.rpeLabel" class="block text-xs font-medium text-[var(--text-secondary)] mb-1">{t("workout.rpeLabel")}</label>
+                <select id="session-rpe" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
+                  <option value="5">5 - Esfuerzo Moderado</option>
+                  <option value="6">6 - Algo Duro</option>
+                  <option value="7" selected>7 - Duro (Normal)</option>
+                  <option value="8">8 - Muy Duro (Cerca del fallo)</option>
+                  <option value="9">9 - Extremadamente Duro</option>
+                  <option value="10">10 - Máximo Esfuerzo (Fallo total)</option>
+                </select>
+              </div>
+
+              <div>
+                <label data-i18n="workout.notesLabel" class="block text-xs font-medium text-[var(--text-secondary)] mb-1">{t("workout.notesLabel")}</label>
+                <input id="session-notes" type="text" placeholder="Ej: Buenas sensaciones, aumenté peso en banca" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]" />
+              </div>
+            </div>
+
+            <button
+              id="completeWorkoutBtn"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-6 py-3.5 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:opacity-95 active:scale-[0.98]"
+            >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span data-i18n="workout.logSession">{t("workout.logSession")}</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Empty State -->
-        <div id="emptyState" class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
-          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)]">
-            <svg class="h-8 w-8 text-[var(--text-disabled)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-            </svg>
+        <!-- Estado de Día de Descanso o Sin Rutina -->
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)] text-2xl">
+            🛌
           </div>
-          <h3 data-i18n="client.no.workout" class="mt-4 text-lg font-semibold text-[var(--text-secondary)]">{t('client.no.workout')}</h3>
-          <p data-i18n="client.workout.assigned.desc" class="mt-2 text-sm text-[var(--text-disabled)]">{t('client.workout.assigned.desc')}</p>
+          <h3 id="empty-title" data-i18n="client.no.workout" class="mt-4 text-lg font-semibold text-[var(--text-secondary)]">{t("client.no.workout")}</h3>
+          <p id="empty-desc" data-i18n="client.workout.assigned.desc" class="mt-2 text-sm text-[var(--text-disabled)]">{t("client.workout.assigned.desc")}</p>
         </div>
       </div>
     </main>
   </div>
+
+  <!-- Toast Notificaciones -->
+  <div id="workout-toast" class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border border-emerald-500/30 bg-[var(--brand-dim)] px-6 py-3 text-sm font-medium text-[var(--brand)] backdrop-blur-xl shadow-2xl hidden"></div>
 </ClientLayout>
 
 <script>
-  import { initPage } from '@/lib/shared/initPage';
-  import { subscribeToWorkouts } from '@/lib/client/workoutService';
-  import { t } from '@/i18n/client';
+  import { initPage } from "@/lib/shared/initPage";
+  import { subscribeToWorkouts, logWorkoutSession } from "@/lib/client/workoutService";
+  import type { Workout, Exercise } from "@/lib/client/workoutService";
+  import type { ExerciseExecutionLog } from "@/lib/trainer/types";
+  import { t } from "@/i18n/client";
 
-  const loadingScreen = document.getElementById('loadingScreen')!;
-  const loadingText = document.getElementById('loadingText')!;
-  const workoutsContent = document.getElementById('workoutsContent')!;
-  const workoutCard = document.getElementById('workoutCard')!;
-  const emptyState = document.getElementById('emptyState')!;
-  const workoutName = document.getElementById('workoutName')!;
-  const workoutDifficulty = document.getElementById('workoutDifficulty')!;
-  const workoutDescription = document.getElementById('workoutDescription')!;
-  const exercisesList = document.getElementById('exercisesList')!;
+  const loadingScreen = document.getElementById("loadingScreen")!;
+  const loadingText = document.getElementById("loadingText")!;
+  const workoutsContent = document.getElementById("workoutsContent")!;
+  const workoutCard = document.getElementById("workoutCard")!;
+  const emptyState = document.getElementById("emptyState")!;
+  const emptyTitle = document.getElementById("empty-title")!;
+  const emptyDesc = document.getElementById("empty-desc")!;
+  const workoutName = document.getElementById("workoutName")!;
+  const workoutDifficulty = document.getElementById("workoutDifficulty")!;
+  const workoutDescription = document.getElementById("workoutDescription")!;
+  const exercisesList = document.getElementById("exercisesList")!;
+  const daysTabsContainer = document.getElementById("days-tabs-container")!;
+  const activeDayLabel = document.getElementById("active-day-label")!;
+  const completeWorkoutBtn = document.getElementById("completeWorkoutBtn")!;
+  const toast = document.getElementById("workout-toast")!;
 
-  loadingText.textContent = t('dashboard.loading');
+  const dayKeys = ["day.mon", "day.tue", "day.wed", "day.thu", "day.fri", "day.sat", "day.sun"];
+  
+  // Calcular día de la semana actual (1=Lunes ... 7=Domingo)
+  const currentJsDay = new Date().getDay();
+  let selectedDay = currentJsDay === 0 ? 7 : currentJsDay;
+  const todayDayIndex = selectedDay;
+
+  let currentWorkout: Workout | null = null;
+  let activeUserUid = "";
+  let exerciseStatuses: Record<string, "completed" | "partial" | "skipped"> = {};
+
+  loadingText.textContent = t("dashboard.loading");
+
+  function showToast(msg: string): void {
+    toast.textContent = msg;
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 3500);
+  }
+
+  function renderDayTabs(): void {
+    daysTabsContainer.innerHTML = dayKeys
+      .map((key, idx) => {
+        const dayNum = idx + 1;
+        const name = t(key);
+        const isSelected = dayNum === selectedDay;
+        const isToday = dayNum === todayDayIndex;
+
+        return `
+          <button
+            type="button"
+            data-day="${dayNum}"
+            class="rounded-xl py-2 px-1 flex flex-col items-center transition-all border ${
+              isSelected
+                ? "bg-[var(--brand)] text-[var(--text-on-brand)] font-bold border-[var(--brand)] shadow-[var(--shadow-glow-sm)]"
+                : "bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)] border-[var(--border-subtle)]"
+            }"
+          >
+            <span data-i18n="${key}" class="text-[10px] uppercase opacity-80">${name}</span>
+            <span class="text-xs font-semibold">${dayNum}</span>
+            ${isToday ? `<span class="mt-0.5 h-1 w-1 rounded-full ${isSelected ? "bg-white" : "bg-[var(--brand)]"}"></span>` : ""}
+          </button>
+        `;
+      })
+      .join("");
+
+    const dayName = t(dayKeys[selectedDay - 1]);
+    const isToday = selectedDay === todayDayIndex;
+    activeDayLabel.textContent = isToday ? `${dayName} (${t("client.today")})` : dayName;
+
+    daysTabsContainer.querySelectorAll("[data-day]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const day = Number((e.currentTarget as HTMLElement).getAttribute("data-day"));
+        if (day) {
+          selectedDay = day;
+          renderDayTabs();
+          renderActiveWorkout();
+        }
+      });
+    });
+  }
+
+  function updateSessionCounters(): void {
+    let completed = 0, partial = 0, skipped = 0;
+    Object.values(exerciseStatuses).forEach((st) => {
+      if (st === "completed") completed++;
+      if (st === "partial") partial++;
+      if (st === "skipped") skipped++;
+    });
+
+    const elComp = document.getElementById("count-completed");
+    const elPart = document.getElementById("count-partial");
+    const elSkip = document.getElementById("count-skipped");
+    if (elComp) elComp.textContent = String(completed);
+    if (elPart) elPart.textContent = String(partial);
+    if (elSkip) elSkip.textContent = String(skipped);
+  }
+
+  function renderActiveWorkout(): void {
+    if (!currentWorkout) {
+      workoutCard.classList.add("hidden");
+      emptyState.classList.remove("hidden");
+      emptyTitle.textContent = t("client.no.workout");
+      emptyDesc.textContent = t("client.workout.assigned.desc");
+      return;
+    }
+
+    workoutName.textContent = currentWorkout.name;
+    workoutDifficulty.textContent = currentWorkout.difficulty || "Intermedio";
+    workoutDescription.textContent = currentWorkout.description || "";
+
+    const dayExercises = (currentWorkout.exercises || []).filter(
+      (ex) => !ex.dayOfWeek || ex.dayOfWeek === 0 || ex.dayOfWeek === selectedDay
+    );
+
+    if (dayExercises.length === 0) {
+      workoutCard.classList.add("hidden");
+      emptyState.classList.remove("hidden");
+      emptyTitle.textContent = `${t("client.restDay")} (${t(dayKeys[selectedDay - 1])})`;
+      emptyDesc.textContent = t("client.restDayDesc");
+      return;
+    }
+
+    workoutCard.classList.remove("hidden");
+    emptyState.classList.add("hidden");
+
+    exercisesList.innerHTML = dayExercises
+      .map((ex, i) => {
+        const status = exerciseStatuses[ex.id] || "completed";
+
+        return `
+          <div class="exercise-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-3" data-ex-id="${ex.id}">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)]">${i + 1}</span>
+                <h4 class="font-bold text-sm text-[var(--text-primary)]">${ex.name}</h4>
+              </div>
+              <div class="flex items-center gap-1 bg-[var(--surface-3)] p-1 rounded-xl border border-[var(--border-subtle)] text-[11px] font-medium">
+                <button
+                  type="button"
+                  data-status-btn="completed"
+                  class="status-btn px-2 py-1 rounded-lg transition-all ${status === "completed" ? "bg-emerald-500 text-white font-bold shadow" : "text-[var(--text-tertiary)] hover:text-white"}"
+                >
+                  ✅ 100%
+                </button>
+                <button
+                  type="button"
+                  data-status-btn="partial"
+                  class="status-btn px-2 py-1 rounded-lg transition-all ${status === "partial" ? "bg-amber-500 text-white font-bold shadow" : "text-[var(--text-tertiary)] hover:text-white"}"
+                >
+                  ⚠️ A medias
+                </button>
+                <button
+                  type="button"
+                  data-status-btn="skipped"
+                  class="status-btn px-2 py-1 rounded-lg transition-all ${status === "skipped" ? "bg-red-500 text-white font-bold shadow" : "text-[var(--text-tertiary)] hover:text-white"}"
+                >
+                  ❌ Omitir
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--text-tertiary)]">
+              <span><span data-i18n="workout.target">${t("workout.target")}</span> <strong class="text-[var(--text-primary)]">${ex.sets} ${t("workout.sets")} × ${ex.reps} ${t("workout.reps")}</strong></span>
+              <span><span data-i18n="workout.rest">${t("workout.rest")}</span>: <strong class="text-[var(--text-primary)]">${ex.restTime || "60s"}</strong></span>
+            </div>
+            ${ex.description ? `<p class="text-xs text-[var(--text-disabled)]">${ex.description}</p>` : ""}
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2 border-t border-[var(--border-subtle)] text-xs">
+              <div>
+                <label data-i18n="workout.actualWeight" class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("workout.actualWeight")}</label>
+                <input type="number" data-ex-field="actualWeight" placeholder="0" class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]" />
+              </div>
+              <div>
+                <label data-i18n="workout.actualReps" class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("workout.actualReps")}</label>
+                <input type="number" data-ex-field="actualReps" value="${ex.reps || 10}" class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]" />
+              </div>
+              <div>
+                <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">RPE (1-10)</label>
+                <input type="number" data-ex-field="rpe" min="1" max="10" value="7" class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]" />
+              </div>
+              <div>
+                <label data-i18n="workout.exerciseNotes" class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("workout.exerciseNotes")}</label>
+                <input type="text" data-ex-field="notes" placeholder="Ej: Aumenté carga" class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]" />
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+
+    exercisesList.querySelectorAll(".exercise-card").forEach((card) => {
+      const exId = card.getAttribute("data-ex-id")!;
+      if (!exerciseStatuses[exId]) exerciseStatuses[exId] = "completed";
+
+      card.querySelectorAll("[data-status-btn]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const st = (e.currentTarget as HTMLElement).getAttribute("data-status-btn") as "completed" | "partial" | "skipped";
+          exerciseStatuses[exId] = st;
+
+          card.querySelectorAll("[data-status-btn]").forEach((b) => {
+            b.className = "status-btn px-2 py-1 rounded-lg transition-all text-[var(--text-tertiary)] hover:text-white";
+          });
+          const targetBtn = e.currentTarget as HTMLElement;
+          if (st === "completed") targetBtn.className = "status-btn px-2 py-1 rounded-lg transition-all bg-emerald-500 text-white font-bold shadow";
+          if (st === "partial") targetBtn.className = "status-btn px-2 py-1 rounded-lg transition-all bg-amber-500 text-white font-bold shadow";
+          if (st === "skipped") targetBtn.className = "status-btn px-2 py-1 rounded-lg transition-all bg-red-500 text-white font-bold shadow";
+
+          updateSessionCounters();
+        });
+      });
+    });
+
+    updateSessionCounters();
+  }
 
   const cleanup = initPage({
-    allowedRoles: ['client', 'admin', 'trainer'],
+    allowedRoles: ["client", "admin", "trainer"],
     onReady: async (firebaseUser) => {
+      activeUserUid = firebaseUser.uid;
+      renderDayTabs();
+
       subscribeToWorkouts(firebaseUser.uid, (workouts) => {
-      if (workouts.length > 0 && workouts[0]) {
-        const w = workouts[0];
-        workoutName.textContent = w.name;
-        workoutDifficulty.textContent = w.difficulty;
-        workoutDescription.textContent = w.description;
+        loadingScreen.classList.add("hidden");
+        workoutsContent.classList.remove("hidden");
 
-        exercisesList.innerHTML = '';
-        if (w.exercises && w.exercises.length > 0) {
-          w.exercises.forEach((ex: any, i: number) => {
-            const div = document.createElement('div');
-            div.className = 'rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm';
-            div.innerHTML = `
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)]">${i + 1}</span>
-                    <h4 class="font-medium text-[var(--text-primary)]">${ex.name}</h4>
-                  </div>
-                  <div class="mt-2 flex flex-wrap gap-3 text-xs text-[var(--text-tertiary)]">
-                    <span>${ex.sets} ${t('workout.sets')} × ${ex.reps} ${t('workout.reps')}</span>
-                    <span>${t('workout.rest')}: ${ex.restTime || '90s'}</span>
-                  </div>
-                  ${ex.description ? `<p class="mt-2 text-xs text-[var(--text-disabled)]">${ex.description}</p>` : ''}
-                </div>
-              </div>
-            `;
-            exercisesList.appendChild(div);
+        if (workouts.length > 0 && workouts[0]) {
+          currentWorkout = workouts[0];
+          exerciseStatuses = {};
+          (currentWorkout.exercises || []).forEach((ex) => {
+            exerciseStatuses[ex.id] = "completed";
           });
+        } else {
+          currentWorkout = null;
         }
-
-        workoutCard.classList.remove('hidden');
-        emptyState.classList.add('hidden');
-      } else {
-        workoutCard.classList.add('hidden');
-        emptyState.classList.remove('hidden');
-      }
-    });
+        renderActiveWorkout();
+      });
     },
   });
 
-  document.addEventListener('astro:before-swap', cleanup);
+  completeWorkoutBtn.addEventListener("click", async () => {
+    if (!currentWorkout || !activeUserUid) return;
+
+    const rpeVal = parseInt((document.getElementById("session-rpe") as HTMLSelectElement).value) || 7;
+    const notesVal = (document.getElementById("session-notes") as HTMLInputElement).value.trim();
+
+    const dayExercises = (currentWorkout.exercises || []).filter(
+      (ex) => !ex.dayOfWeek || ex.dayOfWeek === 0 || ex.dayOfWeek === selectedDay
+    );
+
+    const logs: ExerciseExecutionLog[] = dayExercises.map((ex) => {
+      const card = document.querySelector(`.exercise-card[data-ex-id="${ex.id}"]`);
+      const weight = parseFloat((card?.querySelector('[data-ex-field="actualWeight"]') as HTMLInputElement)?.value) || 0;
+      const reps = parseInt((card?.querySelector('[data-ex-field="actualReps"]') as HTMLInputElement)?.value) || ex.reps || 10;
+      const exRpe = parseInt((card?.querySelector('[data-ex-field="rpe"]') as HTMLInputElement)?.value) || rpeVal;
+      const exNotes = (card?.querySelector('[data-ex-field="notes"]') as HTMLInputElement)?.value.trim() || "";
+
+      return {
+        exerciseId: ex.id,
+        exerciseName: ex.name,
+        status: exerciseStatuses[ex.id] || "completed",
+        actualWeight: weight,
+        actualReps: reps,
+        rpe: exRpe,
+        notes: exNotes,
+      };
+    });
+
+    try {
+      showToast(t("diet.editor.saving"));
+      await logWorkoutSession({
+        clientId: activeUserUid,
+        workoutId: currentWorkout.id,
+        dayOfWeek: selectedDay,
+        rpe: rpeVal,
+        notes: notesVal,
+        exercises: logs,
+      });
+
+      showToast("¡Sesión de entrenamiento registrada con éxito! 💪");
+    } catch (err: any) {
+      showToast(err.message || "Error al registrar entrenamiento");
+    }
+  });
+
+  document.addEventListener("astro:before-swap", cleanup);
 </script>

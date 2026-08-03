@@ -384,6 +384,7 @@ export const ca: TranslationMap = {
   'diet.editor.meal.protein': 'Proteïnes (g)',
   'diet.editor.meal.carbs': 'Carbs (g)',
   'diet.editor.meal.fat': 'Greixes (g)',
+  'diet.editor.meal.allergens': 'Al·lergèns',
   'diet.editor.save.new': 'Crear Dieta',
   'diet.editor.save.edit': 'Guardar Canvis',
   'diet.editor.saving': 'Guardant dieta...',
