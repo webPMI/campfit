@@ -1,0 +1,726 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import PageTransition from "@/components/PageTransition.astro";
+import Skeleton from "@/components/Skeleton.astro";
+import { translations, type Language } from "@/i18n/translations";
+
+const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
+const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
+---
+
+<AdminLayout>
+  <div class="mx-auto max-w-5xl px-4 py-8">
+    <PageTransition animation="fade-up">
+      <!-- Header -->
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 class="text-2xl font-bold">🥗 Biblioteca de Alimentos</h1>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]">Gestiona el catálogo centralizado de alimentos multilenguaje</p>
+        </div>
+        <button
+          id="btn-new-food"
+          class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2.5 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all hover:opacity-95 active:scale-95"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Añadir alimento
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Total alimentos</p>
+          <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Activos</p>
+          <p id="stat-active" class="mt-1 text-2xl font-bold text-emerald-500">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Veganos</p>
+          <p id="stat-vegan" class="mt-1 text-2xl font-bold text-green-400">-</p>
+        </div>
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+          <p class="text-xs text-[var(--text-tertiary)]">Categorías</p>
+          <p id="stat-categories" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Buscar alimento (ES / EN / CA)..."
+          class="flex-1 min-w-[200px] rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
+        />
+        <select
+          id="filter-category"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]"
+        >
+          <option value="">Todas las categorías</option>
+          <option value="protein">🥩 Proteínas</option>
+          <option value="carbs">🌾 Carbohidratos</option>
+          <option value="fats">🥑 Grasas</option>
+          <option value="vegetables">🥦 Verduras</option>
+          <option value="fruits">🍎 Frutas</option>
+          <option value="dairy">🥛 Lácteos</option>
+          <option value="beverages">🧃 Bebidas</option>
+          <option value="supplements">💊 Suplementos</option>
+          <option value="sauces">🫙 Salsas</option>
+          <option value="other">📦 Otros</option>
+        </select>
+        <select
+          id="filter-status"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]"
+        >
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+          <option value="all">Todos</option>
+        </select>
+        <select
+          id="filter-diet"
+          class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]"
+        >
+          <option value="">Todos</option>
+          <option value="vegan">🌿 Veganos</option>
+          <option value="vegetarian">🥚 Vegetarianos</option>
+          <option value="glutenFree">🌾❌ Sin gluten</option>
+          <option value="lactoseFree">🥛❌ Sin lactosa</option>
+        </select>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="mt-6 space-y-3">
+        <Skeleton variant="rect" height="72px" width="100%" />
+        <Skeleton variant="rect" height="72px" width="100%" />
+        <Skeleton variant="rect" height="72px" width="100%" />
+        <Skeleton variant="rect" height="72px" width="100%" />
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden mt-8 rounded-2xl border border-dashed border-[var(--border-subtle)] p-12 text-center">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-3)] text-4xl">🥗</div>
+        <p class="font-semibold text-[var(--text-secondary)]">No hay alimentos en el catálogo</p>
+        <p class="mt-1 text-sm text-[var(--text-tertiary)]">Añade el primer alimento o ejecuta el seed inicial</p>
+      </div>
+
+      <!-- Food List -->
+      <div id="foods-container" class="mt-6 space-y-2 hidden"></div>
+
+      <!-- Result count -->
+      <p id="result-count" class="mt-4 text-xs text-[var(--text-disabled)] hidden"></p>
+    </PageTransition>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       MODAL: Añadir / Editar Alimento
+  ════════════════════════════════════════════════════════════ -->
+  <div id="food-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+    <!-- Panel -->
+    <div class="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] shadow-2xl">
+      <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--surface-1)]/95 backdrop-blur px-6 py-4">
+        <h2 id="modal-title" class="text-lg font-bold">Añadir alimento</h2>
+        <button id="modal-close" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] transition-all">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="food-form" class="p-6 space-y-6">
+        <input type="hidden" id="food-id" />
+
+        <!-- Nombres (multilenguaje) -->
+        <fieldset class="space-y-3">
+          <legend class="text-sm font-semibold text-[var(--text-secondary)] flex items-center gap-2">
+            🌐 Nombre del alimento (multilenguaje)
+          </legend>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label for="name-es" class="block text-xs text-[var(--text-tertiary)] mb-1">🇪🇸 Español *</label>
+              <input id="name-es" type="text" required placeholder="Pechuga de pollo"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+            <div>
+              <label for="name-en" class="block text-xs text-[var(--text-tertiary)] mb-1">🇬🇧 English *</label>
+              <input id="name-en" type="text" required placeholder="Chicken breast"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+            <div>
+              <label for="name-ca" class="block text-xs text-[var(--text-tertiary)] mb-1">🏴󠁥󠁳󠁣󠁴󠁿 Català *</label>
+              <input id="name-ca" type="text" required placeholder="Pit de pollastre"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Categoría + Porción -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="food-category" class="block text-xs text-[var(--text-tertiary)] mb-1">Categoría *</label>
+            <select id="food-category" required
+              class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]">
+              <option value="">Seleccionar...</option>
+              <option value="protein">🥩 Proteínas</option>
+              <option value="carbs">🌾 Carbohidratos</option>
+              <option value="fats">🥑 Grasas</option>
+              <option value="vegetables">🥦 Verduras</option>
+              <option value="fruits">🍎 Frutas</option>
+              <option value="dairy">🥛 Lácteos</option>
+              <option value="beverages">🧃 Bebidas</option>
+              <option value="supplements">💊 Suplementos</option>
+              <option value="sauces">🫙 Salsas</option>
+              <option value="other">📦 Otros</option>
+            </select>
+          </div>
+          <div>
+            <label for="food-portion" class="block text-xs text-[var(--text-tertiary)] mb-1">Porción estándar (g) *</label>
+            <input id="food-portion" type="number" required min="1" max="2000" placeholder="150"
+              class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+
+        <!-- Macros por 100g -->
+        <fieldset class="space-y-3">
+          <legend class="text-sm font-semibold text-[var(--text-secondary)]">📊 Macronutrientes por 100g</legend>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <label for="macro-calories" class="block text-xs text-[var(--text-tertiary)] mb-1">Calorías (kcal) *</label>
+              <input id="macro-calories" type="number" required min="0" max="9999" step="0.1" placeholder="110"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+            <div>
+              <label for="macro-protein" class="block text-xs text-[var(--text-tertiary)] mb-1">Proteína (g) *</label>
+              <input id="macro-protein" type="number" required min="0" max="999" step="0.1" placeholder="23.1"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+            <div>
+              <label for="macro-carbs" class="block text-xs text-[var(--text-tertiary)] mb-1">Carboh. (g) *</label>
+              <input id="macro-carbs" type="number" required min="0" max="999" step="0.1" placeholder="0"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+            <div>
+              <label for="macro-fat" class="block text-xs text-[var(--text-tertiary)] mb-1">Grasa (g) *</label>
+              <input id="macro-fat" type="number" required min="0" max="999" step="0.1" placeholder="2.4"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="macro-fiber" class="block text-xs text-[var(--text-tertiary)] mb-1">Fibra (g) — opcional</label>
+              <input id="macro-fiber" type="number" min="0" max="99" step="0.1" placeholder="0"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+            <div>
+              <label for="macro-gi" class="block text-xs text-[var(--text-tertiary)] mb-1">Índice glucémico (0–100) — opcional</label>
+              <input id="macro-gi" type="number" min="0" max="100" placeholder="55"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+            </div>
+          </div>
+
+          <!-- Preview de macros para la porción -->
+          <div id="macro-preview" class="hidden rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-3 text-xs">
+            <p class="text-[var(--text-tertiary)] mb-1.5">👁️ Preview para la porción estándar:</p>
+            <div class="flex gap-4 font-semibold text-[var(--text-primary)]">
+              <span>🔥 <span id="prev-cal">-</span> kcal</span>
+              <span>💪 <span id="prev-pro">-</span>g prot</span>
+              <span>🌾 <span id="prev-carbs">-</span>g carbs</span>
+              <span>🥑 <span id="prev-fat">-</span>g grasa</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Propiedades dietéticas -->
+        <fieldset class="space-y-3">
+          <legend class="text-sm font-semibold text-[var(--text-secondary)]">🌿 Propiedades dietéticas</legend>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <label class="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+              <input id="prop-vegan" type="checkbox" class="accent-[var(--brand)] h-4 w-4" />
+              <span class="text-sm">🌿 Vegano</span>
+            </label>
+            <label class="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+              <input id="prop-vegetarian" type="checkbox" class="accent-[var(--brand)] h-4 w-4" />
+              <span class="text-sm">🥚 Vegetariano</span>
+            </label>
+            <label class="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+              <input id="prop-gluten-free" type="checkbox" class="accent-[var(--brand)] h-4 w-4" />
+              <span class="text-sm">🌾❌ Sin gluten</span>
+            </label>
+            <label class="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+              <input id="prop-lactose-free" type="checkbox" class="accent-[var(--brand)] h-4 w-4" />
+              <span class="text-sm">🥛❌ Sin lactosa</span>
+            </label>
+            <label class="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+              <input id="prop-nut-free" type="checkbox" class="accent-[var(--brand)] h-4 w-4" />
+              <span class="text-sm">🥜❌ Sin frutos secos</span>
+            </label>
+            <label class="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+              <input id="prop-shellfish-free" type="checkbox" class="accent-[var(--brand)] h-4 w-4" />
+              <span class="text-sm">🦐❌ Sin marisco</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Alérgenos -->
+        <fieldset class="space-y-2">
+          <legend class="text-sm font-semibold text-[var(--text-secondary)]">⚠️ Alérgenos (UE 1169/2011)</legend>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="allergen-checkboxes">
+            {['gluten','lactose','egg','fish','shellfish','nuts','peanut','soy','sesame','mustard','celery','sulphites','lupin','molluscs'].map(al => (
+              <label class="flex items-center gap-1.5 text-xs rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-1.5 cursor-pointer hover:border-amber-400 transition-all">
+                <input type="checkbox" data-allergen={al} class="allergen-check accent-amber-500 h-3.5 w-3.5" />
+                <span>{al}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <!-- Tags -->
+        <div>
+          <label for="food-tags" class="block text-xs text-[var(--text-tertiary)] mb-1">
+            🏷️ Tags (separados por coma) — opcional
+          </label>
+          <input id="food-tags" type="text" placeholder="high-protein, low-fat, omega3"
+            class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-sm outline-none focus:border-[var(--border-brand)]" />
+        </div>
+
+        <!-- Estado activo -->
+        <label id="active-toggle" class="flex items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-3 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+          <span class="text-sm font-medium">Activo en el catálogo</span>
+          <input id="food-active" type="checkbox" class="accent-[var(--brand)] h-5 w-5" checked />
+        </label>
+
+        <!-- Form actions -->
+        <div class="flex items-center justify-between gap-3 pt-2 border-t border-[var(--border-subtle)]">
+          <button
+            type="button"
+            id="btn-delete-food"
+            class="hidden flex items-center gap-1.5 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/20 hover:border-red-500/60 transition-all"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            Desactivar (soft delete)
+          </button>
+          <div class="flex gap-3 ml-auto">
+            <button type="button" id="btn-modal-cancel"
+              class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">
+              Cancelar
+            </button>
+            <button type="submit" id="btn-save-food"
+              class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-5 py-2 text-sm font-bold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] hover:opacity-95 transition-all disabled:opacity-50">
+              <span id="save-label">Guardar</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { requireRole } from "@/lib/shared/authGuard";
+  import { showToast } from "@/lib/shared/ui";
+  import { logger } from "@/lib/shared/logger";
+  import {
+    subscribeToFoods,
+    generateSearchIndex,
+    searchFoodsLocal,
+    calcMacrosForPortion,
+    type FoodItem,
+    type FoodCategory,
+  } from "@/lib/shared/foodLibrary";
+  import {
+    collection,
+    doc,
+    addDoc,
+    updateDoc,
+    serverTimestamp,
+  } from "firebase/firestore";
+  import { db } from "@/lib/firebase";
+
+  const COLLECTION = "foods_library";
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    protein: "🥩 Proteínas", carbs: "🌾 Carbohidratos", fats: "🥑 Grasas",
+    vegetables: "🥦 Verduras", fruits: "🍎 Frutas", dairy: "🥛 Lácteos",
+    beverages: "🧃 Bebidas", supplements: "💊 Suplementos", sauces: "🫙 Salsas", other: "📦 Otros",
+  };
+
+  let allFoods: FoodItem[] = [];
+  let filtered: FoodItem[] = [];
+  let currentUserId = "";
+
+  requireRole(["admin"], (user) => {
+    currentUserId = user.uid;
+    init();
+  });
+
+  function init() {
+    const searchInput = document.getElementById("search-input") as HTMLInputElement;
+    const filterCategory = document.getElementById("filter-category") as HTMLSelectElement;
+    const filterStatus = document.getElementById("filter-status") as HTMLSelectElement;
+    const filterDiet = document.getElementById("filter-diet") as HTMLSelectElement;
+    const btnNew = document.getElementById("btn-new-food")!;
+
+    // Modal elements
+    const modal = document.getElementById("food-modal")!;
+    const modalBackdrop = document.getElementById("modal-backdrop")!;
+    const modalClose = document.getElementById("modal-close")!;
+    const btnCancel = document.getElementById("btn-modal-cancel")!;
+    const btnDelete = document.getElementById("btn-delete-food")!;
+    const form = document.getElementById("food-form") as HTMLFormElement;
+
+    // Macro preview inputs
+    const macroInputs = ["macro-calories","macro-protein","macro-carbs","macro-fat","food-portion"];
+    macroInputs.forEach(id => document.getElementById(id)?.addEventListener("input", updateMacroPreview));
+
+    // Vegan → auto-check vegetarian
+    document.getElementById("prop-vegan")?.addEventListener("change", (e) => {
+      const checked = (e.target as HTMLInputElement).checked;
+      if (checked) (document.getElementById("prop-vegetarian") as HTMLInputElement).checked = true;
+    });
+
+    // Subscribe to foods
+    const unsub = subscribeToFoods((foods) => {
+      allFoods = foods;
+      updateStats(foods);
+      applyFilters();
+    });
+    window.addEventListener("beforeunload", () => unsub());
+
+    // Filter events
+    [searchInput, filterCategory, filterStatus, filterDiet].forEach(el =>
+      el?.addEventListener("input", applyFilters)
+    );
+    filterStatus?.addEventListener("change", applyFilters);
+    filterDiet?.addEventListener("change", applyFilters);
+
+    // New food
+    btnNew.addEventListener("click", () => openModal(null));
+
+    // Modal close
+    [modalBackdrop, modalClose, btnCancel].forEach(el =>
+      el.addEventListener("click", closeModal)
+    );
+
+    // Soft delete
+    btnDelete.addEventListener("click", async () => {
+      const id = (document.getElementById("food-id") as HTMLInputElement).value;
+      if (!id) return;
+      const ref = doc(db, COLLECTION, id);
+      const currentActive = !(document.getElementById("food-active") as HTMLInputElement).checked;
+      const confirm = window.confirm(
+        currentActive
+          ? "¿Reactivar este alimento en el catálogo?"
+          : "¿Desactivar este alimento? No se eliminará, pero no aparecerá en búsquedas."
+      );
+      if (!confirm) return;
+      try {
+        await updateDoc(ref, { isActive: currentActive, updatedAt: serverTimestamp() });
+        showToast({ message: currentActive ? "Alimento reactivado" : "Alimento desactivado", type: "success" });
+        closeModal();
+      } catch (err) {
+        logger.error("admin/foods", "Error toggling isActive:", err);
+        showToast({ message: "Error al actualizar el estado", type: "error" });
+      }
+    });
+
+    // Form submit
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById("btn-save-food") as HTMLButtonElement;
+      saveBtn.disabled = true;
+      try {
+        await saveFoodItem();
+        closeModal();
+      } catch (err) {
+        logger.error("admin/foods", "Error saving food:", err);
+        showToast({ message: "Error al guardar el alimento", type: "error" });
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+  }
+
+  // ── Filtros y render ────────────────────────────────────────────────────────
+
+  function applyFilters() {
+    const searchVal = (document.getElementById("search-input") as HTMLInputElement)?.value ?? "";
+    const catVal = (document.getElementById("filter-category") as HTMLSelectElement)?.value ?? "";
+    const statusVal = (document.getElementById("filter-status") as HTMLSelectElement)?.value ?? "active";
+    const dietVal = (document.getElementById("filter-diet") as HTMLSelectElement)?.value ?? "";
+
+    filtered = allFoods.filter(f => {
+      if (statusVal === "active" && !f.isActive) return false;
+      if (statusVal === "inactive" && f.isActive) return false;
+      if (catVal && f.category !== catVal) return false;
+      if (dietVal === "vegan" && !f.isVegan) return false;
+      if (dietVal === "vegetarian" && !f.isVegetarian) return false;
+      if (dietVal === "glutenFree" && !f.isGlutenFree) return false;
+      if (dietVal === "lactoseFree" && !f.isLactoseFree) return false;
+      return true;
+    });
+
+    if (searchVal.trim()) {
+      filtered = searchFoodsLocal(searchVal, filtered);
+    }
+
+    renderFoods(filtered);
+  }
+
+  function updateStats(foods: FoodItem[]) {
+    const active = foods.filter(f => f.isActive);
+    const vegan = foods.filter(f => f.isVegan && f.isActive);
+    const cats = new Set(foods.map(f => f.category));
+    document.getElementById("stat-total")!.textContent = String(foods.length);
+    document.getElementById("stat-active")!.textContent = String(active.length);
+    document.getElementById("stat-vegan")!.textContent = String(vegan.length);
+    document.getElementById("stat-categories")!.textContent = String(cats.size);
+  }
+
+  function renderFoods(foods: FoodItem[]) {
+    const loading = document.getElementById("loading-state")!;
+    const empty = document.getElementById("empty-state")!;
+    const container = document.getElementById("foods-container")!;
+    const count = document.getElementById("result-count")!;
+
+    loading.classList.add("hidden");
+
+    if (foods.length === 0) {
+      empty.classList.remove("hidden");
+      container.classList.add("hidden");
+      count.classList.add("hidden");
+      return;
+    }
+
+    empty.classList.add("hidden");
+    container.classList.remove("hidden");
+    count.classList.remove("hidden");
+    count.textContent = `${foods.length} alimento${foods.length !== 1 ? "s" : ""}`;
+
+    container.innerHTML = foods.map(food => renderFoodRow(food)).join("");
+
+    // Bind edit clicks
+    container.querySelectorAll("[data-edit-food]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-edit-food")!;
+        const food = allFoods.find(f => f.id === id);
+        if (food) openModal(food);
+      });
+    });
+  }
+
+  function renderFoodRow(food: FoodItem): string {
+    const badges = [
+      food.isVegan ? '<span class="bg-green-500/15 text-green-400 text-[10px] px-1.5 py-0.5 rounded-full font-medium">Vegano</span>' : "",
+      food.isGlutenFree ? '<span class="bg-amber-500/15 text-amber-400 text-[10px] px-1.5 py-0.5 rounded-full font-medium">Sin gluten</span>' : "",
+      food.isLactoseFree ? '<span class="bg-blue-500/15 text-blue-400 text-[10px] px-1.5 py-0.5 rounded-full font-medium">Sin lactosa</span>' : "",
+      !food.isActive ? '<span class="bg-red-500/15 text-red-400 text-[10px] px-1.5 py-0.5 rounded-full font-medium">Inactivo</span>' : "",
+    ].filter(Boolean).join(" ");
+
+    return `
+      <div class="group flex items-center gap-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-4 py-3 hover:border-[var(--border-brand)] hover:bg-[var(--surface-3)] transition-all ${!food.isActive ? "opacity-60" : ""}">
+        <div class="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface-4)] text-xl">
+          ${getCategoryEmoji(food.category)}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-semibold text-sm text-[var(--text-primary)] truncate">${food.translations.es}</span>
+            <span class="text-[10px] text-[var(--text-disabled)]">${food.translations.en}</span>
+            ${badges}
+          </div>
+          <div class="mt-1 flex items-center gap-3 text-[11px] text-[var(--text-tertiary)]">
+            <span>${CATEGORY_LABELS[food.category] ?? food.category}</span>
+            <span class="text-[var(--border-strong)]">·</span>
+            <span>🔥 ${food.calories100g} kcal</span>
+            <span>💪 ${food.protein100g}g</span>
+            <span>🌾 ${food.carbs100g}g</span>
+            <span>🥑 ${food.fat100g}g</span>
+            <span class="text-[var(--text-disabled)]">— por 100g</span>
+          </div>
+        </div>
+        <button
+          data-edit-food="${food.id}"
+          class="flex-shrink-0 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 hover:border-[var(--border-brand)] hover:text-[var(--brand)] transition-all"
+        >
+          Editar
+        </button>
+      </div>
+    `;
+  }
+
+  function getCategoryEmoji(cat: string): string {
+    const map: Record<string,string> = {
+      protein:"🥩",carbs:"🌾",fats:"🥑",vegetables:"🥦",fruits:"🍎",
+      dairy:"🥛",beverages:"🧃",supplements:"💊",sauces:"🫙",other:"📦",
+    };
+    return map[cat] ?? "🍽️";
+  }
+
+  // ── Modal ───────────────────────────────────────────────────────────────────
+
+  function openModal(food: FoodItem | null) {
+    const modal = document.getElementById("food-modal")!;
+    const title = document.getElementById("modal-title")!;
+    const btnDelete = document.getElementById("btn-delete-food")!;
+    const form = document.getElementById("food-form") as HTMLFormElement;
+
+    form.reset();
+
+    if (food) {
+      title.textContent = "Editar alimento";
+      btnDelete.classList.remove("hidden");
+      (document.getElementById("food-id") as HTMLInputElement).value = food.id;
+      (document.getElementById("name-es") as HTMLInputElement).value = food.translations.es;
+      (document.getElementById("name-en") as HTMLInputElement).value = food.translations.en;
+      (document.getElementById("name-ca") as HTMLInputElement).value = food.translations.ca;
+      (document.getElementById("food-category") as HTMLSelectElement).value = food.category;
+      (document.getElementById("food-portion") as HTMLInputElement).value = String(food.defaultPortion);
+      (document.getElementById("macro-calories") as HTMLInputElement).value = String(food.calories100g);
+      (document.getElementById("macro-protein") as HTMLInputElement).value = String(food.protein100g);
+      (document.getElementById("macro-carbs") as HTMLInputElement).value = String(food.carbs100g);
+      (document.getElementById("macro-fat") as HTMLInputElement).value = String(food.fat100g);
+      if (food.fiber100g !== undefined) (document.getElementById("macro-fiber") as HTMLInputElement).value = String(food.fiber100g);
+      if (food.glycemicIndex !== undefined) (document.getElementById("macro-gi") as HTMLInputElement).value = String(food.glycemicIndex);
+      (document.getElementById("prop-vegan") as HTMLInputElement).checked = food.isVegan;
+      (document.getElementById("prop-vegetarian") as HTMLInputElement).checked = food.isVegetarian;
+      (document.getElementById("prop-gluten-free") as HTMLInputElement).checked = food.isGlutenFree;
+      (document.getElementById("prop-lactose-free") as HTMLInputElement).checked = food.isLactoseFree;
+      (document.getElementById("prop-nut-free") as HTMLInputElement).checked = food.isNutFree;
+      (document.getElementById("prop-shellfish-free") as HTMLInputElement).checked = food.isShellfishFree;
+      (document.getElementById("food-tags") as HTMLInputElement).value = (food.tags ?? []).join(", ");
+      (document.getElementById("food-active") as HTMLInputElement).checked = food.isActive;
+
+      // Alérgenos
+      document.querySelectorAll<HTMLInputElement>(".allergen-check").forEach(cb => {
+        cb.checked = food.allergens?.includes(cb.dataset.allergen ?? "") ?? false;
+      });
+
+      // Update soft-delete button label
+      btnDelete.textContent = food.isActive ? "⚠️ Desactivar (soft delete)" : "✅ Reactivar";
+      updateMacroPreview();
+    } else {
+      title.textContent = "Añadir alimento";
+      btnDelete.classList.add("hidden");
+      (document.getElementById("food-id") as HTMLInputElement).value = "";
+      // Defaults
+      (document.getElementById("prop-vegan") as HTMLInputElement).checked = true;
+      (document.getElementById("prop-vegetarian") as HTMLInputElement).checked = true;
+      (document.getElementById("prop-gluten-free") as HTMLInputElement).checked = true;
+      (document.getElementById("prop-lactose-free") as HTMLInputElement).checked = true;
+      (document.getElementById("prop-nut-free") as HTMLInputElement).checked = true;
+      (document.getElementById("prop-shellfish-free") as HTMLInputElement).checked = true;
+      (document.getElementById("food-active") as HTMLInputElement).checked = true;
+    }
+
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    setTimeout(() => (document.getElementById("name-es") as HTMLInputElement)?.focus(), 50);
+  }
+
+  function closeModal() {
+    document.getElementById("food-modal")!.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  function updateMacroPreview() {
+    const cal = parseFloat((document.getElementById("macro-calories") as HTMLInputElement).value) || 0;
+    const pro = parseFloat((document.getElementById("macro-protein") as HTMLInputElement).value) || 0;
+    const carb = parseFloat((document.getElementById("macro-carbs") as HTMLInputElement).value) || 0;
+    const fat = parseFloat((document.getElementById("macro-fat") as HTMLInputElement).value) || 0;
+    const portion = parseFloat((document.getElementById("food-portion") as HTMLInputElement).value) || 0;
+
+    const preview = document.getElementById("macro-preview")!;
+    if (portion > 0 && cal > 0) {
+      const f = portion / 100;
+      preview.classList.remove("hidden");
+      document.getElementById("prev-cal")!.textContent = String(Math.round(cal * f));
+      document.getElementById("prev-pro")!.textContent = String(Math.round(pro * f * 10) / 10);
+      document.getElementById("prev-carbs")!.textContent = String(Math.round(carb * f * 10) / 10);
+      document.getElementById("prev-fat")!.textContent = String(Math.round(fat * f * 10) / 10);
+    } else {
+      preview.classList.add("hidden");
+    }
+  }
+
+  // ── CRUD ────────────────────────────────────────────────────────────────────
+
+  async function saveFoodItem() {
+    const id = (document.getElementById("food-id") as HTMLInputElement).value;
+    const nameEs = (document.getElementById("name-es") as HTMLInputElement).value.trim();
+    const nameEn = (document.getElementById("name-en") as HTMLInputElement).value.trim();
+    const nameCa = (document.getElementById("name-ca") as HTMLInputElement).value.trim();
+    const category = (document.getElementById("food-category") as HTMLSelectElement).value as FoodCategory;
+    const portion = parseFloat((document.getElementById("food-portion") as HTMLInputElement).value);
+    const cal = parseFloat((document.getElementById("macro-calories") as HTMLInputElement).value);
+    const pro = parseFloat((document.getElementById("macro-protein") as HTMLInputElement).value);
+    const carb = parseFloat((document.getElementById("macro-carbs") as HTMLInputElement).value);
+    const fat = parseFloat((document.getElementById("macro-fat") as HTMLInputElement).value);
+    const fiberVal = (document.getElementById("macro-fiber") as HTMLInputElement).value;
+    const giVal = (document.getElementById("macro-gi") as HTMLInputElement).value;
+    const tagsRaw = (document.getElementById("food-tags") as HTMLInputElement).value;
+
+    const tags = tagsRaw.split(",").map(t => t.trim()).filter(Boolean);
+    const translations = { es: nameEs, en: nameEn, ca: nameCa };
+    const searchIndex = generateSearchIndex(translations, tags);
+
+    const allergens = Array.from(document.querySelectorAll<HTMLInputElement>(".allergen-check:checked"))
+      .map(cb => cb.dataset.allergen ?? "")
+      .filter(Boolean);
+
+    const factor = portion / 100;
+    const data: Partial<FoodItem> = {
+      category,
+      translations,
+      searchIndex,
+      isVegan: (document.getElementById("prop-vegan") as HTMLInputElement).checked,
+      isVegetarian: (document.getElementById("prop-vegetarian") as HTMLInputElement).checked,
+      isGlutenFree: (document.getElementById("prop-gluten-free") as HTMLInputElement).checked,
+      isLactoseFree: (document.getElementById("prop-lactose-free") as HTMLInputElement).checked,
+      isNutFree: (document.getElementById("prop-nut-free") as HTMLInputElement).checked,
+      isShellfishFree: (document.getElementById("prop-shellfish-free") as HTMLInputElement).checked,
+      allergens,
+      tags,
+      calories100g: cal,
+      protein100g: pro,
+      carbs100g: carb,
+      fat100g: fat,
+      ...(fiberVal ? { fiber100g: parseFloat(fiberVal) } : {}),
+      ...(giVal ? { glycemicIndex: parseInt(giVal) } : {}),
+      defaultPortion: portion,
+      defaultCalories: Math.round(cal * factor),
+      defaultProtein: Math.round(pro * factor * 10) / 10,
+      defaultCarbs: Math.round(carb * factor * 10) / 10,
+      defaultFat: Math.round(fat * factor * 10) / 10,
+      isActive: (document.getElementById("food-active") as HTMLInputElement).checked,
+      updatedAt: serverTimestamp(),
+    };
+
+    if (id) {
+      // Update existing
+      await updateDoc(doc(db, COLLECTION, id), data as Record<string, unknown>);
+      logger.info("admin/foods", `Alimento actualizado: ${id}`);
+      showToast({ message: `✅ "${nameEs}" actualizado correctamente`, type: "success" });
+    } else {
+      // Create new
+      const docRef = await addDoc(collection(db, COLLECTION), {
+        ...data,
+        createdBy: currentUserId,
+        createdAt: serverTimestamp(),
+      });
+      logger.info("admin/foods", `Alimento creado: ${docRef.id}`);
+      showToast({ message: `✅ "${nameEs}" añadido al catálogo`, type: "success" });
+    }
+  }
+</script>
