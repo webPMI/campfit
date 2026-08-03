@@ -5,7 +5,6 @@ import Skeleton from "@/components/Skeleton.astro";
 import { translations, type Language } from "@/i18n/translations";
 
 const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
-const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
 <AdminLayout>
@@ -331,7 +330,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     subscribeToFoods,
     generateSearchIndex,
     searchFoodsLocal,
-    calcMacrosForPortion,
     type FoodItem,
     type FoodCategory,
   } from "@/lib/shared/foodLibrary";
@@ -367,9 +365,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const filterStatus = document.getElementById("filter-status") as HTMLSelectElement;
     const filterDiet = document.getElementById("filter-diet") as HTMLSelectElement;
     const btnNew = document.getElementById("btn-new-food")!;
-
-    // Modal elements
-    const modal = document.getElementById("food-modal")!;
     const modalBackdrop = document.getElementById("modal-backdrop")!;
     const modalClose = document.getElementById("modal-close")!;
     const btnCancel = document.getElementById("btn-modal-cancel")!;
