@@ -240,6 +240,37 @@ export function subscribeToFoods(
 }
 
 /**
+ * Suscripción reactiva al catálogo COMPLETO de alimentos (activos e inactivos).
+ * 
+ * 🔒 CRÍTICO: Solo para uso en el panel de administración.
+ * NUNCA usar en páginas de trainer o cliente — descargaría alimentos retirados.
+ * Para trainer/cliente: usar subscribeToFoods() que filtra isActive == true.
+ */
+export function subscribeToAllFoods(
+  callback: (foods: FoodItem[]) => void,
+): Unsubscribe {
+  const q = query(
+    collection(db, 'foods_library'),
+    orderBy('category', 'asc'),
+  );
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const foods = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as FoodItem[];
+      callback(foods);
+    },
+    (error) => {
+      logger.error('foodLibrary', 'Error al suscribirse a foods_library (admin):', error);
+      callback([]);
+    },
+  );
+}
+
+/**
  * Obtiene los alimentos de una categoría específica (una sola vez, no reactivo).
  * Útil para poblar un selector filtrado por categoría.
  */

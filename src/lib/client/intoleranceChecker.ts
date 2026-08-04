@@ -7,6 +7,9 @@
  */
 
 import type { MedicalProfile, IntoleranceEntry } from '@/types';
+import type { FoodItem } from '@/lib/shared/foodLibrary';
+import { getFoodName } from '@/lib/shared/foodLibrary';
+import type { Meal } from '@/lib/trainer/types';
 
 export interface AllergenConflict {
   allergen: string;
@@ -177,11 +180,8 @@ export function getIntoleranceSeverity(
   return intolerances.get(normal)?.severity || null;
 }
 
-// ── Detección extendida con foods_library ─────────────────────────────────────
-
-import type { FoodItem } from '@/lib/shared/foodLibrary';
-import { getFoodName } from '@/lib/shared/foodLibrary';
-import type { Meal } from '@/lib/trainer/types';
+// ── Detección extendida con foods_library ───────────────────────────────
+// Los tipos FoodItem, getFoodName y Meal se importan al inicio del archivo.
 
 /**
  * Tipo de conflicto dietético.
@@ -228,9 +228,13 @@ export function checkDietConflicts(
     const mealLabel = meal.name;
 
     // ── Check 1: Alérgenos (sistema existente, funciona con y sin foodId) ────
-    // Usa los alérgenos de la comida: si hay foodId, se copiaron del alimento;
-    // si no, el trainer los marcó manualmente.
-    const allergenSrc = meal.allergens ?? (food?.allergens ?? []);
+    // Fuente de alérgenos: meal.allergens si tiene elementos (entrada manual del trainer),
+    // sino los alérgenos del alimento del catálogo (copiados al seleccionar).
+    // 🔒 CRÍTICO: Comprobar length, NO usar ??, porque [] (array vacío) no activa el fallback
+    // de ?? pero sí significa "sin alérgenos", ignorando los del alimento.
+    const allergenSrc = (meal.allergens && meal.allergens.length > 0)
+      ? meal.allergens
+      : (food?.allergens ?? []);
     const allergenConflicts = checkMealAllergens(allergenSrc, mealLabel, medicalProfile);
     conflicts.push(
       ...allergenConflicts.map((c) => ({

@@ -105,7 +105,16 @@
         { "fieldPath": "isActive", "order": "ASCENDING" },
         { "fieldPath": "searchIndex", "arrayConfig": "CONTAINS" }
       ]
+    },
+    {
+      "collectionGroup": "foods_library",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "category", "order": "ASCENDING" },
+        { "fieldPath": "translations.es", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
-}
+}
