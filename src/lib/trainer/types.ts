@@ -36,6 +36,12 @@ export interface TrainerWorkout {
 
 export interface Exercise {
   id: string;
+  // 🔒 CRÍTICO: Referencia al ejercicio en exercises_library.
+  // Si el trainer seleccionó del catálogo → exerciseId apunta al documento.
+  // Si es texto libre (rutinas legacy) → exerciseId es undefined.
+  // NUNCA eliminar — se usa para mostrar detalles del catálogo, detectar exclusiones
+  // del cliente y sugerir sustitutos en trainer/workouts.astro.
+  exerciseId?: string;     // Ref a exercises_library/{exerciseId}
   name: string;
   sets: number;
   reps: number;

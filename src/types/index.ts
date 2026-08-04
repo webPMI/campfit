@@ -3,6 +3,7 @@
  */
 
 import type { FoodCategory } from '@/lib/shared/foodLibrary';
+import type { ExclusionReason } from '@/lib/shared/exerciseLibrary';
 
 export interface User {
   uid: string;
@@ -80,6 +81,66 @@ export interface MedicalProfile {
   // 🔒 CRÍTICO: Categorías de alimentos excluidas por el cliente.
   // Complementa (no reemplaza) los flags existentes en dietaryRestrictions.
   excludedFoodCategories?: FoodCategory[];
+}
+
+// ── Preferencias de ejercicios del cliente ───────────────────────────────────
+
+/**
+ * Solicitud de cambio de ejercicio iniciada por el cliente.
+ * El trainer puede verla en el panel de clientes y marcarla como vista (acknowledged).
+ *
+ * 🖒 PRIVACIDAD: El estado 'acknowledged' es SOLO para uso interno del trainer.
+ * NUNCA exponer este campo en la UI del cliente.
+ */
+export interface ExerciseRequest {
+  exerciseId: string;
+  exerciseName: string;    // Copia desnormalizada (sin lookup)
+  exerciseNameEn?: string; // Para trazabilidad multilenguaje
+  type: 'exclude' | 'un_exclude' | 'add_favorite' | 'remove_favorite';
+
+  // Motivos de exclusión (opcional, solo si type === 'exclude')
+  // 🖒 PRIVACIDAD: Los quickReasons sí los puede ver el trainer — son datos sensibles.
+  // Manejo con el mismo cuidado que las notas médicas.
+  quickReasons?: ExclusionReason[];
+  customReason?: string;
+
+  // 🖒 PRIVACIDAD: 'acknowledged' significa que el trainer lo vio.
+  // El cliente NUNCA ve este campo en la UI.
+  status: 'pending' | 'acknowledged';
+
+  requestedAt: any;        // Firestore Timestamp
+  acknowledgedAt?: any;    // Cuando el trainer marcó como visto
+  chatMessageId?: string;  // Ref al mensaje de chat generado
+}
+
+/**
+ * Preferencias de ejercicios del cliente.
+ * Coleccion: `user_exercise_prefs/{userId}` — un documento por usuario.
+ *
+ * 🖒 ACCESO: Solo el propio cliente puede escribir sus preferencias.
+ * El trainer (con el cliente asignado) puede leer pero NO escribir.
+ * Admin puede leer y escribir.
+ */
+export interface UserExercisePreferences {
+  userId: string;
+
+  // ⭐ Rating 1–5 por ejercicio (exerciseId → rating)
+  // 🕒 CRÍTICO: Fuente de verdad para favoritos y exclusiones.
+  // Rating 4–5 = favorito sugerido al trainer. Rating 1 = candidato a excluir.
+  // NUNCA cambiar el tipo de Record<string, 1|2|3|4|5> a Record<string, number>.
+  ratings: Record<string, 1 | 2 | 3 | 4 | 5>;
+
+  // Listas explícitas (pueden diferir del rating)
+  // 🕒 CRÍTICO: Persisten incluso si el ejercicio se desactiva en exercises_library.
+  // Las rutinas históricas pueden seguir referenciando ejercicios desactivados.
+  favorites: string[];    // IDs marcados explícitamente como favorito
+  excluded: string[];     // IDs explícitamente excluidos
+
+  // Cola de solicitudes pendientes (el trainer debe revisar)
+  // 🕒 CRÍTICO: NUNCA eliminar este array. Es el único historial de solicitudes.
+  pendingRequests: ExerciseRequest[];
+
+  updatedAt: any; // Firestore Timestamp
 }
 
 export interface LoginForm {

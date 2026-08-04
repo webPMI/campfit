@@ -5,6 +5,29 @@ Todos los cambios notables de este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Sin versión] - 2026-08-04
+
+### Agregado
+- **docs/AUDITORIA_UNIFICADA.md**: Nuevo archivo que consolida las 4 auditorías previas (`AUDIT_REPORT.md`, `AUDITORIA_COMPLETA_CAMPFIT.md`, `AUDITORIA_COMPLETA_PRO`, `AUDITORIA_DIETAS_TRAINER.md`) en una sola fuente de verdad con estado verificado. Se re-verificaron los hallazgos CRÍTICOS (P0) y de la auditoría de dietas contra el código actual.
+
+### Verificado (hallazgos re-chequeados 2026-08-04)
+- ✅ **CORREGIDO**: `firestore.rules` — ownership `trainerId == request.auth.uid` en diets/workouts (antes `isStaff()` sin verificación)
+- ✅ **CORREGIDO**: `trainer/diets.astro` — usa `requireRole(["trainer", "admin"])` (antes solo `requireAuth`)
+- ✅ **CORREGIDO**: `client/diets.astro` — `registerMealComplete(currentClientId, ...)` (antes clientId vacío)
+- ✅ **CORREGIDO**: `templateService.ts` — archivo íntegro + `isClientAssignedToTrainer()` (antes corrupto con `r/**`)
+- ✅ **CORREGIDO**: `trainer/types.ts` — unions estrictas + `allergens` + `foodId` (antes `type: string` sin allergens)
+- ⚠️ **VIGENTE**: `routeGuards.ts` — faltan `/trainer/clinical`, `/client/support`, `/client/settings`
+- ⚠️ **VIGENTE**: `en.ts` — falta clave `admin.modal.resetPwd` (paridad i18n)
+
+### Ronda 2 — Hallazgos profundos (2026-08-04)
+- ✅ **CORREGIDO**: `onSnapshot` en `dietService`, `workoutService`, `progressService`, `achievementsService`, `adherenceService`, `templateService` — todos retornan unsubscribe correctamente (PERF-003/004/005)
+- ✅ **CORREGIDO**: `docs/MASTER.md` y `nuevo_proyecto/00_indice.md` actualizados de "Astro 5" a "Astro 7" (DOC-001)
+- ✅ **CORREGIDO**: `nuevo_proyecto/00_indice.md` ahora lista `19_plan_refactor_optimizacion.md` (DOC-002)
+- ✅ **CORREGIDO**: `nuevo_proyecto/00_indice.md` alineado a SSG estático (eliminada referencia a SSR con @astrojs/node) (DOC-003)
+- ⚠️ **PARCIAL**: `console.*` en producción — `BaseLayout.astro:44` y `client/chat.astro` (los de debug/devtools son aceptables)
+
+---
+
 ## [Sin versión] - 2026-08-03
 
 ### Actualizado

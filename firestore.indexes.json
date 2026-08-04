@@ -114,6 +114,32 @@
         { "fieldPath": "category", "order": "ASCENDING" },
         { "fieldPath": "translations.es", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "exercises_library",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "searchIndex", "arrayConfig": "CONTAINS" }
+      ]
+    },
+    {
+      "collectionGroup": "exercises_library",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "muscleGroups", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "translations.es", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "exercises_library",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "category", "order": "ASCENDING" },
+        { "fieldPath": "translations.es", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

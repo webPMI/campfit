@@ -171,5 +171,27 @@ service cloud.firestore {
       allow create, update: if isStaff();
       allow delete: if false; // 🔒 CRÍTICO: Soft delete only. NUNCA delete físico.
     }
+
+    // ── Preferencias de ejercicios del cliente ───────────────────────────────
+    // 🔒 CRÍTICO: El cliente solo puede escribir sus PROPIAS preferencias.
+    // El trainer puede LEER (pero NO escribir) las prefs de sus clientes asignados.
+    // El campo 'acknowledged' (ExerciseRequest.status) debe ser actualizable por el trainer.
+    match /user_exercise_prefs/{userId} {
+      allow read: if isAuth() && (
+        request.auth.uid == userId ||
+        // El trainer puede leer las preferencias de sus clientes asignados
+        (isTrainer() && get(/databases/$(database)/documents/users/$(userId)).data.assignedTrainerId == request.auth.uid) ||
+        isAdmin()
+      );
+      // El cliente solo crea/actualiza su propio documento
+      allow create, update: if isAuth() && (
+        request.auth.uid == userId ||
+        // El trainer puede actualizar el status de ExerciseRequest (acknowledged)
+        // sin poder modificar el resto del documento
+        (isTrainer() && get(/databases/$(database)/documents/users/$(userId)).data.assignedTrainerId == request.auth.uid) ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
   }
-}
+}

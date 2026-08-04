@@ -1,7 +1,7 @@
 # 📚 CampFit - Documentación del Proyecto
 
-> **Stack:** Astro 5 + Tailwind CSS 4 + Firebase 11 + Nanostores  
-> **Arquitectura:** Vanilla JS (sin React). SSR con `@astrojs/node` standalone.  
+> **Stack:** Astro 7 + Tailwind CSS 4 + Firebase 11 + Nanostores  
+> **Arquitectura:** Vanilla JS (sin React). Compilación y enrutado estático (SSG).  
 > **Estado:** En desarrollo activo.
 
 ---
@@ -29,7 +29,8 @@
 | 16 | **`16_implementacion_incremental.md`** | Estrategia de implementación en micro-pasos seguros |
 | 17 | **`17_glosario.md`** | Glosario de términos del dominio |
 | 18 | **`18_protocolo_documentacion.md`** | 📋 Protocolo para mantener la documentación optimizada |
-| 19 | **`firebase_rules.md`** | 🔥 Reglas de seguridad de Firestore desplegadas (producción) |
+| 19 | **`19_plan_refactor_optimizacion.md`** | 🛠️ Plan de refactorización y optimización del proyecto |
+| 20 | **`firebase_rules.md`** | 🔥 Reglas de seguridad de Firestore desplegadas (producción) |
 
 ---
 
