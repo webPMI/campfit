@@ -21,6 +21,16 @@ y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Ronda 2 — Hallazgos profundos (2026-08-04)
 - ✅ **CORREGIDO**: `onSnapshot` en `dietService`, `workoutService`, `progressService`, `achievementsService`, `adherenceService`, `templateService` — todos retornan unsubscribe correctamente (PERF-003/004/005)
+
+## [Sin versión] - 2026-08-05
+
+### Documentación
+- **Consolidación de la Base de Documentación**:
+  - Actualizados `CONTEXT.md`, `.clinerules` y `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` reflejando Astro 7, SSG mode y 11 colecciones Firestore.
+  - Creado `docs/README.md` como índice maestro navegable.
+  - Creadas especificaciones técnicas completas de módulos: `docs/features/BIBLIOTECA_ALIMENTOS.md` y `docs/features/BIBLIOTECA_EJERCICIOS.md`.
+  - Creada guía operacional `docs/REFERENCIA_RAPIDA.md`.
+  - Archivados documentos obsoletos (`MASTER.md`, `AUDIT_REPORT.md`, etc.) en `docs/_archive/`.
 - ✅ **CORREGIDO**: `docs/MASTER.md` y `nuevo_proyecto/00_indice.md` actualizados de "Astro 5" a "Astro 7" (DOC-001)
 - ✅ **CORREGIDO**: `nuevo_proyecto/00_indice.md` ahora lista `19_plan_refactor_optimizacion.md` (DOC-002)
 - ✅ **CORREGIDO**: `nuevo_proyecto/00_indice.md` alineado a SSG estático (eliminada referencia a SSR con @astrojs/node) (DOC-003)

@@ -79,14 +79,30 @@
 - **`checkDietAllergens()`** — **NUNCA eliminar** (verifica todos los meals de una dieta).
 - **`ALLERGEN_ALIASES`** — Mapa de normalización. **NUNCA eliminar** entradas, solo añadir nuevas.
 
+### 🥗 `src/lib/shared/foodLibrary.ts`
+- **`subscribeToFoods()`** — **NUNCA eliminar** `where('isActive', '==', true)` (filtra alimentos activos para client/trainer).
+- **`subscribeToAllFoods()`** — **NUNCA eliminar** (usado por el admin para ver activos e inactivos).
+- **`generateSearchIndex()`** — **NUNCA eliminar** la normalización de tildes ni el split por tokens.
+- **`searchFoodsLocal()`** — **NUNCA eliminar** el matching por `startsWith` de tokens.
+
 ### 🥗 `src/lib/trainer/types.ts`
 - **`TrainerDiet.type`** — Union estricta: `'normal' | 'definition' | 'volume' | 'keto' | 'vegan' | 'custom'`. **NUNCA cambiar a `string`**.
 - **`Meal.name`** — Union estricta: `'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other'`. **NUNCA cambiar a `string`**.
 - **`Meal.allergens`** — Campo `allergens?: string[]`. **NUNCA eliminar** (usado por `intoleranceChecker`).
+- **`Meal.foodId`** — Referencia a `foods_library`. **NUNCA eliminar**.
 
 ---
 
-## 4. Sistema de Rutinas
+## 4. Sistema de Rutinas y Ejercicios
+
+### 🏋️ `src/lib/shared/exerciseLibrary.ts`
+- **`subscribeToExercises()`** — **NUNCA eliminar** `where('isActive', '==', true)`.
+- **`subscribeToAllExercises()`** — **NUNCA eliminar** (usado por el admin).
+- **`generateExerciseSearchIndex()`** — **NUNCA eliminar** la normalización multilenguaje.
+- **`MuscleGroup`, `ExerciseCategory`, `EquipmentType`, `ExclusionReason`** — Unions estrictas. **NUNCA convertir a `string`**.
+
+### 🏋️ `src/lib/trainer/types.ts`
+- **`Exercise.exerciseId`** — Referencia opcional a `exercises_library/{exerciseId}`. **NUNCA eliminar** (mantiene compatibilidad backward con rutinas legacy de texto libre).
 
 ### 🏋️ `src/lib/trainer/trainerWorkouts.ts`
 - **`subscribeToWorkoutsByTrainer()`** — **NUNCA eliminar** `where('trainerId', '==', trainerId)` ni `orderBy('createdAt', 'desc')`.

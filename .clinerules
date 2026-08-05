@@ -1,11 +1,11 @@
 # CampFit 2.0 - Cline Rules
 
 ## Stack
-- Framework: Astro 5 (SSR + islands)
+- Framework: Astro 7 (SSG + islands)
 - UI: Astro components + Alpine.js / vanilla JS (sin React)
-- Styles: Tailwind CSS 4 (dark mode default)
+- Styles: Tailwind CSS 4 (dark & light mode, theme flavors)
 - State: Nanostores
-- Database: Cloud Firestore (NoSQL)
+- Database: Cloud Firestore (NoSQL, 11 colecciones)
 - Storage: Cloudflare R2
 - Mobile: Capacitor 6
 - Testing: Vitest (unitarios) + Playwright (E2E) — **centralizados en tests/**
@@ -34,7 +34,8 @@ campfit-astro/
 │   │   ├── firebase.ts
 │   │   ├── validators.ts      # Validación de formularios (pure functions)
 │   │   ├── routeGuards.ts     # Protección de rutas por rol
-│   │   └── client/            # Servicios del lado cliente
+│   │   ├── shared/            # Biblioteca común (foodLibrary, exerciseLibrary, chat, ui, logger)
+│   │   └── client/            # Servicios cliente (dietService, workoutService, intoleranceChecker)
 │   ├── services/      # Servicios (Firebase, etc.)
 │   │   ├── authService.ts     # Auth centralizado (login, register, Google, recover)
 │   │   └── adminService.ts    # Admin: CRUD usuarios, estadísticas
