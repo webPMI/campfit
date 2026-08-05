@@ -22,24 +22,16 @@
 
 ## 🔴 HALLAZGOS CRÍTICOS (P0) — Verificados
 
-### SEC-001/002/003: Rutas no protegidas en `routeGuards.ts` — ⚠️ **VIGENTE**
+### SEC-001/002/003: Rutas no protegidas en `routeGuards.ts` — ✅ **CORREGIDO**
 
 **Archivo:** `src/lib/routeGuards.ts`
 
-Las siguientes rutas NO están en `routeGuards.ts`, por lo que cualquier usuario autenticado puede acceder:
-
-| Ruta | Estado |
-|------|--------|
-| `/trainer/clinical` | ⚠️ VIGENTE |
-| `/client/support` | ⚠️ VIGENTE |
-| `/client/settings` | ⚠️ VIGENTE |
-
-**Corrección:** Añadir a `routeGuards.ts`:
-```typescript
-{ path: '/trainer/clinical', allowedRoles: ['trainer', 'admin'] },
-{ path: '/client/support', allowedRoles: ['client'] },
-{ path: '/client/settings', allowedRoles: ['client'] },
-```
+**Estado:** ✅ Verificado y corregido el 2026-08-06. Se añadieron todas las rutas faltantes a `routeGuards.ts`:
+- `/trainer/clinical` -> `['trainer', 'admin']`
+- `/client/support` -> `['client']`
+- `/client/settings` -> `['client']`
+- `/admin/foods` -> `['admin']`
+- `/admin/exercises` -> `['admin']`
 
 ---
 

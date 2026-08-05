@@ -28,6 +28,8 @@ export const routeGuards: RouteGuard[] = [
   { path: '/client/diets', allowedRoles: ['client'], requiresMedicalProfile: false },
   { path: '/client/progress', allowedRoles: ['client'], requiresMedicalProfile: false },
   { path: '/client/chat', allowedRoles: ['client'], requiresMedicalProfile: false },
+  { path: '/client/support', allowedRoles: ['client'], requiresMedicalProfile: false },
+  { path: '/client/settings', allowedRoles: ['client'], requiresMedicalProfile: false },
 
   // Dashboard general (post-login)
   { path: '/dashboard', allowedRoles: ['admin', 'trainer', 'client'] },
@@ -43,6 +45,8 @@ export const routeGuards: RouteGuard[] = [
   { path: '/admin/diets', allowedRoles: ['admin'] },
   { path: '/admin/progress', allowedRoles: ['admin'] },
   { path: '/admin/chat', allowedRoles: ['admin'] },
+  { path: '/admin/foods', allowedRoles: ['admin'] },
+  { path: '/admin/exercises', allowedRoles: ['admin'] },
   { path: '/admin/settings', allowedRoles: ['admin'] },
 
   // Trainer (también accesible por admin)
@@ -50,6 +54,7 @@ export const routeGuards: RouteGuard[] = [
   { path: '/trainer/clients', allowedRoles: ['trainer', 'admin'] },
   { path: '/trainer/workouts', allowedRoles: ['trainer', 'admin'] },
   { path: '/trainer/diets', allowedRoles: ['trainer', 'admin'] },
+  { path: '/trainer/clinical', allowedRoles: ['trainer', 'admin'] },
   { path: '/trainer/chat', allowedRoles: ['trainer', 'admin'] },
   { path: '/trainer/settings', allowedRoles: ['trainer', 'admin'] },
 
