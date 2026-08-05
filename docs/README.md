@@ -19,7 +19,7 @@
 
 - [FIRESTORE_SCHEMA.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/architecture/FIRESTORE_SCHEMA.md) — Especificación de las 11 colecciones NoSQL y reglas de seguridad.
 - [THEME.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/THEME.md) — Sistema de diseño v2.0 (Tokens CSS, Tailwind 4, Flavors, Modo Oscuro/Claro).
-- [DISENO_LISTA_COMIDAS_MULTILENGUAJE.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/DISENO_LISTA_COMIDAS_MULTILENGUAJE.md) — Arquitectura multilenguaje y motor de intolerancias.
+- [DISENO_LISTA_COMIDAS_MULTILENGUAJE.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/features/DISENO_LISTA_COMIDAS_MULTILENGUAJE.md) — Arquitectura multilenguaje y motor de intolerancias.
 
 ---
 
@@ -37,21 +37,23 @@
 
 ---
 
-## 📂 Estructura Completa de la Documentación (`/docs/`)
+## 📂 Estructura Completa de la Documentación Activa (`/docs/`)
 
 ```
 docs/
-├── README.md                              ← Este índice
+├── README.md                              ← Este índice master
 ├── REFERENCIA_RAPIDA.md                   ← Cheatsheet técnico rápido
 ├── FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md ← Protección de código sensible
-├── DISENO_LISTA_COMIDAS_MULTILENGUAJE.md  ← Diseño biblioteca de alimentos
 ├── THEME.md                               ← Design System & Tokens CSS
 ├── AUDITORIA_UNIFICADA.md                 ← Auditoría de calidad y bugs
 │
 ├── features/
-│   ├── BIBLIOTECA_ALIMENTOS.md            ← Especificación módulo de alimentos
-│   └── BIBLIOTECA_EJERCICIOS.md           ← Especificación módulo de ejercicios
+│   ├── BIBLIOTECA_ALIMENTOS.md            ← Módulo de alimentos y alérgenos UE
+│   ├── BIBLIOTECA_EJERCICIOS.md           ← Módulo de ejercicios y preferencias
+│   └── DISENO_LISTA_COMIDAS_MULTILENGUAJE.md ← Especificación multilenguaje
 │
-└── architecture/
-    └── FIRESTORE_SCHEMA.md                ← Schemas de datos y reglas
+├── architecture/
+│   └── FIRESTORE_SCHEMA.md                ← Schemas NoSQL y reglas de seguridad
+│
+└── _archive/                              ← Archivos legacy/obsoletos preservados
 ```
