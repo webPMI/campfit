@@ -537,6 +537,7 @@ export const en: TranslationMap = {
   'admin.modal.cancel': 'Cancel',
   'admin.modal.medical': 'Medical Profile',
   'admin.modal.reset.pwd': 'Reset Password',
+  'admin.modal.resetPwd': 'Reset Password',
   'admin.modal.delete': 'Delete',
   'admin.user.block': 'Block',
   'admin.user.unblock': 'Unblock',

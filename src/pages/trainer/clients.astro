@@ -42,13 +42,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import { escapeHtml } from "@/lib/shared/ui";
   import { subscribeToClients, getClientProfile, type TrainerClient } from "@/lib/trainer/trainerUtils";
 
-  let unsubClients = null;
-  let allClients = [];
+  let unsubClients: (() => void) | null = null;
+  let allClients: TrainerClient[] = [];
 
   requireAuth(async (user) => { initClients(user.uid); });
   window.addEventListener("beforeunload", () => { unsubClients?.(); });
 
-  async function initClients(trainerId) {
+  async function initClients(trainerId: string) {
     const container = document.getElementById("clients-container")!;
     const searchInput = document.getElementById("client-search") as HTMLInputElement;
     const detailPanel = document.getElementById("client-detail")!;
@@ -90,7 +90,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     });
   }
 
-  function renderDetailView(client, profile) {
+  function renderDetailView(client: TrainerClient, profile: any) {
     const detailPanel = document.getElementById("client-detail")!;
     const hasMedical = profile.medicalProfile;
     let medicalHTML = "";

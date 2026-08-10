@@ -180,7 +180,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       })
       .join("");
 
-    const dayName = t(dayKeys[selectedDay - 1]);
+    const dayKey = dayKeys[selectedDay - 1];
+    const dayName = dayKey ? t(dayKey) : "";
     const isToday = selectedDay === todayDayIndex;
     activeDayLabel.textContent = isToday ? `${dayName} (${t("client.today")})` : dayName;
 
@@ -232,7 +233,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     if (dayExercises.length === 0) {
       workoutCard.classList.add("hidden");
       emptyState.classList.remove("hidden");
-      emptyTitle.textContent = `${t("client.restDay")} (${t(dayKeys[selectedDay - 1])})`;
+      const dayKey = dayKeys[selectedDay - 1];
+      emptyTitle.textContent = `${t("client.restDay")} (${dayKey ? t(dayKey) : ""})`;
       emptyDesc.textContent = t("client.restDayDesc");
       return;
     }
@@ -387,8 +389,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       await logWorkoutSession({
         clientId: activeUserUid,
         workoutId: currentWorkout.id,
+        workoutName: currentWorkout.name,
         dayOfWeek: selectedDay,
-        rpe: rpeVal,
+        status: "completed",
+        overallRpe: rpeVal,
         notes: notesVal,
         exercises: logs,
       });

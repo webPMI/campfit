@@ -48,17 +48,105 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </AdminLayout>
 
 <script>
-  import { requireAdmin } from '@/lib/shared/authGuard'; import { showToast } from '@/lib/shared/ui';
+  import { requireAdmin } from '@/lib/shared/authGuard';
   import { seedExerciseTemplates, seedMealTemplates, seedDietTemplates, seedWorkoutTemplates, seedAllTemplates, purgeTemplates, getTemplateStats } from '@/lib/devtools/seedService';
-  requireAdmin(()=>{init()}); function log(m,t){const el=document.getElementById('console-log');if(!el)return;const c={info:'text-blue-400',success:'text-emerald-400 font-bold',warn:'text-amber-400',error:'text-red-400 font-bold'};const l=document.createElement('p');l.className=c[t]||'text-gray-300';l.textContent=`[${new Date().toLocaleTimeString()}] ${m}`;el.appendChild(l);el.scrollTop=el.scrollHeight}
-  async function rs(){try{const s=await getTemplateStats();document.getElementById('cnt-exercises')!.textContent=String(s.exerciseTemplatesCount);document.getElementById('cnt-meals')!.textContent=String(s.mealTemplatesCount);document.getElementById('cnt-diets')!.textContent=String(s.dietTemplatesCount);document.getElementById('cnt-workouts')!.textContent=String(s.workoutTemplatesCount)}catch(e){log(`Error stats: ${e.message}`,'error')}}
-  function init(){rs();
-    document.getElementById('btn-seed-exercises')?.addEventListener('click',async()=>{try{const c=await seedExerciseTemplates();log(`✅ ${c} ejercicios`,'success');rs()}catch(e){log(`❌ ${e.message}`,'error')}});
-    document.getElementById('btn-seed-meals')?.addEventListener('click',async()=>{try{const c=await seedMealTemplates();log(`✅ ${c} comidas`,'success');rs()}catch(e){log(`❌ ${e.message}`,'error')}});
-    document.getElementById('btn-seed-diets')?.addEventListener('click',async()=>{try{const c=await seedDietTemplates();log(`✅ ${c} dietas`,'success');rs()}catch(e){log(`❌ ${e.message}`,'error')}});
-    document.getElementById('btn-seed-workouts')?.addEventListener('click',async()=>{try{const c=await seedWorkoutTemplates();log(`✅ ${c} rutinas`,'success');rs()}catch(e){log(`❌ ${e.message}`,'error')}});
-    document.getElementById('btn-seed-all')?.addEventListener('click',async()=>{try{const r=await seedAllTemplates();log(`🎉 Total: ${r.total}`,'success');rs()}catch(e){log(`❌ ${e.message}`,'error')}});
-    document.getElementById('btn-purge-all')?.addEventListener('click',async()=>{if(!confirm('¿Purgar todo?'))return;try{const d=await purgeTemplates();log(`🧹 ${d} eliminados`,'success');rs()}catch(e){log(`❌ ${e.message}`,'error')}});
-    document.getElementById('btn-clear-log')?.addEventListener('click',()=>{const el=document.getElementById('console-log');if(el)el.innerHTML='<p class="text-gray-500">// Consola limpia.</p>'});
+
+  requireAdmin(() => { init(); });
+
+  type LogType = 'info' | 'success' | 'warn' | 'error';
+
+  function log(m: string, t: LogType): void {
+    const el = document.getElementById('console-log');
+    if (!el) return;
+    const c: Record<LogType, string> = {
+      info: 'text-blue-400',
+      success: 'text-emerald-400 font-bold',
+      warn: 'text-amber-400',
+      error: 'text-red-400 font-bold',
+    };
+    const l = document.createElement('p');
+    l.className = c[t] || 'text-gray-300';
+    l.textContent = `[${new Date().toLocaleTimeString()}] ${m}`;
+    el.appendChild(l);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  async function rs(): Promise<void> {
+    try {
+      const s = await getTemplateStats();
+      const cntExercises = document.getElementById('cnt-exercises');
+      const cntMeals = document.getElementById('cnt-meals');
+      const cntDiets = document.getElementById('cnt-diets');
+      const cntWorkouts = document.getElementById('cnt-workouts');
+      if (cntExercises) cntExercises.textContent = String(s.exerciseTemplatesCount);
+      if (cntMeals) cntMeals.textContent = String(s.mealTemplatesCount);
+      if (cntDiets) cntDiets.textContent = String(s.dietTemplatesCount);
+      if (cntWorkouts) cntWorkouts.textContent = String(s.workoutTemplatesCount);
+    } catch (e) {
+      log(`Error stats: ${(e as Error).message}`, 'error');
+    }
+  }
+
+  function init(): void {
+    rs();
+    document.getElementById('btn-seed-exercises')?.addEventListener('click', async () => {
+      try {
+        const c = await seedExerciseTemplates();
+        log(`✅ ${c} ejercicios`, 'success');
+        rs();
+      } catch (e) {
+        log(`❌ ${(e as Error).message}`, 'error');
+      }
+    });
+    document.getElementById('btn-seed-meals')?.addEventListener('click', async () => {
+      try {
+        const c = await seedMealTemplates();
+        log(`✅ ${c} comidas`, 'success');
+        rs();
+      } catch (e) {
+        log(`❌ ${(e as Error).message}`, 'error');
+      }
+    });
+    document.getElementById('btn-seed-diets')?.addEventListener('click', async () => {
+      try {
+        const c = await seedDietTemplates();
+        log(`✅ ${c} dietas`, 'success');
+        rs();
+      } catch (e) {
+        log(`❌ ${(e as Error).message}`, 'error');
+      }
+    });
+    document.getElementById('btn-seed-workouts')?.addEventListener('click', async () => {
+      try {
+        const c = await seedWorkoutTemplates();
+        log(`✅ ${c} rutinas`, 'success');
+        rs();
+      } catch (e) {
+        log(`❌ ${(e as Error).message}`, 'error');
+      }
+    });
+    document.getElementById('btn-seed-all')?.addEventListener('click', async () => {
+      try {
+        const r = await seedAllTemplates();
+        log(`🎉 Total: ${r.total}`, 'success');
+        rs();
+      } catch (e) {
+        log(`❌ ${(e as Error).message}`, 'error');
+      }
+    });
+    document.getElementById('btn-purge-all')?.addEventListener('click', async () => {
+      if (!confirm('¿Purgar todo?')) return;
+      try {
+        const d = await purgeTemplates();
+        log(`🧹 ${d} eliminados`, 'success');
+        rs();
+      } catch (e) {
+        log(`❌ ${(e as Error).message}`, 'error');
+      }
+    });
+    document.getElementById('btn-clear-log')?.addEventListener('click', () => {
+      const el = document.getElementById('console-log');
+      if (el) el.innerHTML = '<p class="text-gray-500">// Consola limpia.</p>';
+    });
   }
 </script>

@@ -30,6 +30,8 @@ export function subscribeToWorkoutsByTrainer(
   trainerId: string,
   callback: (workouts: TrainerWorkout[]) => void,
 ): Unsubscribe {
+  // 🔒 CRÍTICO: where + orderBy filtran rutinas por trainer y las ordenan por fecha.
+  // Sin where, el trainer vería rutinas de otros trainers. Sin orderBy, no habría orden cronológico.
   const q = query(
     collection(db, 'workouts'),
     where('trainerId', '==', trainerId),
@@ -59,6 +61,8 @@ export function subscribeToWorkoutsByClient(
   clientId: string,
   callback: (workouts: TrainerWorkout[]) => void,
 ): Unsubscribe {
+  // 🔒 CRÍTICO: where + orderBy filtran rutinas por cliente y las ordenan por fecha.
+  // Sin where, se descargarían TODAS las rutinas del sistema.
   const q = query(
     collection(db, 'workouts'),
     where('clientId', '==', clientId),
@@ -84,6 +88,8 @@ export function subscribeToWorkoutsByClient(
  */
 export async function createWorkout(data: Omit<TrainerWorkout, 'id'>): Promise<string | null> {
   try {
+    // 🔒 CRÍTICO: serverTimestamp() en createdAt y updatedAt es obligatorio.
+    // Sin esto, las rutinas no se ordenarían correctamente y orderBy fallaría.
     const docRef = await addDoc(collection(db, 'workouts'), {
       ...data,
       createdAt: serverTimestamp(),

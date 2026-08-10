@@ -108,9 +108,9 @@ import Skeleton from "@/components/Skeleton.astro";
 
       <!-- Estado de carga -->
       <div id="loading-state" class="py-12 text-center space-y-3">
-        <Skeleton class="h-16 w-full rounded-2xl mb-2" />
-        <Skeleton class="h-16 w-full rounded-2xl mb-2" />
-        <Skeleton class="h-16 w-full rounded-2xl mb-2" />
+        <Skeleton className="h-16 w-full rounded-2xl mb-2" />
+        <Skeleton className="h-16 w-full rounded-2xl mb-2" />
+        <Skeleton className="h-16 w-full rounded-2xl mb-2" />
       </div>
 
       <!-- Estado vacío -->
@@ -491,7 +491,7 @@ import Skeleton from "@/components/Skeleton.astro";
   function renderExerciseRow(ex: ExerciseItem): string {
     const nameEs = escapeHtml(ex.translations.es);
     const nameEn = escapeHtml(ex.translations.en || "");
-    const primaryMuscle = MUSCLE_LABELS[ex.muscleGroups[0]] ?? ex.muscleGroups[0];
+    const primaryMuscle = ex.muscleGroups[0] ? (MUSCLE_LABELS[ex.muscleGroups[0]] ?? ex.muscleGroups[0]) : "—";
     const categoryLabel = CATEGORY_LABELS_EX[ex.category] ?? ex.category;
     const diffLabel = DIFFICULTY_LABELS[ex.difficulty] ?? ex.difficulty;
 

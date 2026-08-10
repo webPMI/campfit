@@ -135,7 +135,7 @@ export interface WorkoutSessionLog {
   clientId: string;
   workoutId: string;
   workoutName: string;
-  date: { toDate: () => Date } | null;
+  date?: { toDate: () => Date } | null;
   dayOfWeek: number;
   status: 'completed' | 'partial' | 'skipped';
   overallRpe?: number;

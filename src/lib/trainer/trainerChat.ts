@@ -28,6 +28,8 @@ export function subscribeToConversations(
   userId: string,
   callback: (messages: TrainerMessage[]) => void,
 ): Unsubscribe {
+  // 🔒 CRÍTICO: array-contains + orderBy filtran conversaciones donde el usuario es participante.
+  // Sin array-contains, el usuario vería TODOS los mensajes del sistema.
   const q = query(
     collection(db, 'messages'),
     where('participants', 'array-contains', userId),
@@ -56,6 +58,8 @@ export function subscribeToConversation(
   userId2: string,
   callback: (messages: TrainerMessage[]) => void,
 ): Unsubscribe {
+  // 🔒 CRÍTICO: orderBy('createdAt', 'asc') ordena mensajes cronológicamente (más antiguo primero).
+  // Sin esto, los mensajes aparecerían en orden inverso y el chat sería confuso.
   const q = query(
     collection(db, 'messages'),
     where('participants', 'array-contains', userId1),

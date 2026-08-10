@@ -666,6 +666,7 @@ export const SEED_DIETS: Omit<DietTemplate, 'id'>[] = [
 export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
   {
     name: 'Rutina FullBody Principiante (3 Días)',
+    category: 'Full Body',
     difficulty: 'beginner',
     description: 'Rutina de cuerpo completo diseñada para principiantes. Frecuencia 3 con ejercicios básicos.',
     isPreset: true,
@@ -674,6 +675,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-fb-1',
         name: 'Sentadilla Trasera con Barra (Back Squat)',
+        category: 'Piernas',
         sets: 3,
         reps: 10,
         restTime: '90s',
@@ -685,6 +687,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-fb-2',
         name: 'Press de Banca Plano con Barra',
+        category: 'Pecho',
         sets: 3,
         reps: 10,
         restTime: '90s',
@@ -696,6 +699,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-fb-3',
         name: 'Remo con Barra Horizontal',
+        category: 'Espalda',
         sets: 3,
         reps: 10,
         restTime: '90s',
@@ -707,6 +711,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-fb-4',
         name: 'Press Militar de Pie con Barra',
+        category: 'Hombros',
         sets: 3,
         reps: 10,
         restTime: '90s',
@@ -718,6 +723,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-fb-5',
         name: 'Plancha Abdominal Isometrica',
+        category: 'Core',
         sets: 3,
         reps: 45,
         restTime: '45s',
@@ -730,6 +736,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
   },
   {
     name: 'Rutina Torso - Pierna Hipertrofia (4 Días)',
+    category: 'Torso/Pierna',
     difficulty: 'intermediate',
     description: 'División clásico Torso/Pierna frecuencia 2 para maximizar masa muscular e intensidad.',
     isPreset: true,
@@ -738,6 +745,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-tp-1',
         name: 'Press de Banca Plano con Barra',
+        category: 'Pecho',
         sets: 4,
         reps: 8,
         restTime: '90s',
@@ -749,6 +757,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-tp-2',
         name: 'Dominadas Pronadas',
+        category: 'Espalda',
         sets: 4,
         reps: 8,
         restTime: '90s',
@@ -760,6 +769,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-tp-3',
         name: 'Press Inclinado con Mancuernas',
+        category: 'Pecho',
         sets: 3,
         reps: 10,
         restTime: '75s',
@@ -771,6 +781,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-tp-4',
         name: 'Elevaciones Laterales con Mancuernas',
+        category: 'Hombros',
         sets: 4,
         reps: 15,
         restTime: '60s',
@@ -782,6 +793,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-tp-5',
         name: 'Sentadilla Trasera con Barra (Back Squat)',
+        category: 'Piernas',
         sets: 4,
         reps: 8,
         restTime: '120s',
@@ -793,6 +805,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-tp-6',
         name: 'Peso Muerto Rumano (RDL)',
+        category: 'Piernas',
         sets: 4,
         reps: 10,
         restTime: '90s',
@@ -805,6 +818,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
   },
   {
     name: 'Push / Pull / Legs Avanzado (6 Días)',
+    category: 'Push/Pull/Legs',
     difficulty: 'advanced',
     description: 'Esquema de empuje, tirón y pierna de alta frecuencia e intensidad para atletas experimentados.',
     isPreset: true,
@@ -813,6 +827,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-ppl-1',
         name: 'Press de Banca Plano con Barra',
+        category: 'Pecho',
         sets: 4,
         reps: 6,
         restTime: '120s',
@@ -824,6 +839,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-ppl-2',
         name: 'Press Militar de Pie con Barra',
+        category: 'Hombros',
         sets: 4,
         reps: 8,
         restTime: '90s',
@@ -835,6 +851,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-ppl-3',
         name: 'Peso Muerto Convencional',
+        category: 'Espalda',
         sets: 4,
         reps: 6,
         restTime: '120s',
@@ -846,6 +863,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-ppl-4',
         name: 'Dominadas Pronadas',
+        category: 'Espalda',
         sets: 4,
         reps: 8,
         restTime: '90s',
@@ -857,6 +875,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-ppl-5',
         name: 'Sentadilla Trasera con Barra (Back Squat)',
+        category: 'Piernas',
         sets: 4,
         reps: 6,
         restTime: '120s',
@@ -868,6 +887,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-ppl-6',
         name: 'Hip Thrust con Barra en Banco',
+        category: 'Piernas',
         sets: 4,
         reps: 10,
         restTime: '90s',
@@ -880,6 +900,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
   },
   {
     name: 'Cardio & Core HIIT Fat-Burner (3 Días)',
+    category: 'Cardio/Full Body',
     difficulty: 'intermediate',
     description: 'Plan de alta intensidad para quema de grasa y acondicionamiento físico metabólico.',
     isPreset: true,
@@ -888,6 +909,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-hiit-1',
         name: 'Sprints HIIT en Cinta o Pista',
+        category: 'Cardio',
         sets: 8,
         reps: 30,
         restTime: '60s',
@@ -899,6 +921,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-hiit-2',
         name: 'Plancha Abdominal Isometrica',
+        category: 'Core',
         sets: 4,
         reps: 60,
         restTime: '45s',
@@ -910,6 +933,7 @@ export const SEED_WORKOUTS: Omit<WorkoutTemplate, 'id'>[] = [
       {
         id: 'ex-hiit-3',
         name: 'Rueda Abdominal (Ab-Wheel Rollout)',
+        category: 'Core',
         sets: 3,
         reps: 12,
         restTime: '60s',

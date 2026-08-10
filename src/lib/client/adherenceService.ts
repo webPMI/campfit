@@ -94,7 +94,7 @@ export function subscribeToWeeklyAdherence(
     (snapshot) => {
       try {
         mealsData = snapshot.docs
-          .map((d) => d.data())
+          .map((d) => d.data() as MealProgressLog)
           .filter((d) => {
             const date = d.date instanceof Date ? d.date : d.date?.toDate?.();
             return date && date >= weekAgo;
@@ -124,7 +124,7 @@ export function subscribeToWeeklyAdherence(
     (snapshot) => {
       try {
         workoutsData = snapshot.docs
-          .map((d) => d.data())
+          .map((d) => d.data() as WorkoutProgressLog)
           .filter((d) => {
             const date = d.completedAt instanceof Date ? d.completedAt : d.completedAt?.toDate?.();
             return date && date >= weekAgo;

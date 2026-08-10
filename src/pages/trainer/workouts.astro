@@ -184,7 +184,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     } else {
       container.innerHTML = filtered.map(w => {
         const client = allClients.find(c => c.uid === w.clientId);
-        const clientName = client ? client.name : (w.clientName || t("common.client"));
+        const clientName = client ? client.name : t("common.client");
         return `
           <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm flex items-center justify-between gap-4">
             <div class="space-y-1">
@@ -289,6 +289,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             sets: exSets,
             reps: exReps,
             restTime: exRest,
+            videoUrl: "",
+            description: "",
             order: idx + 1,
             dayOfWeek: exDay,
           });

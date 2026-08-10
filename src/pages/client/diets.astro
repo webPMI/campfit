@@ -296,6 +296,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     type Meal,
   } from "@/lib/client/dietService";
   import { t } from "@/i18n/client";
+  import { escapeHtml } from "@/lib/shared/ui";
 
   // ─── DOM refs ────────────────────────────────────────────────────────────────
   const loadingScreen = document.getElementById("loadingScreen")!;
