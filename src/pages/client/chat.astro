@@ -37,7 +37,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
 
         <!-- Caja de Mensajes -->
-        <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl flex flex-col h-[520px]">
+        <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl flex flex-col h-[540px]">
           <!-- Contenedor Scrollable de Mensajes -->
           <div id="messagesContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-thin scrollbar-thumb-zinc-700">
             <div class="flex justify-center pt-8">
@@ -45,9 +45,27 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             </div>
           </div>
 
+          <!-- Preview de archivo adjunto antes de enviar -->
+          <div id="attachment-preview" class="hidden p-2 bg-[var(--surface-3)] rounded-xl border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs mb-2">
+            <div class="flex items-center gap-2 truncate">
+              <span id="attachment-preview-icon">📎</span>
+              <span id="attachment-preview-name" class="truncate font-semibold text-[var(--text-primary)]"></span>
+            </div>
+            <button id="btn-remove-attachment" type="button" class="text-rose-400 font-bold hover:underline">&times; Quitar</button>
+          </div>
+
           <!-- Formulario de Envío de Mensaje -->
-          <div class="pt-3 border-t border-[var(--border-subtle)] mt-3">
+          <div class="pt-3 border-t border-[var(--border-subtle)] mt-1">
             <form id="chatForm" class="flex items-center gap-2">
+              <input type="file" id="chatFileInput" accept="image/*,video/*" class="hidden" />
+              <button
+                type="button"
+                id="btnAttachMedia"
+                class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2.5 text-sm text-[var(--text-tertiary)] hover:text-[var(--brand)] hover:border-[var(--border-brand)] transition-all"
+                title="Adjuntar foto o vídeo de postura"
+              >
+                📎
+              </button>
               <input
                 id="chatInput"
                 type="text"
@@ -81,6 +99,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import { t } from "@/i18n/client";
   import { escapeHtml } from "@/lib/shared/ui";
   import { setUser } from "@/stores/authStore";
+  import { uploadChatMedia } from "@/lib/storage/r2Service";
+  import { showLocalNotification } from "@/lib/notifications/notificationService";
 
   const loadingScreen = document.getElementById("loadingScreen")!;
   const loadingText = document.getElementById("loadingText")!;
@@ -93,10 +113,38 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const trainerName = document.getElementById("trainerName")!;
   const trainerStatus = document.getElementById("trainerStatus")!;
 
+  const btnAttachMedia = document.getElementById("btnAttachMedia") as HTMLButtonElement;
+  const chatFileInput = document.getElementById("chatFileInput") as HTMLInputElement;
+  const attachmentPreview = document.getElementById("attachment-preview")!;
+  const attachmentPreviewName = document.getElementById("attachment-preview-name")!;
+  const btnRemoveAttachment = document.getElementById("btn-remove-attachment")!;
+
+  let selectedFile: File | null = null;
+  let currentUserData: any = null;
+
   loadingText.textContent = t("dashboard.loading");
 
   let unsubMessages: (() => void) | null = null;
   let activeTrainerId = "admin";
+  let hasInitialLoaded = false;
+
+  btnAttachMedia?.addEventListener("click", () => {
+    chatFileInput?.click();
+  });
+
+  chatFileInput?.addEventListener("change", () => {
+    if (chatFileInput.files && chatFileInput.files[0]) {
+      selectedFile = chatFileInput.files[0];
+      attachmentPreviewName.textContent = selectedFile.name;
+      attachmentPreview.classList.remove("hidden");
+    }
+  });
+
+  btnRemoveAttachment?.addEventListener("click", () => {
+    selectedFile = null;
+    chatFileInput.value = "";
+    attachmentPreview.classList.add("hidden");
+  });
 
   const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
     if (!firebaseUser) {
@@ -106,37 +154,31 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
     try {
       const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-      const userData = userDoc.data();
-
-      setUser({
-        uid: firebaseUser.uid,
-        email: firebaseUser.email || "",
-        name: userData?.name || firebaseUser.displayName || "Usuario",
-        role: userData?.role || "client",
-        hasActiveAlert: userData?.hasActiveAlert ?? false,
-        assignedTrainerId: userData?.assignedTrainerId,
-        medicalProfile: userData?.medicalProfile,
-      });
-
-      let trainerDisplayName = t("client.assignedTrainer");
-      activeTrainerId = userData?.assignedTrainerId || "admin";
-
-      if (userData?.assignedTrainerId) {
-        try {
-          const trainerDoc = await getDoc(doc(db, "users", userData.assignedTrainerId));
-          if (trainerDoc.exists()) {
-            const tData = trainerDoc.data();
-            const nameParts = [tData.firstName, tData.lastName].filter(Boolean).join(" ");
-            trainerDisplayName = tData.name || nameParts || t("client.assignedTrainer");
-          }
-        } catch (e) {
-          console.warn("Error al cargar datos del trainer:", e);
-        }
+      if (!userDoc.exists()) {
+        window.location.href = "/login";
+        return;
       }
 
-      trainerAvatar.textContent = trainerDisplayName.charAt(0).toUpperCase();
-      trainerName.textContent = trainerDisplayName;
-      trainerStatus.textContent = userData?.assignedTrainerId ? t("client.assignedTrainer") : t("client.generalSupport");
+      const userData = userDoc.data();
+      currentUserData = userData;
+      setUser(userData as any);
+
+      if (userData.assignedTrainerId) {
+        activeTrainerId = userData.assignedTrainerId;
+        const trainerDoc = await getDoc(doc(db, "users", activeTrainerId));
+        if (trainerDoc.exists()) {
+          const tData = trainerDoc.data();
+          trainerName.textContent = tData.name || "Entrenador Asignado";
+          trainerStatus.textContent = tData.email || "Online";
+        } else {
+          trainerName.textContent = "Soporte Central";
+          trainerStatus.textContent = "Online";
+        }
+      } else {
+        activeTrainerId = "admin";
+        trainerName.textContent = "Equipo CampFit (Soporte)";
+        trainerStatus.textContent = "Online";
+      }
 
       loadingScreen.classList.add("hidden");
       chatContent.classList.remove("hidden");
@@ -159,10 +201,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               <p class="text-xs text-[var(--text-tertiary)]">${t("chat.firstMessagePrompt")}</p>
             </div>
           `;
+          hasInitialLoaded = true;
           return;
         }
 
-        snapshot.docs.forEach((docSnap) => {
+        const filteredDocs = snapshot.docs.filter((d) => {
+          const p = d.data().participants || [];
+          return p.includes(activeTrainerId);
+        });
+
+        filteredDocs.forEach((docSnap) => {
           const msg = docSnap.data();
           const isMine = msg.senderId === firebaseUser.uid;
           const time = msg.createdAt && msg.createdAt.toDate
@@ -171,6 +219,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
           if (!isMine && !msg.isRead) {
             updateDoc(doc(db, "messages", docSnap.id), { isRead: true }).catch(() => {});
+            
+            // Browser notification si la página no está enfocada
+            if (hasInitialLoaded && document.hidden) {
+              showLocalNotification("Nuevo mensaje de tu entrenador", {
+                body: msg.content || "Has recibido un adjunto o mensaje nuevo.",
+                category: "clientChat",
+              }, currentUserData);
+            }
           }
 
           const div = document.createElement("div");
@@ -194,11 +250,22 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             </div>
           ` : "";
 
+          const mediaHtml = msg.mediaUrl
+            ? msg.mediaType === "video"
+              ? `<div class="mt-2 overflow-hidden rounded-xl">
+                   <video src="${escapeHtml(msg.mediaUrl)}" controls class="max-h-56 w-full rounded-xl object-contain bg-black"></video>
+                 </div>`
+              : `<div class="mt-2 overflow-hidden rounded-xl">
+                   <img src="${escapeHtml(msg.mediaUrl)}" alt="Adjunto" class="max-h-56 w-full rounded-xl object-cover cursor-pointer hover:opacity-95" onclick="window.open('${escapeHtml(msg.mediaUrl)}', '_blank')" />
+                 </div>`
+            : "";
+
           div.innerHTML = `
             <div class="max-w-[80%] space-y-1">
               <div class="rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${bubbleClass}">
                 ${alertIconHtml}
-                <p class="break-words">${escapeHtml(msg.content)}</p>
+                ${msg.content ? `<p class="break-words">${escapeHtml(msg.content)}</p>` : ""}
+                ${mediaHtml}
               </div>
               <p class="text-[10px] text-[var(--text-tertiary)] px-1 ${timeClass}">${time}</p>
             </div>
@@ -206,6 +273,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
           messagesContainer.appendChild(div);
         });
+
+        hasInitialLoaded = true;
 
         setTimeout(() => {
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -229,7 +298,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   async function handleSendMessage(e: Event) {
     e.preventDefault();
     const content = chatInput.value.trim();
-    if (!content || !auth.currentUser) return;
+    if ((!content && !selectedFile) || !auth.currentUser) return;
 
     chatInput.value = "";
     sendBtn.disabled = true;
@@ -238,12 +307,26 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       const senderId = auth.currentUser.uid;
       const participants = [senderId, activeTrainerId].sort();
 
+      let mediaPayload: { mediaUrl?: string; mediaType?: 'image' | 'video' } = {};
+
+      if (selectedFile) {
+        const uploadResult = await uploadChatMedia(selectedFile, senderId);
+        mediaPayload = {
+          mediaUrl: uploadResult.url,
+          mediaType: uploadResult.type,
+        };
+        selectedFile = null;
+        chatFileInput.value = "";
+        attachmentPreview.classList.add("hidden");
+      }
+
       await addDoc(collection(db, "messages"), {
         senderId,
         receiverId: activeTrainerId,
         participants,
-        content,
-        type: "text",
+        content: content || "",
+        type: mediaPayload.mediaUrl ? "media" : "text",
+        ...mediaPayload,
         isRead: false,
         createdAt: serverTimestamp(),
       });

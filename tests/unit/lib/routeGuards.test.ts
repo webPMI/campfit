@@ -42,10 +42,9 @@ describe('routeGuards', () => {
       expect(result.allowed).toBe(true);
     });
 
-    it('❌ should deny non-client users from client routes', () => {
+    it('✅ should allow trainer to access client routes', () => {
       const result = checkRouteAccess('/client/dashboard', mockUser('trainer'));
-      expect(result.allowed).toBe(false);
-      expect(result.redirectTo).toBe('/dashboard');
+      expect(result.allowed).toBe(true);
     });
 
     it('❌ should deny admin from client routes', () => {

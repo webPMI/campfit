@@ -20,7 +20,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         <!-- Header -->
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 data-i18n="dashboard.routines" class="text-xl font-bold">{t("dashboard.routines")}</h2>
+            <h2 data-i18n="dashboard.routines" class="text-xl font-bold text-[var(--text-primary)]">{t("dashboard.routines")}</h2>
             <p data-i18n="dashboard.routines.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("dashboard.routines.desc")}</p>
           </div>
         </div>
@@ -108,6 +108,54 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     </main>
   </div>
 
+  <!-- Modal de Solicitud de Exclusión de Ejercicio -->
+  <div id="exclusion-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">🚫 Solicitar Exclusión</h3>
+          <p id="exclusion-modal-exercise-name" class="text-xs text-[var(--brand)] font-semibold"></p>
+        </div>
+        <button id="btn-close-exclusion" class="text-[var(--text-tertiary)] hover:text-white text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-xs text-[var(--text-secondary)]">
+          Indica los motivos por los que necesitas cambiar o retirar este ejercicio de tu rutina. Tu entrenador recibirá una notificación:
+        </p>
+
+        <div class="space-y-2 text-xs" id="exclusion-reasons-checklist">
+          <!-- Renderizado dinámico de motivos -->
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-[var(--text-secondary)] mb-1">Detalles adicionales (opcional):</label>
+          <textarea
+            id="exclusion-custom-reason"
+            rows="2"
+            class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)] resize-none"
+            placeholder="Ej: Siento molestias en el hombro derecho al extender el brazo..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)]">
+        <button
+          id="btn-confirm-exclusion"
+          class="flex-1 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:opacity-95 transition-all"
+        >
+          Enviar Solicitud
+        </button>
+        <button
+          id="btn-cancel-exclusion"
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2.5 text-xs font-medium text-[var(--text-secondary)] hover:text-white"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notificaciones -->
   <div id="workout-toast" class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border border-emerald-500/30 bg-[var(--brand-dim)] px-6 py-3 text-sm font-medium text-[var(--brand)] backdrop-blur-xl shadow-2xl hidden"></div>
 </ClientLayout>
@@ -115,9 +163,25 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 <script>
   import { initPage } from "@/lib/shared/initPage";
   import { subscribeToWorkouts, logWorkoutSession } from "@/lib/client/workoutService";
+  import {
+    subscribeToExercises,
+    getExerciseName,
+    EXCLUSION_REASON_LABELS,
+    MUSCLE_LABELS,
+    type ExerciseItem,
+    type ExclusionReason,
+  } from "@/lib/shared/exerciseLibrary";
+  import {
+    subscribeToUserExercisePreferences,
+    rateExercise,
+    toggleFavorite,
+    requestExerciseExclusion,
+  } from "@/lib/client/exercisePreferencesService";
   import type { Workout, Exercise } from "@/lib/client/workoutService";
   import type { ExerciseExecutionLog } from "@/lib/trainer/types";
+  import type { UserExercisePreferences } from "@/types";
   import { t } from "@/i18n/client";
+  import { escapeHtml } from "@/lib/shared/ui";
 
   const loadingScreen = document.getElementById("loadingScreen")!;
   const loadingText = document.getElementById("loadingText")!;
@@ -135,6 +199,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const completeWorkoutBtn = document.getElementById("completeWorkoutBtn")!;
   const toast = document.getElementById("workout-toast")!;
 
+  // Exclusion Modal refs
+  const exclusionModal = document.getElementById("exclusion-modal")!;
+  const exclusionExerciseName = document.getElementById("exclusion-modal-exercise-name")!;
+  const exclusionReasonsList = document.getElementById("exclusion-reasons-checklist")!;
+  const exclusionCustomReason = document.getElementById("exclusion-custom-reason") as HTMLTextAreaElement;
+  const btnConfirmExclusion = document.getElementById("btn-confirm-exclusion")!;
+  const btnCancelExclusion = document.getElementById("btn-cancel-exclusion")!;
+  const btnCloseExclusion = document.getElementById("btn-close-exclusion")!;
+
+  let selectedExclusionExercise: { id: string; name: string; item?: ExerciseItem } | null = null;
+
   const dayKeys = ["day.mon", "day.tue", "day.wed", "day.thu", "day.fri", "day.sat", "day.sun"];
   
   // Calcular día de la semana actual (1=Lunes ... 7=Domingo)
@@ -144,7 +219,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
   let currentWorkout: Workout | null = null;
   let activeUserUid = "";
+  let activeUserName = "Cliente";
+  let activeTrainerId: string | undefined = undefined;
   let exerciseStatuses: Record<string, "completed" | "partial" | "skipped"> = {};
+  let allCatalogExercises: ExerciseItem[] = [];
+  let userPrefs: UserExercisePreferences | null = null;
+
+  let unsubWorkouts: (() => void) | null = null;
+  let unsubCatalog: (() => void) | null = null;
+  let unsubPrefs: (() => void) | null = null;
 
   loadingText.textContent = t("dashboard.loading");
 
@@ -213,6 +296,86 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     if (elSkip) elSkip.textContent = String(skipped);
   }
 
+  function openExclusionModal(exId: string, exName: string, item?: ExerciseItem) {
+    selectedExclusionExercise = { id: exId, name: exName, item };
+    exclusionExerciseName.textContent = exName;
+    exclusionCustomReason.value = "";
+
+    exclusionReasonsList.innerHTML = Object.entries(EXCLUSION_REASON_LABELS)
+      .map(([key, label]) => `
+        <label class="flex items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] p-2.5 cursor-pointer hover:border-[var(--border-brand)] transition-all">
+          <input type="checkbox" value="${key}" class="exclusion-checkbox accent-rose-500 rounded" />
+          <span class="text-xs text-[var(--text-primary)]">${escapeHtml(label)}</span>
+        </label>
+      `)
+      .join("");
+
+    exclusionModal.classList.remove("hidden");
+  }
+
+  function closeExclusionModal() {
+    exclusionModal.classList.add("hidden");
+    selectedExclusionExercise = null;
+  }
+
+  btnCloseExclusion?.addEventListener("click", closeExclusionModal);
+  btnCancelExclusion?.addEventListener("click", closeExclusionModal);
+
+  btnConfirmExclusion?.addEventListener("click", async () => {
+    if (!selectedExclusionExercise || !activeUserUid) return;
+
+    const checkedBoxes = exclusionReasonsList.querySelectorAll(".exclusion-checkbox:checked");
+    const reasons: ExclusionReason[] = Array.from(checkedBoxes).map(
+      (cb) => (cb as HTMLInputElement).value as ExclusionReason
+    );
+    const customText = exclusionCustomReason.value.trim();
+
+    if (reasons.length === 0 && !customText) {
+      showToast("Por favor selecciona al menos un motivo o añade una descripción.");
+      return;
+    }
+
+    try {
+      btnConfirmExclusion.setAttribute("disabled", "true");
+      btnConfirmExclusion.classList.add("opacity-50");
+
+      const exItem = selectedExclusionExercise.item || {
+        id: selectedExclusionExercise.id,
+        translations: { es: selectedExclusionExercise.name, en: selectedExclusionExercise.name, ca: selectedExclusionExercise.name },
+        searchIndex: [],
+        muscleGroups: [],
+        category: "strength" as const,
+        equipment: [],
+        difficulty: "intermediate" as const,
+        defaultSets: 3,
+        defaultReps: 10,
+        defaultRestSeconds: 60,
+        tags: [],
+        isActive: true,
+        createdBy: "system",
+        createdAt: null,
+        updatedAt: null,
+      };
+
+      await requestExerciseExclusion(
+        activeUserUid,
+        activeUserName,
+        activeTrainerId,
+        exItem,
+        reasons,
+        customText
+      );
+
+      showToast("✅ Solicitud enviada a tu entrenador exitosamente.");
+      closeExclusionModal();
+    } catch (err: any) {
+      showToast(err.message || "Error al enviar la solicitud.");
+    } finally {
+      btnConfirmExclusion.removeAttribute("disabled");
+      btnConfirmExclusion.classList.remove("opacity-50");
+    }
+  });
+
   function renderActiveWorkout(): void {
     if (!currentWorkout) {
       workoutCard.classList.add("hidden");
@@ -245,15 +408,32 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     exercisesList.innerHTML = dayExercises
       .map((ex, i) => {
         const status = exerciseStatuses[ex.id] || "completed";
+        const catalogEx = allCatalogExercises.find((c) => c.id === ex.id || c.translations.es === ex.name);
+        const localizedName = catalogEx ? getExerciseName(catalogEx, "es") : ex.name;
+        const currentRating = (userPrefs?.ratings && userPrefs.ratings[ex.id]) || 0;
+        const isFavorite = (userPrefs?.favorites && userPrefs.favorites.includes(ex.id)) || false;
+        const isExcluded = (userPrefs?.excluded && userPrefs.excluded.includes(ex.id)) || false;
+
+        const muscleTags = catalogEx?.muscleGroups?.map((m) => MUSCLE_LABELS[m] || m).join(", ") || "";
 
         return `
-          <div class="exercise-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-3" data-ex-id="${ex.id}">
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex items-center gap-2">
-                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)]">${i + 1}</span>
-                <h4 class="font-bold text-sm text-[var(--text-primary)]">${ex.name}</h4>
+          <div class="exercise-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-3 animate-fade-in" data-ex-id="${ex.id}">
+            <div class="flex items-start justify-between gap-3 flex-wrap">
+              <div class="flex items-start gap-2.5">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)]">${i + 1}</span>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h4 class="font-bold text-sm text-[var(--text-primary)]">${escapeHtml(localizedName)}</h4>
+                    ${muscleTags ? `<span class="text-[10px] rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[var(--text-tertiary)] border border-[var(--border-subtle)]">${escapeHtml(muscleTags)}</span>` : ""}
+                    ${isFavorite ? `<span class="text-amber-400 text-xs" title="Favorito">⭐</span>` : ""}
+                    ${isExcluded ? `<span class="text-[10px] bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded-full font-semibold">🚫 Exclusión solicitada</span>` : ""}
+                  </div>
+                  ${ex.description ? `<p class="mt-0.5 text-xs text-[var(--text-tertiary)]">${escapeHtml(ex.description)}</p>` : ""}
+                </div>
               </div>
-              <div class="flex items-center gap-1 bg-[var(--surface-3)] p-1 rounded-xl border border-[var(--border-subtle)] text-[11px] font-medium">
+
+              <!-- Status toggles -->
+              <div class="flex items-center gap-1 bg-[var(--surface-3)] p-1 rounded-xl border border-[var(--border-subtle)] text-[11px] font-medium shrink-0">
                 <button
                   type="button"
                   data-status-btn="completed"
@@ -266,7 +446,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   data-status-btn="partial"
                   class="status-btn px-2 py-1 rounded-lg transition-all ${status === "partial" ? "bg-amber-500 text-white font-bold shadow" : "text-[var(--text-tertiary)] hover:text-white"}"
                 >
-                  ⚠️ A medias
+                  ⚠️ Parcial
                 </button>
                 <button
                   type="button"
@@ -278,12 +458,51 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               </div>
             </div>
 
+            <!-- Target metrics -->
             <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--text-tertiary)]">
               <span><span data-i18n="workout.target">${t("workout.target")}</span> <strong class="text-[var(--text-primary)]">${ex.sets} ${t("workout.sets")} × ${ex.reps} ${t("workout.reps")}</strong></span>
+              <span>•</span>
               <span><span data-i18n="workout.rest">${t("workout.rest")}</span>: <strong class="text-[var(--text-primary)]">${ex.restTime || "60s"}</strong></span>
             </div>
-            ${ex.description ? `<p class="text-xs text-[var(--text-disabled)]">${ex.description}</p>` : ""}
 
+            <!-- Feedback & Rating Bar -->
+            <div class="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-[var(--border-subtle)] text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-[var(--text-tertiary)]">Tu valoración:</span>
+                <div class="rating-stars flex items-center gap-1" data-ex-id="${ex.id}">
+                  ${[1, 2, 3, 4, 5].map((star) => `
+                    <button
+                      type="button"
+                      class="star-btn text-base transition-transform hover:scale-125 ${star <= currentRating ? "text-amber-400" : "text-[var(--text-disabled)]"}"
+                      data-star="${star}"
+                    >
+                      ★
+                    </button>
+                  `).join("")}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="btn-toggle-fav px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${isFavorite ? "border-amber-500/40 bg-amber-500/10 text-amber-400" : "border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-tertiary)] hover:text-amber-400"}"
+                  data-ex-id="${ex.id}"
+                >
+                  ⭐ ${isFavorite ? "Favorito" : "Marcar favorito"}
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-request-exclude px-2.5 py-1 rounded-lg text-xs font-medium border border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all"
+                  data-ex-id="${ex.id}"
+                  data-ex-name="${escapeHtml(localizedName)}"
+                >
+                  🚫 Excluir
+                </button>
+              </div>
+            </div>
+
+            <!-- Execution inputs -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2 border-t border-[var(--border-subtle)] text-xs">
               <div>
                 <label data-i18n="workout.actualWeight" class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("workout.actualWeight")}</label>
@@ -306,6 +525,43 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         `;
       })
       .join("");
+
+    // Star rating click handler
+    exercisesList.querySelectorAll(".star-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const starVal = Number((e.currentTarget as HTMLElement).getAttribute("data-star")) as 1|2|3|4|5;
+        const exId = (e.currentTarget as HTMLElement).closest(".rating-stars")?.getAttribute("data-ex-id");
+        if (exId && activeUserUid && starVal) {
+          const ok = await rateExercise(activeUserUid, exId, starVal);
+          if (ok) {
+            showToast(`⭐ Calificación de ${starVal} estrellas guardada`);
+          }
+        }
+      });
+    });
+
+    // Favorite toggle handler
+    exercisesList.querySelectorAll(".btn-toggle-fav").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const exId = (e.currentTarget as HTMLElement).getAttribute("data-ex-id");
+        if (exId && activeUserUid) {
+          const ok = await toggleFavorite(activeUserUid, exId);
+          if (ok) {
+            showToast("⭐ Preferencia de favorito actualizada");
+          }
+        }
+      });
+    });
+
+    // Exclusion request handler
+    exercisesList.querySelectorAll(".btn-request-exclude").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const exId = (e.currentTarget as HTMLElement).getAttribute("data-ex-id")!;
+        const exName = (e.currentTarget as HTMLElement).getAttribute("data-ex-name")!;
+        const catalogItem = allCatalogExercises.find((c) => c.id === exId);
+        openExclusionModal(exId, exName, catalogItem);
+      });
+    });
 
     exercisesList.querySelectorAll(".exercise-card").forEach((card) => {
       const exId = card.getAttribute("data-ex-id")!;
@@ -334,11 +590,26 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
   const cleanup = initPage({
     allowedRoles: ["client", "admin", "trainer"],
-    onReady: async (firebaseUser) => {
+    onReady: async (firebaseUser, userData) => {
       activeUserUid = firebaseUser.uid;
+      activeUserName = userData?.name || "Cliente";
+      activeTrainerId = userData?.assignedTrainerId;
       renderDayTabs();
 
-      subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+      // Suscribirse al catálogo de ejercicios
+      unsubCatalog = subscribeToExercises((exercises) => {
+        allCatalogExercises = exercises;
+        if (currentWorkout) renderActiveWorkout();
+      });
+
+      // Suscribirse a las preferencias del usuario
+      unsubPrefs = subscribeToUserExercisePreferences(firebaseUser.uid, (prefs) => {
+        userPrefs = prefs;
+        if (currentWorkout) renderActiveWorkout();
+      });
+
+      // Suscribirse a las rutinas
+      unsubWorkouts = subscribeToWorkouts(firebaseUser.uid, (workouts) => {
         loadingScreen.classList.add("hidden");
         workoutsContent.classList.remove("hidden");
 
@@ -403,5 +674,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     }
   });
 
-  document.addEventListener("astro:before-swap", cleanup);
+  document.addEventListener("astro:before-swap", () => {
+    unsubCatalog?.();
+    unsubPrefs?.();
+    unsubWorkouts?.();
+    cleanup?.();
+  });
 </script>

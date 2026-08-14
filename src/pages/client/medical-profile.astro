@@ -18,12 +18,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <main class="mx-auto max-w-2xl px-4 py-6">
       <div class="animate-fade-in space-y-6">
         <div>
-          <h2 class="text-xl font-bold">{t('client.medical.title')}</h2>
+          <h2 class="text-xl font-bold text-[var(--text-primary)]">{t('client.medical.title')}</h2>
           <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('client.medical.desc')}</p>
         </div>
         <div id="successMessage" class="hidden rounded-xl border border-emerald-500/30 bg-[var(--brand-dim)] p-4 text-sm text-[var(--brand)]">{t('client.medical.success')}</div>
         <div id="errorMessage" class="hidden rounded-xl border border-red-500/30 bg-[var(--danger-dim)] p-4 text-sm text-[var(--danger)]">{t('client.medical.error')}</div>
         <form id="medicalForm" class="space-y-6">
+          
+          <!-- Datos Antropométricos -->
           <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
             <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('onboarding.personal.title')}</h3>
             <div class="grid grid-cols-2 gap-4">
@@ -31,9 +33,93 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.weight')}</label><input id="weightInput" type="number" step="0.1" placeholder="75" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"/></div>
               <div><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.age')}</label><input id="ageInput" type="number" placeholder="30" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"/></div>
               <div><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.gender')}</label><select id="genderSelect" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"><option value="">Seleccionar</option><option value="male">{t('client.medical.gender.male')}</option><option value="female">{t('client.medical.gender.female')}</option><option value="other">{t('client.medical.gender.other')}</option></select></div>
-              <div><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('common.bloodType')}</label><select id="bloodTypeSelect" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"><option value="">Desconocido</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="O+">O+</option><option value="O-">O-</option></select></div>
+              <div class="col-span-2"><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('common.bloodType')}</label><select id="bloodTypeSelect" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"><option value="">Desconocido</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="O+">O+</option><option value="O-">O-</option></select></div>
             </div>
           </div>
+
+          <!-- Restricciones Dietéticas Globales -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
+            <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-2">
+              <span>🍽️</span> {t('clinical.section.restrictions') || 'Restricciones Dietéticas'}
+            </h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                <input type="checkbox" id="glutenFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                <span class="text-xs font-medium text-[var(--text-primary)]">🌾 {t('clinical.diet.glutenFree') || 'Sin Gluten'}</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                <input type="checkbox" id="lactoseFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                <span class="text-xs font-medium text-[var(--text-primary)]">🥛 {t('clinical.diet.lactoseFree') || 'Sin Lactosa'}</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                <input type="checkbox" id="veganCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                <span class="text-xs font-medium text-[var(--text-primary)]">🌱 {t('clinical.diet.vegan') || 'Vegano'}</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                <input type="checkbox" id="vegetarianCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                <span class="text-xs font-medium text-[var(--text-primary)]">🥬 {t('clinical.diet.vegetarian') || 'Vegetariano'}</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                <input type="checkbox" id="nutFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                <span class="text-xs font-medium text-[var(--text-primary)]">🥜 {t('clinical.diet.nutFree') || 'Sin Frutos Secos'}</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                <input type="checkbox" id="shellfishFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                <span class="text-xs font-medium text-[var(--text-primary)]">🦐 {t('clinical.diet.shellfishFree') || 'Sin Mariscos'}</span>
+              </label>
+            </div>
+            <div class="mt-4">
+              <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Otras restricciones / ingredientes no deseados (separados por coma)</label>
+              <input id="otherDietaryInput" type="text" placeholder="Ej: piña, café, cerdo" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]" />
+            </div>
+          </div>
+
+          <!-- Exclusiones Granulares de Alimentos del Catálogo -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
+            <h3 class="mb-2 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-2">
+              <span>🚫</span> Alimentos Excluidos del Catálogo
+            </h3>
+            <p class="text-xs text-[var(--text-tertiary)] mb-4">
+              El entrenador recibirá alertas en tiempo real si intenta añadir estos alimentos a tus planes nutricionales.
+            </p>
+
+            <!-- Categorías Excluidas -->
+            <div class="mb-4">
+              <label class="block text-xs font-medium text-[var(--text-secondary)] mb-2">Excluir categorías enteras:</label>
+              <div id="categoryChipsContainer" class="flex flex-wrap gap-2">
+                <!-- Se poblarán dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Buscador y Chips de Alimentos Específicos -->
+            <div>
+              <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Buscar alimentos específicos para excluir:</label>
+              <div class="relative">
+                <input
+                  id="foodSearchInput"
+                  type="text"
+                  placeholder="Buscar alimento (ej: salmón, avena, huevo)..."
+                  autocomplete="off"
+                  class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 pl-10 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
+                />
+                <svg class="absolute left-3.5 top-3 h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <div id="foodSearchResults" class="hidden absolute top-full left-0 right-0 z-20 mt-1 max-h-48 overflow-y-auto rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] shadow-xl divide-y divide-[var(--border-subtle)]">
+                </div>
+              </div>
+
+              <!-- Lista de alimentos actualmente excluidos -->
+              <div class="mt-3">
+                <div class="text-xs font-medium text-[var(--text-secondary)] mb-2">Alimentos seleccionados como excluidos:</div>
+                <div id="excludedFoodsList" class="flex flex-wrap gap-2 min-h-[36px] p-2 rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--surface-3)]/40">
+                  <span id="noExcludedFoodsText" class="text-xs text-[var(--text-tertiary)] italic self-center">Ningún alimento individual excluido</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Historial Clínico y Lesiones -->
           <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
             <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('onboarding.medical.title')}</h3>
             <div class="space-y-4">
@@ -44,6 +130,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.surgery')}</label><textarea id="surgeryInput" rows="2" placeholder={t('client.medical.surgery.placeholder')} class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"></textarea></div>
             </div>
           </div>
+
+          <!-- Contacto de Emergencia -->
           <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
             <h3 class="mb-4 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t('onboarding.emergency.title')}</h3>
             <div class="grid grid-cols-2 gap-4">
@@ -51,7 +139,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
               <div><label class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('client.medical.emergency.phone')}</label><input id="emergencyPhoneInput" type="tel" placeholder="+34 600 000 000" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"/></div>
             </div>
           </div>
-          <button id="saveBtn" type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><span id="saveBtnText">{t('client.medical.save')}</span></button>
+
+          <button id="saveBtn" type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand)] px-6 py-3.5 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all hover:from-[var(--brand-hover)] hover:to-[var(--brand)] active:scale-[0.98]">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            <span id="saveBtnText">{t('client.medical.save')}</span>
+          </button>
         </form>
       </div>
     </main>
@@ -64,6 +156,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
   import { t } from '@/i18n/client';
   import { logger } from '@/lib/shared/logger';
+  import {
+    subscribeToFoods,
+    getFoodName,
+    searchFoodsLocal,
+    type FoodItem,
+    type FoodCategory,
+  } from '@/lib/shared/foodLibrary';
 
   const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
@@ -79,6 +178,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const ageInput = document.getElementById('ageInput') as HTMLInputElement;
   const genderSelect = document.getElementById('genderSelect') as HTMLSelectElement;
   const bloodTypeSelect = document.getElementById('bloodTypeSelect') as HTMLSelectElement;
+  
+  // Restricciones Dietéticas
+  const glutenFreeCheck = document.getElementById('glutenFreeCheck') as HTMLInputElement;
+  const lactoseFreeCheck = document.getElementById('lactoseFreeCheck') as HTMLInputElement;
+  const veganCheck = document.getElementById('veganCheck') as HTMLInputElement;
+  const vegetarianCheck = document.getElementById('vegetarianCheck') as HTMLInputElement;
+  const nutFreeCheck = document.getElementById('nutFreeCheck') as HTMLInputElement;
+  const shellfishFreeCheck = document.getElementById('shellfishFreeCheck') as HTMLInputElement;
+  const otherDietaryInput = document.getElementById('otherDietaryInput') as HTMLInputElement;
+
+  // Categorías y Alimentos Excluidos
+  const categoryChipsContainer = document.getElementById('categoryChipsContainer')!;
+  const foodSearchInput = document.getElementById('foodSearchInput') as HTMLInputElement;
+  const foodSearchResults = document.getElementById('foodSearchResults')!;
+  const excludedFoodsList = document.getElementById('excludedFoodsList')!;
+  const noExcludedFoodsText = document.getElementById('noExcludedFoodsText')!;
+
   const conditionsInput = document.getElementById('conditionsInput') as HTMLTextAreaElement;
   const medicationsInput = document.getElementById('medicationsInput') as HTMLTextAreaElement;
   const allergiesInput = document.getElementById('allergiesInput') as HTMLTextAreaElement;
@@ -87,40 +203,278 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const emergencyNameInput = document.getElementById('emergencyNameInput') as HTMLInputElement;
   const emergencyPhoneInput = document.getElementById('emergencyPhoneInput') as HTMLInputElement;
 
+  const ALL_CATEGORIES: { id: FoodCategory; icon: string; name: string }[] = [
+    { id: 'protein', icon: '🥩', name: 'Proteínas' },
+    { id: 'carbs', icon: '🌾', name: 'Carbohidratos' },
+    { id: 'fats', icon: '🥑', name: 'Grasas' },
+    { id: 'vegetables', icon: '🥦', name: 'Verduras' },
+    { id: 'fruits', icon: '🍎', name: 'Frutas' },
+    { id: 'dairy', icon: '🥛', name: 'Lácteos' },
+    { id: 'beverages', icon: '🧃', name: 'Bebidas' },
+    { id: 'supplements', icon: '💊', name: 'Suplementos' },
+    { id: 'sauces', icon: '🫙', name: 'Salsas' },
+    { id: 'other', icon: '📦', name: 'Otros' },
+  ];
+
+  let allCatalogFoods: FoodItem[] = [];
+  let excludedFoodIds: string[] = [];
+  let excludedCategories: FoodCategory[] = [];
+  let unsubFoods: (() => void) | null = null;
+
   loadingText.textContent = t('dashboard.loading');
 
-  const cleanup = initPage({ allowedRoles: ['client', 'admin', 'trainer'], onReady: async (firebaseUser, userData) => {
-    const mp = userData?.medicalProfile;
-    if (mp) {
-      if (mp.height) heightInput.value = mp.height;
-      if (mp.weight || mp.initialWeight) weightInput.value = mp.weight || mp.initialWeight;
-      if (mp.age) ageInput.value = mp.age;
-      if (mp.gender) genderSelect.value = mp.gender;
-      if (mp.bloodType) bloodTypeSelect.value = mp.bloodType;
-      if (mp.conditions) conditionsInput.value = mp.conditions;
-      if (mp.medications) medicationsInput.value = mp.medications;
-      if (mp.allergies) allergiesInput.value = mp.allergies;
-      if (mp.injuries) injuriesInput.value = mp.injuries;
-      if (mp.surgery) surgeryInput.value = mp.surgery;
-      if (mp.emergencyName) emergencyNameInput.value = mp.emergencyName;
-      if (mp.emergencyPhone) emergencyPhoneInput.value = mp.emergencyPhone;
+  function renderCategoryChips() {
+    categoryChipsContainer.innerHTML = '';
+    ALL_CATEGORIES.forEach((cat) => {
+      const isExcluded = excludedCategories.includes(cat.id);
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = `flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+        isExcluded
+          ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+          : 'bg-[var(--surface-2)] text-[var(--text-secondary)] border-[var(--border-subtle)] hover:border-[var(--border-default)]'
+      }`;
+      chip.innerHTML = `<span>${cat.icon}</span> <span>${cat.name}</span> ${
+        isExcluded ? '<span class="ml-1 text-[10px] font-bold">✕</span>' : ''
+      }`;
+      chip.addEventListener('click', () => {
+        if (isExcluded) {
+          excludedCategories = excludedCategories.filter((c) => c !== cat.id);
+        } else {
+          excludedCategories.push(cat.id);
+        }
+        renderCategoryChips();
+      });
+      categoryChipsContainer.appendChild(chip);
+    });
+  }
+
+  function renderExcludedFoods() {
+    excludedFoodsList.innerHTML = '';
+    if (excludedFoodIds.length === 0) {
+      noExcludedFoodsText.classList.remove('hidden');
+      excludedFoodsList.appendChild(noExcludedFoodsText);
+      return;
     }
-    medicalContent.classList.remove('hidden'); loadingScreen.classList.add('hidden');
-  }});
+
+    noExcludedFoodsText.classList.add('hidden');
+    excludedFoodIds.forEach((foodId) => {
+      const food = allCatalogFoods.find((f) => f.id === foodId);
+      const name = food ? getFoodName(food, 'es') : foodId;
+      const chip = document.createElement('div');
+      chip.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-medium animate-fade-in';
+      chip.innerHTML = `
+        <span>🚫 ${name}</span>
+        <button type="button" class="text-rose-400 hover:text-rose-200 ml-1 font-bold">×</button>
+      `;
+      chip.querySelector('button')?.addEventListener('click', () => {
+        excludedFoodIds = excludedFoodIds.filter((id) => id !== foodId);
+        renderExcludedFoods();
+      });
+      excludedFoodsList.appendChild(chip);
+    });
+  }
+
+  function setupFoodSearch() {
+    foodSearchInput.addEventListener('input', () => {
+      const q = foodSearchInput.value.trim();
+      if (!q) {
+        foodSearchResults.classList.add('hidden');
+        return;
+      }
+      const matches = searchFoodsLocal(q, allCatalogFoods).slice(0, 8);
+      if (matches.length === 0) {
+        foodSearchResults.innerHTML = '<div class="p-3 text-xs text-[var(--text-tertiary)] italic">No se encontraron alimentos</div>';
+        foodSearchResults.classList.remove('hidden');
+        return;
+      }
+
+      foodSearchResults.innerHTML = matches
+        .map((food) => {
+          const isSelected = excludedFoodIds.includes(food.id);
+          return `
+            <button type="button" data-id="${food.id}" class="w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-[var(--surface-3)] transition-colors ${
+              isSelected ? 'opacity-50 pointer-events-none' : ''
+            }">
+              <span class="font-medium text-[var(--text-primary)]">${getFoodName(food, 'es')}</span>
+              <span class="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">${food.category}</span>
+            </button>
+          `;
+        })
+        .join('');
+
+      foodSearchResults.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          if (id && !excludedFoodIds.includes(id)) {
+            excludedFoodIds.push(id);
+            renderExcludedFoods();
+            foodSearchInput.value = '';
+            foodSearchResults.classList.add('hidden');
+          }
+        });
+      });
+
+      foodSearchResults.classList.remove('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!foodSearchInput.contains(e.target as Node) && !foodSearchResults.contains(e.target as Node)) {
+        foodSearchResults.classList.add('hidden');
+      }
+    });
+  }
+
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser, userData) => {
+      // Suscripción al catálogo de alimentos activos
+      unsubFoods = subscribeToFoods((foods) => {
+        allCatalogFoods = foods;
+        renderExcludedFoods();
+      });
+
+      const mp = userData?.medicalProfile;
+      if (mp) {
+        if (mp.height) heightInput.value = String(mp.height);
+        if (mp.initialWeight || mp.weight) weightInput.value = String(mp.initialWeight || mp.weight);
+        if (mp.age) ageInput.value = String(mp.age);
+        if (mp.gender) genderSelect.value = mp.gender;
+        if (mp.bloodType) bloodTypeSelect.value = mp.bloodType;
+
+        // Dietary Restrictions
+        if (mp.dietaryRestrictions) {
+          glutenFreeCheck.checked = !!mp.dietaryRestrictions.glutenFree;
+          lactoseFreeCheck.checked = !!mp.dietaryRestrictions.lactoseFree;
+          veganCheck.checked = !!mp.dietaryRestrictions.vegan;
+          vegetarianCheck.checked = !!mp.dietaryRestrictions.vegetarian;
+          nutFreeCheck.checked = !!mp.dietaryRestrictions.nutFree;
+          shellfishFreeCheck.checked = !!mp.dietaryRestrictions.shellfishFree;
+          if (Array.isArray(mp.dietaryRestrictions.other)) {
+            otherDietaryInput.value = mp.dietaryRestrictions.other.join(', ');
+          } else if (typeof mp.dietaryRestrictions.other === 'string') {
+            otherDietaryInput.value = mp.dietaryRestrictions.other;
+          }
+        }
+
+        // Categorías y Alimentos Excluidos
+        if (Array.isArray(mp.excludedFoodCategories)) {
+          excludedCategories = [...mp.excludedFoodCategories];
+        }
+        if (Array.isArray(mp.excludedFoods)) {
+          excludedFoodIds = [...mp.excludedFoods];
+        }
+
+        if (mp.conditions) conditionsInput.value = Array.isArray(mp.conditions) ? mp.conditions.join(', ') : mp.conditions;
+        if (mp.medications) medicationsInput.value = Array.isArray(mp.medications) ? mp.medications.join(', ') : mp.medications;
+        if (mp.allergies) allergiesInput.value = Array.isArray(mp.allergies) ? mp.allergies.join(', ') : mp.allergies;
+        if (mp.injuries) injuriesInput.value = Array.isArray(mp.injuries) ? mp.injuries.join(', ') : mp.injuries;
+        if (mp.surgery) surgeryInput.value = mp.surgery;
+        if (mp.emergencyName) emergencyNameInput.value = mp.emergencyName;
+        if (mp.emergencyPhone) emergencyPhoneInput.value = mp.emergencyPhone;
+      }
+
+      renderCategoryChips();
+      renderExcludedFoods();
+      setupFoodSearch();
+
+      medicalContent.classList.remove('hidden');
+      loadingScreen.classList.add('hidden');
+    },
+  });
 
   medicalForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); successMessage.classList.add('hidden'); errorMessage.classList.add('hidden');
-    saveBtn.disabled = true; saveBtnText.textContent = t('client.medical.saving');
+    e.preventDefault();
+    successMessage.classList.add('hidden');
+    errorMessage.classList.add('hidden');
+    saveBtn.disabled = true;
+    saveBtnText.textContent = t('client.medical.saving');
+
     try {
       const { auth } = await import('@/lib/firebase');
       const currentUser = auth.currentUser;
-      if (!currentUser) { window.location.href = '/login'; return; }
-      const medicalProfile = { height: heightInput.value ? parseFloat(heightInput.value) : null, weight: weightInput.value ? parseFloat(weightInput.value) : null, age: ageInput.value ? parseInt(ageInput.value) : null, gender: genderSelect.value || null, bloodType: bloodTypeSelect.value || null, conditions: conditionsInput.value || '', medications: medicationsInput.value || '', allergies: allergiesInput.value || '', injuries: injuriesInput.value || '', surgery: surgeryInput.value || '', emergencyName: emergencyNameInput.value || '', emergencyPhone: emergencyPhoneInput.value || '', updatedAt: serverTimestamp() };
-      await updateDoc(doc(db, 'users', currentUser.uid), { medicalProfile, updatedAt: serverTimestamp() });
-      const { clearUserCache } = await import('@/lib/shared/initPage'); clearUserCache();
-      successMessage.classList.remove('hidden'); setTimeout(() => successMessage.classList.add('hidden'), 5000);
-    } catch (err) { logger.error('Client/Medical', 'Error saving medical profile:', err); errorMessage.classList.remove('hidden'); setTimeout(() => errorMessage.classList.add('hidden'), 5000); }
-    finally { saveBtn.disabled = false; saveBtnText.textContent = t('client.medical.save'); }
+      if (!currentUser) {
+        window.location.href = '/login';
+        return;
+      }
+
+      const otherArray = otherDietaryInput.value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const conditionsArray = conditionsInput.value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const medicationsArray = medicationsInput.value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const allergiesArray = allergiesInput.value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const injuriesArray = injuriesInput.value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const dietaryRestrictions = {
+        glutenFree: glutenFreeCheck.checked,
+        lactoseFree: lactoseFreeCheck.checked,
+        vegan: veganCheck.checked,
+        vegetarian: vegetarianCheck.checked,
+        nutFree: nutFreeCheck.checked,
+        shellfishFree: shellfishFreeCheck.checked,
+        other: otherArray,
+      };
+
+      const medicalProfile = {
+        height: heightInput.value ? parseFloat(heightInput.value) : null,
+        initialWeight: weightInput.value ? parseFloat(weightInput.value) : null,
+        weight: weightInput.value ? parseFloat(weightInput.value) : null,
+        age: ageInput.value ? parseInt(ageInput.value) : null,
+        gender: genderSelect.value || null,
+        bloodType: bloodTypeSelect.value || null,
+        dietaryRestrictions,
+        excludedFoods: excludedFoodIds,
+        excludedFoodCategories: excludedCategories,
+        conditions: conditionsArray,
+        medications: medicationsArray,
+        allergies: allergiesArray,
+        injuries: injuriesArray,
+        surgery: surgeryInput.value || '',
+        emergencyName: emergencyNameInput.value || '',
+        emergencyPhone: emergencyPhoneInput.value || '',
+        updatedAt: serverTimestamp(),
+      };
+
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        medicalProfile,
+        updatedAt: serverTimestamp(),
+      });
+
+      const { clearUserCache } = await import('@/lib/shared/initPage');
+      clearUserCache();
+
+      successMessage.classList.remove('hidden');
+      setTimeout(() => successMessage.classList.add('hidden'), 5000);
+    } catch (err) {
+      logger.error('Client/Medical', 'Error saving medical profile:', err);
+      errorMessage.classList.remove('hidden');
+      setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtnText.textContent = t('client.medical.save');
+    }
   });
-  document.addEventListener('astro:before-swap', cleanup);
+
+  document.addEventListener('astro:before-swap', () => {
+    unsubFoods?.();
+    cleanup?.();
+  });
 </script>

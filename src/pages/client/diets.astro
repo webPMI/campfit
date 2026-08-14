@@ -25,7 +25,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         <!-- Header -->
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 data-i18n="client.nav.diets" class="text-xl font-bold">{t("client.nav.diets")}</h2>
+            <h2 data-i18n="client.nav.diets" class="text-xl font-bold text-[var(--text-primary)]">{t("client.nav.diets")}</h2>
             <p data-i18n="client.diet.sub" class="mt-1 text-sm text-[var(--text-tertiary)]">
               {t("client.diet.sub")}
             </p>
@@ -106,23 +106,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           </div>
         </div>
 
-        <!-- Diet Adherence & Macro Summary -->
+        <!-- Adherence Daily Bar (Progreso de comidas) -->
         <div
           id="adherence-bar"
-          class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-4"
+          class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl hidden"
         >
-          <div class="flex items-center justify-between">
-            <p
-              data-i18n="client.diet.dailyProgress"
-              class="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider"
-            >
-              {t("client.diet.dailyProgress")}
-            </p>
-            <p id="adherence-text" class="text-sm text-[var(--brand)] font-bold">0%</p>
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-semibold text-[var(--text-secondary)]">Adherencia Diaria</span>
+            <span id="adherence-text" class="font-bold text-[var(--brand)]">0%</span>
           </div>
-
-          <!-- General Adherence Progress Bar -->
-          <div class="h-2.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
+          <div class="h-2 overflow-hidden rounded-full bg-[var(--surface-3)]">
             <div
               id="adherence-fill"
               class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500"
@@ -130,113 +123,99 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             >
             </div>
           </div>
+        </div>
 
-          <!-- Desglose de Objetivos de Macronutrientes -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2 text-xs">
-            <div class="rounded-xl border border-amber-500/20 bg-amber-500/10 p-2.5">
-              <span class="text-[10px] text-amber-400 font-semibold uppercase"
-                >{t("client.macros.calories")}</span
-              >
-              <p class="text-sm font-bold text-amber-400 mt-0.5">
-                <span id="consumed-kcal">0</span> / <span id="target-kcal">0</span> kcal
-              </p>
+        <!-- Macros Consumed vs Target -->
+        <div
+          class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center"
+          id="macros-consumed-grid"
+        >
+          <div
+            class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-3 backdrop-blur-xl"
+          >
+            <span class="block text-[10px] uppercase font-bold text-[var(--text-tertiary)]"
+              >Calorías</span
+            >
+            <div class="mt-1 text-sm font-bold text-amber-400">
+              <span id="consumed-kcal">0</span> / <span id="target-kcal">0</span>
             </div>
-            <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5">
-              <span class="text-[10px] text-emerald-400 font-semibold uppercase"
-                >{t("client.macros.protein")}</span
-              >
-              <p class="text-sm font-bold text-emerald-400 mt-0.5">
-                <span id="consumed-protein">0</span> / <span id="target-protein">0</span>g
-              </p>
+            <span class="text-[10px] text-[var(--text-disabled)]">kcal</span>
+          </div>
+          <div
+            class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-3 backdrop-blur-xl"
+          >
+            <span class="block text-[10px] uppercase font-bold text-[var(--text-tertiary)]"
+              >Proteínas</span
+            >
+            <div class="mt-1 text-sm font-bold text-emerald-400">
+              <span id="consumed-protein">0</span> / <span id="target-protein">0</span>g
             </div>
-            <div class="rounded-xl border border-blue-500/20 bg-blue-500/10 p-2.5">
-              <span class="text-[10px] text-blue-400 font-semibold uppercase"
-                >{t("client.macros.carbs")}</span
-              >
-              <p class="text-sm font-bold text-blue-400 mt-0.5">
-                <span id="consumed-carbs">0</span> / <span id="target-carbs">0</span>g
-              </p>
+            <span class="text-[10px] text-[var(--text-disabled)]">consumido</span>
+          </div>
+          <div
+            class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-3 backdrop-blur-xl"
+          >
+            <span class="block text-[10px] uppercase font-bold text-[var(--text-tertiary)]"
+              >Carbohidratos</span
+            >
+            <div class="mt-1 text-sm font-bold text-blue-400">
+              <span id="consumed-carbs">0</span> / <span id="target-carbs">0</span>g
             </div>
-            <div class="rounded-xl border border-purple-500/20 bg-purple-500/10 p-2.5">
-              <span class="text-[10px] text-purple-400 font-semibold uppercase"
-                >{t("client.macros.fat")}</span
-              >
-              <p class="text-sm font-bold text-purple-400 mt-0.5">
-                <span id="consumed-fat">0</span> / <span id="target-fat">0</span>g
-              </p>
+            <span class="text-[10px] text-[var(--text-disabled)]">consumido</span>
+          </div>
+          <div
+            class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-3 backdrop-blur-xl"
+          >
+            <span class="block text-[10px] uppercase font-bold text-[var(--text-tertiary)]"
+              >Grasas</span
+            >
+            <div class="mt-1 text-sm font-bold text-purple-400">
+              <span id="consumed-fat">0</span> / <span id="target-fat">0</span>g
             </div>
+            <span class="text-[10px] text-[var(--text-disabled)]">consumido</span>
           </div>
         </div>
 
-        <!-- Diet Card -->
-        <div
-          id="dietCard"
-          class="hidden card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl"
-        >
-          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <!-- Current Diet Plan Details -->
+        <div id="dietCard" class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-6 hidden">
+          <div class="flex items-start justify-between flex-wrap gap-4 border-b border-[var(--border-subtle)] pb-4">
             <div>
-              <h3 id="dietName" class="text-lg font-bold text-[var(--text-primary)]"></h3>
-              <div class="flex items-center gap-2 mt-1 flex-wrap">
-                <span
-                  id="dietType"
-                  class="inline-block rounded-full bg-[var(--brand-dim)] px-3 py-1 text-xs font-medium text-[var(--brand)] border border-[var(--border-brand)]"
-                ></span>
-                <span
-                  id="dietSomatotype"
-                  class="inline-block rounded-full bg-[var(--info-dim)] px-3 py-1 text-xs font-medium text-[var(--info)] border border-[var(--info)] border-opacity-30 hidden"
-                ></span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 id="dietName" class="text-lg font-bold text-[var(--text-primary)]"></h3>
+                <span id="dietType" class="rounded-full bg-[var(--brand-dim)] px-2.5 py-0.5 text-xs font-semibold text-[var(--brand)] border border-[var(--border-brand)]"></span>
+                <span id="dietSomatotype" class="rounded-full bg-purple-500/10 px-2.5 py-0.5 text-xs font-semibold text-purple-400 border border-purple-500/20 hidden"></span>
               </div>
+              <p id="dietCalories" class="mt-1 text-sm font-semibold text-amber-400"></p>
             </div>
-            <p id="dietCalories" class="text-base font-bold text-[var(--brand)]"></p>
+
+            <!-- Macros target banner -->
+            <div class="flex items-center gap-3 text-xs font-semibold flex-wrap">
+              <span class="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-emerald-400 border border-emerald-500/20">Prot: <span id="totalProtein">0</span>g</span>
+              <span class="rounded-lg bg-blue-500/10 px-2.5 py-1 text-blue-400 border border-blue-500/20">Carbs: <span id="totalCarbs">0</span>g</span>
+              <span class="rounded-lg bg-purple-500/10 px-2.5 py-1 text-purple-400 border border-purple-500/20">Grasas: <span id="totalFat">0</span>g</span>
+              <span class="rounded-lg bg-amber-500/10 px-2.5 py-1 text-amber-400 border border-amber-500/20">Total: <span id="totalCal">0</span> kcal</span>
+            </div>
           </div>
 
-          <div class="space-y-3" id="mealsList">
-            <!-- Meals rendered by JS -->
-          </div>
-
-          <!-- Totals -->
-          <div
-            id="mealTotals"
-            class="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4"
-          >
-            <p
-              data-i18n="client.diet.dailyTotals"
-              class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider"
-            >
-              {t("client.diet.dailyTotals")}
-            </p>
-            <div class="mt-2 flex flex-wrap gap-4 text-sm font-semibold">
-              <span class="text-[var(--text-secondary)]"
-                >Cal: <strong id="totalCal" class="text-amber-400">0</strong></span
-              >
-              <span class="text-[var(--text-secondary)]"
-                >P: <strong id="totalProtein" class="text-emerald-400">0</strong>g</span
-              >
-              <span class="text-[var(--text-secondary)]"
-                >C: <strong id="totalCarbs" class="text-blue-400">0</strong>g</span
-              >
-              <span class="text-[var(--text-secondary)]"
-                >G: <strong id="totalFat" class="text-purple-400">0</strong>g</span
-              >
-            </div>
+          <!-- Meals List -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-[var(--text-secondary)]">Tomas y Comidas Asignadas</h4>
+            <div id="mealsList" class="space-y-3"></div>
           </div>
         </div>
 
         <!-- History View -->
-        <div id="historyView" class="hidden space-y-3">
+        <div id="historyView" class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4 hidden">
           <div class="flex items-center justify-between">
-            <h3
-              data-i18n="client.diet.historyTitle"
-              class="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider"
-            >
-              {t("client.diet.historyTitle")}
+            <h3 data-i18n="client.diet.history" class="text-base font-bold text-[var(--text-primary)]">
+              {t("client.diet.history")}
             </h3>
             <button
               id="btn-back-current"
-              class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
+              class="text-xs font-medium text-[var(--brand)] hover:underline flex items-center gap-1"
             >
               <svg
-                class="h-3.5 w-3.5 inline-block mr-1 -mt-0.5"
+                class="h-3.5 w-3.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -277,6 +256,20 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     </main>
   </div>
 
+  <!-- Modal de Sustitutos Sugeridos -->
+  <div id="substitutes-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="relative w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <div>
+          <h3 id="substitutes-modal-title" class="text-base font-bold text-[var(--text-primary)]">Sustitutos Sugeridos</h3>
+          <p id="substitutes-modal-subtitle" class="text-xs text-[var(--text-tertiary)]"></p>
+        </div>
+        <button id="btn-close-substitutes" class="text-[var(--text-tertiary)] hover:text-white text-xl font-bold">&times;</button>
+      </div>
+      <div id="substitutes-modal-list" class="space-y-2.5 max-h-72 overflow-y-auto"></div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div
     id="diet-toast"
@@ -295,8 +288,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     type Diet,
     type Meal,
   } from "@/lib/client/dietService";
+  import {
+    subscribeToFoods,
+    getFoodName,
+    type FoodItem,
+  } from "@/lib/shared/foodLibrary";
+  import { suggestSubstitutes } from "@/lib/client/intoleranceChecker";
   import { t } from "@/i18n/client";
   import { escapeHtml } from "@/lib/shared/ui";
+  import type { MedicalProfile } from "@/types";
 
   // ─── DOM refs ────────────────────────────────────────────────────────────────
   const loadingScreen = document.getElementById("loadingScreen")!;
@@ -322,6 +322,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const btnBackCurrent = document.getElementById("btn-back-current")!;
   const toast = document.getElementById("diet-toast")!;
 
+  // Sustitutos modal refs
+  const substitutesModal = document.getElementById("substitutes-modal")!;
+  const substitutesModalTitle = document.getElementById("substitutes-modal-title")!;
+  const substitutesModalSubtitle = document.getElementById("substitutes-modal-subtitle")!;
+  const substitutesModalList = document.getElementById("substitutes-modal-list")!;
+  const btnCloseSubstitutes = document.getElementById("btn-close-substitutes")!;
+
   // Water Tracker refs
   const btnAddWater = document.getElementById("btn-add-water")!;
   const btnSubWater = document.getElementById("btn-sub-water")!;
@@ -344,9 +351,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   let currentMealsCount = 0;
   let currentClientId = "";
   let currentUserRole = "";
+  let clientMedicalProfile: MedicalProfile | null = null;
+  let allCatalogFoods: FoodItem[] = [];
+
   let unsubDiets: (() => void) | null = null;
   let unsubHistory: (() => void) | null = null;
   let unsubTodayMeals: (() => void) | null = null;
+  let unsubFoods: (() => void) | null = null;
+
   let allDiets: Diet[] = [];
   let currentDietObj: Diet | null = null;
   let activeCompletedMealIds: string[] = [];
@@ -411,6 +423,56 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     }, 2500);
   }
 
+  // ─── Modal Sustitutos ───────────────────────────────────────────────────────
+  btnCloseSubstitutes?.addEventListener("click", () => {
+    substitutesModal.classList.add("hidden");
+  });
+
+  function openSubstitutesModal(food: FoodItem) {
+    const foodName = getFoodName(food, "es");
+    substitutesModalTitle.textContent = `Alternativas para: ${foodName}`;
+    substitutesModalSubtitle.textContent = `Porción estándar: ${food.defaultPortion}g (${food.defaultCalories} kcal)`;
+
+    const substitutes = suggestSubstitutes(
+      food,
+      allCatalogFoods,
+      clientMedicalProfile || undefined,
+      "es",
+      5
+    );
+
+    if (substitutes.length === 0) {
+      substitutesModalList.innerHTML = `<div class="p-4 text-center text-xs text-[var(--text-tertiary)] italic">No se encontraron sustitutos compatibles con tus restricciones actuales.</div>`;
+    } else {
+      substitutesModalList.innerHTML = substitutes
+        .map((sub) => {
+          const subName = getFoodName(sub, "es");
+          return `
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3 space-y-1.5 hover:border-[var(--border-brand)] transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-[var(--text-primary)]">🔄 ${escapeHtml(subName)}</span>
+                <span class="text-[10px] font-semibold text-[var(--brand)] uppercase tracking-wider">${sub.category}</span>
+              </div>
+              <div class="flex items-center gap-2 text-[11px] text-[var(--text-secondary)]">
+                <span>Porción: <strong>${sub.defaultPortion}g</strong></span>
+                <span>•</span>
+                <span class="text-amber-400 font-semibold">${sub.defaultCalories} kcal</span>
+                <span>•</span>
+                <span class="text-emerald-400">P: ${sub.defaultProtein}g</span>
+                <span>•</span>
+                <span class="text-blue-400">C: ${sub.defaultCarbs}g</span>
+                <span>•</span>
+                <span class="text-purple-400">G: ${sub.defaultFat}g</span>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    substitutesModal.classList.remove("hidden");
+  }
+
   // ─── Init ────────────────────────────────────────────────────────────────────
   loadingText.textContent = t("dashboard.loading");
 
@@ -420,8 +482,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       const clientId = firebaseUser.uid;
       currentClientId = clientId;
       currentUserRole = userData?.role || "client";
+      clientMedicalProfile = userData?.medicalProfile || null;
 
       initWaterTracker();
+
+      // Suscribirse a los alimentos del catálogo
+      unsubFoods = subscribeToFoods((foods) => {
+        allCatalogFoods = foods;
+        if (currentDietObj) {
+          renderCurrentDiet(currentDietObj);
+        }
+      });
 
       // Suscribirse a la dieta actual
       unsubDiets = subscribeToDiets(clientId, (diets) => {
@@ -517,9 +588,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         sumF += meal.fat || 0;
 
         const isCompleted = activeCompletedMealIds.includes(meal.id);
+        const food = meal.foodId ? allCatalogFoods.find((f) => f.id === meal.foodId) : null;
+        const localizedFoodName = food ? getFoodName(food, "es") : null;
+        const allergensList = meal.allergens && meal.allergens.length > 0 ? meal.allergens : (food?.allergens || []);
 
         const div = document.createElement("div");
-        div.className = `rounded-xl border p-4 backdrop-blur-sm transition-all ${
+        div.className = `rounded-xl border p-4 backdrop-blur-sm transition-all animate-fade-in ${
           isCompleted
             ? "border-emerald-500/40 bg-[var(--brand-dim)]"
             : "border-[var(--border-subtle)] bg-[var(--surface-2)]"
@@ -527,29 +601,39 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         div.id = `meal-${meal.id}`;
         div.innerHTML = `
           <div class="flex items-start justify-between gap-3">
-            <div class="flex-1">
-              <div class="flex items-center gap-2">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-2 flex-wrap">
                 <h4 class="font-bold text-sm text-[var(--text-primary)] capitalize">${getMealLabel(meal.name)}</h4>
                 <span class="text-[10px] text-[var(--text-disabled)] font-medium">#${meal.order || ""}</span>
-                 ${isCompleted ? `<span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-[var(--brand)]">${t("client.meal.completed")}</span>` : ""}
+                ${localizedFoodName ? `<span class="rounded-md bg-[var(--surface-3)] px-2 py-0.5 text-[11px] font-semibold text-[var(--brand)] border border-[var(--border-subtle)]">🍎 ${escapeHtml(localizedFoodName)}</span>` : ""}
+                ${isCompleted ? `<span class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-[var(--brand)]">${t("client.meal.completed")}</span>` : ""}
               </div>
-              ${meal.description ? `<p class="mt-1.5 text-xs text-[var(--text-tertiary)]">${escapeHtml(meal.description)}</p>` : ""}
-              <div class="mt-2.5 flex flex-wrap gap-2.5 text-xs font-semibold">
+              ${meal.description ? `<p class="text-xs text-[var(--text-tertiary)]">${escapeHtml(meal.description)}</p>` : ""}
+              
+              <!-- Macros y Alérgenos -->
+              <div class="mt-2 flex flex-wrap items-center gap-2 text-xs font-semibold">
                 <span class="rounded-md bg-amber-500/10 px-2 py-0.5 text-amber-400 border border-amber-500/20">${meal.calories || 0} kcal</span>
                 <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 text-emerald-400 border border-emerald-500/20">Prot: ${meal.protein || 0}g</span>
                 <span class="rounded-md bg-blue-500/10 px-2 py-0.5 text-blue-400 border border-blue-500/20">Carbs: ${meal.carbs || 0}g</span>
                 <span class="rounded-md bg-purple-500/10 px-2 py-0.5 text-purple-400 border border-purple-500/20">Grasas: ${meal.fat || 0}g</span>
+                ${allergensList.length > 0 ? `<span class="text-[10px] text-rose-400 font-medium">⚠️ ${allergensList.join(", ")}</span>` : ""}
               </div>
+
+              ${food ? `
+                <button type="button" class="btn-substitutes mt-2 text-[11px] font-semibold text-[var(--brand)] hover:underline flex items-center gap-1" data-food-id="${food.id}">
+                  <span>🔄</span> <span>Ver sustitutos recomendados</span>
+                </button>
+              ` : ""}
             </div>
-             ${
-               currentUserRole === "client"
-                 ? `
-             <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--brand)] hover:border-emerald-500/30 transition-all ${isCompleted ? "border-emerald-500 text-[var(--brand)] bg-emerald-500/10" : ""}">
-               ${isCompleted ? t("client.meal.markDone") : t("client.meal.mark")}
-             </button>
-             `
-                 : ""
-             }
+            ${
+              currentUserRole === "client"
+                ? `
+            <button data-meal-id="${meal.id}" data-meal-name="${meal.name}" class="btn-complete shrink-0 ml-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--brand)] hover:border-emerald-500/30 transition-all ${isCompleted ? "border-emerald-500 text-[var(--brand)] bg-emerald-500/10" : ""}">
+              ${isCompleted ? t("client.meal.markDone") : t("client.meal.mark")}
+            </button>
+            `
+                : ""
+            }
           </div>
         `;
         mealsList.appendChild(div);
@@ -592,6 +676,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           showToast(t("client.meal.error"), "error");
           btn.removeAttribute("disabled");
           btn.classList.remove("opacity-50");
+        }
+      });
+    });
+
+    // Handler de sustitutos
+    mealsList.querySelectorAll(".btn-substitutes").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const foodId = btn.getAttribute("data-food-id");
+        const food = allCatalogFoods.find((f) => f.id === foodId);
+        if (food) {
+          openSubstitutesModal(food);
         }
       });
     });
@@ -674,5 +769,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     });
   }
 
-  document.addEventListener("astro:before-swap", cleanup);
+  document.addEventListener("astro:before-swap", () => {
+    unsubFoods?.();
+    cleanup?.();
+  });
 </script>

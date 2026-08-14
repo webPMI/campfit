@@ -5,6 +5,87 @@ Todos los cambios notables de este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Sin versión] - 2026-08-14
+
+### 💬 Notificaciones y Soporte Multimedia en Chat (Cloudflare R2 + Web Push)
+- **Fase 4.1 (`r2Service.ts` & `trainerChat.ts`)**: Añadido método `uploadChatMedia` para fotos y vídeos de corrección postural/técnica y soporte extendido en `sendMessage()` con `mediaUrl` y `mediaType`.
+- **Fase 4.2 (`trainerRender.ts`)**: Soporte de renderizado para adjuntos de imagen con vista ampliada y reproductores de vídeo en las burbujas de mensaje.
+- **Fase 4.3 (`client/chat.astro` & `trainer/chat.astro`)**: Botón interactivo de adjunto (`📎`), barra de previsualización antes de enviar y notificaciones del navegador (`showLocalNotification`) al recibir mensajes con la pestaña en segundo plano.
+- **Fase 4.4 (`i18n`)**: Claves de traducción completas añadidas a `es.ts`, `en.ts` y `ca.ts`.
+
+### 🏋️ Integración de la Biblioteca de Ejercicios y Preferencias (`exercises_library` + `user_exercise_prefs`)
+- **Fase 3.1 (`exercisePreferencesService.ts`)**: Creado servicio y suite de pruebas unitarias (10 tests) para ratings (1-5 ⭐), favoritos, solicitudes de exclusión estructuradas y confirmaciones (acknowledgements) de entrenador.
+- **Fase 3.2 (`client/workouts.astro`)**: Integración de estrellas de valoración interactiva, selector de favoritos y modal de solicitud de exclusión con checklist de motivos (dolor, lesión, equipamiento, dificultad) y notificación automática vía chat al entrenador.
+- **Fase 3.3 (`trainer/workouts.astro`)**: Creador de rutinas con catálogo central de ejercicios, autocompletado de métricas (series, reps, descanso), badges de favoritos/exclusiones del cliente seleccionado y banner de confirmación de solicitudes pendientes.
+- **Documentación**: Actualizados `docs/features/BIBLIOTECA_EJERCICIOS.md`, `CHANGELOG.md` y `walkthrough.md`.
+
+### 🍎 Integración Integral de la Biblioteca de Alimentos (`foods_library`)
+- **Fase 1 (Estabilización)**: Eliminación de marcadores de conflicto de merge, sincronización de claves i18n entre ES/EN/CA y corrección de tests unitarios (658 passed, 0 errores de type-check).
+- **Fase 2.1 (`client/medical-profile.astro`)**: Integración de selector interactivo de exclusión de categorías y alimentos específicos conectado a `foods_library`.
+- **Fase 2.2 (`trainer/diets.astro`)**: Creador y editor de dietas con catálogo de alimentos, autocompletado de macros proporcional a la porción (`calcMacrosForPortion`) y detección en tiempo real de alérgenos y conflictos contra el perfil del cliente (`checkDietConflicts`).
+- **Fase 2.3 (`client/diets.astro`)**: Visualización de dietas con traducciones automáticas de alimentos, tags de alérgenos y modal interactivo de sustitutos sugeridos (`suggestSubstitutes`).
+- **Documentación**: Actualizados `docs/features/BIBLIOTECA_ALIMENTOS.md`, `CHANGELOG.md`, `TASK.md` y planes de trabajo.
+
+---
+
+## [Sin versión] - 2026-08-12
+
+### 🧪 Testing Aumentado (14:47 - 15:00, Europe/Madrid)
+
+- **tests/unit/lib/client/intoleranceChecker.test.ts** — ✅ Creado: 46 tests para módulo crítico de detección de alérgenos e intolerancias
+- **tests/unit/lib/client/adherenceService.test.ts** — ✅ Creado: 26 tests para cálculo de adherencia semanal
+- **tests/unit/lib/client/onboardingService.test.ts** — ✅ Creado: 36 tests para flujo de onboarding del cliente
+- **Resultado suite completa**: 720 passed, 4 skipped (59 archivos) — ↑108 tests (+17% coverage)
+
+---
+
+## [Sin versión] - 2026-08-10
+
+### Auditoría Técnica (11:36 - 12:08, Europe/Madrid)
+- **docs/AUDITORIA_2026-08-10.md**: Nuevo archivo de auditoría con fecha/hora, verificación del trabajo del agente activo, y errores de type-check documentados con priorización. Progreso del agente: 29 → 13 errores.
+- **agents/audit-orchestrator/GUIDE.md**: Añadido flujo de pre-auditoría y post-auditoría con registro de fecha/hora. Corregida referencia de `AUDIT_REPORT.md` → `AUDITORIA_UNIFICADA.md`.
+- **agents/audit-security/GUIDE.md**: Añadidos subpasos y comandos de verificación (grep) para cada área de auditoría.
+- **agents/fix-i18n/GUIDE.md**: Añadidos subpasos con comandos de comparación de claves ES/EN.
+- **agents/fix-types/GUIDE.md**: Añadidos subpasos y sección de casos límite (parámetros, retornos, arrays, objetos, eventos DOM, Firestore, JSON.parse).
+- **agents/__master.md**: Corregidas referencias a `TODO.md` y `TASK.md` inexistentes. Añadidos `PROTOCOLO_AGENTES_PRO.md`, `AUDITORIA_UNIFICADA.md` y `AUDITORIA_2026-08-10.md` a referencias rápidas.
+- **agents/fix-logger/GUIDE.md**: Añadidos subpasos con comandos grep y casos límite (devtools/debug/logger.ts excluidos).
+- **agents/fix-colors/GUIDE.md**: Añadidos subpasos con comandos grep y verificación final de tokens.
+- **agents/fix-testing/GUIDE.md**: Añadidos subpasos con comandos de detección de placeholders y casos límite.
+- **agents/fix-performance/GUIDE.md**: Añadidos subpasos con comandos de detección de onSnapshot sin cleanup y casos límite.
+- **agents/fix-theme/GUIDE.md**: Añadidos subpasos con comandos de conteo de variables CSS y casos límite.
+- **agents/fix-csp/GUIDE.md**: Añadidos subpasos con comandos de detección de `<style>` y casos límite.
+- **agents/audit-quality/GUIDE.md**: Añadidos subpasos con comandos grep para tipado, tamaño, logging, estado global y CSP.
+- **agents/audit-performance/GUIDE.md**: Añadidos subpasos con comandos de detección de queries sin limit y onSnapshot sin cleanup.
+- **agents/audit-testing/GUIDE.md**: Añadidos subpasos con comandos de detección de placeholders y cobertura.
+- **agents/audit-i18n/GUIDE.md**: Añadidos subpasos con comandos de comparación de claves ES/EN y cobertura por módulo.
+- **agents/audit-uiux/GUIDE.md**: Añadidos subpasos con comandos de detección de colores hardcodeados y accesibilidad.
+- **docs/PROTOCOLO_AGENTES_PRO.md**: Añadida sección de Registro de Auditorías con formato obligatorio de fecha/hora y checklist de auditoría.
+
+### Verificado (trabajo del agente activo)
+- ✅ **CORREGIDO**: `src/layouts/AdminLayout.astro` — eliminada duplicación de frontmatter (281→184 líneas), navegación preservada
+- ✅ **CORREGIDO**: `src/lib/trainer/trainerChat.ts` — comentarios 🔒 CRÍTICO añadidos, queries preservadas
+- ✅ **CORREGIDO**: `src/lib/trainer/trainerWorkouts.ts` — comentarios 🔒 CRÍTICO añadidos, queries preservadas
+- ✅ **CORREGIDO**: `src/lib/client/adherenceService.ts` — tipado `as MealProgressLog`/`as WorkoutProgressLog`
+- ✅ **CREADO**: `docs/PROTOCOLO_AGENTES_PRO.md` — protocolo profesional de 405 líneas
+
+### ✅ Type-check corregido (29 → 0 errores, verificado 13:11)
+- **Commit `d0f0e0e`** — `fix: type-check, translations parity, trainer libs and pages typing`
+- ✅ **CORREGIDO**: `src/pages/admin/devtools.astro` — tipado completo de `log`, `rs`, `init` (8 errores)
+- ✅ **CORREGIDO**: `src/pages/admin/exercises.astro` — `class` → `className`, guard para `muscleGroups[0]` (4 errores)
+- ✅ **CORREGIDO**: `src/pages/client/diets.astro` — importado `escapeHtml` (2 errores)
+- ✅ **CORREGIDO**: `src/pages/client/workouts.astro` — guard para `dayKeys`, corregido `rpe` → `overallRpe` + `status` + `workoutName` (3 errores)
+- ✅ **CORREGIDO**: `src/pages/trainer/clients.astro` — tipado completo de `unsubClients`, `allClients`, `initClients`, `renderDetailView` (6 errores)
+- ✅ **CORREGIDO**: `src/pages/trainer/workouts.astro` — eliminado `w.clientName` inexistente, añadido `videoUrl`/`description` (2 errores)
+- ✅ **CORREGIDO**: `src/i18n/locales/en.ts` — añadida clave `admin.modal.resetPwd` (paridad i18n P0-5)
+- ✅ **CORREGIDO**: `src/lib/trainer/types.ts` — `date` opcional en `WorkoutSessionLog`
+
+### ✅ Tests verificados (13:12 - 13:20)
+- **Suite completa**: 612 passed, 4 skipped, 56 test files (55 passed, 1 skipped)
+- Error 0 en la suite de tests tras la corrección del type-check
+- Se mantienen los avisos de i18n de keys no usadas (warnings informativos, no errores)
+
+---
+
 ## [Sin versión] - 2026-08-04
 
 ### Agregado

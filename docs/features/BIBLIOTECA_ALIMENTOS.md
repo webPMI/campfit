@@ -110,3 +110,21 @@ La función `checkDietConflicts()` valida una dieta frente al `MedicalProfile` d
 3. **Categorías excluidas** (`excludedFoodCategories`)
 4. **Requisito Vegano** (`isVegan`)
 5. **Requisito Vegetariano** (`isVegetarian`)
+
+---
+
+## 6. Integración en Interfaces
+
+1. **Perfil Médico del Cliente (`src/pages/client/medical-profile.astro`)**:
+   - Checkboxes de restricciones dietéticas (Gluten-free, Lactose-free, Vegan, etc.).
+   - Selector de chips de exclusión por categoría (`excludedFoodCategories`).
+   - Selector interactivo en tiempo real de exclusión de alimentos específicos por ID (`excludedFoods`).
+2. **Creador y Editor de Dietas del Entrenador (`src/pages/trainer/diets.astro`)**:
+   - Selector de alimentos del catálogo central `foods_library`.
+   - Cálculo automático de macros proporcionales al modificar la cantidad en gramos (`calcMacrosForPortion`).
+   - Detección preventiva en tiempo real de conflictos y alérgenos frente al perfil del cliente (`checkDietConflicts`).
+   - Alerta visual y confirmación obligatoria previa al guardado si se detectan incompatibilidades.
+3. **Visualizador de Dietas del Cliente (`src/pages/client/diets.astro`)**:
+   - Nombres de alimentos traducidos en tiempo real.
+   - Píldoras de alérgenos identificadas visualmente.
+   - Modal interactivo de sugerencia y exploración de sustitutos compatibles (`suggestSubstitutes`).

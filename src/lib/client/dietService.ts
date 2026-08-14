@@ -7,6 +7,9 @@ export interface Meal {
   id: string;
   name: 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other';
   description: string;
+  // 🔒 CRÍTICO: Referencia al alimento en foods_library y porción
+  foodId?: string;
+  portionGrams?: number;
   calories: number;
   protein: number;
   carbs: number;

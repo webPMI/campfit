@@ -11,7 +11,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     <div class="animate-fade-in">
       <div class="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 class="text-2xl font-bold">{t("trainer.diets")}</h1>
+          <h1 class="text-2xl font-bold text-[var(--text-primary)]">{t("trainer.diets")}</h1>
           <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("trainer.diets.desc")}</p>
         </div>
         <button
@@ -103,7 +103,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import { logger } from "@/lib/shared/logger";
   import { requireRole } from "@/lib/shared/authGuard";
   import { t } from "@/i18n/client";
-  import { ICONS, escapeHtml, renderEmptyState, showToast, renderErrorState } from "@/lib/shared/ui";
+  import { ICONS, escapeHtml, renderEmptyState, showToast } from "@/lib/shared/ui";
   import {
     subscribeToClients,
     subscribeToDietsByTrainer,
@@ -115,15 +115,30 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     subscribeToDietTemplates,
     applyDietTemplateToClient,
   } from "@/lib/trainer/templateService";
+  import {
+    subscribeToFoods,
+    getFoodName,
+    calcMacrosForPortion,
+    type FoodItem,
+  } from "@/lib/shared/foodLibrary";
+  import {
+    checkDietConflicts,
+    type DietConflict,
+  } from "@/lib/client/intoleranceChecker";
   import type { DietTemplate } from "@/lib/devtools/types";
   import type { TrainerClient, TrainerDiet, Meal } from "@/lib/trainer/types";
+  import type { MedicalProfile } from "@/types";
 
   let unsubClients: (() => void) | null = null;
   let unsubDiets: (() => void) | null = null;
   let unsubTemplates: (() => void) | null = null;
+  let unsubFoods: (() => void) | null = null;
+
   let allClients: TrainerClient[] = [];
   let allDiets: TrainerDiet[] = [];
   let allTemplates: DietTemplate[] = [];
+  let allCatalogFoods: FoodItem[] = [];
+
   let currentTrainerId = "";
   let editingDiet: TrainerDiet | null = null;
   let currentMeals: Meal[] = [];
@@ -136,6 +151,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     unsubClients?.();
     unsubDiets?.();
     unsubTemplates?.();
+    unsubFoods?.();
   });
 
   function initDiets(trainerId: string): void {
@@ -148,6 +164,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const presetDietTemplateSelect = document.getElementById("preset-diet-template-select") as HTMLSelectElement;
     const presetDietClientSelect = document.getElementById("preset-diet-client-select") as HTMLSelectElement;
     const btnApplyPresetDiet = document.getElementById("btn-apply-preset-diet") as HTMLButtonElement;
+
+    unsubFoods = subscribeToFoods((foods) => {
+      allCatalogFoods = foods;
+      if (!document.getElementById("diet-editor")?.classList.contains("hidden")) {
+        renderMealsEditor();
+        checkAndRenderConflicts();
+      }
+    });
 
     unsubClients = subscribeToClients(trainerId, (clients) => {
       allClients = clients;
@@ -227,26 +251,27 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   }
 
   function populateClientFilter(): void {
-    const filterClientSelect = document.getElementById("filter-client") as HTMLSelectElement;
-    if (!filterClientSelect) return;
-    const currentVal = filterClientSelect.value;
-    filterClientSelect.innerHTML =
-      `<option value="">${t("trainer.selectClient") || "Todos los clientes"}</option>` +
-      allClients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join("");
-    filterClientSelect.value = currentVal;
+    const select = document.getElementById("filter-client") as HTMLSelectElement;
+    if (!select) return;
+    const currentVal = select.value;
+    select.innerHTML = `<option value="">${t("trainer.selectClient") || "Todos los clientes"}</option>` +
+      allClients.map((c) => `<option value="${c.uid}" ${c.uid === currentVal ? "selected" : ""}>${escapeHtml(c.name)}</option>`).join("");
   }
 
   function renderDiets(): void {
     const container = document.getElementById("diets-container")!;
-    const searchVal = (document.getElementById("diet-search") as HTMLInputElement)?.value.toLowerCase().trim() || "";
-    const filterClient = (document.getElementById("filter-client") as HTMLSelectElement)?.value || "";
+    const searchVal = ((document.getElementById("diet-search") as HTMLInputElement)?.value || "").toLowerCase().trim();
+    const filterClientId = (document.getElementById("filter-client") as HTMLSelectElement)?.value || "";
 
     const filteredDiets = allDiets.filter((d) => {
-      const client = allClients.find((c) => c.uid === d.clientId);
-      const clientName = client ? client.name.toLowerCase() : "";
-      const matchesSearch = d.name.toLowerCase().includes(searchVal) || clientName.includes(searchVal);
-      const matchesClient = !filterClient || d.clientId === filterClient;
-      return matchesSearch && matchesClient;
+      if (filterClientId && d.clientId !== filterClientId) return false;
+      if (searchVal) {
+        const client = allClients.find((c) => c.uid === d.clientId);
+        const clientName = (client?.name || "").toLowerCase();
+        const dietName = (d.name || "").toLowerCase();
+        return dietName.includes(searchVal) || clientName.includes(searchVal);
+      }
+      return true;
     });
 
     if (filteredDiets.length === 0) {
@@ -324,6 +349,46 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       .join("");
   }
 
+  function checkAndRenderConflicts(): void {
+    const clientSelect = document.getElementById("diet-client") as HTMLSelectElement;
+    const conflictBox = document.getElementById("diet-conflicts-banner");
+    if (!conflictBox || !clientSelect) return;
+
+    const clientId = clientSelect.value;
+    const client = allClients.find((c) => c.uid === clientId);
+    if (!client || !client.medicalProfile) {
+      conflictBox.classList.add("hidden");
+      conflictBox.innerHTML = "";
+      return;
+    }
+
+    const conflicts = checkDietConflicts(currentMeals, allCatalogFoods, client.medicalProfile as MedicalProfile, "es");
+
+    if (conflicts.length === 0) {
+      conflictBox.classList.add("hidden");
+      conflictBox.innerHTML = "";
+      return;
+    }
+
+    conflictBox.classList.remove("hidden");
+    conflictBox.innerHTML = `
+      <div class="rounded-xl border border-rose-500/40 bg-rose-500/10 p-4 space-y-2 animate-fade-in">
+        <div class="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
+          <span>⚠️</span>
+          <span>Alertas de Conflicto con el Perfil del Cliente (${conflicts.length})</span>
+        </div>
+        <ul class="space-y-1 text-xs text-rose-300">
+          ${conflicts.map((c) => `
+            <li class="flex items-start gap-1.5">
+              <span class="text-rose-400 font-bold">•</span>
+              <span><strong>[${c.mealName}]</strong> ${escapeHtml(c.message)}</span>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+    `;
+  }
+
   function showEditor(diet: TrainerDiet | null): void {
     const editor = document.getElementById("diet-editor")!;
     editingDiet = diet;
@@ -339,6 +404,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           </h3>
           <button id="btn-cancel-diet-top" class="text-[var(--text-tertiary)] hover:text-white text-xl">&times;</button>
         </div>
+
+        <!-- Banner de Conflictos Preventivos -->
+        <div id="diet-conflicts-banner" class="hidden"></div>
 
         <!-- Template selection (only for new diets) -->
         ${!isEditing && allTemplates.length > 0 ? `
@@ -462,6 +530,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
     renderMealsEditor();
     updateCalculatedMacros();
+    checkAndRenderConflicts();
+
+    const clientSelect = document.getElementById("diet-client") as HTMLSelectElement;
+    clientSelect?.addEventListener("change", () => checkAndRenderConflicts());
 
     // Event listeners
     const templateSelect = document.getElementById("diet-template") as HTMLSelectElement;
@@ -479,7 +551,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
         try {
           showToast({ message: t("diet.editor.saving"), type: "info" });
-          const newDietId = await applyDietTemplateToClient(templateId, clientId, currentTrainerId);
+          await applyDietTemplateToClient(templateId, clientId, currentTrainerId);
           showToast({ message: t("trainer.templates.load") || "Plantilla cargada", type: "success" });
           closeEditor();
         } catch (err) {
@@ -494,15 +566,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         id: "m-" + Date.now() + "-" + Math.random().toString(36).substring(2, 5),
         name: "breakfast",
         description: "",
-        calories: 400,
-        protein: 25,
-        carbs: 45,
+        calories: 350,
+        protein: 20,
+        carbs: 40,
         fat: 10,
         order: currentMeals.length + 1,
+        portionGrams: 100,
       };
       currentMeals.push(newMeal);
       renderMealsEditor();
       updateCalculatedMacros();
+      checkAndRenderConflicts();
     });
 
     document.getElementById("btn-cancel-diet-top")!.addEventListener("click", closeEditor);
@@ -510,16 +584,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
     document.getElementById("btn-save-diet")!.addEventListener("click", async () => {
       const nameInput = document.getElementById("diet-name") as HTMLInputElement;
-      const clientSelect = document.getElementById("diet-client") as HTMLSelectElement;
+      const clientSelectEl = document.getElementById("diet-client") as HTMLSelectElement;
       const typeSelect = document.getElementById("diet-type") as HTMLSelectElement;
       const somatotypeSelect = document.getElementById("diet-somatotype") as HTMLSelectElement;
 
       const name = nameInput.value.trim();
-      const clientId = clientSelect.value;
+      const clientId = clientSelectEl.value;
       const type = typeSelect.value as TrainerDiet["type"];
       const somatotype = somatotypeSelect.value as TrainerDiet["somatotype"];
 
-      // Validation
       let isValid = true;
 
       if (!name) {
@@ -533,16 +606,25 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       if (!clientId) {
         document.getElementById("diet-client-error")!.classList.remove("hidden");
-        clientSelect.classList.add("border-[var(--danger)]");
+        clientSelectEl.classList.add("border-[var(--danger)]");
         isValid = false;
       } else {
         document.getElementById("diet-client-error")!.classList.add("hidden");
-        clientSelect.classList.remove("border-[var(--danger)]");
+        clientSelectEl.classList.remove("border-[var(--danger)]");
       }
 
       if (!isValid) {
         showToast({ message: t("common.validationError") || "Por favor corrige los errores", type: "error" });
         return;
+      }
+
+      const client = allClients.find((c) => c.uid === clientId);
+      if (client?.medicalProfile) {
+        const conflicts = checkDietConflicts(currentMeals, allCatalogFoods, client.medicalProfile as MedicalProfile, "es");
+        if (conflicts.length > 0) {
+          const proceed = confirm(`⚠️ Atención: Se han detectado ${conflicts.length} conflicto(s) con las restricciones del cliente.\n\n¿Deseas guardar el plan de todos modos?`);
+          if (!proceed) return;
+        }
       }
 
       const totalCalories = currentMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
@@ -597,92 +679,140 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
     container.innerHTML = currentMeals
       .map(
-        (meal, index) => `
-        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <select
-              class="meal-name rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium"
-              data-meal-index="${index}"
-            >
-              <option value="breakfast" ${meal.name === "breakfast" ? "selected" : ""}>${t("diet.editor.meal.breakfast")}</option>
-              <option value="lunch" ${meal.name === "lunch" ? "selected" : ""}>${t("diet.editor.meal.lunch")}</option>
-              <option value="snack" ${meal.name === "snack" ? "selected" : ""}>${t("diet.editor.meal.snack")}</option>
-              <option value="dinner" ${meal.name === "dinner" ? "selected" : ""}>${t("diet.editor.meal.dinner")}</option>
-              <option value="other" ${meal.name === "other" ? "selected" : ""}>${t("diet.editor.meal.other")}</option>
-            </select>
-            <button
-              class="text-xs text-[var(--danger)] hover:underline"
-              data-action="remove-meal"
-              data-meal-index="${index}"
-            >
-              ${t("common.delete")}
-            </button>
-          </div>
-          <textarea
-            class="meal-desc w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-2 text-xs resize-none"
-            rows="2"
-            placeholder="${t("diet.editor.meal.descPlaceholder")}"
-            data-meal-index="${index}"
-          >${escapeHtml(meal.description || "")}</textarea>
-          <div class="grid grid-cols-4 gap-2">
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.calories")}</label>
-              <input
-                type="number"
-                class="meal-calories w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
-                value="${meal.calories || 0}"
+        (meal, index) => {
+          const selectedFood = meal.foodId ? allCatalogFoods.find((f) => f.id === meal.foodId) : null;
+          return `
+          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 space-y-3 animate-fade-in">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <select
+                  class="meal-name rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)]"
+                  data-meal-index="${index}"
+                >
+                  <option value="breakfast" ${meal.name === "breakfast" ? "selected" : ""}>${t("diet.editor.meal.breakfast")}</option>
+                  <option value="lunch" ${meal.name === "lunch" ? "selected" : ""}>${t("diet.editor.meal.lunch")}</option>
+                  <option value="snack" ${meal.name === "snack" ? "selected" : ""}>${t("diet.editor.meal.snack")}</option>
+                  <option value="dinner" ${meal.name === "dinner" ? "selected" : ""}>${t("diet.editor.meal.dinner")}</option>
+                  <option value="other" ${meal.name === "other" ? "selected" : ""}>${t("diet.editor.meal.other")}</option>
+                </select>
+                <span class="text-[11px] text-[var(--text-tertiary)] font-semibold">#${index + 1}</span>
+              </div>
+              <button
+                class="text-xs text-[var(--danger)] hover:underline font-medium"
+                data-action="remove-meal"
                 data-meal-index="${index}"
-              />
+              >
+                ${t("common.delete")}
+              </button>
             </div>
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.protein")}</label>
-              <input
-                type="number"
-                class="meal-protein w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
-                value="${meal.protein || 0}"
-                data-meal-index="${index}"
-              />
-            </div>
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.carbs")}</label>
-              <input
-                type="number"
-                class="meal-carbs w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
-                value="${meal.carbs || 0}"
-                data-meal-index="${index}"
-              />
-            </div>
-            <div>
-              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.fat")}</label>
-              <input
-                type="number"
-                class="meal-fat w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs"
-                value="${meal.fat || 0}"
-                data-meal-index="${index}"
-              />
-            </div>
-          </div>
 
-          <!-- Allergens -->
-          <div class="pt-1">
-            <label class="block text-[10px] text-[var(--text-tertiary)] mb-1">${t("diet.editor.meal.allergens")}</label>
-            <div class="flex flex-wrap gap-2">
-              ${["gluten", "lactose", "nuts", "shellfish", "egg", "soy", "fish"].map((allergen) => `
-                <label class="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] cursor-pointer">
-                  <input
-                    type="checkbox"
-                    class="meal-allergen accent-[var(--brand)]"
-                    value="${allergen}"
-                    data-meal-index="${index}"
-                    ${(meal.allergens || []).includes(allergen) ? "checked" : ""}
-                  />
-                  ${allergen}
+            <!-- Selector del catálogo de alimentos -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div class="sm:col-span-2">
+                <label class="block text-[10px] font-medium text-[var(--text-secondary)] mb-1">
+                  🍎 Alimento del catálogo central:
                 </label>
-              `).join("")}
+                <select
+                  class="meal-food-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
+                  data-meal-index="${index}"
+                >
+                  <option value="">Personalizado (texto libre / sin catálogo)</option>
+                  ${allCatalogFoods.map((f) => `
+                    <option value="${f.id}" ${meal.foodId === f.id ? "selected" : ""}>
+                      ${escapeHtml(getFoodName(f, "es"))} (${f.category}) — ${f.calories100g} kcal/100g
+                    </option>
+                  `).join("")}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-medium text-[var(--text-secondary)] mb-1">
+                  ⚖️ Cantidad (gramos):
+                </label>
+                <input
+                  type="number"
+                  class="meal-portion w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
+                  value="${meal.portionGrams || (selectedFood ? selectedFood.defaultPortion : 100)}"
+                  data-meal-index="${index}"
+                  min="1"
+                  step="5"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">Descripción / Receta:</label>
+              <textarea
+                class="meal-desc w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-3 py-2 text-xs text-[var(--text-primary)] resize-none focus:outline-none focus:border-[var(--border-brand)]"
+                rows="2"
+                placeholder="${t("diet.editor.meal.descPlaceholder")}"
+                data-meal-index="${index}"
+              >${escapeHtml(meal.description || "")}</textarea>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2">
+              <div>
+                <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.calories")}</label>
+                <input
+                  type="number"
+                  class="meal-calories w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs text-[var(--text-primary)]"
+                  value="${meal.calories || 0}"
+                  data-meal-index="${index}"
+                />
+              </div>
+              <div>
+                <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.protein")}</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  class="meal-protein w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs text-[var(--text-primary)]"
+                  value="${meal.protein || 0}"
+                  data-meal-index="${index}"
+                />
+              </div>
+              <div>
+                <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.carbs")}</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  class="meal-carbs w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs text-[var(--text-primary)]"
+                  value="${meal.carbs || 0}"
+                  data-meal-index="${index}"
+                />
+              </div>
+              <div>
+                <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">${t("diet.editor.meal.fat")}</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  class="meal-fat w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs text-[var(--text-primary)]"
+                  value="${meal.fat || 0}"
+                  data-meal-index="${index}"
+                />
+              </div>
+            </div>
+
+            <!-- Allergens -->
+            <div class="pt-1">
+              <label class="block text-[10px] text-[var(--text-tertiary)] mb-1">${t("diet.editor.meal.allergens")}</label>
+              <div class="flex flex-wrap gap-2">
+                ${["gluten", "lactose", "nuts", "shellfish", "egg", "soy", "fish"].map((allergen) => `
+                  <label class="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      class="meal-allergen accent-[var(--brand)]"
+                      value="${allergen}"
+                      data-meal-index="${index}"
+                      ${(meal.allergens || []).includes(allergen) ? "checked" : ""}
+                    />
+                    ${allergen}
+                  </label>
+                `).join("")}
+              </div>
             </div>
           </div>
-        </div>
-      `
+        `;
+        }
       )
       .join("");
 
@@ -693,6 +823,75 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         currentMeals.splice(index, 1);
         renderMealsEditor();
         updateCalculatedMacros();
+        checkAndRenderConflicts();
+      });
+    });
+
+    container.querySelectorAll(".meal-food-select").forEach((select) => {
+      select.addEventListener("change", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        const foodId = (e.target as HTMLSelectElement).value;
+        if (!currentMeals[index]) return;
+
+        if (!foodId) {
+          currentMeals[index].foodId = undefined;
+          renderMealsEditor();
+          checkAndRenderConflicts();
+          return;
+        }
+
+        const food = allCatalogFoods.find((f) => f.id === foodId);
+        if (food) {
+          currentMeals[index].foodId = food.id;
+          const grams = currentMeals[index].portionGrams || food.defaultPortion || 100;
+          currentMeals[index].portionGrams = grams;
+          const macros = calcMacrosForPortion(food, grams);
+          currentMeals[index].calories = macros.calories;
+          currentMeals[index].protein = macros.protein;
+          currentMeals[index].carbs = macros.carbs;
+          currentMeals[index].fat = macros.fat;
+          currentMeals[index].allergens = [...(food.allergens || [])];
+          if (!currentMeals[index].description) {
+            currentMeals[index].description = `${grams}g de ${getFoodName(food, "es")}`;
+          }
+          renderMealsEditor();
+          updateCalculatedMacros();
+          checkAndRenderConflicts();
+        }
+      });
+    });
+
+    container.querySelectorAll(".meal-portion").forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+        const grams = parseFloat((e.target as HTMLInputElement).value) || 0;
+        const currentMeal = currentMeals[index];
+        if (!currentMeal) return;
+        currentMeal.portionGrams = grams;
+
+        if (currentMeal.foodId) {
+          const food = allCatalogFoods.find((f) => f.id === currentMeal.foodId);
+          if (food && grams > 0) {
+            const macros = calcMacrosForPortion(food, grams);
+            currentMeal.calories = macros.calories;
+            currentMeal.protein = macros.protein;
+            currentMeal.carbs = macros.carbs;
+            currentMeal.fat = macros.fat;
+            
+            const calInput = container.querySelector(`.meal-calories[data-meal-index="${index}"]`) as HTMLInputElement;
+            const protInput = container.querySelector(`.meal-protein[data-meal-index="${index}"]`) as HTMLInputElement;
+            const carbsInput = container.querySelector(`.meal-carbs[data-meal-index="${index}"]`) as HTMLInputElement;
+            const fatInput = container.querySelector(`.meal-fat[data-meal-index="${index}"]`) as HTMLInputElement;
+
+            if (calInput) calInput.value = String(macros.calories);
+            if (protInput) protInput.value = String(macros.protein);
+            if (carbsInput) carbsInput.value = String(macros.carbs);
+            if (fatInput) fatInput.value = String(macros.fat);
+
+            updateCalculatedMacros();
+            checkAndRenderConflicts();
+          }
+        }
       });
     });
 
@@ -701,6 +900,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
         if (currentMeals[index]) {
           currentMeals[index].name = (e.target as HTMLSelectElement).value as Meal["name"];
+          checkAndRenderConflicts();
         }
       });
     });
@@ -725,13 +925,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               ? "carbs"
               : "fat";
         if (currentMeals[index]) {
-          currentMeals[index][field] = parseInt((e.target as HTMLInputElement).value) || 0;
+          currentMeals[index][field] = parseFloat((e.target as HTMLInputElement).value) || 0;
         }
         updateCalculatedMacros();
       });
     });
 
-    // Allergen checkboxes
     container.querySelectorAll(".meal-allergen").forEach((checkbox) => {
       checkbox.addEventListener("change", (e) => {
         const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
@@ -746,15 +945,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           if (idx !== -1) allergens.splice(idx, 1);
         }
         currentMeals[index].allergens = allergens;
+        checkAndRenderConflicts();
       });
     });
   }
 
   function updateCalculatedMacros(): void {
     const totalCalories = currentMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
-    const totalProtein = currentMeals.reduce((sum, m) => sum + (m.protein || 0), 0);
-    const totalCarbs = currentMeals.reduce((sum, m) => sum + (m.carbs || 0), 0);
-    const totalFat = currentMeals.reduce((sum, m) => sum + (m.fat || 0), 0);
+    const totalProtein = Math.round(currentMeals.reduce((sum, m) => sum + (m.protein || 0), 0) * 10) / 10;
+    const totalCarbs = Math.round(currentMeals.reduce((sum, m) => sum + (m.carbs || 0), 0) * 10) / 10;
+    const totalFat = Math.round(currentMeals.reduce((sum, m) => sum + (m.fat || 0), 0) * 10) / 10;
 
     const calEl = document.getElementById("calc-calories");
     const protEl = document.getElementById("calc-protein");

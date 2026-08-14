@@ -321,7 +321,7 @@ export function checkDietConflicts(
 export function suggestSubstitutes(
   conflictedFood: FoodItem,
   allFoods: FoodItem[],
-  medicalProfile: MedicalProfile,
+  medicalProfile?: MedicalProfile | null,
   lang: 'es' | 'en' | 'ca' = 'es',
   maxResults = 3
 ): FoodItem[] {
@@ -343,7 +343,7 @@ export function suggestSubstitutes(
   const isCompatible = (f: FoodItem): boolean =>
     f.isActive &&
     f.id !== conflictedFood.id &&
-    checkDietConflicts([makeMockMeal(f)], allFoods, medicalProfile, lang).length === 0;
+    (!medicalProfile || checkDietConflicts([makeMockMeal(f)], allFoods, medicalProfile, lang).length === 0);
 
   // 1. Intentar sustitutos pre-configurados
   const preconfigured = (conflictedFood.substitutes ?? [])

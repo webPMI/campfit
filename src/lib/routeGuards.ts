@@ -22,14 +22,17 @@ export const routeGuards: RouteGuard[] = [
   { path: '/recover', allowedRoles: [] },
 
   // Cliente
-  { path: '/client/medical-profile', allowedRoles: ['client'] },
-  { path: '/client/dashboard', allowedRoles: ['client'], requiresMedicalProfile: false },
-  { path: '/client/workouts', allowedRoles: ['client'], requiresMedicalProfile: false },
-  { path: '/client/diets', allowedRoles: ['client'], requiresMedicalProfile: false },
-  { path: '/client/progress', allowedRoles: ['client'], requiresMedicalProfile: false },
-  { path: '/client/chat', allowedRoles: ['client'], requiresMedicalProfile: false },
-  { path: '/client/support', allowedRoles: ['client'], requiresMedicalProfile: false },
-  { path: '/client/settings', allowedRoles: ['client'], requiresMedicalProfile: false },
+  // 🔒 CRÍTICO: Los trainers también pueden acceder a /client/* porque un entrenador
+  // puede tener su propio entrenador asignado (assignedTrainerId) y necesita ver
+  // sus propias rutinas, dietas y evolución como cliente. NUNCA eliminar 'trainer' de estas rutas.
+  { path: '/client/medical-profile', allowedRoles: ['client', 'trainer'] },
+  { path: '/client/dashboard', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
+  { path: '/client/workouts', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
+  { path: '/client/diets', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
+  { path: '/client/progress', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
+  { path: '/client/chat', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
+  { path: '/client/support', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
+  { path: '/client/settings', allowedRoles: ['client', 'trainer'], requiresMedicalProfile: false },
 
   // Dashboard general (post-login)
   { path: '/dashboard', allowedRoles: ['admin', 'trainer', 'client'] },
@@ -61,7 +64,6 @@ export const routeGuards: RouteGuard[] = [
   // Raíz (público) - debe ir al final para no interceptar rutas más específicas
   { path: '/', allowedRoles: [] },
 ];
-
 
 export function checkRouteAccess(
   path: string,

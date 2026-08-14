@@ -119,11 +119,22 @@ export function renderMessageBubble(
          </div>`
       : '';
 
+  const mediaHtml = message.mediaUrl
+    ? message.mediaType === 'video'
+      ? `<div class="mt-2 overflow-hidden rounded-xl">
+           <video src="${escapeHtml(message.mediaUrl)}" controls class="max-h-60 w-full rounded-xl object-contain bg-black"></video>
+         </div>`
+      : `<div class="mt-2 overflow-hidden rounded-xl">
+           <img src="${escapeHtml(message.mediaUrl)}" alt="Adjunto" class="max-h-60 w-full rounded-xl object-cover cursor-pointer hover:opacity-95 transition-all" onclick="window.open('${escapeHtml(message.mediaUrl)}', '_blank')" />
+         </div>`
+    : '';
+
   return `
     <div class="max-w-[80%] ${align}">
       ${isFirstOfBlock && !isOwn ? `<p class="mb-1 text-xs text-[var(--text-tertiary)]">${escapeHtml(showSenderName)}</p>` : ''}
       <div class="border px-4 py-2.5 ${bg} ${rounded}">
-        <p class="text-sm text-[var(--text-primary)]">${escapeHtml(message.content)}</p>
+        ${message.content ? `<p class="text-sm text-[var(--text-primary)]">${escapeHtml(message.content)}</p>` : ''}
+        ${mediaHtml}
         ${alertBadge}
         <p class="mt-1 text-right text-[10px] text-[var(--text-tertiary)]">${time}</p>
       </div>

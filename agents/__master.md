@@ -103,12 +103,14 @@ npm run doctor
 
 ## 🔗 Referencias Rápidas
 
+- `docs/PROTOCOLO_AGENTES_PRO.md` - ⚠️ Protocolo profesional obligatorio (leer ANTES de cualquier cambio)
+- `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` - 🔒 Funcionalidades que NUNCA deben eliminarse
 - `AGENTS_GUIDE.md` - Guía completa del harness para agentes
 - `CONTEXT.md` - Contexto comprimido del proyecto
-- `TODO.md` - TODO centralizado del proyecto
-- `TASK.md` - Tarea actual (si está definida)
 - `.clinerules` - Golden Rules del proyecto
 - `GIT_WORKFLOW.md` - Flujo de git
+- `docs/AUDITORIA_UNIFICADA.md` - 🔍 Fuente de verdad de auditorías
+- `docs/AUDITORIA_2026-08-10.md` - 📅 Auditoría más reciente (2026-08-10)
 
 ---
 

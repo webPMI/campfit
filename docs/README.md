@@ -4,13 +4,19 @@
 
 ---
 
-## 🧭 Guías Principales
+## 🧭 Guías Principales (LECTURA OBLIGATORIA PARA AGENTES)
 
-- [AGENTS.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/AGENTS.md) — Reglas para agentes de IA y secuencia de trabajo.
-- [CONTEXT.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/CONTEXT.md) — Resumen técnico del stack, mapa de rutas y colecciones.
-- [.clinerules](file:///c:/Users/ink.enzo/Desktop/p/campfit/.clinerules) — Reglas de calidad y anti-regresión.
-- [FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md) — Funciones y queries protegidas anti-borrado.
-- [REFERENCIA_RAPIDA.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/REFERENCIA_RAPIDA.md) — Cheatsheet de comandos, colecciones y scripts.
+> **⚠️ AGENTES IA: DEBEN LEER ESTOS 5 DOCUMENTOS EN ORDEN ANTES DE CUALQUIER CAMBIO**
+
+1. **[FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md)** — 🔒 PRIMERO: Lista de funcionalidades que NUNCA deben eliminarse
+2. **[.clinerules](file:///c:/Users/ink.enzo/Desktop/p/campfit/.clinerules)** — 🔒 SEGUNDO: Golden Rules y Anti-Regression Rules
+3. **[PROTOCOLO_AGENTES_PRO.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/PROTOCOLO_AGENTES_PRO.md)** — 🔒 TERCERO: Protocolo profesional optimizado para agentes
+4. **[AGENTS.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/AGENTS.md)** — 🔒 CUARTO: Instrucciones específicas para agentes
+5. **[CONTEXT.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/CONTEXT.md)** — 🔒 QUINTO: Resumen técnico del stack
+
+### Documentos de Referencia Rápida
+
+- [REFERENCIA_RAPIDA.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/REFERENCIA_RAPIDA.md) — Cheatsheet de comandos, colecciones y scripts
 
 ---
 

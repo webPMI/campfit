@@ -4,20 +4,20 @@
  * @module trainerTypes
  */
 
+import type { MedicalProfile } from '@/types';
+
 export interface TrainerClient {
   uid: string;
   name: string;
   email: string;
-  role: 'client' | 'admin';
+  // 🔒 CRÍTICO: Incluye 'trainer' porque un entrenador puede tener otro entrenador
+  // asignado (assignedTrainerId) y aparecer en la lista de clientes del entrenador
+  // que lo supervisa. NUNCA reducir a solo 'client' — rompería el acceso a la
+  // evolución personal del entrenador como cliente.
+  role: 'client' | 'trainer' | 'admin';
   assignedTrainerId?: string;
   hasActiveAlert?: boolean;
-  medicalProfile?: {
-    allergies?: string[];
-    injuries?: string[];
-    conditions?: string[];
-    goals?: string[];
-    experience?: string;
-  };
+  medicalProfile?: MedicalProfile;
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
 }
@@ -100,7 +100,9 @@ export interface TrainerMessage {
   senderId: string;
   receiverId: string;
   content: string;
-  type: 'text' | 'alert';
+  type: 'text' | 'alert' | 'media';
+  mediaUrl?: string;
+  mediaType?: 'image' | 'video';
   participants: string[];
   isRead: boolean;
   createdAt?: { toDate: () => Date } | null;

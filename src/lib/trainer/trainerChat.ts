@@ -88,11 +88,13 @@ export async function sendMessage(
   senderId: string,
   receiverId: string,
   content: string,
-  type: 'text' | 'alert' = 'text',
+  type: 'text' | 'alert' | 'media' = 'text',
+  mediaUrl?: string,
+  mediaType?: 'image' | 'video',
 ): Promise<string | null> {
   try {
     const participants = [senderId, receiverId].sort();
-    const docRef = await addDoc(collection(db, 'messages'), {
+    const payload: Record<string, any> = {
       senderId,
       receiverId,
       content,
@@ -100,7 +102,12 @@ export async function sendMessage(
       participants,
       isRead: false,
       createdAt: serverTimestamp(),
-    });
+    };
+    if (mediaUrl) {
+      payload.mediaUrl = mediaUrl;
+      payload.mediaType = mediaType || 'image';
+    }
+    const docRef = await addDoc(collection(db, 'messages'), payload);
     return docRef.id;
   } catch (error) {
     logger.error('Trainer', 'Error al enviar mensaje:', error);

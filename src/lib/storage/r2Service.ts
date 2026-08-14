@@ -137,3 +137,52 @@ export async function uploadProgressPhotoToR2(
     throw error;
   }
 }
+
+/**
+ * Sube una imagen o archivo de postura/técnica para adjuntarlo al chat.
+ */
+export async function uploadChatMedia(
+  file: File,
+  senderId: string,
+  config: R2UploadConfig = defaultConfig
+): Promise<{ url: string; type: 'image' | 'video' }> {
+  const isVideo = file.type.startsWith('video/');
+  const mediaType: 'image' | 'video' = isVideo ? 'video' : 'image';
+
+  if (!isVideo) {
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      throw new Error(validation.message);
+    }
+  }
+
+  const timestamp = Date.now();
+  const fileExt = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
+  const objectKey = `chat/${senderId}/${timestamp}.${fileExt}`;
+
+  try {
+    if (config.r2Endpoint) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('key', objectKey);
+
+      const response = await fetch(config.r2Endpoint, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return { url: data.url || `${config.customDomain}/${objectKey}`, type: mediaType };
+      }
+    }
+
+    const previewUrl = await generateLocalPreview(file);
+    return { url: previewUrl, type: mediaType };
+  } catch (err) {
+    logger.error('R2Service', 'Error subiendo adjunto multimedia de chat:', err);
+    const fallbackUrl = await generateLocalPreview(file);
+    return { url: fallbackUrl, type: mediaType };
+  }
+}
+

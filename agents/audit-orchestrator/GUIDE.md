@@ -35,14 +35,28 @@ node scripts/audit.mjs --area=i18n
 
 ## Flujo de Auditoría
 
-1. **Despliegue**: Lanzar los 6 agentes en paralelo con `Promise.all()`
-2. **Recolección**: Cada agente escanea sus archivos y reporta findings
-3. **Consolidación**: El orchestrator combina todos los findings
-4. **Reporte**: Genera `docs/AUDIT_REPORT.md` con:
+1. **Pre-auditoría** (⬅️ NUEVO - obligatorio)
+   - [ ] Verificar `git status` limpio o documentar cambios pendientes
+   - [ ] Registrar fecha y hora de inicio (formato: `YYYY-MM-DD HH:MM`)
+   - [ ] Ejecutar `npm run type-check` y anotar errores preexistentes
+   - [ ] Ejecutar `npm test` y anotar tests fallidos preexistentes
+
+2. **Despliegue**: Lanzar los 6 agentes en paralelo con `Promise.all()`
+3. **Recolección**: Cada agente escanea sus archivos y reporta findings
+4. **Consolidación**: El orchestrator combina todos los findings
+5. **Reporte**: Genera/actualiza `docs/AUDITORIA_UNIFICADA.md` con:
+   - Fecha y hora de la auditoría
    - Resumen consolidado (críticos/medios/bajos)
    - Detalle por agente
-   - Plan de acción priorizado
-   - Comandos de verificación
+   - Plan de acción priorizado con IDs (ej: SEC-001, DEVTOOLS-001)
+   - Comandos de verificación por hallazgo
+
+6. **Post-auditoría** (⬅️ NUEVO - obligatorio)
+   - [ ] Registrar fecha y hora de fin
+   - [ ] Confirmar que el reporte se guardó en `docs/AUDITORIA_UNIFICADA.md`
+   - [ ] Añadir entrada al registro de auditorías del reporte
+   - [ ] Actualizar `CHANGELOG.md` con el resultado de la auditoría
+   - [ ] Notificar al planificador (`planner-agent`) con los hallazgos pendientes
 
 ## Severidades
 
@@ -57,5 +71,5 @@ node scripts/audit.mjs --area=i18n
 | Archivo | Propósito |
 |---------|-----------|
 | `scripts/audit.mjs` | Script principal de auditoría |
-| `docs/AUDIT_REPORT.md` | Reporte generado |
-| `docs/11_auditoria_problemas.md` | Auditoría anterior (referencia) |
+| `docs/AUDITORIA_UNIFICADA.md` | ⚠️ REPORTE PRINCIPAL (fuente de verdad) |
+| `docs/11_auditoria_problemas.md` | Auditoría anterior (referencia/histórico) |

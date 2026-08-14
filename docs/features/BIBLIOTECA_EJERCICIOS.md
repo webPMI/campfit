@@ -140,3 +140,23 @@ match /user_exercise_prefs/{userId} {
   allow delete: if isAdmin();
 }
 ```
+
+---
+
+## 5. Integración en Interfaces y Servicios
+
+1. **Servicio Central (`src/lib/client/exercisePreferencesService.ts`)**:
+   - `subscribeToUserExercisePreferences()`: escucha reactiva a `user_exercise_prefs/{userId}`.
+   - `rateExercise(userId, exerciseId, rating)`: guarda calificación 1 a 5 estrellas.
+   - `toggleFavorite(userId, exerciseId)`: conmuta favoritos explícitos.
+   - `requestExerciseExclusion(userId, clientName, trainerId, exercise, quickReasons, customReason)`: registra solicitud y envía mensaje de alerta/chat al entrenador.
+   - `acknowledgeExerciseRequest(userId, exerciseId)`: confirmación de lectura por el entrenador.
+2. **Entrenamientos del Cliente (`src/pages/client/workouts.astro`)**:
+   - Selector interactivo de estrellas ⭐ (1–5) en cada ejercicio.
+   - Botón toggle de favoritos ⭐.
+   - Modal interactivo de exclusión (`#exclusion-modal`) con checklist de motivos predefinidos y notas opcionales.
+3. **Creador y Editor de Rutinas del Entrenador (`src/pages/trainer/workouts.astro`)**:
+   - Selector directo desde el catálogo central `exercises_library` con autollenado de series, repeticiones y descansos recomendados.
+   - Badges visuales de favoritos del cliente (⭐) y solicitudes de exclusión (🚫).
+   - Banner de solicitudes pendientes con botón de confirmación ("Marcar visto").
+   - Alerta interactiva de confirmación antes de guardar si se incluyen ejercicios con solicitudes de exclusión.
