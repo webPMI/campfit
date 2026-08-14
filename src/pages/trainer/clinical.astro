@@ -99,12 +99,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 </TrainerLayout>
 
 <script>
-  import { db, auth } from '@/lib/firebase';
-  import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
-  import { logger } from '@/lib/shared/logger';
+  import { requireRole } from '@/lib/shared/authGuard';
+  import { subscribeToClients } from '@/lib/trainer/trainerClients';
+  import { escapeHtml } from '@/lib/shared/ui';
   import { translations } from '@/i18n/translations';
 
-  // Detect lang from URL
+  // Detect lang from URL or storage
   const urlLang = new URLSearchParams(window.location.search).get('lang') || 'es';
   const t = (key: string) => translations[urlLang as 'es' | 'en']?.[key] || translations['es']?.[key] || key;
 
@@ -115,13 +115,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     medicalProfile: {
       height?: number;
       weight?: number;
+      initialWeight?: number;
       age?: number;
       gender?: string;
       bloodType?: string;
-      allergies?: string;
-      conditions?: string;
-      medications?: string;
-      injuries?: string;
+      allergies?: string | string[];
+      conditions?: string | string[];
+      medications?: string | string[];
+      injuries?: string | string[];
       surgery?: string;
       dietaryRestrictions?: {
         glutenFree?: boolean;
@@ -133,7 +134,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         other?: string[];
       };
       intolerances?: Array<{ substance: string; severity: string; symptoms: string }>;
-      goals?: string[];
+      goals?: string | string[];
       experience?: string;
       emergencyName?: string;
       emergencyPhone?: string;
@@ -151,16 +152,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const dismissError = document.getElementById('dismissError')!;
 
   let allClients: ClinicalClient[] = [];
-
-  function showError(msg: string): void {
-    errorMessage.textContent = msg;
-    errorToast.classList.remove('hidden');
-    logger.error('trainer/clinical', msg);
-  }
+  let unsubClients: (() => void) | null = null;
 
   dismissError.addEventListener('click', () => {
     errorToast.classList.add('hidden');
   });
+
+  function formatList(val: string | string[] | undefined): string {
+    if (!val) return '';
+    return Array.isArray(val) ? val.join(', ') : String(val);
+  }
 
   function severityBadge(s: string): string {
     const map: Record<string, string> = {
@@ -208,6 +209,12 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const hasIntolerances = (mp?.intolerances?.length || 0) > 0;
       const hasRestrictions = mp?.dietaryRestrictions?.glutenFree || mp?.dietaryRestrictions?.lactoseFree || mp?.dietaryRestrictions?.nutFree || mp?.dietaryRestrictions?.shellfishFree;
 
+      const allergiesStr = formatList(mp?.allergies);
+      const conditionsStr = formatList(mp?.conditions);
+      const medicationsStr = formatList(mp?.medications);
+      const injuriesStr = formatList(mp?.injuries);
+      const goalsArr = Array.isArray(mp?.goals) ? mp.goals : (mp?.goals ? [String(mp.goals)] : []);
+
       const card = document.createElement('div');
       card.className = `rounded-xl border p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)] ${hasIntolerances ? 'border-[var(--danger)] bg-[var(--danger-dim)]' : hasRestrictions ? 'border-[var(--warning)] bg-[var(--warning-dim)]' : mp ? 'border-[var(--border-brand)] bg-[var(--brand-dim)]' : 'border-[var(--border-subtle)] bg-[var(--surface-2)]'}`;
       card.innerHTML = `
@@ -227,7 +234,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           ${mp.bloodType ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🩸</span> <span class="text-[var(--text-secondary)]">${mp.bloodType}</span></div>` : ''}
           ${mp.gender ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚧</span> <span class="text-[var(--text-secondary)]">${genderLabel(mp.gender)}</span></div>` : ''}
           ${mp.height ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">📏</span> <span class="text-[var(--text-secondary)]">${mp.height} cm</span></div>` : ''}
-          ${mp.weight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚖️</span> <span class="text-[var(--text-secondary)]">${mp.weight} kg</span></div>` : ''}
+          ${mp.weight || mp.initialWeight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚖️</span> <span class="text-[var(--text-secondary)]">${mp.weight || mp.initialWeight} kg</span></div>` : ''}
           ${mp.age ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🎂</span> <span class="text-[var(--text-secondary)]">${mp.age} ${t('clinical.years')}</span></div>` : ''}
           ${mp.experience ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">💪</span> <span class="text-[var(--text-secondary)] capitalize">${mp.experience}</span></div>` : ''}
         </div>
@@ -259,22 +266,22 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </div>
         </div>` : ''}
 
-        ${mp!.allergies ? `<div class="mt-2 rounded-lg bg-[var(--danger-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.allergies')}:</span> <span class="text-sm text-[var(--danger)]">${mp!.allergies}</span></div>` : ''}
-        ${mp!.conditions ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.conditions')}:</span> <span class="text-sm text-[var(--warning)]">${mp!.conditions}</span></div>` : ''}
-        ${mp!.medications ? `<div class="mt-1 rounded-lg bg-blue-500/5 px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.medications')}:</span> <span class="text-sm text-blue-300">${mp!.medications}</span></div>` : ''}
-        ${mp!.injuries ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.injuries')}:</span> <span class="text-sm text-[var(--warning)]">${mp!.injuries}</span></div>` : ''}
-        ${mp!.surgery ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.surgery')}:</span> <span class="text-sm text-[var(--text-secondary)]">${mp!.surgery}</span></div>` : ''}
+        ${allergiesStr ? `<div class="mt-2 rounded-lg bg-[var(--danger-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.allergies')}:</span> <span class="text-sm text-[var(--danger)]">${escapeHtml(allergiesStr)}</span></div>` : ''}
+        ${conditionsStr ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.conditions')}:</span> <span class="text-sm text-[var(--warning)]">${escapeHtml(conditionsStr)}</span></div>` : ''}
+        ${medicationsStr ? `<div class="mt-1 rounded-lg bg-blue-500/5 px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.medications')}:</span> <span class="text-sm text-blue-300">${escapeHtml(medicationsStr)}</span></div>` : ''}
+        ${injuriesStr ? `<div class="mt-1 rounded-lg bg-[var(--warning-dim)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.injuries')}:</span> <span class="text-sm text-[var(--warning)]">${escapeHtml(injuriesStr)}</span></div>` : ''}
+        ${mp!.surgery ? `<div class="mt-1 rounded-lg bg-[var(--surface-4)] px-3 py-2"><span class="text-xs text-[var(--text-tertiary)]">${t('clinical.label.surgery')}:</span> <span class="text-sm text-[var(--text-secondary)]">${escapeHtml(mp!.surgery)}</span></div>` : ''}
 
-        ${mp!.goals && mp!.goals.length > 0 ? `
+        ${goalsArr.length > 0 ? `
         <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
           <p class="text-xs font-medium text-[var(--text-tertiary)] mb-2">${t('clinical.section.goals')}</p>
-          <div class="flex flex-wrap gap-1.5">${mp!.goals.map(g => `<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">${g}</span>`).join('')}</div>
+          <div class="flex flex-wrap gap-1.5">${goalsArr.map(g => `<span class="rounded-md bg-[var(--brand-dim)] px-2 py-0.5 text-xs text-[var(--brand)]">${escapeHtml(g)}</span>`).join('')}</div>
         </div>` : ''}
 
         ${mp!.emergencyName || mp!.emergencyPhone ? `
         <div class="mt-3 border-t border-[var(--border-subtle)] pt-3">
           <p class="text-xs font-medium text-[var(--text-tertiary)] mb-1">${t('clinical.section.emergency')}</p>
-          <p class="text-sm text-[var(--text-secondary)]">${mp!.emergencyName || '-'} · ${mp!.emergencyPhone || '-'}</p>
+          <p class="text-sm text-[var(--text-secondary)]">${escapeHtml(mp!.emergencyName || '-')} · ${escapeHtml(mp!.emergencyPhone || '-')}</p>
         </div>` : ''}
         ` : `<p class="text-sm text-[var(--text-disabled)] italic">${t('clinical.no.profile')}</p>`}
       `;
@@ -289,8 +296,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       filtered = filtered.filter(c =>
         c.name.toLowerCase().includes(searchTerm) ||
         c.email.toLowerCase().includes(searchTerm) ||
-        (c.medicalProfile?.allergies || '').toLowerCase().includes(searchTerm) ||
-        (c.medicalProfile?.conditions || '').toLowerCase().includes(searchTerm) ||
+        formatList(c.medicalProfile?.allergies).toLowerCase().includes(searchTerm) ||
+        formatList(c.medicalProfile?.conditions).toLowerCase().includes(searchTerm) ||
         (c.medicalProfile?.intolerances || []).some(i => i.substance.toLowerCase().includes(searchTerm))
       );
     }
@@ -299,51 +306,37 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
   searchInput.addEventListener('input', filterClients);
 
-  async function loadClinical(): Promise<void> {
+  function initClinical(trainerId: string): void {
     loadingState.classList.remove('hidden');
     emptyState.classList.add('hidden');
     clinicalList.classList.add('hidden');
 
-    try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        window.location.href = '/login';
-        return;
-      }
-
-      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-      const userData = userDoc.data();
-      if (!userData || (userData.role !== 'trainer' && userData.role !== 'admin')) {
-        window.location.href = '/trainer/dashboard';
-        return;
-      }
-
-      // Load assigned clients
-      const clientsSnap = await getDocs(query(collection(db, 'users'), where('assignedTrainerId', '==', currentUser.uid)));
-      allClients = clientsSnap.docs.map(doc => {
-        const data = doc.data();
-        return {
-          uid: doc.id,
-          name: data.name || data.email || doc.id,
-          email: data.email || '',
-          medicalProfile: data.medicalProfile || null,
-        };
-      });
+    unsubClients = subscribeToClients(trainerId, (clients) => {
+      allClients = clients.map(c => ({
+        uid: c.uid,
+        name: c.name,
+        email: c.email || '',
+        medicalProfile: c.medicalProfile || null,
+      }));
 
       updateStats();
-      renderClients(allClients);
+      filterClients();
       const now = new Date().toLocaleTimeString();
       lastUpdate.textContent = `${t('clinical.updated')}: ${now}`;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : t('clinical.error.load');
-      showError(`${t('clinical.error.load')}: ${msg}`);
-      loadingState.classList.add('hidden');
-      emptyState.classList.remove('hidden');
-    }
+    });
   }
 
-  refreshBtn.addEventListener('click', loadClinical);
-  loadClinical();
-  const interval = setInterval(loadClinical, 60000);
-  document.addEventListener('astro:before-swap', () => clearInterval(interval));
+  requireRole(['trainer', 'admin'], (user) => {
+    initClinical(user.uid);
+  });
+
+  refreshBtn.addEventListener('click', () => {
+    filterClients();
+    const now = new Date().toLocaleTimeString();
+    lastUpdate.textContent = `${t('clinical.updated')}: ${now}`;
+  });
+
+  window.addEventListener('beforeunload', () => {
+    unsubClients?.();
+  });
 </script>

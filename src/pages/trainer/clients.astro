@@ -36,7 +36,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 </TrainerLayout>
 
 <script>
-  import { requireAuth } from "@/lib/shared/authGuard";
+  import { requireRole } from "@/lib/shared/authGuard";
   import { t } from "@/i18n/client";
   import { escapeHtml } from "@/lib/shared/ui";
   import { subscribeToClients, getClientProfile, type TrainerClient } from "@/lib/trainer/trainerUtils";
@@ -44,7 +44,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   let unsubClients: (() => void) | null = null;
   let allClients: TrainerClient[] = [];
 
-  requireAuth(async (user) => { initClients(user.uid); });
+  requireRole(["trainer", "admin"], async (user) => { initClients(user.uid); });
   window.addEventListener("beforeunload", () => { unsubClients?.(); });
 
   async function initClients(trainerId: string) {
@@ -89,14 +89,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     });
   }
 
-  function renderDetailView(client: TrainerClient, profile: any) {
+  function renderDetailView(client: TrainerClient, profile: Partial<TrainerClient>) {
     const detailPanel = document.getElementById("client-detail")!;
     const hasMedical = profile.medicalProfile;
     let medicalHTML = "";
     if (!hasMedical) {
       medicalHTML = `<div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm"><p class="text-xs text-[var(--text-disabled)]">${t("trainer.client.no.medical")}</p></div>`;
     } else {
-      const mp = profile.medicalProfile || {};
+      const mp = (profile.medicalProfile as unknown as Record<string, unknown>) || {};
       medicalHTML = `
         <h3 class="text-sm font-semibold text-[var(--text-secondary)] mb-2">${t("trainer.client.medical")}</h3>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm space-y-2 text-xs">
@@ -114,7 +114,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             <h2 class="text-lg font-semibold text-[var(--text-primary)]">${escapeHtml(client.name)}</h2>
             <p class="text-xs text-[var(--text-tertiary)]">${escapeHtml(client.email || "")}</p>
           </div>
-          <a href="/trainer/chat?lang=${new URLSearchParams(window.location.search).get("lang") || "es"}" class="rounded-xl bg-[var(--brand-dim)] border border-[var(--border-brand)] px-3 py-1.5 text-xs font-medium text-[var(--brand)] hover:bg-[var(--brand-dim)] transition-all">${t("trainer.chat")}</a>
+          <a href="/trainer/chat" class="rounded-xl bg-[var(--brand-dim)] border border-[var(--border-brand)] px-3 py-1.5 text-xs font-medium text-[var(--brand)] hover:bg-[var(--brand-dim)] transition-all">${t("trainer.chat")}</a>
         </div>
         ${medicalHTML}
         <div class="mt-4 grid grid-cols-2 gap-2">

@@ -57,9 +57,74 @@ export function subscribeToChatContacts(
     return () => {};
   }
 
+  // 🔒 CRÍTICO: Según firestore.rules, los trainers solo pueden leer usuarios donde assignedTrainerId == uid.
+  // Los admins pueden leer toda la colección users. Los clientes consultan su perfil y mensajes.
+  if (currentUserRole === 'trainer') {
+    const q = query(
+      collection(db, 'users'),
+      where('assignedTrainerId', '==', currentUserId),
+    );
+
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const contacts = snapshot.docs
+          .map((docSnap) => {
+            const data = docSnap.data();
+            return {
+              uid: docSnap.id,
+              name: data.name || data.email || 'Usuario',
+              email: data.email || '',
+              role: (data.role as 'client' | 'trainer' | 'admin') || 'client',
+              assignedTrainerId: data.assignedTrainerId,
+              hasActiveAlert: data.hasActiveAlert ?? false,
+            } as ChatContact;
+          })
+          .filter((user) => user.uid !== currentUserId);
+
+        callback(contacts);
+      },
+      (error) => {
+        logger.error('Chat', 'Error al suscribirse a contactos de entrenador:', error);
+        callback([]);
+      },
+    );
+  }
+
+  if (currentUserRole === 'client') {
+    // Para el cliente, obtener el entrenador asignado desde su perfil
+    let unsubUserDoc: Unsubscribe | null = null;
+    unsubUserDoc = onSnapshot(
+      doc(db, 'users', currentUserId),
+      async (userSnap) => {
+        if (!userSnap.exists()) {
+          callback([]);
+          return;
+        }
+        const userData = userSnap.data();
+        const trainerId = userData.assignedTrainerId;
+        if (trainerId) {
+          const trainerProfile = await getUserProfile(trainerId);
+          if (trainerProfile) {
+            callback([trainerProfile]);
+            return;
+          }
+        }
+        callback([]);
+      },
+      (error) => {
+        logger.error('Chat', 'Error al obtener perfil de cliente para chat:', error);
+        callback([]);
+      },
+    );
+    return () => {
+      unsubUserDoc?.();
+    };
+  }
+
+  // Rol admin: consulta completa de usuarios
   const q = query(
     collection(db, 'users'),
-    orderBy('createdAt', 'desc'),
     limit(100),
   );
 
@@ -80,25 +145,10 @@ export function subscribeToChatContacts(
         })
         .filter((user) => user.uid !== currentUserId);
 
-      if (currentUserRole === 'trainer') {
-        const filtered = allUsers.filter(
-          (u) =>
-            u.role === 'admin' ||
-            u.role === 'trainer' ||
-            (u.role === 'client' && u.assignedTrainerId === currentUserId),
-        );
-        callback(filtered);
-      } else if (currentUserRole === 'client') {
-        const filtered = allUsers.filter(
-          (u) => u.role === 'admin' || u.role === 'trainer',
-        );
-        callback(filtered);
-      } else {
-        callback(allUsers);
-      }
+      callback(allUsers);
     },
     (error) => {
-      logger.error('Chat', 'Error al suscribirse a contactos:', error);
+      logger.error('Chat', 'Error al suscribirse a contactos admin:', error);
       callback([]);
     },
   );

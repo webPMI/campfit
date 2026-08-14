@@ -50,8 +50,8 @@
 ### 🔥 `firestore.rules`
 - **`isStaff()`, `isAdmin()`, `isTrainer()`** — Helpers de roles. **NUNCA eliminar ni simplificar**.
 - **`isBootstrapAdminEmail()`** — Soporte para admins por email. **NUNCA eliminar** los dos emails (`servicioweb.pmi@gmail.com`, `sevicioweb.pmi@gmail.com`).
-- **`isBlocked()`** — Verificación de usuarios bloqueados. **NUNCA eliminar**.
-- **`match /users/{userId}`** — **NUNCA eliminar** la restricción de que `role == 'client'` en `create` (evita escalada de privilegios).
+- **`isBlocked()`** — Verificación de usuarios bloqueados para lecturas puntuales y escrituras. **NUNCA usar `isBlocked()` en reglas de lista (queries)** ya que llama a `get()` y Firestore lo prohíbe; en su lugar, usar `resource.data.isBlocked != true`.
+- **`match /users/{userId}`** — **NUNCA eliminar** la restricción de que `role == 'client'` en `create` (evita escalada de privilegios), ni la condición de lectura para trainers: `resource.data.assignedTrainerId == request.auth.uid && resource.data.isBlocked != true`.
 - **`match /diets/{dietId}`** — **NUNCA eliminar** la verificación de `trainerId == request.auth.uid` en create/update/delete.
 - **`match /workouts/{workoutId}`** — **NUNCA eliminar** la verificación de `trainerId == request.auth.uid` en create/update/delete.
 - **`match /messages/{messageId}`** — **NUNCA eliminar** la verificación de `participants.hasAny([request.auth.uid])` ni el límite de `size() == 2`.
@@ -137,6 +137,9 @@
 - **`sendMessage()`** — **NUNCA eliminar** `serverTimestamp()` ni `isRead: false`.
 - **`markAsRead()`** — **NUNCA eliminar** (marca mensajes como leídos).
 
+### 💬 `src/lib/shared/chat.ts`
+- **`subscribeToChatContacts()`** — **NUNCA eliminar** la bifurcación de consulta segura por rol: para trainers `where('assignedTrainerId', '==', currentUserId)` (cumple con las reglas de Firestore que restringen la lectura de la colección `users`).
+
 ---
 
 ## 7. Internacionalización (i18n)
@@ -178,6 +181,14 @@
 
 ### ✅ `src/lib/validators.ts`
 - **`isValidEmail()`** — **NUNCA eliminar** (validación de email).
+
+---
+
+## 11. Gestión de Clientes del Entrenador
+
+### 👥 `src/lib/trainer/trainerClients.ts`
+- **`subscribeToClients()`** — **NUNCA eliminar** `where('assignedTrainerId', '==', trainerId)` ni `where('role', '==', 'client')`. La ordenación cronológica por `createdAt` se realiza de forma segura en memoria para evitar caídas por documentos sin índice o formato mixto.
+- **`getClientProfile()`** — **NUNCA eliminar** (obtiene el perfil y datos médicos del cliente).
 - **`isValidPassword()`** — **NUNCA eliminar** las 4 reglas (mínimo 8, mayúscula, minúscula, número).
 - **`isValidName()`** — **NUNCA eliminar** (entre 2-50 caracteres, solo letras).
 

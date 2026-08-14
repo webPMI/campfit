@@ -38,10 +38,15 @@ service cloud.firestore {
 
     // ── Usuarios ─────────────────────────────────────────────────────────────
     match /users/{userId} {
+      // 🔒 CRÍTICO: NO usar isBlocked(userId) aquí — llama a get() y Firestore
+      // NO permite get() en reglas de lectura de queries de lista (causa
+      // "insufficient permissions" en subscribeToClients del trainer).
+      // En su lugar, se verifica resource.data.isBlocked directamente en el
+      // documento del usuario (campo ya existente en el modelo de datos).
       allow read: if isAuth() && (
         request.auth.uid == userId ||
         isAdmin() ||
-        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid && !isBlocked(userId))
+        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid && resource.data.isBlocked != true)
       );
       
       // 🔒 CRÍTICO: Restringe el rol en create para evitar escalada de privilegios.

@@ -234,6 +234,11 @@ export const ca: TranslationMap = {
   'trainer.diets.edit': 'Editar Dieta',
   'trainer.diets.delete': 'Eliminar',
   'trainer.diets.new': 'Nova Dieta',
+  'trainer.selectPresetDiet': 'Selecciona una dieta preconfigurada',
+  'trainer.noTemplates': 'Sense plantilles disponibles',
+  'trainer.templates': 'Plantilles',
+  'trainer.deleteDiet': 'Eliminar dieta',
+  'trainer.selectClient': 'Seleccionar client',
   'trainer.templates.load': '✨ Carregar de Plantilla',
   'trainer.templates.edit': '✏️ Editar',
   'trainer.templates.assign': '⚡ Assignar',
@@ -364,6 +369,11 @@ export const ca: TranslationMap = {
   'diet.editor.type.label': 'Tipus de pla',
   'diet.editor.type.normal': 'Normal / Estàndard',
   'diet.editor.type.advanced': 'Avançat / Esport',
+  'diet.editor.type.definition': 'Definició Muscular',
+  'diet.editor.type.volume': 'Volum / Guany',
+  'diet.editor.type.keto': 'Cetogènica (Keto)',
+  'diet.editor.type.vegan': 'Vegana / Vegetariana',
+  'diet.editor.type.custom': 'Personalitzada',
   'diet.editor.somatotype.label': 'Somatotip recomanat',
   'diet.editor.somatotype.none': 'No especificat',
   'diet.editor.somatotype.ectomorph': 'Ectomorf',
@@ -516,4 +526,23 @@ export const ca: TranslationMap = {
   'admin.modal.reset.pwd': 'Restablir Contrasenya',
   'admin.modal.resetPwd': 'Restablir Contrasenya',
   'trainer.myClientPanel': 'El meu Panell de Client',
+
+  // Common UI
+  'common.edit': 'Editar',
+  'common.delete': 'Eliminar',
+  'common.error': 'Error',
+  'common.client': 'Client',
+  'common.select': 'Seleccionar',
+  'common.validationError': 'Error de validació',
+
+  // Diet summary
+  'diet.meal': 'Menjar',
+  'diet.meals': 'Menjars',
+
+  // Client macros
+  'client.macros.fat': 'Greixes',
+
+  // Admin Quick Deploy
+  'admin.quickDeploy.defaultDiets': 'Dietes Predeterminades',
+  'admin.quickDeploy.defaultDiets.desc': 'Desplegar & Assignar Nutrició',
 };

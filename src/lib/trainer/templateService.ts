@@ -8,10 +8,7 @@
 import { logger } from '@/lib/shared/logger';
 import {
   collection,
-  query,
-  where,
   onSnapshot,
-  getDocs,
   doc,
   getDoc,
   addDoc,

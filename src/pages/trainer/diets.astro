@@ -18,36 +18,72 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           id="btn-create-diet"
           class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--brand)] to-[var(--brand-hover)] px-4 py-2.5 text-sm font-semibold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)] transition-all hover:opacity-95 active:scale-95"
         >
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
           </svg>
           {t("trainer.diets.new")}
         </button>
       </div>
 
       <!-- Preset Diet Templates Quick-Deploy Banner -->
-      <div id="template-banner" class="mt-6 rounded-2xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4 backdrop-blur-xl space-y-3">
+      <div
+        id="template-banner"
+        class="mt-6 rounded-2xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4 backdrop-blur-xl space-y-3"
+      >
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div class="flex items-center gap-2">
             <span class="text-xl">⚡</span>
             <div>
-              <h3 data-i18n="admin.quickDeploy.defaultDiets" class="text-sm font-bold text-[var(--brand)]">{t("admin.quickDeploy.defaultDiets")}</h3>
-              <p data-i18n="admin.quickDeploy.defaultDiets.desc" class="text-xs text-[var(--text-tertiary)]">{t("admin.quickDeploy.defaultDiets.desc")}</p>
+              <h3
+                data-i18n="admin.quickDeploy.defaultDiets"
+                class="text-sm font-bold text-[var(--brand)]"
+              >
+                {t("admin.quickDeploy.defaultDiets")}
+              </h3>
+              <p
+                data-i18n="admin.quickDeploy.defaultDiets.desc"
+                class="text-xs text-[var(--text-tertiary)]"
+              >
+                {t("admin.quickDeploy.defaultDiets.desc")}
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-[var(--border-subtle)]">
-          <select id="preset-diet-template-select" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
-            <option value="" data-i18n="trainer.selectPresetDiet">{t("trainer.selectPresetDiet")}</option>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-[var(--border-subtle)]"
+        >
+          <select
+            id="preset-diet-template-select"
+            class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
+          >
+            <option value="" data-i18n="trainer.selectPresetDiet"
+              >{t("trainer.selectPresetDiet")}</option
+            >
           </select>
 
-          <select id="preset-diet-client-select" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
-            <option value="" data-i18n="diet.editor.client.select">{t("diet.editor.client.select")}</option>
+          <select
+            id="preset-diet-client-select"
+            class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
+          >
+            <option value="" data-i18n="diet.editor.client.select"
+              >{t("diet.editor.client.select")}</option
+            >
           </select>
 
-          <button id="btn-apply-preset-diet" class="rounded-xl bg-amber-500 text-white px-4 py-2 text-xs font-bold shadow-md hover:bg-amber-600 transition-all">
-            🥗 <span data-i18n="admin.quickDeploy.defaultDiets.desc">{t("admin.quickDeploy.defaultDiets.desc")}</span>
+          <button
+            id="btn-apply-preset-diet"
+            class="rounded-xl bg-amber-500 text-white px-4 py-2 text-xs font-bold shadow-md hover:bg-amber-600 transition-all"
+          >
+            🥗 <span data-i18n="admin.quickDeploy.defaultDiets.desc"
+              >{t("admin.quickDeploy.defaultDiets.desc")}</span
+            >
           </button>
         </div>
       </div>
@@ -81,14 +117,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"></circle
-            ><path
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+            ></circle><path
               class="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg
@@ -102,7 +132,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 <script>
   import { logger } from "@/lib/shared/logger";
   import { requireRole } from "@/lib/shared/authGuard";
-  import { t } from "@/i18n/client";
+  import { t, getStoredLanguage } from "@/i18n/client";
   import { ICONS, escapeHtml, renderEmptyState, showToast } from "@/lib/shared/ui";
   import {
     subscribeToClients,
@@ -121,10 +151,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     calcMacrosForPortion,
     type FoodItem,
   } from "@/lib/shared/foodLibrary";
-  import {
-    checkDietConflicts,
-    type DietConflict,
-  } from "@/lib/client/intoleranceChecker";
+  import { checkDietConflicts, type DietConflict } from "@/lib/client/intoleranceChecker";
   import type { DietTemplate } from "@/lib/devtools/types";
   import type { TrainerClient, TrainerDiet, Meal } from "@/lib/trainer/types";
   import type { MedicalProfile } from "@/types";
@@ -161,9 +188,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const searchInput = document.getElementById("diet-search") as HTMLInputElement;
     const filterClientSelect = document.getElementById("filter-client") as HTMLSelectElement;
 
-    const presetDietTemplateSelect = document.getElementById("preset-diet-template-select") as HTMLSelectElement;
-    const presetDietClientSelect = document.getElementById("preset-diet-client-select") as HTMLSelectElement;
-    const btnApplyPresetDiet = document.getElementById("btn-apply-preset-diet") as HTMLButtonElement;
+    const presetDietTemplateSelect = document.getElementById(
+      "preset-diet-template-select"
+    ) as HTMLSelectElement;
+    const presetDietClientSelect = document.getElementById(
+      "preset-diet-client-select"
+    ) as HTMLSelectElement;
+    const btnApplyPresetDiet = document.getElementById(
+      "btn-apply-preset-diet"
+    ) as HTMLButtonElement;
 
     unsubFoods = subscribeToFoods((foods) => {
       allCatalogFoods = foods;
@@ -177,8 +210,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       allClients = clients;
       populateClientFilter();
       if (presetDietClientSelect) {
-        presetDietClientSelect.innerHTML = `<option value="">${t("diet.editor.client.select")}</option>` +
-          clients.map(c => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join("");
+        presetDietClientSelect.innerHTML =
+          `<option value="">${t("diet.editor.client.select")}</option>` +
+          clients.map((c) => `<option value="${c.uid}">${escapeHtml(c.name)}</option>`).join("");
       }
       renderDiets();
     });
@@ -194,8 +228,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         if (templates.length === 0) {
           presetDietTemplateSelect.innerHTML = `<option value="">${t("trainer.noTemplates") || "Sin plantillas disponibles"}</option>`;
         } else {
-          presetDietTemplateSelect.innerHTML = `<option value="">${t("trainer.selectPresetDiet")} (${templates.length})...</option>` +
-            templates.map(tmpl => `<option value="${tmpl.id}">${escapeHtml(tmpl.name)} (${tmpl.totalCalories || 0} kcal)</option>`).join("");
+          presetDietTemplateSelect.innerHTML =
+            `<option value="">${t("trainer.selectPresetDiet")} (${templates.length})...</option>` +
+            templates
+              .map(
+                (tmpl) =>
+                  `<option value="${tmpl.id}">${escapeHtml(tmpl.name)} (${tmpl.totalCalories || 0} kcal)</option>`
+              )
+              .join("");
         }
       }
     });
@@ -211,10 +251,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         btnApplyPresetDiet.disabled = true;
         showToast({ message: "Desplegando dieta predeterminada...", type: "info" });
         await applyDietTemplateToClient(templateId, clientId, trainerId);
-        showToast({ message: "¡Dieta asignada exitosamente! Ya la puedes personalizar.", type: "success" });
+        showToast({
+          message: "¡Dieta asignada exitosamente! Ya la puedes personalizar.",
+          type: "success",
+        });
         presetDietTemplateSelect.value = "";
-      } catch (err: any) {
-        showToast({ message: err.message || "Error al asignar plantilla", type: "error" });
+      } catch (err: unknown) {
+        // 🔒 TIPADO: Sin `any` — se extrae el mensaje solo si es instancia de Error.
+        // Si no es Error (ej: string lanzada), se muestra mensaje genérico al usuario.
+        const errorMessage = err instanceof Error ? err.message : "Error al asignar plantilla";
+        showToast({ message: errorMessage, type: "error" });
       } finally {
         btnApplyPresetDiet.disabled = false;
       }
@@ -254,14 +300,23 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const select = document.getElementById("filter-client") as HTMLSelectElement;
     if (!select) return;
     const currentVal = select.value;
-    select.innerHTML = `<option value="">${t("trainer.selectClient") || "Todos los clientes"}</option>` +
-      allClients.map((c) => `<option value="${c.uid}" ${c.uid === currentVal ? "selected" : ""}>${escapeHtml(c.name)}</option>`).join("");
+    select.innerHTML =
+      `<option value="">${t("trainer.selectClient") || "Todos los clientes"}</option>` +
+      allClients
+        .map(
+          (c) =>
+            `<option value="${c.uid}" ${c.uid === currentVal ? "selected" : ""}>${escapeHtml(c.name)}</option>`
+        )
+        .join("");
   }
 
   function renderDiets(): void {
     const container = document.getElementById("diets-container")!;
-    const searchVal = ((document.getElementById("diet-search") as HTMLInputElement)?.value || "").toLowerCase().trim();
-    const filterClientId = (document.getElementById("filter-client") as HTMLSelectElement)?.value || "";
+    const searchVal = ((document.getElementById("diet-search") as HTMLInputElement)?.value || "")
+      .toLowerCase()
+      .trim();
+    const filterClientId =
+      (document.getElementById("filter-client") as HTMLSelectElement)?.value || "";
 
     const filteredDiets = allDiets.filter((d) => {
       if (filterClientId && d.clientId !== filterClientId) return false;
@@ -286,19 +341,20 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         const mealCount = d.meals?.length || 0;
         const calories = d.totalCalories || 0;
 
-        const protein = d.meals?.reduce((sum, m) => sum + (m.protein || 0), 0) || d.totalProtein || 0;
+        const protein =
+          d.meals?.reduce((sum, m) => sum + (m.protein || 0), 0) || d.totalProtein || 0;
         const carbs = d.meals?.reduce((sum, m) => sum + (m.carbs || 0), 0) || d.totalCarbs || 0;
         const fat = d.meals?.reduce((sum, m) => sum + (m.fat || 0), 0) || d.totalFat || 0;
 
         const typeLabels: Record<string, string> = {
           normal: t("diet.editor.type.normal") || "Normocalórica",
-          definition: "Definición",
-          volume: "Volumen",
-          keto: "Keto",
-          vegan: "Vegana",
-          custom: "Personalizada",
+          definition: t("diet.editor.type.definition") || "Definición",
+          volume: t("diet.editor.type.volume") || "Volumen",
+          keto: t("diet.editor.type.keto") || "Keto",
+          vegan: t("diet.editor.type.vegan") || "Vegana",
+          custom: t("diet.editor.type.custom") || "Personalizada",
         };
-        const typeBadge = typeLabels[d.type] || d.type || "Personalizada";
+        const typeBadge = typeLabels[d.type] || d.type || t("diet.editor.type.custom");
 
         return `
           <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm transition-all hover:border-[var(--border-strong)]">
@@ -314,7 +370,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   </svg>
                   ${escapeHtml(clientName)}
                   <span>•</span>
-                  <span>${mealCount} ${mealCount !== 1 ? (t("diet.meals") || "comidas") : (t("diet.meal") || "comida")}</span>
+                  <span>${mealCount} ${mealCount !== 1 ? t("diet.meals") || "comidas" : t("diet.meal") || "comida"}</span>
                 </p>
 
                 <!-- Macros resume bar -->
@@ -362,7 +418,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       return;
     }
 
-    const conflicts = checkDietConflicts(currentMeals, allCatalogFoods, client.medicalProfile as MedicalProfile, "es");
+    const conflicts = checkDietConflicts(
+      currentMeals,
+      allCatalogFoods,
+      client.medicalProfile as MedicalProfile,
+      getStoredLanguage()
+    );
 
     if (conflicts.length === 0) {
       conflictBox.classList.add("hidden");
@@ -378,12 +439,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           <span>Alertas de Conflicto con el Perfil del Cliente (${conflicts.length})</span>
         </div>
         <ul class="space-y-1 text-xs text-rose-300">
-          ${conflicts.map((c) => `
+          ${conflicts
+            .map(
+              (c) => `
             <li class="flex items-start gap-1.5">
               <span class="text-rose-400 font-bold">•</span>
               <span><strong>[${c.mealName}]</strong> ${escapeHtml(c.message)}</span>
             </li>
-          `).join("")}
+          `
+            )
+            .join("")}
         </ul>
       </div>
     `;
@@ -409,7 +474,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         <div id="diet-conflicts-banner" class="hidden"></div>
 
         <!-- Template selection (only for new diets) -->
-        ${!isEditing && allTemplates.length > 0 ? `
+        ${
+          !isEditing && allTemplates.length > 0
+            ? `
           <div class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4">
             <div class="flex items-center justify-between gap-4">
               <div>
@@ -422,7 +489,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               </select>
             </div>
           </div>
-        ` : ""}
+        `
+            : ""
+        }
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -456,11 +525,11 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]"
             >
               <option value="normal" ${diet?.type === "normal" ? "selected" : ""}>${t("diet.editor.type.normal")}</option>
-              <option value="definition" ${diet?.type === "definition" ? "selected" : ""}>Definición Muscular</option>
-              <option value="volume" ${diet?.type === "volume" ? "selected" : ""}>Volumen / Ganancia</option>
-              <option value="keto" ${diet?.type === "keto" ? "selected" : ""}>Cetogénica (Keto)</option>
-              <option value="vegan" ${diet?.type === "vegan" ? "selected" : ""}>Vegana / Vegetariana</option>
-              <option value="custom" ${diet?.type === "custom" ? "selected" : ""}>Personalizada</option>
+              <option value="definition" ${diet?.type === "definition" ? "selected" : ""}>${t("diet.editor.type.definition")}</option>
+              <option value="volume" ${diet?.type === "volume" ? "selected" : ""}>${t("diet.editor.type.volume")}</option>
+              <option value="keto" ${diet?.type === "keto" ? "selected" : ""}>${t("diet.editor.type.keto")}</option>
+              <option value="vegan" ${diet?.type === "vegan" ? "selected" : ""}>${t("diet.editor.type.vegan")}</option>
+              <option value="custom" ${diet?.type === "custom" ? "selected" : ""}>${t("diet.editor.type.custom")}</option>
             </select>
           </div>
 
@@ -552,7 +621,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         try {
           showToast({ message: t("diet.editor.saving"), type: "info" });
           await applyDietTemplateToClient(templateId, clientId, currentTrainerId);
-          showToast({ message: t("trainer.templates.load") || "Plantilla cargada", type: "success" });
+          showToast({
+            message: t("trainer.templates.load") || "Plantilla cargada",
+            type: "success",
+          });
           closeEditor();
         } catch (err) {
           logger.error("TrainerDiets", "Error loading template", err);
@@ -614,15 +686,25 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       }
 
       if (!isValid) {
-        showToast({ message: t("common.validationError") || "Por favor corrige los errores", type: "error" });
+        showToast({
+          message: t("common.validationError") || "Por favor corrige los errores",
+          type: "error",
+        });
         return;
       }
 
       const client = allClients.find((c) => c.uid === clientId);
       if (client?.medicalProfile) {
-        const conflicts = checkDietConflicts(currentMeals, allCatalogFoods, client.medicalProfile as MedicalProfile, "es");
+        const conflicts = checkDietConflicts(
+          currentMeals,
+          allCatalogFoods,
+          client.medicalProfile as MedicalProfile,
+          getStoredLanguage()
+        );
         if (conflicts.length > 0) {
-          const proceed = confirm(`⚠️ Atención: Se han detectado ${conflicts.length} conflicto(s) con las restricciones del cliente.\n\n¿Deseas guardar el plan de todos modos?`);
+          const proceed = confirm(
+            `⚠️ Atención: Se han detectado ${conflicts.length} conflicto(s) con las restricciones del cliente.\n\n¿Deseas guardar el plan de todos modos?`
+          );
           if (!proceed) return;
         }
       }
@@ -678,10 +760,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     }
 
     container.innerHTML = currentMeals
-      .map(
-        (meal, index) => {
-          const selectedFood = meal.foodId ? allCatalogFoods.find((f) => f.id === meal.foodId) : null;
-          return `
+      .map((meal, index) => {
+        const selectedFood = meal.foodId ? allCatalogFoods.find((f) => f.id === meal.foodId) : null;
+        return `
           <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 space-y-3 animate-fade-in">
             <div class="flex items-center justify-between flex-wrap gap-2">
               <div class="flex items-center gap-2">
@@ -717,11 +798,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                   data-meal-index="${index}"
                 >
                   <option value="">Personalizado (texto libre / sin catálogo)</option>
-                  ${allCatalogFoods.map((f) => `
+                  ${allCatalogFoods
+                    .map(
+                      (f) => `
                     <option value="${f.id}" ${meal.foodId === f.id ? "selected" : ""}>
-                      ${escapeHtml(getFoodName(f, "es"))} (${f.category}) — ${f.calories100g} kcal/100g
+                      ${escapeHtml(getFoodName(f, getStoredLanguage()))} (${f.category}) — ${f.calories100g} kcal/100g
                     </option>
-                  `).join("")}
+                  `
+                    )
+                    .join("")}
                 </select>
               </div>
 
@@ -796,7 +881,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             <div class="pt-1">
               <label class="block text-[10px] text-[var(--text-tertiary)] mb-1">${t("diet.editor.meal.allergens")}</label>
               <div class="flex flex-wrap gap-2">
-                ${["gluten", "lactose", "nuts", "shellfish", "egg", "soy", "fish"].map((allergen) => `
+                ${["gluten", "lactose", "nuts", "shellfish", "egg", "soy", "fish"]
+                  .map(
+                    (allergen) => `
                   <label class="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] cursor-pointer">
                     <input
                       type="checkbox"
@@ -807,13 +894,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                     />
                     ${allergen}
                   </label>
-                `).join("")}
+                `
+                  )
+                  .join("")}
               </div>
             </div>
           </div>
         `;
-        }
-      )
+      })
       .join("");
 
     // Add event listeners
@@ -852,7 +940,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           currentMeals[index].fat = macros.fat;
           currentMeals[index].allergens = [...(food.allergens || [])];
           if (!currentMeals[index].description) {
-            currentMeals[index].description = `${grams}g de ${getFoodName(food, "es")}`;
+            currentMeals[index].description =
+              `${grams}g de ${getFoodName(food, getStoredLanguage())}`;
           }
           renderMealsEditor();
           updateCalculatedMacros();
@@ -877,11 +966,19 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             currentMeal.protein = macros.protein;
             currentMeal.carbs = macros.carbs;
             currentMeal.fat = macros.fat;
-            
-            const calInput = container.querySelector(`.meal-calories[data-meal-index="${index}"]`) as HTMLInputElement;
-            const protInput = container.querySelector(`.meal-protein[data-meal-index="${index}"]`) as HTMLInputElement;
-            const carbsInput = container.querySelector(`.meal-carbs[data-meal-index="${index}"]`) as HTMLInputElement;
-            const fatInput = container.querySelector(`.meal-fat[data-meal-index="${index}"]`) as HTMLInputElement;
+
+            const calInput = container.querySelector(
+              `.meal-calories[data-meal-index="${index}"]`
+            ) as HTMLInputElement;
+            const protInput = container.querySelector(
+              `.meal-protein[data-meal-index="${index}"]`
+            ) as HTMLInputElement;
+            const carbsInput = container.querySelector(
+              `.meal-carbs[data-meal-index="${index}"]`
+            ) as HTMLInputElement;
+            const fatInput = container.querySelector(
+              `.meal-fat[data-meal-index="${index}"]`
+            ) as HTMLInputElement;
 
             if (calInput) calInput.value = String(macros.calories);
             if (protInput) protInput.value = String(macros.protein);
@@ -914,22 +1011,24 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       });
     });
 
-    container.querySelectorAll(".meal-calories, .meal-protein, .meal-carbs, .meal-fat").forEach((input) => {
-      input.addEventListener("input", (e) => {
-        const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
-        const field = (e.target as HTMLElement).classList.contains("meal-calories")
-          ? "calories"
-          : (e.target as HTMLElement).classList.contains("meal-protein")
-            ? "protein"
-            : (e.target as HTMLElement).classList.contains("meal-carbs")
-              ? "carbs"
-              : "fat";
-        if (currentMeals[index]) {
-          currentMeals[index][field] = parseFloat((e.target as HTMLInputElement).value) || 0;
-        }
-        updateCalculatedMacros();
+    container
+      .querySelectorAll(".meal-calories, .meal-protein, .meal-carbs, .meal-fat")
+      .forEach((input) => {
+        input.addEventListener("input", (e) => {
+          const index = parseInt((e.target as HTMLElement).getAttribute("data-meal-index") || "0");
+          const field = (e.target as HTMLElement).classList.contains("meal-calories")
+            ? "calories"
+            : (e.target as HTMLElement).classList.contains("meal-protein")
+              ? "protein"
+              : (e.target as HTMLElement).classList.contains("meal-carbs")
+                ? "carbs"
+                : "fat";
+          if (currentMeals[index]) {
+            currentMeals[index][field] = parseFloat((e.target as HTMLInputElement).value) || 0;
+          }
+          updateCalculatedMacros();
+        });
       });
-    });
 
     container.querySelectorAll(".meal-allergen").forEach((checkbox) => {
       checkbox.addEventListener("change", (e) => {
@@ -952,8 +1051,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
   function updateCalculatedMacros(): void {
     const totalCalories = currentMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
-    const totalProtein = Math.round(currentMeals.reduce((sum, m) => sum + (m.protein || 0), 0) * 10) / 10;
-    const totalCarbs = Math.round(currentMeals.reduce((sum, m) => sum + (m.carbs || 0), 0) * 10) / 10;
+    const totalProtein =
+      Math.round(currentMeals.reduce((sum, m) => sum + (m.protein || 0), 0) * 10) / 10;
+    const totalCarbs =
+      Math.round(currentMeals.reduce((sum, m) => sum + (m.carbs || 0), 0) * 10) / 10;
     const totalFat = Math.round(currentMeals.reduce((sum, m) => sum + (m.fat || 0), 0) * 10) / 10;
 
     const calEl = document.getElementById("calc-calories");

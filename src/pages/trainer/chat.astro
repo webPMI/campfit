@@ -172,7 +172,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
 <script>
   import { logger } from "@/lib/shared/logger";
-  import { requireAuth } from "@/lib/shared/authGuard";
+  import { requireRole } from "@/lib/shared/authGuard";
   import { escapeHtml, getUserInitial, formatTime } from "@/lib/shared/ui";
   import {
     subscribeToConversations,
@@ -197,7 +197,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   let selectedChatFile: File | null = null;
   let hasInitialLoaded = false;
 
-  requireAuth(async (user) => {
+  requireRole(["trainer", "admin"], async (user) => {
     initChat(user.uid);
   });
 

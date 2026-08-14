@@ -13,11 +13,11 @@
 | Métrica | Valor |
 |---------|-------|
 | Branch | `master` |
-| Último commit | `7152d32` (feat(admin): panel de administración de ejercicios) |
-| Cambios sin commit | 7 archivos modificados + 2 untracked |
-| Type-check | ✅ **0 errores** (de 29 iniciales — el agente corrigió todos) |
-| Tests | ✅ **612 passed, 4 skipped** (55 archivos passed, 1 skipped) |
-| Agente trabajando | ✅ Commit `d0f0e0e` realizado (fix: type-check, translations parity, trainer libs) |
+| Último commit | `c7a3b4c` (fix: cleanup unused imports, clinical lang warning, i18n parity, docs update) |
+| Cambios sin commit | Ninguno (repo limpio) |
+| Type-check | ✅ **0 errores, 0 warnings** |
+| Tests | ✅ **668 passed, 4 skipped** (57 archivos passed, 1 skipped) |
+| Estado general | ✅ **Sano** — proyecto estable, sin deuda técnica crítica pendiente |
 
 ---
 
