@@ -36,7 +36,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 </TrainerLayout>
 
 <script>
-  import { logger } from "@/lib/shared/logger";
   import { requireAuth } from "@/lib/shared/authGuard";
   import { t } from "@/i18n/client";
   import { escapeHtml } from "@/lib/shared/ui";

@@ -514,5 +514,6 @@ export const ca: TranslationMap = {
   'admin.modal.medical': 'Perfil Mèdic',
   'admin.modal.delete': 'Eliminar',
   'admin.modal.reset.pwd': 'Restablir Contrasenya',
+  'admin.modal.resetPwd': 'Restablir Contrasenya',
   'trainer.myClientPanel': 'El meu Panell de Client',
 };

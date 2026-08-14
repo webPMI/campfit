@@ -170,3 +170,22 @@ y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 - Tests unitarios admin: 53/53 passed
 - Type-check: 0 errores en archivos i18n después de corrección
 - Git diff confirmado: solo adiciones de traducciones, sin eliminaciones de funcionalidad
+
+## [2026-08-14] - Auditoría y limpieza técnica
+
+### Corregido
+- **Imports no usados eliminados** (5 archivos):
+  - `src/pages/admin/dashboard.astro`: eliminados `LoadingState`, `SkeletonGroup`, `AnimatedCounter`
+  - `src/pages/admin/devtools.astro`: eliminado `ConfirmModal`
+  - `src/pages/admin/diets.astro`: eliminado `LoadingState`
+  - `src/pages/trainer/clients.astro`: eliminado `logger`
+  - `src/pages/dashboard.astro`: eliminado `getStoredLanguage`
+- **Script redundante eliminado**:
+  - `src/pages/trainer/clinical.astro`: eliminado `<script define:vars={{ lang }}>` con `_lang` (causaba warning `lang is not defined`)
+- **Paridad i18n completada**:
+  - `src/i18n/locales/ca.ts`: añadida clave `admin.modal.resetPwd` (faltaba en catalán)
+
+### Verificado
+- Type-check: 0 errores, 0 warnings
+- Tests: 668 passed, 4 skipped
+- Translations test: 7 passed

@@ -98,15 +98,6 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   </div>
 </TrainerLayout>
 
-<script define:vars={{ lang }}>
-  // i18n strings available in client script
-  const _lang = lang;
-  const _t = (/** @type {string} */ key) => {
-    const map = window.__CAMPFIT_I18N__ || {};
-    return map[key] || key;
-  };
-</script>
-
 <script>
   import { db, auth } from '@/lib/firebase';
   import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';

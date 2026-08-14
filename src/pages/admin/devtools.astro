@@ -1,7 +1,6 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
 import PageTransition from '@/components/PageTransition.astro';
-import ConfirmModal from '@/components/ConfirmModal.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';

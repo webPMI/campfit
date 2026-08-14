@@ -1,9 +1,9 @@
 # 🔍 Auditoría Unificada de CampFit
 
-> **Última actualización:** 2026-08-04  
-> **Propósito:** Consolidar todos los hallazgos de auditoría en un solo archivo con estado verificado.  
-> **Reemplaza a:** `AUDIT_REPORT.md`, `AUDITORIA_COMPLETA_CAMPFIT.md`, `AUDITORIA_COMPLETA_PRO`, `AUDITORIA_DIETAS_TRAINER.md`, `11_auditoria_problemas.md`  
-> **Método:** Cada hallazgo fue verificado contra el código actual (2026-08-04).
+> **Última actualización:** 2026-08-14
+> **Propósito:** Consolidar todos los hallazgos de auditoría en un solo archivo con estado verificado.
+> **Reemplaza a:** `AUDIT_REPORT.md`, `AUDITORIA_COMPLETA_CAMPFIT.md`, `AUDITORIA_COMPLETA_PRO`, `AUDITORIA_DIETAS_TRAINER.md`, `11_auditoria_problemas.md`
+> **Método:** Cada hallazgo fue verificado contra el código actual (2026-08-14).
 
 ---
 
@@ -102,13 +102,15 @@ requireRole(["trainer", "admin"], async (user) => {
 
 ---
 
-### P0-5: Paridad i18n `admin.modal.resetPwd` — ⚠️ **VIGENTE**
+### P0-5: Paridad i18n `admin.modal.resetPwd` — ✅ **CORREGIDO**
 
-**Archivo:** `src/i18n/locales/en.ts`
+**Archivo:** `src/i18n/locales/ca.ts`
 
-**Problema:** La clave `admin.modal.resetPwd` existe en `es.ts` pero NO en `en.ts`. El test `translations.test.ts` falla.
+**Antes:** La clave `admin.modal.resetPwd` existía en `es.ts` y `en.ts` pero NO en `ca.ts`.
 
-**Corrección:** Añadir `admin.modal.resetPwd` a `en.ts`.
+**Ahora:** Añadida `'admin.modal.resetPwd': 'Restablir Contrasenya'` a `ca.ts`.
+
+**Estado:** ✅ Corregido el 2026-08-14 — paridad i18n completa en es/en/ca.
 
 ---
 

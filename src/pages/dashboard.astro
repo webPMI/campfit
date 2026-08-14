@@ -39,7 +39,7 @@ const altLang = lang === 'es' ? 'en' : 'es';
 <script>
   import { auth } from '@/lib/firebase';
   import { onAuthStateChanged } from 'firebase/auth';
-  import { getStoredLanguage, t } from '@/i18n/client';
+  import { t } from '@/i18n/client';
   import { redirectByRole } from '@/lib/auth/roleRedirect';
 
   const loadingText = document.getElementById('loadingText')!;
