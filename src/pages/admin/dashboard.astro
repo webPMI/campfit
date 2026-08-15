@@ -13,7 +13,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       <!-- Header -->
       <div class="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h1 data-i18n="admin.dashboard" class="text-2xl font-bold">{t("admin.dashboard")}</h1>
+          <div class="flex items-center gap-3">
+            <h1 data-i18n="admin.dashboard" class="text-2xl font-bold">{t("admin.dashboard")}</h1>
+            <a
+              href="/client/dashboard"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-dim)] text-[var(--brand)] border border-[var(--border-brand)] text-xs font-semibold hover:bg-[var(--brand)] hover:text-white transition-all shadow-sm"
+              title="Ir al Dashboard de Cliente"
+            >
+              <span>👁️</span>
+              <span data-i18n="admin.view.client">{t("admin.view.client")}</span>
+            </a>
+          </div>
           <p data-i18n="admin.dashboard.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("admin.dashboard.desc")}</p>
         </div>
         <div id="last-update" class="text-xs text-[var(--text-disabled)] font-medium">
