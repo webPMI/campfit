@@ -11,8 +11,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     <div class="animate-fade-in">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold">{t('clinical.title.trainer')}</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('clinical.desc.trainer')}</p>
+          <h1 data-i18n="clinical.title.trainer" class="text-2xl font-bold">{t('clinical.title.trainer')}</h1>
+          <p data-i18n="clinical.desc.trainer" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('clinical.desc.trainer')}</p>
         </div>
         <div id="last-update" class="text-xs text-[var(--text-disabled)]">{t('clinical.updated')}: --</div>
       </div>
@@ -20,19 +20,19 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <!-- Stats Row -->
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.clients')}</p>
+          <p data-i18n="clinical.stat.clients" class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.clients')}</p>
           <p id="stat-total" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.withData')}</p>
+          <p data-i18n="clinical.stat.withData" class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.withData')}</p>
           <p id="stat-clinical" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.intolerances')}</p>
+          <p data-i18n="clinical.stat.intolerances" class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.intolerances')}</p>
           <p id="stat-intolerances" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
         </div>
         <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <p class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.restrictions')}</p>
+          <p data-i18n="clinical.stat.restrictions" class="text-xs text-[var(--text-tertiary)]">{t('clinical.stat.restrictions')}</p>
           <p id="stat-restrictions" class="mt-1 text-2xl font-bold text-[var(--warning)]">-</p>
         </div>
       </div>
@@ -42,11 +42,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         <input
           type="text"
           id="searchInput"
+          data-i18n-placeholder="clinical.search.placeholder.trainer"
           placeholder={t('clinical.search.placeholder.trainer')}
           class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:bg-[var(--surface-3)]"
         />
         <button
           id="refreshBtn"
+          data-i18n="clinical.refresh"
           class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
         >
           {t('clinical.refresh')}
@@ -82,8 +84,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-[var(--text-secondary)]">{t('clinical.empty.trainer')}</h3>
-        <p class="mt-1 text-sm text-[var(--text-disabled)]">{t('clinical.empty.trainer.desc')}</p>
+        <h3 data-i18n="clinical.empty.trainer" class="text-lg font-medium text-[var(--text-secondary)]">{t('clinical.empty.trainer')}</h3>
+        <p data-i18n="clinical.empty.trainer.desc" class="mt-1 text-sm text-[var(--text-disabled)]">{t('clinical.empty.trainer.desc')}</p>
       </div>
 
       <!-- Clinical Cards -->

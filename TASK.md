@@ -20,6 +20,7 @@
 
 | Fecha / Hora | Agente | Objetivo / Tarea | Archivos Modificados | Estado |
 | :--- | :--- | :--- | :--- | :--- |
+| `2026-08-15 20:24` | `Antigravity Agent 1` | Internacionalización i18n completa en `/trainer/clients`, `/trainer/clinical`, layouts y badges traducidos de objetivos y perfil médico | `src/pages/trainer/clients.astro`, `src/pages/trainer/clinical.astro`, `src/pages/trainer/diets.astro`, `src/layouts/TrainerLayout.astro`, `src/i18n/locales/*`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-15 20:20` | `Antigravity Agent 1` | Erradicación total de `alert()`, `confirm()`, y `prompt()` en todo el frontend. Implementación de `showConfirm` y `showSelectModal` en `src/lib/shared/ui.ts` y adición de la Regla de Oro 27 | `src/**/*.astro`, `src/lib/shared/ui.ts`, `.clinerules`, `AGENTS.md`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-15 19:47` | `Antigravity Agent 1` | Implementación de la Suite Completa de 5 Herramientas Profesionales para Entrenadores (Clonación, Macros TDEE, Semáforo Adherencia, Bitácora Privada, Impresión PDF) | `src/lib/trainer/*`, `src/pages/trainer/*`, `tests/unit/lib/trainer/trainerUtils.test.ts` | `[COMPLETADO]` |
 | `2026-08-15 19:04` | `Antigravity Agent 1` | Mejora integral del módulo visual de asignación de rutinas y dietas con previsualización en tiempo real y detección de conflictos médicos | `src/pages/trainer/workouts.astro`, `src/pages/trainer/diets.astro`, `TASK.md` | `[COMPLETADO]` |

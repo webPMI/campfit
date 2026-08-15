@@ -11,8 +11,8 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     <div class="animate-fade-in">
       <div class="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-[var(--text-primary)]">{t("trainer.diets")}</h1>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t("trainer.diets.desc")}</p>
+          <h1 data-i18n="trainer.diets" class="text-2xl font-bold text-[var(--text-primary)]">{t("trainer.diets")}</h1>
+          <p data-i18n="trainer.diets.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("trainer.diets.desc")}</p>
         </div>
         <button
           id="btn-create-diet"
@@ -27,7 +27,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
           </svg>
-          {t("trainer.diets.new")}
+          <span data-i18n="trainer.diets.new">{t("trainer.diets.new")}</span>
         </button>
       </div>
 

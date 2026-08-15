@@ -1,10 +1,19 @@
 import type { TranslationMap } from '../types';
 
 export const es: TranslationMap = {
-  // Global
+  // Global & Common
   'app.name': 'CampFit',
   'app.tagline': 'Tu entrenador personal',
   'app.tagline.en': 'Your personal trainer',
+  'common.none': 'Ninguno/a',
+  'common.loading': 'Cargando...',
+  'common.noResults': 'No se encontraron resultados',
+  'common.delete': 'Eliminar',
+  'common.cancel': 'Cancelar',
+  'common.save': 'Guardar',
+  'common.error': 'Ha ocurrido un error',
+  'admin.loading': 'Cargando...',
+  'error.loading': 'Error al cargar los datos',
 
   // Index
   'hero.badge': 'The Gold Standard in Fitness',
