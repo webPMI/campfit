@@ -126,6 +126,8 @@ const lang = Astro.params.lang || "es";
 <script>
   import "@/lib/debug/consoleFileLogger";
   import "@/lib/debug/firestoreDebug";
+  import { initLogViewer } from "@/lib/debug/logViewer";
+  initLogViewer();
 </script>
 
 <style is:global>

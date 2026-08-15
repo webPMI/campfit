@@ -62,6 +62,7 @@ export async function createUser(data: CreateUserPayload): Promise<{ success: bo
  */
 export async function updateUserRole(uid: string, newRole: string): Promise<boolean> {
   try {
+    // Actualizar Firestore
     await updateDoc(doc(db, 'users', uid), {
       role: newRole,
       updatedAt: serverTimestamp(),

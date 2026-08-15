@@ -1,0 +1,80 @@
+---
+import { translations, type Language } from '@/i18n/translations';
+import UILogoIcon from '@/components/UILogoIcon.astro';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'es' } = Astro.props;
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="relative mt-20 w-full border-t border-amber-500/20 bg-zinc-950/95 py-12 text-zinc-400 backdrop-blur-2xl">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+      
+      <!-- Brand column -->
+      <div class="md:col-span-5 space-y-4">
+        <a href="/" class="inline-flex items-center gap-2.5">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+            <UILogoIcon size="h-5 w-5" class="text-zinc-950" />
+          </div>
+          <span class="text-xl font-black tracking-tight text-white" data-i18n="app.name">CampFit</span>
+          <span class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+            Gold
+          </span>
+        </a>
+        <p class="text-sm text-zinc-400 leading-relaxed max-w-sm" data-i18n="public.footer.desc">
+          {t('public.footer.desc')}
+        </p>
+        <div class="flex items-center gap-3 pt-2 text-xs text-amber-400">
+          <span class="inline-block h-2 w-2 rounded-full bg-emerald-400"></span>
+          <span>Sistemas Operativos 100% Online</span>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300" data-i18n="public.footer.quickLinks">
+          {t('public.footer.quickLinks')}
+        </h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/" class="hover:text-amber-300 transition-colors" data-i18n="public.nav.home">{t('public.nav.home')}</a></li>
+          <li><a href="#video-experience" class="hover:text-amber-300 transition-colors" data-i18n="landing.video.badge">{t('landing.video.badge')}</a></li>
+          <li><a href="/login" class="hover:text-amber-300 transition-colors" data-i18n="public.nav.login">{t('public.nav.login')}</a></li>
+          <li><a href="/register" class="hover:text-amber-300 transition-colors" data-i18n="public.nav.register">{t('public.nav.register')}</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal links -->
+      <div class="md:col-span-4 space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300" data-i18n="public.footer.legal">
+          {t('public.footer.legal')}
+        </h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/legal/privacy" class="hover:text-amber-300 transition-colors" data-i18n="public.nav.privacy">{t('public.nav.privacy')}</a></li>
+          <li><a href="/legal/terms" class="hover:text-amber-300 transition-colors" data-i18n="public.nav.terms">{t('public.nav.terms')}</a></li>
+          <li><a href="/legal/cookies" class="hover:text-amber-300 transition-colors" data-i18n="public.nav.cookies">{t('public.nav.cookies')}</a></li>
+        </ul>
+        <div class="pt-2">
+          <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-1 text-[11px] text-amber-300/80">
+            🔒 Datos protegidos con cifrado de extremo a extremo
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom copyright -->
+    <div class="mt-12 border-t border-zinc-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+      <p>© {currentYear} CampFit Gold Edition. <span data-i18n="public.footer.rights">Todos los derechos reservados.</span></p>
+      <div class="flex items-center gap-4 text-zinc-400">
+        <span>Diseño de Ultra Lujo</span>
+        <span>•</span>
+        <span>Rendimiento Élite</span>
+      </div>
+    </div>
+  </div>
+</footer>

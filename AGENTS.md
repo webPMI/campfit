@@ -36,12 +36,19 @@ Manage with: `astro dev stop`, `astro dev status`, `astro dev logs`
 ## Quick Start for Agents
 1. Read `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` — Critical functionalities (MANDATORY)
 2. Read `CONTEXT.md` - Project context
-3. Read `TASK.md` - Current task
+3. **Registrar de inmediato al agente en `TASK.md`** con:
+   - Nombre: `Antigravity Agent [ID/Nombre]`
+   - Fecha y hora exacta: `YYYY-MM-DD HH:mm:ss`
+   - Problema / Objetivo en resolución
+   - Lista de archivos que modificará
+   - Estado: `[EN PROGRESO]`
 4. Read `.clinerules` - Golden Rules
 5. Read `AGENTS_GUIDE.md` - Complete agent guide
 
 ## Before Making Changes
 ```bash
+# 1. Registrar tu agente en TASK.md (MANDATORIO)
+# 2. Verificar locks
 bash scripts/agent-lock.sh check  # Check if another agent is working
 git pull origin master --allow-unrelated-histories --no-edit
 ```

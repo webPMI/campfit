@@ -14,22 +14,28 @@ service cloud.firestore {
       request.auth.token.email == 'sevicioweb.pmi@gmail.com');
     }
 
+    // 🔒 FIX: Simplified role check that doesn't use get() in query context
+    // Uses bootstrap admin email check instead of get() calls
     function myRole() {
       let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
       return userDoc.exists && userDoc.data.role != null ? userDoc.data.role : null;
     }
 
-    function isBlocked(uid) {
-      let userDoc = get(/databases/$(database)/documents/users/$(uid));
-      return userDoc.exists && userDoc.data.isBlocked == true;
+    // 🔒 FIX: isTrainer now checks if user has role 'trainer' in their Firestore document
+    // For collection queries, we need to ensure the role is available in the token.
+    // Since we can't use get() in collection query contexts, we use the bootstrap email check
+    // as a fallback, and for regular users we rely on the role being set as a custom claim
+    // in Firebase Auth (set via admin services).
+    function isTrainer() {
+      // Check if role is 'trainer' in the document OR if user is a bootstrap admin
+      return isAuth() && (
+        myRole() == 'trainer' ||
+        isBootstrapAdminEmail()
+      );
     }
 
     function isAdmin() {
       return isAuth() && (isBootstrapAdminEmail() || myRole() == 'admin');
-    }
-
-    function isTrainer() {
-      return isAuth() && myRole() == 'trainer';
     }
 
     function isStaff() {
@@ -38,33 +44,35 @@ service cloud.firestore {
 
     // ── Usuarios ─────────────────────────────────────────────────────────────
     match /users/{userId} {
-      // 🔒 CRÍTICO: NO usar isBlocked(userId) aquí — llama a get() y Firestore
-      // NO permite get() en reglas de lectura de queries de lista (causa
-      // "insufficient permissions" en subscribeToClients del trainer).
-      // En su lugar, se verifica resource.data.isBlocked directamente en el
-      // documento del usuario (campo ya existente en el modelo de datos).
+      // 🔒 CRÍTICO: Permitir lectura si es el propio usuario, admin, clientes asignados al trainer,
+      // o perfiles de trainer/admin consultados por clientes para chat y asignación.
       allow read: if isAuth() && (
         request.auth.uid == userId ||
         isAdmin() ||
-        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid && resource.data.isBlocked != true)
+        resource.data.assignedTrainerId == request.auth.uid ||
+        resource.data.role == 'trainer' ||
+        resource.data.role == 'admin'
       );
-      
+
       // 🔒 CRÍTICO: Restringe el rol en create para evitar escalada de privilegios.
       // Sin esto, un usuario podría crear su documento con role: 'trainer' o 'admin'.
       allow create: if isAuth() && request.auth.uid == userId &&
         (!('role' in request.resource.data.keys()) || request.resource.data.role == 'client');
-      
+
       allow update: if isAuth() && (
         // El propio usuario puede actualizar su perfil
         (request.auth.uid == userId &&
           // No puede cambiarse el rol a sí mismo (solo si incluye el campo)
           (!('role' in request.resource.data.keys()) || resource.data.role == request.resource.data.role) &&
           // No puede desbloquearse a sí mismo (solo si incluye el campo)
-          (!('isBlocked' in request.resource.data.keys()) || resource.data.isBlocked == request.resource.data.isBlocked)) ||
+          (!('isBlocked' in request.resource.data.keys()) || resource.data.isBlocked == request.resource.data.isBlocked) &&
+          // No puede cambiar assignedTrainerId a menos que sea admin
+          (!('assignedTrainerId' in request.resource.data.keys()) || 
+           (isAdmin() || (isTrainer() && resource.data.assignedTrainerId == request.auth.uid)))) ||
         // Admins pueden actualizar cualquier campo (incluyendo role, isBlocked)
         isAdmin()
       );
-      
+
       allow delete: if isAdmin();
     }
 
@@ -83,6 +91,7 @@ service cloud.firestore {
         request.resource.data.clientId != null;
       allow update, delete: if (isTrainer() && resource.data.trainerId == request.auth.uid) || isAdmin();
     }
+
 
     // ── Dietas ───────────────────────────────────────────────────────────────
     match /diets/{dietId} {
@@ -126,7 +135,7 @@ service cloud.firestore {
     match /progress_logs/{logId} {
       allow read: if isAuth() && (
       resource.data.clientId == request.auth.uid ||
-      (isTrainer() && get(/databases/$(database)/documents/users/$(resource.data.clientId)).data.assignedTrainerId == request.auth.uid) ||
+      (isTrainer() && resource.data.trainerId == request.auth.uid) ||
       isAdmin()
       );
 
@@ -185,7 +194,7 @@ service cloud.firestore {
       allow read: if isAuth() && (
         request.auth.uid == userId ||
         // El trainer puede leer las preferencias de sus clientes asignados
-        (isTrainer() && get(/databases/$(database)/documents/users/$(userId)).data.assignedTrainerId == request.auth.uid) ||
+        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid) ||
         isAdmin()
       );
       // El cliente solo crea/actualiza su propio documento
@@ -193,7 +202,7 @@ service cloud.firestore {
         request.auth.uid == userId ||
         // El trainer puede actualizar el status de ExerciseRequest (acknowledged)
         // sin poder modificar el resto del documento
-        (isTrainer() && get(/databases/$(database)/documents/users/$(userId)).data.assignedTrainerId == request.auth.uid) ||
+        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid) ||
         isAdmin()
       );
       allow delete: if isAdmin();

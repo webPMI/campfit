@@ -16364,3 +16364,244 @@ ReferenceError: t is not defined
 ============================================================
 [DEV SESSION STARTED] 2026-08-14T21:47:54.357Z
 ============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:01:20.896Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:03:15.864Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:05:29.984Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:06:08.666Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:06:54.396Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:07:09.667Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:08:12.978Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:09:44.270Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:12:10.569Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:12:43.532Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T09:13:02.580Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:08:56.831Z
+============================================================
+[2026-08-15T11:08:59.492Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:01.748Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:02.732Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:02.738Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:09:03.441Z
+============================================================
+[2026-08-15T11:09:03.444Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:09:03.444Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:09:04.619Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:04.672Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:16.368Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:16.378Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:26.900Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:26.914Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:37.162Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:09:37.154Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:15.537Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:19.917Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:20.762Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-15T11:10:23.910Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:23.993Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:24.263Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:35.915Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:35.986Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:10:36.266Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:10:42.368Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:10:47.908Z
+============================================================
+[2026-08-15T11:11:02.825Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:11:02.830Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:11:03.275Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:11:25.223Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:11:37.315Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-15T11:12:01.459Z] [CLIENT] [ERROR] [/login] [AuthService] Error en login Google: FirebaseError: Firebase: Error (auth/popup-closed-by-user). FirebaseError: Firebase: Error (auth/popup-closed-by-user).
+FirebaseError: Firebase: Error (auth/popup-closed-by-user).
+    at createErrorInternal (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=59806934:440:35)
+    at _createError (http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=59806934:420:9)
+    at http://localhost:4321/node_modules/.vite/deps/firebase_auth.js?v=59806934:7959:18
+[2026-08-15T11:12:11.070Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:12:11.081Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:12:11.277Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:17.978Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:18.304Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:18.288Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:22.140Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:29.703Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:29.715Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:14:30.281Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:14:35.883Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:14:45.269Z
+============================================================
+[2026-08-15T11:15:16.990Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:17.022Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:17.283Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:43.938Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:15:44.701Z
+============================================================
+[2026-08-15T11:15:44.704Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:15:44.297Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:44.704Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:15:44.301Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:44.704Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:15:46.072Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:46.072Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:15:46.071Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:16:27.021Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:16:27.305Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:16:27.308Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:18:44.947Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:18:45.318Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:18:45.326Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:01.544Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:02.295Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:02.291Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:11.894Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:12.309Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:12.302Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:20.108Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:19:20.702Z
+============================================================
+[2026-08-15T11:19:20.704Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:19:20.289Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:20.704Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:19:20.291Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:20.704Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:19:21.293Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:21.275Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:21.274Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:31.060Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:31.334Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:19:31.320Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:19:36.298Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:20:18.222Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:20:22.817Z
+============================================================
+[2026-08-15T11:21:01.077Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:23:57.598Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:23:57.590Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:23:58.110Z
+============================================================
+[2026-08-15T11:23:58.112Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:23:58.112Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:23:58.112Z] [CLIENT] [LOG] [/] [vite] server connection lost. Polling for restart...
+[2026-08-15T11:23:59.011Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:23:59.025Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:23:59.046Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:24:05.359Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:24:05.354Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:24:05.370Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:24:11.463Z
+============================================================
+[2026-08-15T11:50:31.057Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:50:31.074Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:50:31.306Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:50:39.067Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:50:39.066Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:50:39.275Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:51:31.218Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:51:31.222Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:51:31.323Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:51:36.796Z
+============================================================
+[2026-08-15T11:53:40.573Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:53:43.295Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:54:34.194Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:54:34.192Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:54:34.300Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:55:50.001Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:55:50.012Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:55:50.291Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:56:54.668Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:56:54.684Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:56:55.296Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:08.863Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:08.873Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:09.287Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:33.276Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:33.288Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:33.323Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:54.995Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:55.018Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:57:55.273Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:58:17.903Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:58:17.937Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:58:18.276Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T11:58:39.114Z
+============================================================
+[2026-08-15T11:59:01.922Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:59:01.917Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T11:59:02.273Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T12:44:55.836Z
+============================================================
+[2026-08-15T12:44:57.908Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-15T12:44:57.907Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-15T12:46:18.923Z
+============================================================
+[2026-08-15T12:46:24.438Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.

@@ -1,0 +1,480 @@
+---
+import { translations, type Language } from '@/i18n/translations';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'es' } = Astro.props;
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<section id="video-experience" class="relative my-20 w-full overflow-hidden px-4 sm:px-6">
+  <!-- Glowing background backdrop -->
+  <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+    <div class="h-[500px] w-[900px] rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-400/15 to-amber-600/20 blur-[130px]"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-6xl">
+    <!-- Header -->
+    <div class="mb-10 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+        <svg class="h-3.5 w-3.5 text-amber-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span data-i18n="landing.video.badge">{t('landing.video.badge')}</span>
+      </div>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+        <span data-i18n="landing.video.title">{t('landing.video.title')}</span>{' '}
+        <span class="bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(245,158,11,0.3)]" data-i18n="landing.video.titleHighlight">
+          {t('landing.video.titleHighlight')}
+        </span>
+      </h2>
+      <p class="mx-auto mt-3 max-w-2xl text-base text-zinc-300 sm:text-lg" data-i18n="landing.video.subtitle">
+        {t('landing.video.subtitle')}
+      </p>
+    </div>
+
+    <!-- Video Showcase Wrapper (Bright & High Clarity) -->
+    <div class="relative mx-auto overflow-hidden rounded-3xl border border-amber-500/40 bg-zinc-950/90 p-2 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_35px_rgba(245,158,11,0.2)] backdrop-blur-2xl">
+      <!-- Outer Rim & Viewport -->
+      <div class="relative aspect-video w-full overflow-hidden rounded-2xl bg-zinc-900">
+        <!-- Main Video Player -->
+        <video
+          id="showcaseVideo"
+          class="h-full w-full object-cover transition-opacity duration-300 brightness-105 contrast-105"
+          poster="/images/landing/training_gym.jpg"
+          playsinline
+          muted
+          loop
+          preload="metadata"
+        >
+          <source src="/videos/hero_training.mp4" type="video/mp4" />
+        </video>
+
+        <!-- Subtle Top & Bottom Vignettes (Transparent Middle for High Clarity) -->
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40"></div>
+
+        <!-- Dynamic In-Video CampFit HUD Overlays -->
+        <!-- 1. Gimnasio HUD -->
+        <div id="hudOverlayGym" class="hud-overlay pointer-events-none absolute bottom-20 left-4 sm:left-6 z-10 max-w-sm rounded-2xl border border-amber-400/50 bg-black/80 p-3.5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.25)] transition-all duration-300">
+          <div class="flex items-center justify-between gap-2 border-b border-amber-500/20 pb-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300" data-i18n="landing.hud.gym.badge">
+              <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+              {t('landing.hud.gym.badge')}
+            </span>
+            <span class="rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">RPE 8.5</span>
+          </div>
+          <div class="mt-2.5">
+            <div class="text-sm font-extrabold text-white" data-i18n="landing.hud.gym.exercise">{t('landing.hud.gym.exercise')}</div>
+            <div class="text-xs text-zinc-300" data-i18n="landing.hud.gym.details">{t('landing.hud.gym.details')}</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-xs text-zinc-300 pt-2 border-t border-zinc-800">
+            <span>⏱️ Descanso: <strong class="text-amber-400 font-mono">00:45</strong></span>
+            <span>⚡ Sobrecarga: <strong class="text-emerald-400">+5 kg</strong></span>
+          </div>
+        </div>
+
+        <!-- 2. En Casa HUD -->
+        <div id="hudOverlayHome" class="hud-overlay hidden pointer-events-none absolute bottom-20 left-4 sm:left-6 z-10 max-w-sm rounded-2xl border border-amber-400/50 bg-black/80 p-3.5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.25)] transition-all duration-300">
+          <div class="flex items-center justify-between gap-2 border-b border-amber-500/20 pb-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300" data-i18n="landing.hud.home.badge">
+              <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+              {t('landing.hud.home.badge')}
+            </span>
+            <span class="rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">Sin Equipamiento Pesado</span>
+          </div>
+          <div class="mt-2.5">
+            <div class="text-sm font-extrabold text-white" data-i18n="landing.hud.home.exercise">{t('landing.hud.home.exercise')}</div>
+            <div class="text-xs text-zinc-300" data-i18n="landing.hud.home.details">{t('landing.hud.home.details')}</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-xs text-zinc-300 pt-2 border-t border-zinc-800">
+            <span>🔥 Calorías: <strong class="text-amber-400 font-mono">340 kcal</strong></span>
+            <span>✨ Adherencia: <strong class="text-emerald-400">100%</strong></span>
+          </div>
+        </div>
+
+        <!-- 3. Al Aire Libre HUD -->
+        <div id="hudOverlayOutdoor" class="hud-overlay hidden pointer-events-none absolute bottom-20 left-4 sm:left-6 z-10 max-w-sm rounded-2xl border border-amber-400/50 bg-black/80 p-3.5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(245,158,11,0.25)] transition-all duration-300">
+          <div class="flex items-center justify-between gap-2 border-b border-amber-500/20 pb-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300" data-i18n="landing.hud.outdoor.badge">
+              <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+              {t('landing.hud.outdoor.badge')}
+            </span>
+            <span class="rounded bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">Zona 4 Cardio</span>
+          </div>
+          <div class="mt-2.5">
+            <div class="text-sm font-extrabold text-white" data-i18n="landing.hud.outdoor.exercise">{t('landing.hud.outdoor.exercise')}</div>
+            <div class="text-xs text-zinc-300" data-i18n="landing.hud.outdoor.details">{t('landing.hud.outdoor.details')}</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-xs text-zinc-300 pt-2 border-t border-zinc-800">
+            <span>💓 Pulso: <strong class="text-amber-400 font-mono">155 BPM</strong></span>
+            <span>📍 GPS: <strong class="text-emerald-400">5.2 km</strong></span>
+          </div>
+        </div>
+
+        <!-- 4. Nutrición HUD -->
+        <div id="hudOverlayNutrition" class="hud-overlay hidden pointer-events-none absolute bottom-20 left-4 sm:left-6 z-10 max-w-sm rounded-2xl border border-emerald-400/50 bg-black/80 p-3.5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(16,185,129,0.25)] transition-all duration-300">
+          <div class="flex items-center justify-between gap-2 border-b border-emerald-500/20 pb-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300" data-i18n="landing.hud.nutrition.badge">
+              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              {t('landing.hud.nutrition.badge')}
+            </span>
+            <span class="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-200">680 kcal</span>
+          </div>
+          <div class="mt-2.5">
+            <div class="text-sm font-extrabold text-white" data-i18n="landing.hud.nutrition.meal">{t('landing.hud.nutrition.meal')}</div>
+            <div class="text-xs text-zinc-300">Comida Post-Entreno • 0 Alérgenos detectados</div>
+          </div>
+          <div class="mt-2.5 grid grid-cols-3 gap-1.5 text-center text-xs pt-2 border-t border-zinc-800">
+            <div class="rounded bg-zinc-900/90 p-1 border border-zinc-700"><span class="block text-[10px] text-zinc-400">Proteína</span><strong class="text-emerald-400">48g</strong></div>
+            <div class="rounded bg-zinc-900/90 p-1 border border-zinc-700"><span class="block text-[10px] text-zinc-400">Carbos</span><strong class="text-amber-400">62g</strong></div>
+            <div class="rounded bg-zinc-900/90 p-1 border border-zinc-700"><span class="block text-[10px] text-zinc-400">Grasas</span><strong class="text-rose-400">22g</strong></div>
+          </div>
+        </div>
+
+        <!-- Top Status Bar in Video -->
+        <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+          <div class="flex items-center gap-2 rounded-full border border-amber-500/40 bg-black/70 px-3.5 py-1.5 text-xs backdrop-blur-md">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-amber-500"></span>
+            </span>
+            <span class="font-semibold text-amber-200" id="activeChapterLabel">01. Gimnasio & Fuerza</span>
+          </div>
+
+          <div class="flex items-center gap-2 rounded-full border border-white/20 bg-black/70 px-3.5 py-1.5 text-xs text-zinc-200 backdrop-blur-md">
+            <span class="font-mono font-medium" id="timeCounter">00:00 / 00:00</span>
+          </div>
+        </div>
+
+        <!-- Center Big Play Button (when paused) -->
+        <button
+          id="videoCenterPlayBtn"
+          type="button"
+          aria-label="Reproducir vídeo"
+          class="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center rounded-full border border-amber-400/60 bg-amber-500/25 text-amber-300 shadow-[0_0_35px_rgba(245,158,11,0.4)] backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-amber-500/35 focus:outline-none cursor-pointer"
+        >
+          <svg id="iconCenterPlay" class="ml-1 h-10 w-10 fill-current" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <svg id="iconCenterPause" class="hidden h-10 w-10 fill-current" viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+
+        <!-- Bottom Integrated Controls Bar -->
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4">
+          <!-- Timeline Bar -->
+          <div id="videoTimelineContainer" class="group relative mb-3 h-2 w-full cursor-pointer rounded-full bg-zinc-800 transition-all hover:h-3">
+            <div
+              id="videoProgressBar"
+              class="h-full w-0 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)] transition-[width] duration-75"
+            ></div>
+            <div
+              id="videoScrubHandle"
+              class="absolute top-1/2 -ml-2 -mt-2 hidden h-4 w-4 rounded-full border-2 border-amber-300 bg-black shadow-lg group-hover:block"
+            ></div>
+          </div>
+
+          <!-- Bottom Control Buttons -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <button
+                id="togglePlayBtn"
+                type="button"
+                class="flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-zinc-100 transition-all hover:border-amber-400/50 hover:bg-amber-500/20 hover:text-amber-300 cursor-pointer"
+              >
+                <svg id="miniPlayIcon" class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="miniPauseIcon" class="hidden h-4 w-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+                <span id="playStatusText">Reproducir</span>
+              </button>
+
+              <button
+                id="toggleMuteBtn"
+                type="button"
+                aria-label="Silenciar / Activar sonido"
+                class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-zinc-200 transition-all hover:border-amber-400/50 hover:bg-amber-500/20 hover:text-amber-300 cursor-pointer"
+              >
+                <svg id="iconMuted" class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                </svg>
+                <svg id="iconUnmuted" class="hidden h-4 w-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button
+                id="fullscreenBtn"
+                type="button"
+                aria-label="Pantalla completa"
+                class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-zinc-200 transition-all hover:border-amber-400/50 hover:bg-amber-500/20 hover:text-amber-300 cursor-pointer"
+              >
+                <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Training Environments & Modalities Selector -->
+      <div class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        <!-- 01. Gimnasio -->
+        <button
+          type="button"
+          class="chapter-btn active flex flex-col sm:flex-row items-start sm:items-center gap-2.5 rounded-xl border border-amber-500/50 bg-amber-500/15 p-3 text-left transition-all duration-200 hover:border-amber-400 hover:bg-amber-500/25 cursor-pointer"
+          data-time="0"
+          data-label="01. Gimnasio & Fuerza"
+          data-video="/videos/hero_training.mp4"
+          data-poster="/images/landing/training_gym.jpg"
+        >
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500 text-zinc-950 font-bold text-xs shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+            01
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm font-semibold text-white" data-i18n="landing.chapter.gym.title">{t('landing.chapter.gym.title')}</div>
+            <div class="text-[11px] text-amber-200/80 line-clamp-1" data-i18n="landing.chapter.gym.desc">{t('landing.chapter.gym.desc')}</div>
+          </div>
+        </button>
+
+        <!-- 02. En Casa -->
+        <button
+          type="button"
+          class="chapter-btn flex flex-col sm:flex-row items-start sm:items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3 text-left transition-all duration-200 hover:border-amber-500/40 hover:bg-zinc-800 cursor-pointer"
+          data-time="4"
+          data-label="02. En Casa & Funcional"
+          data-video="/videos/home_training.mp4"
+          data-poster="/images/landing/training_home.jpg"
+        >
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 font-bold text-xs">
+            02
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm font-semibold text-zinc-200" data-i18n="landing.chapter.home.title">{t('landing.chapter.home.title')}</div>
+            <div class="text-[11px] text-zinc-400 line-clamp-1" data-i18n="landing.chapter.home.desc">{t('landing.chapter.home.desc')}</div>
+          </div>
+        </button>
+
+        <!-- 03. Aire Libre -->
+        <button
+          type="button"
+          class="chapter-btn flex flex-col sm:flex-row items-start sm:items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3 text-left transition-all duration-200 hover:border-amber-500/40 hover:bg-zinc-800 cursor-pointer"
+          data-time="8"
+          data-label="03. Aire Libre & Parque"
+          data-video="/videos/outdoor_training.mp4"
+          data-poster="/images/landing/training_outdoor.jpg"
+        >
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 font-bold text-xs">
+            03
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm font-semibold text-zinc-200" data-i18n="landing.chapter.outdoor.title">{t('landing.chapter.outdoor.title')}</div>
+            <div class="text-[11px] text-zinc-400 line-clamp-1" data-i18n="landing.chapter.outdoor.desc">{t('landing.chapter.outdoor.desc')}</div>
+          </div>
+        </button>
+
+        <!-- 04. Nutrición -->
+        <button
+          type="button"
+          class="chapter-btn flex flex-col sm:flex-row items-start sm:items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/70 p-3 text-left transition-all duration-200 hover:border-amber-500/40 hover:bg-zinc-800 cursor-pointer"
+          data-time="12"
+          data-label="04. Nutrición de Precisión"
+          data-video="/videos/smart_nutrition.mp4"
+          data-poster="/images/landing/smart_nutrition.jpg"
+        >
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 font-bold text-xs">
+            04
+          </div>
+          <div>
+            <div class="text-xs sm:text-sm font-semibold text-zinc-200" data-i18n="landing.chapter.nutrition.title">{t('landing.chapter.nutrition.title')}</div>
+            <div class="text-[11px] text-zinc-400 line-clamp-1" data-i18n="landing.chapter.nutrition.desc">{t('landing.chapter.nutrition.desc')}</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initScrollingVideo() {
+    const video = document.getElementById('showcaseVideo') as HTMLVideoElement | null;
+    const centerBtn = document.getElementById('videoCenterPlayBtn');
+    const toggleBtn = document.getElementById('togglePlayBtn');
+    const toggleMuteBtn = document.getElementById('toggleMuteBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const iconCenterPlay = document.getElementById('iconCenterPlay');
+    const iconCenterPause = document.getElementById('iconCenterPause');
+    const miniPlayIcon = document.getElementById('miniPlayIcon');
+    const miniPauseIcon = document.getElementById('miniPauseIcon');
+    const playStatusText = document.getElementById('playStatusText');
+    const iconMuted = document.getElementById('iconMuted');
+    const iconUnmuted = document.getElementById('iconUnmuted');
+    const progressBar = document.getElementById('videoProgressBar');
+    const timeline = document.getElementById('videoTimelineContainer');
+    const timeCounter = document.getElementById('timeCounter');
+    const activeChapterLabel = document.getElementById('activeChapterLabel');
+    const chapterButtons = document.querySelectorAll<HTMLButtonElement>('.chapter-btn');
+
+    if (!video) return;
+
+    function formatTime(seconds: number) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updatePlayState(playing: boolean) {
+      if (playing) {
+        iconCenterPlay?.classList.add('hidden');
+        iconCenterPause?.classList.remove('hidden');
+        miniPlayIcon?.classList.add('hidden');
+        miniPauseIcon?.classList.remove('hidden');
+        if (playStatusText) playStatusText.textContent = 'Pausar';
+        centerBtn?.classList.add('opacity-0', 'pointer-events-none');
+      } else {
+        iconCenterPlay?.classList.remove('hidden');
+        iconCenterPause?.classList.add('hidden');
+        miniPlayIcon?.classList.remove('hidden');
+        miniPauseIcon?.classList.add('hidden');
+        if (playStatusText) playStatusText.textContent = 'Reproducir';
+        centerBtn?.classList.remove('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    async function togglePlay() {
+      if (!video) return;
+      if (video.paused) {
+        try {
+          await video.play();
+          updatePlayState(true);
+        } catch (e) {
+          console.log('Autoplay prevented', e);
+        }
+      } else {
+        video.pause();
+        updatePlayState(false);
+      }
+    }
+
+    centerBtn?.addEventListener('click', togglePlay);
+    toggleBtn?.addEventListener('click', togglePlay);
+    video.addEventListener('click', togglePlay);
+
+    video.addEventListener('timeupdate', () => {
+      if (!video.duration) return;
+      const progress = (video.currentTime / video.duration) * 100;
+      if (progressBar) progressBar.style.width = `${progress}%`;
+      if (timeCounter) {
+        timeCounter.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+      }
+    });
+
+    timeline?.addEventListener('click', (e) => {
+      if (!video || !video.duration) return;
+      const rect = timeline.getBoundingClientRect();
+      const pos = (e.clientX - rect.left) / rect.width;
+      video.currentTime = pos * video.duration;
+    });
+
+    toggleMuteBtn?.addEventListener('click', () => {
+      if (!video) return;
+      video.muted = !video.muted;
+      if (video.muted) {
+        iconMuted?.classList.remove('hidden');
+        iconUnmuted?.classList.add('hidden');
+      } else {
+        iconMuted?.classList.add('hidden');
+        iconUnmuted?.classList.remove('hidden');
+      }
+    });
+
+    fullscreenBtn?.addEventListener('click', () => {
+      if (!video) return;
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      }
+    });
+
+    chapterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const videoSrc = btn.getAttribute('data-video');
+        const posterSrc = btn.getAttribute('data-poster');
+        const label = btn.getAttribute('data-label') || '';
+        
+        chapterButtons.forEach((b) => {
+          b.classList.remove('active', 'border-amber-500/50', 'bg-amber-500/15');
+          b.classList.add('border-zinc-800', 'bg-zinc-900/70');
+          const numBadge = b.querySelector('div:first-child');
+          if (numBadge) {
+            numBadge.className = 'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 font-bold text-xs';
+          }
+        });
+
+        btn.classList.add('active', 'border-amber-500/50', 'bg-amber-500/15');
+        btn.classList.remove('border-zinc-800', 'bg-zinc-900/70');
+        const numBadge = btn.querySelector('div:first-child');
+        if (numBadge) {
+          numBadge.className = 'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500 text-zinc-950 font-bold text-xs shadow-[0_0_10px_rgba(245,158,11,0.5)]';
+        }
+
+        if (activeChapterLabel) activeChapterLabel.textContent = label;
+
+        const hudGym = document.getElementById('hudOverlayGym');
+        const hudHome = document.getElementById('hudOverlayHome');
+        const hudOutdoor = document.getElementById('hudOverlayOutdoor');
+        const hudNutrition = document.getElementById('hudOverlayNutrition');
+
+        hudGym?.classList.add('hidden');
+        hudHome?.classList.add('hidden');
+        hudOutdoor?.classList.add('hidden');
+        hudNutrition?.classList.add('hidden');
+
+        if (label.includes('01') || label.includes('Gimnasio')) {
+          hudGym?.classList.remove('hidden');
+        } else if (label.includes('02') || label.includes('Casa')) {
+          hudHome?.classList.remove('hidden');
+        } else if (label.includes('03') || label.includes('Aire Libre') || label.includes('Parque')) {
+          hudOutdoor?.classList.remove('hidden');
+        } else if (label.includes('04') || label.includes('Nutrición')) {
+          hudNutrition?.classList.remove('hidden');
+        }
+
+        if (posterSrc) video.poster = posterSrc;
+
+        if (videoSrc && video.currentSrc !== videoSrc) {
+          video.src = videoSrc;
+          video.load();
+          video.play().then(() => updatePlayState(true)).catch(() => updatePlayState(false));
+        }
+      });
+    });
+
+    // Auto play when scrolling into view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          video.play().then(() => updatePlayState(true)).catch(() => {});
+        } else {
+          video.pause();
+          updatePlayState(false);
+        }
+      });
+    }, { threshold: 0.35 });
+
+    observer.observe(video);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollingVideo);
+  } else {
+    initScrollingVideo();
+  }
+</script>

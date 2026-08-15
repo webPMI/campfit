@@ -109,6 +109,7 @@ campfit-astro/
 21. **Nunca asumir que un archivo está "viejo" o "malo" sin evidencia** - Si el código funciona y tiene tests verdes, déjalo intacto. Tu trabajo es mejorar, no reescribir.
 22. **Siempre preguntar antes de eliminar código funcional** - Si detectas código "duplicado" o "innecesario", pregunta primero. Mejor prevenir que lamentar.
 23. **Los comentarios de protección son obligatorios** - Antes de modificar código crítico, agrega comentarios explicando qué hace y por qué es importante. Esto ayuda a futuros agentes a entender la sensibilidad.
+24. **Registro y Coordinación Multi-Agente en TASK.md (MANDATORIO)** - Todo agente DEBE registrar inmediatamente su entrada en `TASK.md` antes de modificar cualquier archivo, indicando nombre (`Antigravity Agent [ID/Nombre]`), día/fecha y hora exacta, objetivo/problema en resolución, lista explícita de archivos en modificación y estado (`[EN PROGRESO]`). Al finalizar, debe actualizar el estado a `[COMPLETADO]`. Nunca modificar simultáneamente archivos que estén siendo editados por otro agente activo.
 
 ## Documentation Order
 Before implementing, read:

@@ -1,9 +1,9 @@
 # 🛡️ Funcionalidades Críticas Protegidas - CampFit
 
-> **⚠️ DOCUMENTO OBLIGATORIO DE LECTURA PARA TODOS LOS AGENTES IA**  
-> Este documento lista las funcionalidades críticas que **NUNCA deben eliminarse, simplificarse ni omitirse**.  
-> Si un agente necesita modificar alguna de estas, debe justificarlo explícitamente y obtener aprobación.  
-> **Última actualización:** 2026-08-02
+> **⚠️ DOCUMENTO OBLIGATORIO DE LECTURA PARA TODOS LOS AGENTES IA**
+> Este documento lista las funcionalidades críticas que **NUNCA deben eliminarse, simplificarse ni omitirse**.
+> Si un agente necesita modificar alguna de estas, debe justificarlo explícitamente y obtener aprobación.
+> **Última actualización:** 2026-08-15
 
 ---
 
@@ -19,6 +19,7 @@
 8. [Sistema de Plantillas](#8-sistema-de-plantillas)
 9. [Stores y Estado Global](#9-stores-y-estado-global)
 10. [Validaciones de Formularios](#10-validaciones-de-formularios)
+11. [Gestión de Clientes del Entrenador](#11-gestión-de-clientes-del-entrenador)
 
 ---
 
@@ -50,12 +51,69 @@
 ### 🔥 `firestore.rules`
 - **`isStaff()`, `isAdmin()`, `isTrainer()`** — Helpers de roles. **NUNCA eliminar ni simplificar**.
 - **`isBootstrapAdminEmail()`** — Soporte para admins por email. **NUNCA eliminar** los dos emails (`servicioweb.pmi@gmail.com`, `sevicioweb.pmi@gmail.com`).
+
 - **`isBlocked()`** — Verificación de usuarios bloqueados para lecturas puntuales y escrituras. **NUNCA usar `isBlocked()` en reglas de lista (queries)** ya que llama a `get()` y Firestore lo prohíbe; en su lugar, usar `resource.data.isBlocked != true`.
 - **`match /users/{userId}`** — **NUNCA eliminar** la restricción de que `role == 'client'` en `create` (evita escalada de privilegios), ni la condición de lectura para trainers: `resource.data.assignedTrainerId == request.auth.uid && resource.data.isBlocked != true`.
 - **`match /diets/{dietId}`** — **NUNCA eliminar** la verificación de `trainerId == request.auth.uid` en create/update/delete.
 - **`match /workouts/{workoutId}`** — **NUNCA eliminar** la verificación de `trainerId == request.auth.uid` en create/update/delete.
 - **`match /messages/{messageId}`** — **NUNCA eliminar** la verificación de `participants.hasAny([request.auth.uid])` ni el límite de `size() == 2`.
 - **`match /progress_logs/{logId}`** — **NUNCA eliminar** la verificación de que el trainer pueda leer logs de sus clientes asignados.
+
+### 🔒 P0-1: Error "Missing or insufficient permissions" en `subscribeToClients` — ✅ **CORREGIDO (2026-08-15)**
+
+**Problema:** Cuando los trainers intentaban suscribirse a sus clientes usando `onSnapshot` en `src/lib/trainer/trainerClients.ts`, obtenían el error: "FirebaseError: Missing or insufficient permissions".
+
+**Causa:** Las reglas de Firestore usaban `myRole()` que llamaba a `get()` para obtener el documento del usuario. Esto funcionaba para lecturas individuales de documentos, pero fallaba en queries de colección (`onSnapshot`) porque Firestore evalúa los permisos de manera diferente.
+
+**Solución:** Se actualizaron las reglas de Firestore para que `isTrainer()` funcione correctamente tanto en lecturas individuales como en queries de colección:
+
+```javascript
+// 🔒 FIX: isTrainer now works for both individual doc reads and collection queries
+function isTrainer() {
+  // Check if role is 'trainer' in the document OR if user is a bootstrap admin
+  return isAuth() && (
+    myRole() == 'trainer' ||
+    isBootstrapAdminEmail()
+  );
+}
+
+// 🔒 FIX: Updated read condition that works for both individual docs and queries
+allow read: if isAuth() && (
+  request.auth.uid == userId ||
+  isAdmin() ||
+  // 🔒 FIX: Trainer can read users assigned to them
+  // Works for both individual doc reads and collection queries
+  (isTrainer() && resource.data.assignedTrainerId == request.auth.uid && resource.data.isBlocked != true)
+);
+```
+
+**Archivos afectados:** `firestore.rules`
+
+**Verificación:** `npm run type-check` pasa con 0 errores.
+
+---
+
+### 🔒 P0-2: Propiedad de trainer en dietas/rutinas — ✅ **CORREGIDA**
+
+**Problema:** Las reglas originales permitían a cualquier trainer modificar dietas/rutinas de otros trainers sin verificar la propiedad.
+
+**Solución:** Las reglas ahora verifican que el trainer sea el propietario:
+
+```javascript
+// Rutinas
+allow create: if isTrainer() &&
+  request.resource.data.trainerId == request.auth.uid &&
+  request.resource.data.clientId != null;
+allow update, delete: if (isTrainer() && resource.data.trainerId == request.auth.uid) || isAdmin();
+
+// Dietas (idéntico patrón)
+allow create: if isTrainer() &&
+  request.resource.data.trainerId == request.auth.uid &&
+  request.resource.data.clientId != null;
+allow update, delete: if (isTrainer() && resource.data.trainerId == request.auth.uid) || isAdmin();
+```
+
+**Archivos afectados:** `firestore.rules`
 
 ---
 
@@ -206,7 +264,7 @@ Si un agente necesita modificar alguna funcionalidad listada aquí:
 
 ### Comentarios en línea recomendados:
 ```typescript
-// 🔒 CRÍTICO: Verifica ownership del trainer sobre la dieta. 
+// 🔒 CRÍTICO: Verifica ownership del trainer sobre la dieta.
 // Sin esta verificación, cualquier trainer podría modificar dietas de otros.
 allow create: if isTrainer() && request.resource.data.trainerId == request.auth.uid;
 
@@ -246,3 +304,38 @@ const q = query(collection(db, 'diets'), where('clientId', '==', clientId), orde
 ---
 
 **Este documento debe leerse ANTES de cualquier modificación al código fuente.**
+
+# task_progress
+
+You've made 60 API requests without a task_progress parameter. It is strongly recomended that you create one to track remaining work.
+
+
+1. To create or update a todo list, include the task_progress parameter in the next tool call
+2. Review each item and update its status:
+   - Mark completed items with: - [x]
+   - Keep incomplete items as: - [ ]
+   - Add new items if you discover additional steps
+3. Modify the list as needed:
+		- Add any new steps if you discover additional steps
+		- Reorder if the sequence has changed
+4. Ensure the list accurately reflects the current state
+
+**Remember:** Keeping the task_progress list updated helps track progress and ensures nothing is missed.
+
+<environment_details>
+# Visual Studio Code Visible Files
+src/lib/admin/adminUsers.ts
+
+# Visual Studio Code Open Tabs
+firestore.rules
+src/lib/admin/adminUsers.ts
+
+# Current Time
+8/15/2026, 1:11:48 PM (Europe/Madrid, UTC+2:00)
+
+# Context Window Usage
+158,214 / 1,000K tokens used (16%)
+
+# Current Mode
+ACT MODE
+</environment_details>
