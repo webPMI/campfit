@@ -31,6 +31,7 @@
 | `2026-08-15 13:58` | `Antigravity Agent 1` | Visuales y vídeos luminosos multientorno (Gym, Casa, Parque, Nutrición) 100% en español e internacionalizados | `src/components/landing/ScrollingVideoShowcase.astro`, `src/i18n/*`, `public/videos/*.mp4`, `scripts/render-images-to-video.mjs` | `[COMPLETADO]` |
 | `2026-08-15 14:47` | `Antigravity Agent 1` | Push a GitHub y Despliegue en Firebase Hosting | Todo el proyecto (`dist/`, `public/`, landing) | `[COMPLETADO]` |
 | `2026-08-15 14:50` | `Antigravity Agent 1` | Creación y despliegue del índice compuesto de Firestore para `exercises_library` (`isActive`, `category`) | `firestore.indexes.json` | `[COMPLETADO]` |
+| `2026-08-15 18:15` | `Antigravity Agent 1` | Auditoría integral y corrección de permisos en `firestore.rules` para asignación de rutinas, dietas y gestión de clientes por entrenadores | `firestore.rules`, `TASK.md` | `[COMPLETADO]` |
 
 ---
 

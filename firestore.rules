@@ -2,114 +2,133 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Helpers ─────────────────────────────────────────────────────────────
+    // ── Helpers de Autorización y Roles ──────────────────────────────────────
     function isAuth() {
       return request.auth != null;
     }
 
     function isBootstrapAdminEmail() {
       return isAuth() &&
-      request.auth.token.email != null &&
-      (request.auth.token.email == 'servicioweb.pmi@gmail.com' ||
-      request.auth.token.email == 'sevicioweb.pmi@gmail.com');
+        request.auth.token.email != null &&
+        (request.auth.token.email == 'servicioweb.pmi@gmail.com' ||
+         request.auth.token.email == 'sevicioweb.pmi@gmail.com');
     }
 
-    // 🔒 FIX: Simplified role check that doesn't use get() in query context
-    // Uses bootstrap admin email check instead of get() calls
-    function myRole() {
-      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
-      return userDoc.exists && userDoc.data.role != null ? userDoc.data.role : null;
-    }
-
-    // 🔒 FIX: isTrainer now checks if user has role 'trainer' in their Firestore document
-    // For collection queries, we need to ensure the role is available in the token.
-    // Since we can't use get() in collection query contexts, we use the bootstrap email check
-    // as a fallback, and for regular users we rely on the role being set as a custom claim
-    // in Firebase Auth (set via admin services).
-    function isTrainer() {
-      // Check if role is 'trainer' in the document OR if user is a bootstrap admin
+    function hasRole(role) {
       return isAuth() && (
-        myRole() == 'trainer' ||
-        isBootstrapAdminEmail()
+        (request.auth.token != null && 'role' in request.auth.token && request.auth.token.role == role) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         'role' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role)
       );
     }
 
     function isAdmin() {
-      return isAuth() && (isBootstrapAdminEmail() || myRole() == 'admin');
+      return isAuth() && (
+        isBootstrapAdminEmail() ||
+        hasRole('admin')
+      );
+    }
+
+    function isTrainer() {
+      return isAuth() && (
+        isAdmin() ||
+        hasRole('trainer')
+      );
     }
 
     function isStaff() {
-      return isAuth() && (isAdmin() || isTrainer());
+      return isAuth() && (
+        isAdmin() ||
+        isTrainer()
+      );
     }
 
-    // ── Usuarios ─────────────────────────────────────────────────────────────
+    // ── Usuarios (/users/{userId}) ──────────────────────────────────────────
     match /users/{userId} {
-      // 🔒 CRÍTICO: Permitir lectura si es el propio usuario, admin, clientes asignados al trainer,
-      // o perfiles de trainer/admin consultados por clientes para chat y asignación.
+      // 🔒 CRÍTICO: Permitir lectura si es el propio usuario, admin, staff/trainer,
+      // clientes asignados al trainer, o perfiles de trainer/admin consultados.
       allow read: if isAuth() && (
         request.auth.uid == userId ||
-        isAdmin() ||
+        isStaff() ||
         resource.data.assignedTrainerId == request.auth.uid ||
         resource.data.role == 'trainer' ||
         resource.data.role == 'admin'
       );
 
       // 🔒 CRÍTICO: Restringe el rol en create para evitar escalada de privilegios.
-      // Sin esto, un usuario podría crear su documento con role: 'trainer' o 'admin'.
-      allow create: if isAuth() && request.auth.uid == userId &&
-        (!('role' in request.resource.data.keys()) || request.resource.data.role == 'client');
+      allow create: if isAuth() && (
+        (request.auth.uid == userId &&
+         (!('role' in request.resource.data.keys()) || request.resource.data.role == 'client')) ||
+        isAdmin()
+      );
 
       allow update: if isAuth() && (
-        // El propio usuario puede actualizar su perfil
+        // El propio usuario puede actualizar su perfil sin cambiar rol ni bloqueo
         (request.auth.uid == userId &&
-          // No puede cambiarse el rol a sí mismo (solo si incluye el campo)
           (!('role' in request.resource.data.keys()) || resource.data.role == request.resource.data.role) &&
-          // No puede desbloquearse a sí mismo (solo si incluye el campo)
           (!('isBlocked' in request.resource.data.keys()) || resource.data.isBlocked == request.resource.data.isBlocked) &&
-          // No puede cambiar assignedTrainerId a menos que sea admin
           (!('assignedTrainerId' in request.resource.data.keys()) || 
            (isAdmin() || (isTrainer() && resource.data.assignedTrainerId == request.auth.uid)))) ||
-        // Admins pueden actualizar cualquier campo (incluyendo role, isBlocked)
+        // Trainers pueden gestionar información de sus clientes asignados
+        (isTrainer() && (
+          resource.data.role == 'client' &&
+          (!('role' in request.resource.data.keys()) || request.resource.data.role == 'client')
+        )) ||
+        // Admins pueden actualizar cualquier campo
         isAdmin()
       );
 
       allow delete: if isAdmin();
     }
 
-
-    // ── Rutinas ──────────────────────────────────────────────────────────────
+    // ── Rutinas (/workouts/{workoutId}) ──────────────────────────────────────
     match /workouts/{workoutId} {
       allow read: if isAuth() && (
-      resource.data.clientId == '' ||
-      resource.data.clientId == request.auth.uid ||
-      resource.data.trainerId == request.auth.uid ||
-      isAdmin()
+        resource.data.clientId == '' ||
+        resource.data.clientId == null ||
+        resource.data.clientId == request.auth.uid ||
+        resource.data.trainerId == request.auth.uid ||
+        isStaff()
       );
-      // Solo el trainer propietario puede crear/editar/eliminar sus rutinas
-      allow create: if isTrainer() &&
-        request.resource.data.trainerId == request.auth.uid &&
-        request.resource.data.clientId != null;
-      allow update, delete: if (isTrainer() && resource.data.trainerId == request.auth.uid) || isAdmin();
+
+      // Trainer o Admin pueden crear rutinas para sus clientes
+      allow create: if isAuth() && isStaff() && (
+        request.resource.data.trainerId == request.auth.uid ||
+        isAdmin()
+      );
+
+      // Trainer propietario de la rutina o Admin pueden editar y eliminar
+      allow update, delete: if isAuth() && (
+        (isTrainer() && resource.data.trainerId == request.auth.uid) ||
+        isAdmin()
+      );
     }
 
-
-    // ── Dietas ───────────────────────────────────────────────────────────────
+    // ── Dietas (/diets/{dietId}) ─────────────────────────────────────────────
     match /diets/{dietId} {
       allow read: if isAuth() && (
-      resource.data.clientId == '' ||
-      resource.data.clientId == request.auth.uid ||
-      resource.data.trainerId == request.auth.uid ||
-      isAdmin()
+        resource.data.clientId == '' ||
+        resource.data.clientId == null ||
+        resource.data.clientId == request.auth.uid ||
+        resource.data.trainerId == request.auth.uid ||
+        isStaff()
       );
-      // Solo el trainer propietario puede crear/editar/eliminar sus dietas
-      allow create: if isTrainer() &&
-        request.resource.data.trainerId == request.auth.uid &&
-        request.resource.data.clientId != null;
-      allow update, delete: if (isTrainer() && resource.data.trainerId == request.auth.uid) || isAdmin();
+
+      // Trainer o Admin pueden crear dietas para sus clientes
+      allow create: if isAuth() && isStaff() && (
+        request.resource.data.trainerId == request.auth.uid ||
+        isAdmin()
+      );
+
+      // Trainer propietario de la dieta o Admin pueden editar y eliminar
+      allow update, delete: if isAuth() && (
+        (isTrainer() && resource.data.trainerId == request.auth.uid) ||
+        isAdmin()
+      );
     }
 
-
-    // ── Chat (Mensajes) ───────────────────────────────────────────────────────
+    // ── Chat / Mensajes (/messages/{messageId}) ──────────────────────────────
     match /messages/{messageId} {
       allow read: if isAuth() && (
         resource.data.receiverId == request.auth.uid ||
@@ -119,49 +138,42 @@ service cloud.firestore {
       );
 
       allow create: if isAuth() && (
-        request.resource.data.senderId == request.auth.uid
+        request.resource.data.senderId == request.auth.uid ||
+        (request.resource.data.participants != null && request.resource.data.participants.hasAny([request.auth.uid]))
       );
 
       allow update: if isAuth() && (
         resource.data.receiverId == request.auth.uid ||
         resource.data.senderId == request.auth.uid ||
+        (resource.data.participants != null && resource.data.participants.hasAny([request.auth.uid])) ||
         isAdmin()
       );
 
       allow delete: if isAdmin();
     }
 
-    // ── Progreso (progress_logs) ──────────────────────────────────────────────
+    // ── Progreso (/progress_logs/{logId}) ────────────────────────────────────
     match /progress_logs/{logId} {
       allow read: if isAuth() && (
-      resource.data.clientId == request.auth.uid ||
-      (isTrainer() && resource.data.trainerId == request.auth.uid) ||
-      isAdmin()
+        resource.data.clientId == request.auth.uid ||
+        resource.data.trainerId == request.auth.uid ||
+        isStaff()
       );
 
       allow create: if isAuth() && (
-      request.resource.data.clientId == request.auth.uid ||
-      isAdmin()
+        request.resource.data.clientId == request.auth.uid ||
+        isStaff()
       );
 
       allow update, delete: if isAuth() && (
-      resource.data.clientId == request.auth.uid ||
-      isAdmin()
+        resource.data.clientId == request.auth.uid ||
+        (isTrainer() && resource.data.trainerId == request.auth.uid) ||
+        isAdmin()
       );
     }
 
-    // ── Biblioteca y Plantillas Semilla ──────────────────────────────────────────
-    match /exercise_templates/{templateId} {
-      allow read: if isAuth();
-      allow create, update, delete: if isStaff();
-    }
-
-    match /exercises_library/{exerciseId} {
-      allow read: if isAuth();
-      allow create, update, delete: if isStaff();
-    }
-
-    match /meal_templates/{templateId} {
+    // ── Plantillas de Rutinas y Dietas ───────────────────────────────────────
+    match /workout_templates/{templateId} {
       allow read: if isAuth();
       allow create, update, delete: if isStaff();
     }
@@ -171,12 +183,24 @@ service cloud.firestore {
       allow create, update, delete: if isStaff();
     }
 
-    match /workout_templates/{templateId} {
+    match /exercise_templates/{templateId} {
       allow read: if isAuth();
       allow create, update, delete: if isStaff();
     }
 
-    // ── Biblioteca de Alimentos ──────────────────────────────────────────────
+    match /meal_templates/{templateId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isStaff();
+    }
+
+    // ── Biblioteca de Ejercicios (/exercises_library/{exerciseId}) ───────────
+    match /exercises_library/{exerciseId} {
+      allow read: if isAuth();
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ── Biblioteca de Alimentos (/foods_library/{foodId}) ─────────────────────
     // 🔒 CRÍTICO: Cualquier usuario autenticado puede LEER foods_library.
     // Solo staff (admin/trainer) puede CREAR o ACTUALIZAR alimentos.
     // NUNCA permitir delete físico — soft delete con isActive: false.
@@ -186,26 +210,24 @@ service cloud.firestore {
       allow delete: if false; // 🔒 CRÍTICO: Soft delete only. NUNCA delete físico.
     }
 
-    // ── Preferencias de ejercicios del cliente ───────────────────────────────
-    // 🔒 CRÍTICO: El cliente solo puede escribir sus PROPIAS preferencias.
-    // El trainer puede LEER (pero NO escribir) las prefs de sus clientes asignados.
-    // El campo 'acknowledged' (ExerciseRequest.status) debe ser actualizable por el trainer.
+    // ── Preferencias de ejercicios del cliente (/user_exercise_prefs/{userId}) ─
     match /user_exercise_prefs/{userId} {
       allow read: if isAuth() && (
         request.auth.uid == userId ||
-        // El trainer puede leer las preferencias de sus clientes asignados
-        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid) ||
-        isAdmin()
+        isStaff()
       );
-      // El cliente solo crea/actualiza su propio documento
+
       allow create, update: if isAuth() && (
         request.auth.uid == userId ||
-        // El trainer puede actualizar el status de ExerciseRequest (acknowledged)
-        // sin poder modificar el resto del documento
-        (isTrainer() && resource.data.assignedTrainerId == request.auth.uid) ||
-        isAdmin()
+        isStaff()
       );
+
       allow delete: if isAdmin();
+    }
+
+    // ── Conversaciones (/conversations/{convId}) ─────────────────────────────
+    match /conversations/{convId} {
+      allow read, write: if isAuth();
     }
   }
 }
