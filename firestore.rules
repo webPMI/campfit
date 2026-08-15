@@ -272,5 +272,14 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if isAdmin();
     }
+
+    // ── Tokens rotativos IA (/ia_log_tokens/{tokenId}) ────────────────────────
+    // Solo admins pueden gestionar tokens.
+    match /ia_log_tokens/{tokenId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
   }
 }

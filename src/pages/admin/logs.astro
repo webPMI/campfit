@@ -164,5 +164,128 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 </AdminLayout>
 
 <script>
-  // ... JS omitted for brevity
+  const API = '/api/admin/logs';
+  const PAGE_SIZE = 50;
+
+  const els = {
+    level: document.getElementById('filter-level'),
+    feature: document.getElementById('filter-feature'),
+    search: document.getElementById('filter-search'),
+    apply: document.getElementById('apply-filters-btn'),
+    table: document.getElementById('logs-table-body'),
+    count: document.getElementById('logs-count'),
+    prev: document.getElementById('prev-page-btn'),
+    next: document.getElementById('next-page-btn'),
+    refresh: document.getElementById('refresh-logs-btn'),
+    cleanup: document.getElementById('cleanup-logs-btn'),
+    detailModal: document.getElementById('log-detail-modal'),
+    detailContent: document.getElementById('log-detail-content'),
+    closeDetail: document.getElementById('close-detail-modal'),
+    closeDetailBtn: document.getElementById('close-detail-btn'),
+    deleteBtn: document.getElementById('delete-log-btn'),
+  };
+
+  let currentStartAfter = null;
+  let currentLogs = [];
+
+  const toQuery = () => {
+    const p = new URLSearchParams();
+    const level = els.level.value;
+    const feature = els.feature.value;
+    const search = els.search.value.trim();
+    if (level && level !== 'all') p.set('level', level);
+    if (feature && feature !== 'all') p.set('feature', feature);
+    if (search) p.set('search', search);
+    if (currentStartAfter) p.set('startAfter', currentStartAfter);
+    p.set('limit', String(PAGE_SIZE));
+    return p.toString();
+  };
+
+  const load = async () => {
+    els.table.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[var(--text-tertiary)]">Cargando...</td></tr>';
+    const res = await fetch(`${API}?${toQuery()}`, { headers: { Accept: 'application/json' } });
+    const data = await res.json();
+    currentLogs = data.logs || [];
+    els.count.textContent = String(data.total || 0);
+    renderTable(currentLogs);
+    els.prev.disabled = !data.hasMore;
+    els.next.disabled = !data.hasMore;
+    currentStartAfter = data.nextCursor;
+  };
+
+  const renderTable = (logs) => {
+    if (!logs.length) {
+      els.table.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[var(--text-tertiary)]">Sin logs</td></tr>';
+      return;
+    }
+    const levelBadge = (level) => {
+      const map = {
+        critical: 'bg-red-500/15 text-red-600',
+        error: 'bg-orange-500/15 text-orange-600',
+        warn: 'bg-yellow-500/15 text-yellow-700',
+      };
+      const cls = map[level] || 'bg-gray-500/15 text-gray-600';
+      return `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${cls}">${level.toUpperCase()}</span>`;
+    };
+    els.table.innerHTML = logs.map((log) => {
+      const date = log.timestamp ? new Date(log.timestamp.seconds ? log.timestamp.seconds * 1000 : log.timestamp).toLocaleString() : '—';
+      return `
+        <tr class="hover:bg-[var(--surface-3)] transition-colors">
+          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-tertiary)]">${escapeHtml(date)}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-secondary)]">${escapeHtml(String(log.userId || '—'))}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-secondary)]">${escapeHtml(String(log.activity || '—'))}</td>
+          <td class="px-4 py-3 whitespace-nowrap">${levelBadge(log.level || 'error')}</td>
+          <td class="px-4 py-3 text-[var(--text-primary)] line-clamp-1">${escapeHtml(String(log.message || '—'))}</td>
+          <td class="px-4 py-3 text-center text-[var(--text-secondary)]">${log.occurrenceCount ?? 1}</td>
+          <td class="px-4 py-3 text-right">
+            <button data-id="${log.id}" data-action="detail" class="text-[var(--brand)] hover:underline text-[10px]">Ver</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    els.table.querySelectorAll('[data-action="detail"]').forEach((btn) => {
+      btn.addEventListener('click', () => openDetail(btn.dataset.id));
+    });
+  };
+
+  const openDetail = (id) => {
+    const log = currentLogs.find((l) => l.id === id);
+    if (!log) return;
+    const date = log.timestamp ? new Date(log.timestamp.seconds ? log.timestamp.seconds * 1000 : log.timestamp).toLocaleString() : '—';
+    els.detailContent.innerHTML = `
+      <div class="grid grid-cols-2 gap-4">
+        <div><span class="text-[var(--text-tertiary)]">ID</span><p class="mt-1 font-mono">${escapeHtml(log.id)}</p></div>
+        <div><span class="text-[var(--text-tertiary)]">Timestamp</span><p class="mt-1">${escapeHtml(date)}</p></div>
+        <div><span class="text-[var(--text-tertiary)]">Level</span><p class="mt-1">${escapeHtml(String(log.level))}</p></div>
+        <div><span class="text-[var(--text-tertiary)]">Feature</span><p class="mt-1">${escapeHtml(String(log.feature || '—'))}</p></div>
+        <div><span class="text-[var(--text-tertiary)]">User</span><p class="mt-1">${escapeHtml(String(log.userId || '—'))}</p></div>
+        <div><span class="text-[var(--text-tertiary)]">Role</span><p class="mt-1">${escapeHtml(String(log.userRole || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">Message</span><p class="mt-1">${escapeHtml(String(log.message || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">Activity</span><p class="mt-1">${escapeHtml(String(log.activity || '—'))} · ${escapeHtml(String(log.action || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">URL</span><p class="mt-1 break-all">${escapeHtml(String(log.url || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">UA</span><p class="mt-1 break-all">${escapeHtml(String(log.userAgent || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">Stack</span><pre class="mt-1 whitespace-pre-wrap rounded-lg bg-[var(--surface-4)] p-3 text-[10px]">${escapeHtml(String(log.errorStack || '—'))}</pre></div>
+      </div>
+    `;
+    els.deleteBtn.onclick = () => deleteLog(log.id);
+    els.detailModal.classList.remove('hidden');
+  };
+
+  const deleteLog = async (id) => {
+    await fetch(`${API}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    els.detailModal.classList.add('hidden');
+    load();
+  };
+
+  const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+  els.apply.addEventListener('click', () => { currentStartAfter = null; load(); });
+  els.prev.addEventListener('click', () => load());
+  els.next.addEventListener('click', () => load());
+  els.refresh.addEventListener('click', () => load());
+  els.closeDetail.addEventListener('click', () => els.detailModal.classList.add('hidden'));
+  els.closeDetailBtn.addEventListener('click', () => els.detailModal.classList.add('hidden'));
+
+  load();
 </script>
