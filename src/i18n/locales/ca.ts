@@ -601,4 +601,9 @@ export const ca: TranslationMap = {
   // Admin Quick Deploy
   'admin.quickDeploy.defaultDiets': 'Dietes Predeterminades',
   'admin.quickDeploy.defaultDiets.desc': 'Desplegar & Assignar Nutrició',
+
+  'admin.tabs.overview': 'Visió General',
+  'admin.tabs.deploy': 'Desplegar',
+  'admin.tabs.devtools': 'DevTools',
+  'admin.tabs.logs': 'Logs',
 };

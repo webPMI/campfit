@@ -841,4 +841,9 @@ export const en: TranslationMap = {
   'landing.hud.nutrition.badge': 'NUTRITION · MACROS BREAKDOWN',
   'landing.hud.nutrition.meal': 'Grilled Salmon with Sweet Potato & Avocado',
   'landing.hud.nutrition.details': '680 kcal • Protein: 48g • Carbs: 62g • Fats: 22g',
+
+  'admin.tabs.overview': 'Overview',
+  'admin.tabs.deploy': 'Deploy',
+  'admin.tabs.devtools': 'DevTools',
+  'admin.tabs.logs': 'Logs',
 };

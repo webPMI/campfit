@@ -1067,4 +1067,9 @@ export const es: TranslationMap = {
   'landing.hud.nutrition.badge': 'NUTRICIÓN · MACROS REALES',
   'landing.hud.nutrition.meal': 'Salmón a la Plancha con Boniato y Aguacate',
   'landing.hud.nutrition.details': '680 kcal • Proteínas: 48g • Carbos: 62g • Grasas: 22g',
+
+  'admin.tabs.overview': 'Overview',
+  'admin.tabs.deploy': 'Deploy',
+  'admin.tabs.devtools': 'DevTools',
+  'admin.tabs.logs': 'Logs',
 };
