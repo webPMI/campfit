@@ -133,6 +133,26 @@ export const logger = {
       // eslint-disable-next-line no-console
       console.warn(formatMessage(module, message), ...args);
     }
+
+    // Enviar a Firebase sin bloquear
+    if (typeof window !== 'undefined') {
+      import('@/lib/shared/logService')
+        .then(({ logService }) => {
+          try {
+            logService.log({
+              level: 'warn',
+              message,
+              payload,
+              feature: module,
+            });
+          } catch {
+            // No bloquear la app por fallos de logging
+          }
+        })
+        .catch(() => {
+          // No bloquear si el servicio no está disponible
+        });
+    }
   },
 
   /**
