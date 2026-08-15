@@ -25,30 +25,53 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </button>
       </div>
 
-      <!-- Preset Templates Quick-Deploy Banner -->
-      <div id="template-banner" class="rounded-2xl border border-[var(--border-brand)] bg-[var(--brand-dim)] p-4 backdrop-blur-xl space-y-3">
+      <!-- Luxury Preset Templates & Smart Assignment Hub -->
+      <div id="template-banner" class="rounded-2xl border border-amber-500/40 bg-zinc-900/90 p-5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(245,158,11,0.15)] space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-3">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">⚡</span>
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 text-lg shadow-inner">
+              ⚡
+            </div>
             <div>
-              <h3 data-i18n="admin.quickDeploy.defaultWorkouts" class="text-sm font-bold text-[var(--brand)]">{t("admin.quickDeploy.defaultWorkouts")}</h3>
-              <p data-i18n="admin.quickDeploy.defaultWorkouts.desc" class="text-xs text-[var(--text-tertiary)]">{t("admin.quickDeploy.defaultWorkouts.desc")}</p>
+              <div class="flex items-center gap-2">
+                <h3 data-i18n="admin.quickDeploy.defaultWorkouts" class="text-sm font-extrabold text-amber-300 tracking-wide">{t("admin.quickDeploy.defaultWorkouts")}</h3>
+                <span class="rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-bold text-amber-300 uppercase tracking-widest">Smart Assign</span>
+              </div>
+              <p data-i18n="admin.quickDeploy.defaultWorkouts.desc" class="text-xs text-zinc-400 mt-0.5">{t("admin.quickDeploy.defaultWorkouts.desc")}</p>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-[var(--border-subtle)]">
-          <select id="preset-template-select" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
-            <option value="" data-i18n="trainer.loadingRoutineTemplates">{t("trainer.loadingRoutineTemplates")}</option>
-          </select>
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-3 border-t border-zinc-800">
+          <div class="sm:col-span-5">
+            <label class="block text-[11px] font-semibold text-zinc-400 mb-1">📋 Plantilla Prediseñada</label>
+            <select id="preset-template-select" class="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-xs text-zinc-100 font-medium focus:outline-none focus:border-amber-400 transition-all">
+              <option value="" data-i18n="trainer.loadingRoutineTemplates">{t("trainer.loadingRoutineTemplates")}</option>
+            </select>
+          </div>
 
-          <select id="preset-client-select" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-brand)]">
-            <option value="" data-i18n="trainer.selectClient">{t("trainer.selectClient")}</option>
-          </select>
+          <div class="sm:col-span-4">
+            <label class="block text-[11px] font-semibold text-zinc-400 mb-1">👤 Atleta Asignado</label>
+            <select id="preset-client-select" class="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-xs text-zinc-100 font-medium focus:outline-none focus:border-amber-400 transition-all">
+              <option value="" data-i18n="trainer.selectClient">{t("trainer.selectClient")}</option>
+            </select>
+          </div>
 
-          <button id="btn-apply-preset" class="rounded-xl bg-[var(--brand)] px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow-md hover:opacity-90 transition-all">
-            🚀 <span data-i18n="admin.quickDeploy.defaultWorkouts.desc">{t("admin.quickDeploy.defaultWorkouts.desc")}</span>
-          </button>
+          <div class="sm:col-span-3 flex items-end">
+            <button id="btn-apply-preset" class="w-full rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 px-4 py-2.5 text-xs font-extrabold shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🚀</span>
+              <span id="apply-btn-label">Asignar Rutina</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Real-Time Template & Client Preview Box -->
+        <div id="preset-preview-box" class="hidden rounded-xl border border-amber-500/20 bg-black/60 p-3.5 text-xs space-y-2.5 transition-all">
+          <div class="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800 pb-2">
+            <span class="font-bold text-amber-300" id="preview-template-title">Rutina</span>
+            <div class="flex items-center gap-2" id="preview-template-tags"></div>
+          </div>
+          <div id="preview-template-exercises" class="text-zinc-300 space-y-1 max-h-32 overflow-y-auto pr-1"></div>
         </div>
       </div>
 
@@ -166,6 +189,69 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       }
     });
 
+    const updatePresetPreview = () => {
+      const templateId = presetTemplateSelect.value;
+      const clientId = presetClientSelect.value;
+      const previewBox = document.getElementById("preset-preview-box");
+      const applyBtnLabel = document.getElementById("apply-btn-label");
+      
+      const selectedClient = allClients.find(c => c.uid === clientId);
+      if (applyBtnLabel) {
+        applyBtnLabel.textContent = selectedClient ? `Asignar a ${escapeHtml(selectedClient.name.split(" ")[0])}` : "Asignar Rutina";
+      }
+
+      if (!templateId) {
+        previewBox?.classList.add("hidden");
+        return;
+      }
+
+      const tmpl = allTemplates.find(t => t.id === templateId);
+      if (!tmpl || !previewBox) {
+        previewBox?.classList.add("hidden");
+        return;
+      }
+
+      previewBox.classList.remove("hidden");
+      const titleEl = document.getElementById("preview-template-title");
+      const tagsEl = document.getElementById("preview-template-tags");
+      const exercisesEl = document.getElementById("preview-template-exercises");
+
+      const diffColors: Record<string, string> = {
+        beginner: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+        intermediate: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+        advanced: "bg-rose-500/20 text-rose-300 border-rose-500/30",
+      };
+      const diffLabel: Record<string, string> = {
+        beginner: "Principiante",
+        intermediate: "Intermedio",
+        advanced: "Avanzado",
+      };
+
+      if (titleEl) titleEl.textContent = tmpl.name;
+      if (tagsEl) {
+        tagsEl.innerHTML = `
+          <span class="px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wider ${diffColors[tmpl.difficulty || "beginner"]}">${diffLabel[tmpl.difficulty || "beginner"]}</span>
+          <span class="px-2 py-0.5 rounded-md border border-zinc-700 bg-zinc-800 text-[10px] text-zinc-300 font-semibold">${tmpl.exercises?.length || 0} Ejercicios</span>
+        `;
+      }
+
+      if (exercisesEl) {
+        if (!tmpl.exercises || tmpl.exercises.length === 0) {
+          exercisesEl.innerHTML = `<p class="text-zinc-500 italic">Esta plantilla no contiene ejercicios aún.</p>`;
+        } else {
+          exercisesEl.innerHTML = tmpl.exercises.map((ex, idx) => `
+            <div class="flex items-center justify-between py-1 border-b border-zinc-800/60 last:border-0">
+              <span class="font-medium text-zinc-200">#${idx + 1} ${escapeHtml(ex.name)}</span>
+              <span class="text-amber-400/90 font-mono text-[11px]">${ex.sets || 3}x${ex.reps || 10} · ${ex.restTime || "60s"}</span>
+            </div>
+          `).join("");
+        }
+      }
+    };
+
+    presetTemplateSelect.addEventListener("change", updatePresetPreview);
+    presetClientSelect.addEventListener("change", updatePresetPreview);
+
     btnApplyPreset.addEventListener("click", async () => {
       const templateId = presetTemplateSelect.value;
       const clientId = presetClientSelect.value;
@@ -177,8 +263,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         btnApplyPreset.disabled = true;
         showToast({ message: t("common.saving") || "Desplegando rutina predeterminada...", type: "info" });
         await applyWorkoutTemplateToClient(templateId, clientId, trainerId);
-        showToast({ message: t("common.saveChanges") || "¡Rutina asignada exitosamente!", type: "success" });
+        showToast({ message: "¡Rutina asignada exitosamente al cliente!", type: "success" });
+        
+        // Auto-filtrar por el cliente asignado para visualizarla inmediatamente
+        clientFilter.value = clientId;
+        applyFilters();
+        
         presetTemplateSelect.value = "";
+        updatePresetPreview();
       } catch (err: unknown) {
         const errorMsg = err instanceof Error ? err.message : (t("common.error") || "Error al asignar plantilla");
         showToast({ message: errorMsg, type: "error" });

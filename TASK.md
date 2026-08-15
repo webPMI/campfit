@@ -20,6 +20,7 @@
 
 | Fecha / Hora | Agente | Objetivo / Tarea | Archivos Modificados | Estado |
 | :--- | :--- | :--- | :--- | :--- |
+| `2026-08-15 19:04` | `Antigravity Agent 1` | Mejora integral del módulo visual de asignación de rutinas y dietas con previsualización en tiempo real y detección de conflictos médicos | `src/pages/trainer/workouts.astro`, `src/pages/trainer/diets.astro`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-15 18:52` | `Antigravity Agent 1` | Auditoría exhaustiva 100% de consultas Firestore, creación de la Matriz Maestra y Golden Rule 25 | `docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md`, `.clinerules`, `AGENTS.md`, `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` | `[COMPLETADO]` |
 | `2026-08-15 10:45` | `Antigravity Agent 1` | Rediseño Gold Premium de Landing Page e integración de Canvas de partículas | `src/pages/index.astro`, `src/components/landing/*` | `[COMPLETADO]` |
 | `2026-08-15 11:05` | `Antigravity Agent 1` | Corrección de permisos de Firestore en consultas de entrenadores y chat | `firestore.rules` | `[COMPLETADO]` |
