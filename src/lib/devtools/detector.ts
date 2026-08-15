@@ -32,7 +32,8 @@ export function detectPageId(): PageId {
   // Admin
   if (path.startsWith('/admin/dashboard')) return 'admin-dashboard';
   if (path.startsWith('/admin/users')) return 'admin-users';
-  if (path.startsWith('/admin/clients')) return 'admin-clients';
+  // /admin/clients ahora redirige a /admin/users (fusión Users/Clients)
+  if (path.startsWith('/admin/clients')) return 'admin-users';
   if (path.startsWith('/admin/trainers')) return 'admin-trainers';
   if (path.startsWith('/admin/settings')) return 'admin-settings';
   if (path.startsWith('/admin/workouts')) return 'admin-workouts';

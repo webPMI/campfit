@@ -50,6 +50,7 @@ export function subscribeToUsers(
           isBlocked: data.isBlocked ?? false,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
+          medicalProfileComplete: !!data.medicalProfile,
         } as AdminUser;
       });
       callback(users);
@@ -91,6 +92,7 @@ export function subscribeToUsersByRole(
           isBlocked: data.isBlocked ?? false,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
+          medicalProfileComplete: !!data.medicalProfile,
         } as AdminUser;
       });
       callback(users);
@@ -149,6 +151,7 @@ export function subscribeToRecentUsers(
           isBlocked: data.isBlocked ?? false,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
+          medicalProfileComplete: !!data.medicalProfile,
         } as AdminUser;
       });
       callback(users);
@@ -254,5 +257,55 @@ export function subscribeToTrainers(
     unsubTrainers();
     unsubAdmins();
   };
+}
+
+/**
+ * Se suscribe a la colección `workouts` y emite un mapa de clientId -> número de rutinas.
+ * Permite pintar el chip de "Rutinas" en la vista unificada de usuarios sin lecturas por cliente.
+ */
+export function subscribeToWorkoutCounts(
+  callback: (counts: Map<string, number>) => void,
+): Unsubscribe {
+  const q = query(collection(db, 'workouts'));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const counts = new Map<string, number>();
+      snapshot.forEach((doc) => {
+        const data = doc.data() as { clientId?: string };
+        if (!data.clientId) return;
+        counts.set(data.clientId, (counts.get(data.clientId) ?? 0) + 1);
+      });
+      callback(counts);
+    },
+    (error) => {
+      logger.error('Admin', 'Error al contar workouts:', error);
+    },
+  );
+}
+
+/**
+ * Se suscribe a la colección `diets` y emite un mapa de clientId -> número de dietas.
+ * Permite pintar el chip de "Dietas" en la vista unificada de usuarios sin lecturas por cliente.
+ */
+export function subscribeToDietCounts(
+  callback: (counts: Map<string, number>) => void,
+): Unsubscribe {
+  const q = query(collection(db, 'diets'));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const counts = new Map<string, number>();
+      snapshot.forEach((doc) => {
+        const data = doc.data() as { clientId?: string };
+        if (!data.clientId) return;
+        counts.set(data.clientId, (counts.get(data.clientId) ?? 0) + 1);
+      });
+      callback(counts);
+    },
+    (error) => {
+      logger.error('Admin', 'Error al contar diets:', error);
+    },
+  );
 }
 

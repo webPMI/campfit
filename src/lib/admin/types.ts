@@ -10,11 +10,16 @@ export interface AdminUser {
   email: string;
   role: 'admin' | 'trainer' | 'client';
   assignedTrainerId?: string;
+  assignedTrainerName?: string;
   hasActiveAlert?: boolean;
   isBlocked?: boolean;
   blockedAt?: { toDate: () => Date } | null;
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
+  // Campos de enriquecimiento para la vista unificada (fusión Users/Clients)
+  workoutsCount?: number;
+  dietsCount?: number;
+  medicalProfileComplete?: boolean;
 }
 
 export interface CreateUserPayload {

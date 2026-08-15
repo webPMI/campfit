@@ -25,6 +25,8 @@ export {
   subscribeToCollectionCount,
   subscribeToRecentUsers,
   getTrainerClientCount,
+  subscribeToWorkoutCounts,
+  subscribeToDietCounts,
   type TrainerOption,
 } from './adminSubscriptions';
 export {

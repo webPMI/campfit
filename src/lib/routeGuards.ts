@@ -13,6 +13,8 @@ export type RouteGuard = {
   path: string;
   allowedRoles: ('admin' | 'trainer' | 'client')[];
   requiresMedicalProfile?: boolean;
+  /** Ruta de redirección para rutas obsoletas/fusionadas (p.ej. /admin/clients -> /admin/users). */
+  redirectTo?: string;
 };
 
 export const routeGuards: RouteGuard[] = [
@@ -42,7 +44,7 @@ export const routeGuards: RouteGuard[] = [
   { path: '/admin/dashboard', allowedRoles: ['admin'] },
   { path: '/admin/users', allowedRoles: ['admin'] },
   { path: '/admin/trainers', allowedRoles: ['admin'] },
-  { path: '/admin/clients', allowedRoles: ['admin'] },
+  { path: '/admin/clients', allowedRoles: ['admin'], redirectTo: '/admin/users' },
   { path: '/admin/clinical', allowedRoles: ['admin'] },
   { path: '/admin/workouts', allowedRoles: ['admin'] },
   { path: '/admin/diets', allowedRoles: ['admin'] },
@@ -76,6 +78,11 @@ export function checkRouteAccess(
 
   if (!guard) {
     return { allowed: true }; // Ruta sin guardia definida
+  }
+
+  // Redirección de ruta obsoleta/fusionada (p.ej. /admin/clients -> /admin/users)
+  if (guard.redirectTo) {
+    return { allowed: false, redirectTo: guard.redirectTo };
   }
 
   // Rutas públicas (sin autenticación requerida)

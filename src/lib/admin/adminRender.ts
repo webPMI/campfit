@@ -175,9 +175,16 @@ export function renderUserCard(user: AdminUser): string {
 }
 
 /**
- * 🚨 CRITICAL: Renderiza una tarjeta de usuario extendida con botón de editar opcional.
+ * 🚨 CRITICAL: Renderiza una tarjeta de usuario extendida con chips de estado y botón de editar.
  * @protection Delega en renderUserRow para evitar duplicación de código.
  * @protection NO ELIMINAR el parámetro showEdit - Es usado por admin/users.astro para mostrar/ocultar el botón de editar.
+ *
+ * Chips mostrados (fusión Users/Clients):
+ * - 🏋️ Entrenador asignado (o ⚠️ Sin entrenador)
+ * - 🏋️ Rutinas (conteo)
+ * - 🥗 Dietas (conteo)
+ * - 🏥 Perfil médico (🟢/⚪)
+ * - 🔒 Estado de cuenta (🟢 Activo / 🔴 Bloqueado)
  */
 export function renderUserCardExtended(user: AdminUser, showEdit: boolean = false): string {
   const editBtn = showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-all">
@@ -186,7 +193,36 @@ export function renderUserCardExtended(user: AdminUser, showEdit: boolean = fals
     </svg>
   </button>` : '';
 
-  return renderUserRow(user, editBtn);
+  // Chips de estado
+  const trainerChip = user.assignedTrainerName
+    ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--info-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--info)] border border-[var(--info)] border-opacity-20">🏋️ Coach: ${escapeHtml(user.assignedTrainerName)}</span>`
+    : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--warning-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--warning)] border border-[var(--warning)] border-opacity-20">⚠️ Sin entrenador</span>`;
+
+  const workoutsChip = `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--border-default)]">🏋️ Rutinas: ${user.workoutsCount ?? 0}</span>`;
+  const dietsChip = `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--border-default)]">🥗 Dietas: ${user.dietsCount ?? 0}</span>`;
+
+  const medicalChip = user.medicalProfileComplete
+    ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🟢 Perfil médico</span>`
+    : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-disabled)] border border-[var(--border-default)]">⚪ Perfil médico</span>`;
+
+  const accountChip = user.isBlocked
+    ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--danger-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--danger)] border border-[var(--danger)] border-opacity-20">🔴 Bloqueado</span>`
+    : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🟢 Activo</span>`;
+
+  const chips = `
+    <div class="mt-3 flex flex-wrap gap-1.5">
+      ${trainerChip}
+      ${workoutsChip}
+      ${dietsChip}
+      ${medicalChip}
+      ${accountChip}
+    </div>`;
+
+  // Inyectamos los chips dentro de la fila: renderUserRow dibuja la tarjeta base;
+  // añadimos los chips envueltos en un contenedor extra.
+  const base = renderUserRow(user, editBtn);
+  // Insertamos los chips justo antes del cierre del div principal de la tarjeta.
+  return base.replace('</div>\n    </div>', `${chips}\n    </div>\n    </div>`);
 }
 
 /**
