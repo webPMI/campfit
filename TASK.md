@@ -29,6 +29,8 @@
 | `2026-08-15 13:23` | `Antigravity Agent 1` | Integración y transcodificación de metraje de vídeo 1080p con movimiento humano real (fuerza, nutrición y rendimiento) | `scripts/download-real-videos.mjs`, `public/videos/*.mp4` | `[COMPLETADO]` |
 | `2026-08-15 13:51` | `Antigravity Agent 1` | Eliminación de tarjetas/intros de terceros ("Fitness Escape") y recorte en metraje atlético 100% limpio | `scripts/download-real-videos.mjs`, `public/videos/*.mp4` | `[COMPLETADO]` |
 | `2026-08-15 13:58` | `Antigravity Agent 1` | Visuales y vídeos luminosos multientorno (Gym, Casa, Parque, Nutrición) 100% en español e internacionalizados | `src/components/landing/ScrollingVideoShowcase.astro`, `src/i18n/*`, `public/videos/*.mp4`, `scripts/render-images-to-video.mjs` | `[COMPLETADO]` |
+| `2026-08-15 14:47` | `Antigravity Agent 1` | Push a GitHub y Despliegue en Firebase Hosting | Todo el proyecto (`dist/`, `public/`, landing) | `[COMPLETADO]` |
+| `2026-08-15 14:50` | `Antigravity Agent 1` | Creación y despliegue del índice compuesto de Firestore para `exercises_library` (`isActive`, `category`) | `firestore.indexes.json` | `[COMPLETADO]` |
 
 ---
 
