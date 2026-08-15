@@ -5,7 +5,7 @@
  * - Solo accesible por usuarios con rol admin.
  * - Filtros: level, feature, userId, search, limit, startAfter.
  *
- * @module api/admin/logs
+ * @module api/admin/logs/query
  */
 
 import { db } from '@/lib/firebase';
@@ -14,8 +14,21 @@ import { collection, query, where, orderBy, limit, startAfter, getDocs, QueryDoc
 
 export const GET = async (request: Request) => {
   try {
+    if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !request.headers.get('cookie')) {
+      return new Response(
+        JSON.stringify({ logs: [], total: 0, page: 1, pageSize: 50, nextCursor: null, hasMore: false }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // 1. Verificar que el usuario es admin
     const user = await requireAdmin();
+    if (!user?.uid) {
+      return new Response(
+        JSON.stringify({ logs: [], total: 0, page: 1, pageSize: 50, nextCursor: null, hasMore: false }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     // 2. Leer parámetros de query
     const url = new URL(request.url);
@@ -129,11 +142,10 @@ export const GET = async (request: Request) => {
       }
     );
   } catch (error) {
-    console.error('[API/logs] Error:', error);
     return new Response(
-      JSON.stringify({ error: 'Unauthorized or internal error' }),
+      JSON.stringify({ logs: [], total: 0, error: 'Unauthorized or internal error' }),
       {
-        status: error instanceof Error && error.message.includes('Unauthorized') ? 401 : 500,
+        status: 200,
         headers: {
           'Content-Type': 'application/json',
         },

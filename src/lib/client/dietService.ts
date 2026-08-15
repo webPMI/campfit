@@ -15,6 +15,12 @@ export interface Meal {
   carbs: number;
   fat: number;
   order: number;
+  /** Hora estimada para la comida (Formato HH:mm). Opcional. */
+  estimatedTime: string | null;
+  /** Estado de completado por el cliente */
+  isCompleted: boolean;
+  /** Timestamp de cuándo se marcó como completado */
+  completionTime: Timestamp | null;
   /** Alérgenos / ingredientes a evitar: gluten, lactose, nuts, shellfish, etc. */
   allergens: string[];
 }

@@ -134,3 +134,33 @@ export async function deleteDiet(id: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * ⚡ Clona una dieta existente a otro cliente destino.
+ */
+export async function cloneDietToClient(
+  diet: TrainerDiet,
+  targetClientId: string,
+  trainerId: string,
+): Promise<string | null> {
+  try {
+    const payload = {
+      name: `${diet.name} (Copia)`,
+      type: diet.type || 'normal',
+      totalCalories: diet.totalCalories || 2000,
+      meals: diet.meals || [],
+      clientId: targetClientId,
+      trainerId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    const docRef = await addDoc(collection(db, 'diets'), payload);
+    logger.info('Trainer', `Dieta clonada exitosamente para el cliente ${targetClientId}: ${docRef.id}`);
+    showToast({ message: '¡Dieta clonada y asignada al nuevo cliente!', type: 'success' });
+    return docRef.id;
+  } catch (error) {
+    logger.error('Trainer', 'Error al clonar dieta:', error);
+    showToast({ message: 'Error al clonar la dieta', type: 'error' });
+    return null;
+  }
+}

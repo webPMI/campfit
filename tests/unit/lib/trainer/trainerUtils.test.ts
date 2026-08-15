@@ -236,4 +236,70 @@ describe('lib/trainer/trainerUtils', () => {
       expect(html).not.toContain('ml-auto');
     });
   });
+
+  describe('calculateMetabolicPlan', () => {
+    it('✅ should calculate correct TDEE and macros for male maintenance', async () => {
+      const { calculateMetabolicPlan } = await import('../../../../src/lib/trainer/trainerUtils');
+      const plan = calculateMetabolicPlan(75, 178, 28, 'male', 'moderate', 'maintenance');
+      expect(plan.bmr).toBeGreaterThan(1600);
+      expect(plan.tdee).toBeGreaterThan(2400);
+      expect(plan.targetCalories).toBe(plan.tdee);
+      expect(plan.proteinGrams).toBe(150); // 75kg * 2.0
+      expect(plan.fatGrams).toBe(68); // 75kg * 0.9
+      expect(plan.carbsGrams).toBeGreaterThan(200);
+    });
+
+    it('✅ should apply deficit and higher protein for fat loss', async () => {
+      const { calculateMetabolicPlan } = await import('../../../../src/lib/trainer/trainerUtils');
+      const plan = calculateMetabolicPlan(80, 180, 30, 'male', 'moderate', 'fat_loss');
+      expect(plan.targetCalories).toBe(plan.tdee - 400);
+      expect(plan.proteinGrams).toBe(176); // 80kg * 2.2
+      expect(plan.goal).toBe('fat_loss');
+    });
+  });
+
+  describe('getClientAdherenceStatus', () => {
+    it('✅ should return active status for recent activity', async () => {
+      const { getClientAdherenceStatus } = await import('../../../../src/lib/trainer/trainerUtils');
+      const client = {
+        uid: '123',
+        name: 'Carlos',
+        email: 'carlos@test.com',
+        role: 'client' as const,
+        lastActivityAt: new Date(),
+      };
+      const status = getClientAdherenceStatus(client);
+      expect(status.status).toBe('active');
+      expect(status.label).toContain('Activo');
+    });
+
+    it('✅ should return warning for activity 4 days ago', async () => {
+      const { getClientAdherenceStatus } = await import('../../../../src/lib/trainer/trainerUtils');
+      const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
+      const client = {
+        uid: '123',
+        name: 'Carlos',
+        email: 'carlos@test.com',
+        role: 'client' as const,
+        lastActivityAt: fourDaysAgo,
+      };
+      const status = getClientAdherenceStatus(client);
+      expect(status.status).toBe('warning');
+    });
+
+    it('✅ should return inactive status for activity > 5 days ago', async () => {
+      const { getClientAdherenceStatus } = await import('../../../../src/lib/trainer/trainerUtils');
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const client = {
+        uid: '123',
+        name: 'Carlos',
+        email: 'carlos@test.com',
+        role: 'client' as const,
+        lastActivityAt: sevenDaysAgo,
+      };
+      const status = getClientAdherenceStatus(client);
+      expect(status.status).toBe('inactive');
+      expect(status.label).toContain('Riesgo');
+    });
+  });
 });

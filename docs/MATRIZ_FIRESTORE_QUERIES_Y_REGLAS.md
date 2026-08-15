@@ -141,9 +141,11 @@
 │ /exercises_library   │ R       │ R / W   │ R/W/D   │     ⛔       │
 │ /foods_library       │ R       │ R / W   │ R / W   │     ⛔       │
 │ /user_exercise_prefs │ R/W (3) │ R / W   │ R/W/D   │     ⛔       │
+│ /app_logs            │ ⛔      │ W*      │ R / D   │     ⛔       │
+│ /app_logs_dedup      │ ⛔      │ W*      │ D       │     ⛔       │
 └──────────────────────┴─────────┴─────────┴─────────┴──────────────┘
 ```
-- **W\***: Solo datos de perfil, no pueden auto-escalar rol ni auto-desbloquearse.
+- **W\***: Solo datos permitidos por reglas de inmutabilidad y sanitización estricta.
 - **(1)**: Los clientes solo pueden leer perfiles de usuarios con rol `trainer` o `admin` (para chat).
 - **(2)**: Los trainers pueden leer clientes asignados y clientes para asignarles rutinas/dietas.
 - **(3)**: Solo documentos donde `clientId == request.auth.uid`.

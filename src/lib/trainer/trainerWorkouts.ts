@@ -134,3 +134,34 @@ export async function deleteWorkout(id: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * ⚡ Clona una rutina existente a otro cliente destino.
+ */
+export async function cloneWorkoutToClient(
+  workout: TrainerWorkout,
+  targetClientId: string,
+  trainerId: string,
+): Promise<string | null> {
+  try {
+    const payload = {
+      name: `${workout.name} (Copia)`,
+      difficulty: workout.difficulty || 'intermediate',
+      description: workout.description || '',
+      exercises: workout.exercises || [],
+      clientId: targetClientId,
+      trainerId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    const docRef = await addDoc(collection(db, 'workouts'), payload);
+    logger.info('Trainer', `Rutina clonada exitosamente para el cliente ${targetClientId}: ${docRef.id}`);
+    showToast({ message: '¡Rutina clonada y asignada al nuevo cliente!', type: 'success' });
+    return docRef.id;
+  } catch (error) {
+    logger.error('Trainer', 'Error al clonar rutina:', error);
+    showToast({ message: 'Error al clonar la rutina', type: 'error' });
+    return null;
+  }
+}
+

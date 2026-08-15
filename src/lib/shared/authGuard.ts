@@ -26,6 +26,7 @@ const PUBLIC_PATHS = ['/login', '/register', '/recover', '/', '/onboarding'];
 
 /** Verifica si la ruta actual es pública (no necesita autenticación) */
 function isPublicPath(): boolean {
+  if (typeof window === 'undefined') return true;
   const path = window.location?.pathname || window.location?.href || '';
   return PUBLIC_PATHS.some(p => path === p || (p !== '/' && path.startsWith(p)));
 }

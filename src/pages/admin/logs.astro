@@ -1,5 +1,4 @@
 ---
----
 import AdminLayout from "@/layouts/AdminLayout.astro";
 import PageTransition from "@/components/PageTransition.astro";
 import { translations, type Language } from "@/i18n/translations";
@@ -164,7 +163,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 </AdminLayout>
 
 <script>
-  const API = '/api/admin/logs';
+  const API = '/api/admin/logs/query';
   const PAGE_SIZE = 50;
 
   const els = {

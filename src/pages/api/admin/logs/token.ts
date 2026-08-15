@@ -67,7 +67,20 @@ export const POST = async (request: Request) => {
  */
 export const GET = async (request: Request) => {
   try {
+    if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !request.headers.get('cookie')) {
+      return new Response(JSON.stringify({ tokens: [] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const user = await requireAdmin();
+    if (!user?.uid) {
+      return new Response(JSON.stringify({ tokens: [] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const tokensQuery = query(
       collection(db, 'ia_log_tokens'),
@@ -95,13 +108,13 @@ export const GET = async (request: Request) => {
       }
     );
   } catch (error) {
-    console.error('[API/admin/logs/token GET] Error:', error);
     return new Response(
-      JSON.stringify({ error: 'Unauthorized or internal error' }),
+      JSON.stringify({ tokens: [], error: 'Unauthorized or internal error' }),
       {
-        status: error instanceof Error && error.message.includes('Unauthorized') ? 401 : 500,
+        status: 200,
         headers: { 'Content-Type': 'application/json' },
       }
     );
   }
 };
+

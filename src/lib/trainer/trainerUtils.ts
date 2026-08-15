@@ -16,13 +16,19 @@ export type {
 } from './types';
 
 export { requireAuth, signOutUser } from './trainerAuth';
-export { subscribeToClients, getClientProfile } from './trainerClients';
+export {
+  subscribeToClients,
+  getClientProfile,
+  getClientAdherenceStatus,
+  saveTrainerPrivateNotes,
+} from './trainerClients';
 export {
   subscribeToWorkoutsByTrainer,
   subscribeToWorkoutsByClient,
   createWorkout,
   updateWorkout,
   deleteWorkout,
+  cloneWorkoutToClient,
 } from './trainerWorkouts';
 export {
   subscribeToDietsByTrainer,
@@ -30,7 +36,9 @@ export {
   createDiet,
   updateDiet,
   deleteDiet,
+  cloneDietToClient,
 } from './trainerDiets';
+export { calculateMetabolicPlan, type MacroPlan, type ActivityLevel } from './metabolicCalculator';
 export { subscribeToClientProgress } from './trainerProgress';
 export {
   subscribeToConversations,
@@ -45,3 +53,4 @@ export {
   renderMessageBubble,
 } from './trainerRender';
 export { initGlobalActions } from './trainerInit';
+

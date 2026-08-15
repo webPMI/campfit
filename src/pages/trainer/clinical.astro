@@ -100,46 +100,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireRole } from '@/lib/shared/authGuard';
-  import { subscribeToClients } from '@/lib/trainer/trainerClients';
-  import { escapeHtml } from '@/lib/shared/ui';
+  import { subscribeToClients, getClientAdherenceStatus, saveTrainerPrivateNotes } from '@/lib/trainer/trainerClients';
+  import { escapeHtml, showToast } from '@/lib/shared/ui';
   import { translations } from '@/i18n/translations';
+  import type { TrainerClient } from '@/lib/trainer/types';
 
   // Detect lang from URL or storage
   const urlLang = new URLSearchParams(window.location.search).get('lang') || 'es';
   const t = (key: string) => translations[urlLang as 'es' | 'en']?.[key] || translations['es']?.[key] || key;
 
-  interface ClinicalClient {
-    uid: string;
-    name: string;
-    email: string;
-    medicalProfile: {
-      height?: number;
-      weight?: number;
-      initialWeight?: number;
-      age?: number;
-      gender?: string;
-      bloodType?: string;
-      allergies?: string | string[];
-      conditions?: string | string[];
-      medications?: string | string[];
-      injuries?: string | string[];
-      surgery?: string;
-      dietaryRestrictions?: {
-        glutenFree?: boolean;
-        lactoseFree?: boolean;
-        vegan?: boolean;
-        vegetarian?: boolean;
-        nutFree?: boolean;
-        shellfishFree?: boolean;
-        other?: string[];
-      };
-      intolerances?: Array<{ substance: string; severity: string; symptoms: string }>;
-      goals?: string | string[];
-      experience?: string;
-      emergencyName?: string;
-      emergencyPhone?: string;
-    } | null;
-  }
+  type ClinicalClient = TrainerClient;
 
   const loadingState = document.getElementById('loadingState')!;
   const emptyState = document.getElementById('emptyState')!;
@@ -206,6 +176,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
     clients.forEach(c => {
       const mp = c.medicalProfile;
+      const adherence = getClientAdherenceStatus(c);
       const hasIntolerances = (mp?.intolerances?.length || 0) > 0;
       const hasRestrictions = mp?.dietaryRestrictions?.glutenFree || mp?.dietaryRestrictions?.lactoseFree || mp?.dietaryRestrictions?.nutFree || mp?.dietaryRestrictions?.shellfishFree;
 
@@ -218,15 +189,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       const card = document.createElement('div');
       card.className = `rounded-xl border p-5 backdrop-blur-sm transition-all hover:border-[var(--border-default)] ${hasIntolerances ? 'border-[var(--danger)] bg-[var(--danger-dim)]' : hasRestrictions ? 'border-[var(--warning)] bg-[var(--warning-dim)]' : mp ? 'border-[var(--border-brand)] bg-[var(--brand-dim)]' : 'border-[var(--border-subtle)] bg-[var(--surface-2)]'}`;
       card.innerHTML = `
-        <div class="flex items-start justify-between mb-3">
+        <div class="flex items-start justify-between mb-3 flex-wrap gap-2">
           <div class="flex items-center gap-3">
             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface-3)] text-sm font-semibold">${(c.name || '?')[0]?.toUpperCase()}</div>
             <div>
-              <h3 class="font-semibold text-[var(--text-primary)]">${c.name}</h3>
-              <p class="text-xs text-[var(--text-tertiary)]">${c.email}</p>
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-[var(--text-primary)]">${escapeHtml(c.name)}</h3>
+                <span class="rounded-full border px-2 py-0.5 text-[10px] font-bold ${adherence.badgeClass}">${adherence.label}</span>
+              </div>
+              <p class="text-xs text-[var(--text-tertiary)]">${escapeHtml(c.email)}</p>
             </div>
           </div>
-          ${hasIntolerances ? `<span class="rounded-full bg-[var(--danger-dim)] px-2 py-1 text-xs text-[var(--danger)]">${t('clinical.badge.intolerances')}</span>` : hasRestrictions ? `<span class="rounded-full bg-[var(--warning-dim)] px-2 py-1 text-xs text-[var(--warning)]">${t('clinical.badge.restrictions')}</span>` : mp ? `<span class="rounded-full bg-[var(--brand-dim)] px-2 py-1 text-xs text-[var(--brand)]">${t('clinical.badge.ok')}</span>` : `<span class="rounded-full bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-disabled)]">${t('clinical.badge.noData')}</span>`}
+          <div class="flex items-center gap-2">
+            <a href="/trainer/chat?target=${c.uid}" class="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2.5 py-1 text-xs font-semibold text-zinc-300 hover:text-white flex items-center gap-1 transition-all">💬 Chat</a>
+            ${hasIntolerances ? `<span class="rounded-full bg-[var(--danger-dim)] px-2 py-1 text-xs text-[var(--danger)]">${t('clinical.badge.intolerances')}</span>` : hasRestrictions ? `<span class="rounded-full bg-[var(--warning-dim)] px-2 py-1 text-xs text-[var(--warning)]">${t('clinical.badge.restrictions')}</span>` : mp ? `<span class="rounded-full bg-[var(--brand-dim)] px-2 py-1 text-xs text-[var(--brand)]">${t('clinical.badge.ok')}</span>` : `<span class="rounded-full bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-disabled)]">${t('clinical.badge.noData')}</span>`}
+          </div>
         </div>
 
         ${mp ? `
@@ -284,7 +261,29 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <p class="text-sm text-[var(--text-secondary)]">${escapeHtml(mp!.emergencyName || '-')} · ${escapeHtml(mp!.emergencyPhone || '-')}</p>
         </div>` : ''}
         ` : `<p class="text-sm text-[var(--text-disabled)] italic">${t('clinical.no.profile')}</p>`}
+
+        <!-- Bitácora Confidencial del Entrenador -->
+        <div class="mt-4 border-t border-[var(--border-subtle)] pt-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+              <span>🔒</span>
+              <span>Bitácora Confidencial del Entrenador (Privada)</span>
+            </label>
+            <button data-action="save-notes" data-uid="${c.uid}" class="rounded-lg bg-amber-500/20 border border-amber-500/30 px-2.5 py-1 text-[11px] font-bold text-amber-300 hover:bg-amber-500/30 transition-all cursor-pointer">
+              💾 Guardar Nota
+            </button>
+          </div>
+          <textarea id="notes-${c.uid}" placeholder="Anota observaciones confidenciales, evolución de cargas, respuestas fisiológicas o acuerdos privados..." class="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 p-2.5 text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-amber-400 min-h-[60px] resize-y">${escapeHtml(c.trainerPrivateNotes || '')}</textarea>
+        </div>
       `;
+
+      card.querySelector('[data-action="save-notes"]')?.addEventListener('click', async () => {
+        const textarea = document.getElementById(`notes-${c.uid}`) as HTMLTextAreaElement;
+        if (!textarea) return;
+        const notes = textarea.value.trim();
+        await saveTrainerPrivateNotes(c.uid, notes);
+      });
+
       clinicalList.appendChild(card);
     });
   }

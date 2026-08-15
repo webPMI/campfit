@@ -391,11 +391,37 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       const action = btn.getAttribute("data-action");
       const dietId = btn.getAttribute("data-diet-id");
       const diet = allDiets.find((d) => d.id === dietId);
+      if (!diet) return;
 
-      if (action === "edit" && diet) {
+      if (action === "print") {
+        printDiet(diet);
+      }
+      if (action === "clone") {
+        const otherClients = allClients.filter((c) => c.uid !== diet.clientId);
+        if (otherClients.length === 0) {
+          showToast({ message: "No tienes otros clientes a quienes clonar esta dieta", type: "error" });
+          return;
+        }
+        const clientOptions = otherClients.map((c, i) => `${i + 1}. ${c.name}`).join("\n");
+        const chosen = prompt(`¿A qué atleta deseas clonar el plan "${diet.name}"?\nIngresa el número:\n\n${clientOptions}`);
+        if (!chosen) return;
+        const index = parseInt(chosen.trim(), 10) - 1;
+        const targetClient = otherClients[index];
+        if (!targetClient) {
+          showToast({ message: "Selección no válida", type: "error" });
+          return;
+        }
+        cloneDietToClient(diet, targetClient.uid, currentTrainerId).then((newId) => {
+          if (newId && filterClientSelect) {
+            filterClientSelect.value = targetClient.uid;
+            renderDiets();
+          }
+        });
+      }
+      if (action === "edit") {
         showEditor(diet);
       }
-      if (action === "delete" && diet) {
+      if (action === "delete") {
         if (confirm(t("trainer.deleteDiet") + ": " + diet.name + "?")) {
           deleteDiet(diet.id)
             .then((ok) => {
@@ -408,6 +434,83 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         }
       }
     });
+  }
+
+  function printDiet(diet: TrainerDiet) {
+    const client = allClients.find((c) => c.uid === diet.clientId);
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      showToast({ message: 'Permite las ventanas emergentes para imprimir la dieta', type: 'error' });
+      return;
+    }
+
+    const totalProtein = diet.meals?.reduce((sum, m) => sum + (m.protein || 0), 0) || diet.totalProtein || 0;
+    const totalCarbs = diet.meals?.reduce((sum, m) => sum + (m.carbs || 0), 0) || diet.totalCarbs || 0;
+    const totalFat = diet.meals?.reduce((sum, m) => sum + (m.fat || 0), 0) || diet.totalFat || 0;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>CampFit - Plan Nutricional: ${escapeHtml(diet.name)}</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 25px; color: #111; line-height: 1.5; }
+          .header { border-bottom: 2px solid #d97706; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .brand { font-size: 24px; font-weight: 800; color: #b45309; }
+          .meta { font-size: 13px; color: #555; }
+          .diet-title { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
+          .macro-banner { background: #fef3c7; border: 1px solid #fcd34d; padding: 10px 15px; border-radius: 8px; margin: 15px 0; display: flex; gap: 20px; font-size: 13px; font-weight: bold; color: #92400e; }
+          .meal-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #fafafa; }
+          .meal-title { font-weight: bold; color: #1f2937; margin-bottom: 4px; display: flex; justify-content: space-between; }
+          .meal-desc { color: #4b5563; font-size: 13px; margin-bottom: 6px; }
+          .meal-macros { font-size: 11px; color: #6b7280; font-family: monospace; }
+          .footer { margin-top: 30px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #e5e7eb; padding-top: 10px; }
+          @media print { button { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="brand">CAMPFIT NUTRITION</div>
+            <div class="diet-title">${escapeHtml(diet.name)}</div>
+            <div class="meta">Atleta: <strong>${escapeHtml(client?.name || 'Cliente')}</strong> · Tipo: <strong>${diet.type || 'Personalizada'}</strong></div>
+          </div>
+          <div class="meta" style="text-align: right;">
+            <div>Fecha: ${new Date().toLocaleDateString()}</div>
+            <div>${diet.meals?.length || 0} Comidas Estructuradas</div>
+          </div>
+        </div>
+
+        <div class="macro-banner">
+          <span>🎯 Total: ${diet.totalCalories || 0} kcal</span>
+          <span>🥩 Proteínas: ${totalProtein}g</span>
+          <span>🍚 Carbohidratos: ${totalCarbs}g</span>
+          <span>🥑 Grasas: ${totalFat}g</span>
+        </div>
+
+        <div class="meals-list">
+          ${(diet.meals || []).map((m, i) => `
+            <div class="meal-card">
+              <div class="meal-title">
+                <span>Comida #${i + 1}: ${escapeHtml(m.name)}</span>
+                <span style="color: #b45309;">${m.calories || 0} kcal</span>
+              </div>
+              <div class="meal-desc">${escapeHtml(m.description || 'Sin instrucciones adicionales.')}</div>
+              <div class="meal-macros">Proteínas: ${m.protein || 0}g · Carbos: ${m.carbs || 0}g · Grasas: ${m.fat || 0}g</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="footer">
+          Generado automáticamente por CampFit Nutrition Suite · Todos los derechos reservados.
+        </div>
+      </body>
+      </html>
+    `;
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); }, 250);
   }
 
   function populateClientFilter(): void {
@@ -438,7 +541,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         const client = allClients.find((c) => c.uid === d.clientId);
         const clientName = (client?.name || "").toLowerCase();
         const dietName = (d.name || "").toLowerCase();
-        return dietName.includes(searchVal) || clientName.includes(searchVal);
+        return clientName.includes(searchVal) || dietName.includes(searchVal);
       }
       return true;
     });
@@ -496,7 +599,23 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 </div>
               </div>
 
-              <div class="flex items-center gap-1.5 shrink-0">
+              <div class="flex items-center gap-1.5 shrink-0 flex-wrap">
+                <button
+                  data-action="print"
+                  data-diet-id="${d.id}"
+                  title="Imprimir / Exportar Menú"
+                  class="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2.5 py-1.5 text-xs font-semibold text-amber-400 hover:text-amber-300 transition-all flex items-center gap-1"
+                >
+                  🖨️ <span class="hidden sm:inline">PDF</span>
+                </button>
+                <button
+                  data-action="clone"
+                  data-diet-id="${d.id}"
+                  title="Clonar a otro atleta"
+                  class="rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-all flex items-center gap-1"
+                >
+                  ⚡ <span class="hidden sm:inline">Clonar</span>
+                </button>
                 <button
                   data-action="edit"
                   data-diet-id="${d.id}"

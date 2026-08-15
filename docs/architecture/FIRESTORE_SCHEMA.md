@@ -46,7 +46,7 @@ cloud.firestore/
   - `trainerId: string`
   - `name: string`
   - `difficulty: string`
-  - `exercises: Exercise[]` (`id`, `exerciseId?`, `name`, `sets`, `reps`, `restTime`, `videoUrl`, `description`, `order`, `dayOfWeek`)
+  - `exercises: Exercise[]` (`id`, `exerciseId?`, `name`, `sets`, `reps`, `restTime`, `videoUrl`, `description`, `order`, `dayOfWeek`, `estimatedTime?: string | null`, `isCompleted?: boolean`, `completionTime?: Timestamp | null`)
 
 ### 3. `diets/{dietId}`
 - **Descripción:** Plan nutricional asignado a un cliente.
@@ -56,7 +56,7 @@ cloud.firestore/
   - `name: string`
   - `type: 'normal' | 'definition' | 'volume' | 'keto' | 'vegan' | 'custom'`
   - `totalCalories: number`, `totalProtein: number`, `totalCarbs: number`, `totalFat: number`
-  - `meals: Meal[]` (`id`, `name`, `foodId?`, `portionGrams?`, `calories`, `protein`, `carbs`, `fat`, `allergens?`, `order`)
+  - `meals: Meal[]` (`id`, `name`, `foodId?`, `portionGrams?`, `calories`, `protein`, `carbs`, `fat`, `allergens?`, `order`, `estimatedTime?: string | null`, `isCompleted?: boolean`, `completionTime?: Timestamp | null`)
 
 ### 4. `messages/{messageId}`
 - **Descripción:** Mensajes del sistema de chat directo.

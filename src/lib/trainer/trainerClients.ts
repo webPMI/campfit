@@ -12,11 +12,57 @@ import {
   onSnapshot,
   doc,
   getDoc,
+  updateDoc,
+  serverTimestamp,
   type Unsubscribe,
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { showToast } from '@/lib/shared/ui';
 import type { TrainerClient } from './types';
+
+/**
+ * Determina el estado de adherencia del atleta según su última actividad.
+ */
+export function getClientAdherenceStatus(client: TrainerClient): {
+  status: 'active' | 'warning' | 'inactive';
+  label: string;
+  badgeClass: string;
+} {
+  const lastActive = client.lastActivityAt || client.updatedAt || client.createdAt;
+  if (!lastActive) {
+    return {
+      status: 'warning',
+      label: 'Sin registros',
+      badgeClass: 'bg-zinc-700/40 text-zinc-400 border-zinc-700',
+    };
+  }
+
+  const lastDate = typeof (lastActive as any).toDate === 'function'
+    ? (lastActive as any).toDate()
+    : new Date(lastActive as any);
+
+  const diffHours = (Date.now() - lastDate.getTime()) / (1000 * 60 * 60);
+
+  if (diffHours <= 48) {
+    return {
+      status: 'active',
+      label: 'Activo (≤48h)',
+      badgeClass: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+    };
+  }
+  if (diffHours <= 120) {
+    return {
+      status: 'warning',
+      label: 'Inactivo 3-5d',
+      badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    };
+  }
+  return {
+    status: 'inactive',
+    label: 'Riesgo abandono (>5d)',
+    badgeClass: 'bg-rose-500/15 text-rose-300 border-rose-500/30 animate-pulse',
+  };
+}
 
 /**
  * Se suscribe a los clientes asignados a un entrenador.
@@ -48,6 +94,8 @@ export function subscribeToClients(
             assignedTrainerId: data.assignedTrainerId,
             hasActiveAlert: data.hasActiveAlert ?? false,
             medicalProfile: data.medicalProfile,
+            trainerPrivateNotes: data.trainerPrivateNotes || '',
+            lastActivityAt: data.lastActivityAt || null,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt,
           } as TrainerClient;
@@ -82,7 +130,10 @@ export async function getClientProfile(clientId: string): Promise<TrainerClient 
         assignedTrainerId: data.assignedTrainerId,
         hasActiveAlert: data.hasActiveAlert ?? false,
         medicalProfile: data.medicalProfile,
+        trainerPrivateNotes: data.trainerPrivateNotes || '',
+        lastActivityAt: data.lastActivityAt || null,
         createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
       } as TrainerClient;
     }
     return null;
@@ -91,3 +142,25 @@ export async function getClientProfile(clientId: string): Promise<TrainerClient 
     return null;
   }
 }
+
+/**
+ * Guarda notas privadas y confidenciales del entrenador sobre un cliente.
+ */
+export async function saveTrainerPrivateNotes(
+  clientId: string,
+  notes: string,
+): Promise<boolean> {
+  try {
+    await updateDoc(doc(db, 'users', clientId), {
+      trainerPrivateNotes: notes,
+      updatedAt: serverTimestamp(),
+    });
+    showToast({ message: 'Notas confidenciales guardadas', type: 'success' });
+    return true;
+  } catch (error) {
+    logger.error('Trainer', 'Error al guardar notas confidenciales:', error);
+    showToast({ message: 'Error al guardar las notas', type: 'error' });
+    return false;
+  }
+}
+

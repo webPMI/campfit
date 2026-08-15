@@ -18,6 +18,8 @@ export interface TrainerClient {
   assignedTrainerId?: string;
   hasActiveAlert?: boolean;
   medicalProfile?: MedicalProfile;
+  trainerPrivateNotes?: string;
+  lastActivityAt?: { toDate: () => Date } | string | null;
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
 }
@@ -50,6 +52,12 @@ export interface Exercise {
   description: string;
   order: number;
   dayOfWeek: number;
+  /** Hora estimada para el ejercicio (Formato HH:mm). Opcional. */
+  estimatedTime: string | null;
+  /** Estado de completado por el cliente */
+  isCompleted: boolean;
+  /** Timestamp de cuándo se marcó como completado */
+  completionTime: Timestamp | null;
 }
 
 export interface TrainerDiet {

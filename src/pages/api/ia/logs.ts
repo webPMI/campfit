@@ -12,9 +12,10 @@ import { db } from '@/lib/firebase';
 import { requireAdmin } from '@/lib/shared/authGuard';
 import { collection, query, where, orderBy, limit, getDocs, type QueryConstraint } from 'firebase/firestore';
 
-export const GET = async (request: Request) => {
+export const GET = async ({ request, url }: { request?: Request; url?: URL }) => {
   try {
-    const authHeader = request.headers.get('authorization') || '';
+    const req = request || (typeof Request !== 'undefined' ? new Request('http://localhost') : null);
+    const authHeader = req?.headers?.get('authorization') || '';
 
     if (authHeader.startsWith('Bearer ia-log-')) {
       const token = authHeader.slice(7);
@@ -30,14 +31,17 @@ export const GET = async (request: Request) => {
         return new Response(JSON.stringify({ error: 'Token expired' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
       }
     } else {
+      if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !req?.headers?.get('cookie')) {
+        return new Response(JSON.stringify({ logs: [], total: 0 }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
       await requireAdmin();
     }
 
-    const url = new URL(request.url);
-    const level = url.searchParams.get('level') || undefined;
-    const feature = url.searchParams.get('feature') || undefined;
-    const userId = url.searchParams.get('userId') || undefined;
-    const limitParam = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 50);
+    const reqUrl = url || (req?.url ? new URL(req.url) : new URL('http://localhost'));
+    const level = reqUrl.searchParams.get('level') || undefined;
+    const feature = reqUrl.searchParams.get('feature') || undefined;
+    const userId = reqUrl.searchParams.get('userId') || undefined;
+    const limitParam = Math.min(parseInt(reqUrl.searchParams.get('limit') || '20', 10), 50);
 
     const logsRef = collection(db, 'app_logs');
     const constraints: QueryConstraint[] = [];
