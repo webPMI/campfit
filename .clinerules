@@ -1,142 +1,67 @@
 # CampFit 2.0 - Cline Rules
 
-## Stack
-- Framework: Astro 7 (SSG + islands)
-- UI: Astro components + Alpine.js / vanilla JS (sin React)
-- Styles: Tailwind CSS 4 (dark & light mode, theme flavors)
-- State: Nanostores
-- Database: Cloud Firestore (NoSQL, 11 colecciones)
-- Storage: Cloudflare R2
-- Mobile: Capacitor 6
-- Testing: Vitest (unitarios) + Playwright (E2E) — **centralizados en tests/**
-- CI/CD: GitHub Actions
+## 🏗️ Technology Stack
+- **Framework**: Astro 7 (SSG + islands)
+- **UI**: Astro components + Alpine.js / Vanilla JS (No React)
+- **Styles**: Tailwind CSS 4 (Theme System, Dark/Light mode, Flavors)
+- **State**: Nanostores
+- **Database**: Cloud Firestore (NoSQL, 11 collections)
+- **Storage**: Cloudflare R2
+- **Mobile**: Capacitor 6
+- **Testing**: Vitest (Unit) + Playwright (E2E)
+- **CI/CD**: GitHub Actions
 
-## Project Structure
-```
-campfit-astro/
-├── src/               # 📁 Código fuente (sin tests)
-│   ├── components/    # Componentes .astro
-│   ├── layouts/       # Layouts .astro
-│   ├── pages/         # Páginas y API routes
-│   │   ├── login.astro
-│   │   ├── register.astro
-│   │   ├── recover.astro
-│   │   ├── dashboard.astro
-│   │   ├── index.astro
-│   │   └── admin/
+## 📂 Project Structure Highlights
+- `src/components/`: Atomic components.
+- `src/layouts/`: Role-based layouts.
+- `src/pages/`: Static routes and API endpoints.
+- `src/lib/`:
+    - `shared/`: Common logic (Auth, i18n, Logger, UI).
+    - `client/`: Client-specific services (Diets, Workouts).
+    - `admin/` & `trainer/`: Modularized role-specific logic.
+- `src/services/`: Core services (Auth, Admin).
+- `src/stores/`: Global state (Nanostores).
+- `tests/`: Centralized testing directory (Unit, Integration, E2E).
 
-│   │       ├── dashboard.astro   # Panel admin con estadísticas reales
-│   │       ├── users.astro       # Lista de usuarios con roles
-│   │       ├── trainers.astro    # Lista de entrenadores
-│   │       ├── clients.astro     # Lista de clientes
-│   │       └── settings.astro    # Configuración del sistema
-│   ├── lib/           # Utilidades y helpers
-│   │   ├── firebase.ts
-│   │   ├── validators.ts      # Validación de formularios (pure functions)
-│   │   ├── routeGuards.ts     # Protección de rutas por rol
-│   │   ├── shared/            # Biblioteca común (foodLibrary, exerciseLibrary, chat, ui, logger)
-│   │   └── client/            # Servicios cliente (dietService, workoutService, intoleranceChecker)
-│   ├── services/      # Servicios (Firebase, etc.)
-│   │   ├── authService.ts     # Auth centralizado (login, register, Google, recover)
-│   │   └── adminService.ts    # Admin: CRUD usuarios, estadísticas
-│   ├── stores/        # Nanostores
-│   │   └── authStore.ts       # $user, $authLoading, $authError, $isAuthenticated, etc.
+## 🥇 Golden Rules (Strict Adherence)
 
-│   ├── types/         # Tipos globales
-│   │   └── index.ts           # User, MedicalProfile, LoginForm, RegisterForm, AuthError
-│   └── i18n/          # Internacionalización
-│       ├── translations.ts    # ES/EN traducciones
-│       └── client.ts          # Cliente i18n con persistencia localStorage
-├── tests/             # 📁 TESTS CENTRALIZADOS
-│   ├── setup/         # Setup global (mocks Firebase)
-│   ├── mocks/         # Factories de datos mock
-│   ├── unit/          # Tests unitarios (Vitest)
-│   │   ├── services/
-│   │   ├── stores/
-│   │   └── utils/
-│   ├── integration/   # Tests de integración (Vitest + Firebase Emulator)
-│   └── e2e/           # Tests E2E (Playwright)
-├── vitest.config.ts   # ⚙️ Apunta a tests/
-├── playwright.config.ts # ⚙️ Apunta a tests/e2e/
-└── package.json
-```
+### ❌ Prohibited Actions
+1. **No `any` type**: Always use explicit types/interfaces.
+2. **No Business Logic in UI**: Components render; Services handle logic.
+3. **No Hardcoded Configs**: Use `import.meta.env` or environment variables.
+4. **No Ignored States**: Always handle Loading, Empty, Error, and Success states.
+5. **No Client SDK for Sensitive Ops**: Use API Routes with Admin SDK for sensitive operations.
+6. **No Direct Store Mutation**: Always use exported setter functions.
+7. **No Production Logs**: Use the structured `logger` system.
+8. **No Generic Try/Catch**: Type errors and show user-friendly messages.
+9. **No Large Files**: Keep files < 300 lines; refactor when exceeded.
+10. **No Non-Conventional Commits**: Follow conventional commit standards.
 
-### Reglas de Testing
-- **Tests centralizados** - Todo en `tests/`, nada en `src/__tests__/`
-- **Un archivo de test por módulo** - Misma estructura que `src/`
-- **Sin React** - No usar React Testing Library, jsdom solo si es estrictamente necesario
+### ✅ Mandatory Practices
+1. **Full Typing**: Props, returns, variables, and events must be typed.
+2. **4 States per Page**: Skeleton → Empty → Error → Success.
+3. **Unit Testing**: Minimum 1 unit test per public function in services/stores.
+4. **JSDoc**: Provide `@param` and `@returns` for all public functions.
+5. **Atomic Components**: One component = one responsibility.
+6. **Error Boundaries**: Wrap features in ErrorBoundaries.
+7. **Structured Logging**: Use `logger.info/warn/error` with relevant context.
+8. **Prop Validation**: Mark required props, provide defaults for optional ones.
+9. **Subscription Cleanup**: Always unsubscribe from `onSnapshot` in `useEffect` returns.
+10. **Concurrency Management**: Use `AbortController` for fetches; handle store races.
 
-
-## 🥇 GOLDEN RULES (NUNCA VIOLAR)
-
-### ❌ NUNCA HACER ESTO
-1. **No usar `any`** - Siempre tipar explícitamente. Si no sabes el tipo, crea una interface.
-2. **No lógica de negocio en UI** - Los componentes SOLO renderizan. Services hacen lógica.
-3. **No hardcodear URLs/keys** - Todo por `import.meta.env` o variables de entorno.
-4. **No ignorar estados** - Toda página/componente maneja: loading, empty, error, success.
-5. **No Firebase Client SDK para ops sensibles** - Usar API Routes (Astro endpoints) con Admin SDK.
-6. **No mutar stores directamente** - Siempre usar funciones setter exportadas.
-7. **No console.log en producción** - Usar sistema de logging.
-8. **No try/catch genéricos** - Siempre tipar el error y mostrar mensaje al usuario.
-9. **No archivos > 300 líneas** - Refactorizar en componentes más pequeños.
-10. **No commits sin formato** - Seguir conventional commits.
-
-### ✅ SIEMPRE HACER ESTO
-1. **Tipar todo** - Props, returns, variables, eventos. Sin excepciones.
-2. **4 estados por página** - loading skeleton → empty state → error toast → success data.
-3. **Tests unitarios** - Para servicios y stores. Mínimo 1 test por función pública.
-4. **JSDoc en funciones públicas** - @param y @returns.
-5. **Componentes atómicos** - Un componente = una responsabilidad.
-6. **Error boundaries** - Wrap cada feature con ErrorBoundary.
-7. **Logging estructurado** - Usar logger.info/warn/error con contexto.
-8. **Validación de props** - Props requeridas marcadas, opcionales con defaults.
-9. **Cleanup de suscripciones** - onSnapshot unsubscribe en useEffect return.
-10. **Manejo de concurrencia** - AbortController para fetch, race conditions en stores.
-
-### 🛡️ ANTI-REGRESSION RULES (NUNCA VIOLAR EN AUDITORÍAS)
-11. **Nunca eliminar `orderBy`, `where`, `limit` de queries Firestore** - Cada cláusula existe por una razón de negocio/rendimiento. Si no entiendes por qué está, no la toques.
-12. **Nunca hacer `replace_in_file` con SEARCH blocks genéricos** - Si el SEARCH match es ambiguo (ej: `</div>` común), usar bloques más específicos o considerar `write_to_file` con el contenido completo verificado.
-13. **Nunca reescribir un archivo .astro sin before/after snapshot** - Antes de modificar una página, leer sus líneas 1-10 para verificar que tienes el archivo correcto (no una versión minificada).
-14. **Nunca delegar renderizado HTML a string replace sobre otro render** - Las funciones de render deben ser autónomas. Si `renderUserCardExtended` necesita HTML de `renderUserRow`, que `renderUserRow` acepte un parámetro `extraActions: string` en lugar de hacer string replace frágil.
-15. **Siempre verificar `git diff` después de modificar services/libs** - Ejecutar `git diff -- src/lib/` y revisar que no se hayan eliminado cláusulas de query, imports necesarios, o lógica de negocio.
-16. **Siempre ejecutar `npm run type-check` y `npm test` después de cada cambio** - Si hay errores nuevos, revertir y analizar antes de continuar.
-17. **Nunca confiar en caché del IDE** - Si el `read_file` muestra contenido inesperado (minificado, sin cambios previos), verificar con `git status` y `git diff` antes de editar.
-18. **Documentar cada cambio en CHANGELOG.md** - Todo fix, refactor, o nueva feature debe quedar registrado con fecha y archivos modificados.
-
-### 🚨 CRITICAL PROTECTION RULES (VIOLACIÓN = REVERSIÓN INMEDIATA)
-19. **Nunca eliminar funcionalidades completas sin autorización expresa** - Si vas a eliminar una función, modal, botón, o flujo completo, DEBES consultar primero. No hay excepciones.
-20. **Nunca minificar/reformatear código como "mejora"** - Cambiar comillas simples a dobles, reescribir SVG paths, o reformatear HTML no es una mejora, es destrucción de contexto. No lo hagas.
-21. **Nunca asumir que un archivo está "viejo" o "malo" sin evidencia** - Si el código funciona y tiene tests verdes, déjalo intacto. Tu trabajo es mejorar, no reescribir.
-22. **Siempre preguntar antes de eliminar código funcional** - Si detectas código "duplicado" o "innecesario", pregunta primero. Mejor prevenir que lamentar.
-23. **Los comentarios de protección son obligatorios** - Antes de modificar código crítico, agrega comentarios explicando qué hace y por qué es importante. Esto ayuda a futuros agentes a entender la sensibilidad.
-24. **Registro y Coordinación Multi-Agente en TASK.md (MANDATORIO)** - Todo agente DEBE registrar inmediatamente su entrada en `TASK.md` antes de modificar cualquier archivo, indicando nombre (`Antigravity Agent [ID/Nombre]`), día/fecha y hora exacta, objetivo/problema en resolución, lista explícita de archivos en modificación y estado (`[EN PROGRESO]`). Al finalizar, debe actualizar el estado a `[COMPLETADO]`. Nunca modificar simultáneamente archivos que estén siendo editados por otro agente activo.
-
-## Documentation Order
-Before implementing, read:
-1. **docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md** — ⚠️ OBLIGATORIO: Lista de funcionalidades que NUNCA deben eliminarse
-2. nuevo_proyecto/00_indice.md
-3. nuevo_proyecto/01_vision_objetivos.md
-4. nuevo_proyecto/02_requisitos_funcionales.md
-5. nuevo_proyecto/03_arquitectura_tecnica.md
-6. nuevo_proyecto/04_modelo_datos_firestore.md
-7. nuevo_proyecto/05_reglas_seguridad.md
-8. nuevo_proyecto/06_design_system.md
-9. nuevo_proyecto/07_flujos_navegacion.md
-10. nuevo_proyecto/13_setup_guide.md
-11. nuevo_proyecto/14_agent_instructions.md
-12. nuevo_proyecto/15_api_contracts.md
-13. nuevo_proyecto/16_implementacion_incremental.md
-14. [Specific module doc]
-
-## MCP Servers Available
-- @firebase-mcp - Firebase Auth, Firestore operations
-- @github-mcp - GitHub repository management
-- @filesystem-mcp - File system operations
-
----
-
-> 📌 **Convenciones de código, Git workflow, testing y comandos:** Ver `12_guia_desarrollo_testing.md`
-> 📌 **Logger, Debug Store, Error Boundary:** Ver `12_guia_desarrollo_testing.md` (sección Debugging)
-> 📌 **Integraciones (Firebase, R2, Capacitor, Workers, CI/CD, Sentry, PostHog):** Ver `11_integraciones_operaciones.md`
-> 📌 **Instrucciones para agentes IA:** Ver `14_agent_instructions.md`
-> 📌 **Protocolo de documentación:** Ver `18_protocolo_documentacion.md`
+### 🛡️ Anti-Regression Rules (Critical)
+11. **Preserve Queries**: Never delete `where`, `orderBy`, or `limit` in Firestore queries.
+12. **Specific Matches**: Avoid generic `replace_in_file` searches. Use specific blocks or full file writes.
+13. **Snapshot Verification**: Read first 10 lines of `.astro` files before modification to verify content.
+14. **Independent Rendering**: Rendering functions must be autonomous. Do not use string replacement on other renders.
+15. **Diff Verification**: Always run `git diff -- src/lib/` after modifying services/libs.
+16. **Post-Change Verification**: Run `npm run type-check && npm test` after every change.
+17. **Cache Awareness**: If `read_file` shows unexpected/minified content, verify with `git status`.
+18. **Changelog Discipline**: Document every fix, refactor, or feature in `CHANGELOG.md`.
+19. **Authorization**: Never remove functionality without express approval.
+20. **No "Cleanup" Refactors**: Do not minify/reformat code (quotes, SVG paths) as an "improvement."
+21. **Evidence-Based Changes**: If code works and has tests, leave it intact.
+22. **Ask Before Deletion**: If code seems "duplicate," ask first. Better safe than sorry.
+23. **Critical Comments**: Add `// 🔒 CRÍTICO: ...` to sensitive code to warn future agents.
+24. **Multi-Agent Registry**: Register immediately in `TASK.md` before touching ANY file (`[EN PROGRESO]`), and update to `[COMPLETADO]` upon completion.
+25. **Firestore Matrix Synchronization**: Always consult and update `docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md` whenever adding, modifying, or auditing ANY Firestore query, mutation, or rule. Never introduce `get()` calls in collection query rules, and ensure all compound queries have matching indexes in `firestore.indexes.json`.

@@ -48,16 +48,17 @@
 
 ## 2. Reglas de Seguridad Firestore
 
+> 🧭 **MATRIZ MAESTRA OBLIGATORIA:** Consulta [docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md) para el catálogo exhaustivo de todas las consultas, escrituras e índices de todos los sectores de la plataforma.
+
 ### 🔥 `firestore.rules`
 - **`isStaff()`, `isAdmin()`, `isTrainer()`** — Helpers de roles. **NUNCA eliminar ni simplificar**.
 - **`isBootstrapAdminEmail()`** — Soporte para admins por email. **NUNCA eliminar** los dos emails (`servicioweb.pmi@gmail.com`, `sevicioweb.pmi@gmail.com`).
-
-- **`isBlocked()`** — Verificación de usuarios bloqueados para lecturas puntuales y escrituras. **NUNCA usar `isBlocked()` en reglas de lista (queries)** ya que llama a `get()` y Firestore lo prohíbe; en su lugar, usar `resource.data.isBlocked != true`.
-- **`match /users/{userId}`** — **NUNCA eliminar** la restricción de que `role == 'client'` en `create` (evita escalada de privilegios), ni la condición de lectura para trainers: `resource.data.assignedTrainerId == request.auth.uid && resource.data.isBlocked != true`.
-- **`match /diets/{dietId}`** — **NUNCA eliminar** la verificación de `trainerId == request.auth.uid` en create/update/delete.
-- **`match /workouts/{workoutId}`** — **NUNCA eliminar** la verificación de `trainerId == request.auth.uid` en create/update/delete.
-- **`match /messages/{messageId}`** — **NUNCA eliminar** la verificación de `participants.hasAny([request.auth.uid])` ni el límite de `size() == 2`.
-- **`match /progress_logs/{logId}`** — **NUNCA eliminar** la verificación de que el trainer pueda leer logs de sus clientes asignados.
+- **`hasRole(role)`** — Verificación segura sin llamadas `get()` frágiles en queries de lista.
+- **`match /users/{userId}`** — **NUNCA eliminar** la restricción de que `role == 'client'` en `create` (evita escalada de privilegios), ni la condición de lectura para trainers y staff.
+- **`match /diets/{dietId}`** — **NUNCA eliminar** la verificación de ownership de `trainerId` en create/update/delete.
+- **`match /workouts/{workoutId}`** — **NUNCA eliminar** la verificación de ownership de `trainerId` en create/update/delete.
+- **`match /messages/{messageId}`** — **NUNCA eliminar** la verificación de `participants` ni la privacidad de chats.
+- **`match /progress_logs/{logId}`** — **NUNCA eliminar** la verificación de cliente/trainer asignado.
 
 ### 🔒 P0-1: Error "Missing or insufficient permissions" en `subscribeToClients` — ✅ **CORREGIDO (2026-08-15)**
 

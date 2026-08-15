@@ -4,9 +4,11 @@
 
 **MANDATORY reading order before modifying ANY source file:**
 1. `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` — Lista de funcionalidades que NUNCA deben eliminarse
-2. `.clinerules` — Golden Rules (especialmente reglas 11-23: Anti-Regression)
-3. `CONTEXT.md` — Project context
-4. `TASK.md` — Current task
+2. `docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md` — Matriz Maestra de Consultas, Permisos y Reglas Firestore (MANDATORIA)
+3. `docs/AGENT_ROLES.md` — Definición de roles de agentes
+4. `.clinerules` — Golden Rules (especialmente reglas 11-25: Anti-Regression y Firestore Matrix)
+5. `CONTEXT.md` — Project context
+6. `TASK.md` — Current task (Registro obligatorio antes de comenzar)
 
 ### 🛡️ Anti-Deletion Rules (STRICT ENFORCEMENT)
 
@@ -35,15 +37,16 @@ Manage with: `astro dev stop`, `astro dev status`, `astro dev logs`
 
 ## Quick Start for Agents
 1. Read `docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md` — Critical functionalities (MANDATORY)
-2. Read `CONTEXT.md` - Project context
-3. **Registrar de inmediato al agente en `TASK.md`** con:
+2. Read `docs/AGENT_ROLES.md` — Understand your specific role
+3. Read `CONTEXT.md` - Project context
+4. **Registrar de inmediato al agente en `TASK.md`** con:
    - Nombre: `Antigravity Agent [ID/Nombre]`
    - Fecha y hora exacta: `YYYY-MM-DD HH:mm:ss`
    - Problema / Objetivo en resolución
    - Lista de archivos que modificará
    - Estado: `[EN PROGRESO]`
-4. Read `.clinerules` - Golden Rules
-5. Read `AGENTS_GUIDE.md` - Complete agent guide
+5. Read `.clinerules` - Golden Rules
+6. Read `AGENTS_GUIDE.md` - Complete agent guide
 
 ## Before Making Changes
 ```bash
