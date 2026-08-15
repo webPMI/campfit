@@ -26,6 +26,8 @@
 
 **If you detect "duplicate" or "unnecessary" code, ASK FIRST. Better safe than sorry.**
 
+**🚨 ZERO NATIVE DIALOGS (STRICT):** NUNCA utilices `alert()`, `confirm()` o `prompt()` nativos. Utiliza siempre `showToast({ message, type })`, `showConfirm({ title, message, variant })` o modales custom.
+
 **Add inline comments `// 🔒 CRÍTICO: ...` to sensitive code to warn future agents.**
 
 ## Development

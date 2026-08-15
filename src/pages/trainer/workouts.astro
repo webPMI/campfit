@@ -102,7 +102,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import { logger } from "@/lib/shared/logger";
   import { requireRole } from "@/lib/shared/authGuard";
   import { t } from "@/i18n/client";
-  import { ICONS, escapeHtml, renderEmptyState, showToast } from "@/lib/shared/ui";
+  import { ICONS, escapeHtml, renderEmptyState, showToast, showConfirm, showSelectModal } from "@/lib/shared/ui";
   import { subscribeToClients, subscribeToWorkoutsByTrainer, createWorkout, updateWorkout, deleteWorkout } from "@/lib/trainer/trainerUtils";
   import { subscribeToWorkoutTemplates, applyWorkoutTemplateToClient } from "@/lib/trainer/templateService";
   import {
@@ -300,26 +300,36 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           showToast({ message: "No tienes otros clientes a quienes clonar esta rutina", type: "error" });
           return;
         }
-        const clientOptions = otherClients.map((c, i) => `${i + 1}. ${c.name}`).join("\n");
-        const chosen = prompt(`¿A qué atleta deseas clonar "${workout.name}"?\nIngresa el número:\n\n${clientOptions}`);
-        if (!chosen) return;
-        const index = parseInt(chosen.trim(), 10) - 1;
-        const targetClient = otherClients[index];
-        if (!targetClient) {
-          showToast({ message: "Selección no válida", type: "error" });
-          return;
-        }
-        cloneWorkoutToClient(workout, targetClient.uid, trainerId).then(newId => {
-          if (newId) {
-            clientFilter.value = targetClient.uid;
-            applyFilters();
-          }
+        showSelectModal({
+          title: `Clonar "${workout.name}"`,
+          message: "Selecciona el atleta al que deseas asignar una copia de esta rutina:",
+          options: otherClients.map(c => ({
+            value: c.uid,
+            label: c.name,
+            sublabel: c.email,
+          })),
+        }).then((targetClientId) => {
+          if (!targetClientId) return;
+          cloneWorkoutToClient(workout, targetClientId, trainerId).then(newId => {
+            if (newId) {
+              clientFilter.value = targetClientId;
+              applyFilters();
+            }
+          });
         });
       }
       if (action === "edit") showEditor(workout, trainerId, workout.clientId);
-      if (action === "delete" && confirm(t("trainer.deleteRoutine") + ": " + workout.name + "?")) {
-        deleteWorkout(workout.id).then(() => showToast({ message: t("common.delete") + " OK", type: "success" }))
-          .catch(err => logger.error("TrainerWorkouts", "Error deleting workout", err));
+      if (action === "delete") {
+        showConfirm({
+          title: t("trainer.deleteRoutine") || "¿Eliminar rutina?",
+          message: `¿Estás seguro de que deseas eliminar permanentemente la rutina "${workout.name}"?`,
+          confirmText: t("common.delete") || "Eliminar",
+          variant: "danger",
+        }).then((confirmed) => {
+          if (!confirmed) return;
+          deleteWorkout(workout.id).then(() => showToast({ message: t("common.delete") + " OK", type: "success" }))
+            .catch(err => logger.error("TrainerWorkouts", "Error deleting workout", err));
+        });
       }
     });
   }
@@ -623,7 +633,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           return catalog && currentClientPrefs!.excluded.includes(catalog.id);
         });
         if (hasExcluded) {
-          const proceed = confirm("⚠️ Alerta: Has incluido ejercicios que el cliente ha solicitado excluir. ¿Deseas continuar?");
+          const proceed = await showConfirm({
+            title: "Ejercicios Excluidos Detectados",
+            message: "Has incluido ejercicios que el cliente ha solicitado excluir expresamente por preferencias o limitaciones físicas. ¿Deseas guardarla de todos modos?",
+            confirmText: "Continuar y Guardar",
+            variant: "warning",
+          });
           if (!proceed) return;
         }
       }

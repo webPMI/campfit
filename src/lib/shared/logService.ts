@@ -446,13 +446,8 @@ async function sendLogToFirestore(
 
   try {
     // Importaciones dinámicas para SSR safety
-    const firebaseModule = require('@/lib/firebase') as { db: unknown };
-    const firestore = require('firebase/firestore') as {
-      doc: (...args: unknown[]) => unknown;
-      collection: (...args: unknown[]) => unknown;
-      setDoc: (...args: unknown[]) => Promise<void>;
-      serverTimestamp: () => unknown;
-    };
+    const firebaseModule = await import('@/lib/firebase');
+    const firestore = await import('firebase/firestore');
 
     const logRef = firestore.doc(firestore.collection(firebaseModule.db, 'app_logs'));
 

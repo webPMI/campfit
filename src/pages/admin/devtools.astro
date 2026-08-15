@@ -48,6 +48,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { requireAdmin } from '@/lib/shared/authGuard';
+  import { showConfirm } from '@/lib/shared/ui';
   import { seedExerciseTemplates, seedMealTemplates, seedDietTemplates, seedWorkoutTemplates, seedAllTemplates, purgeTemplates, getTemplateStats } from '@/lib/devtools/seedService';
 
   requireAdmin(() => { init(); });
@@ -134,7 +135,13 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       }
     });
     document.getElementById('btn-purge-all')?.addEventListener('click', async () => {
-      if (!confirm('¿Purgar todo?')) return;
+      const confirmed = await showConfirm({
+        title: "¿Purgar Todas las Plantillas?",
+        message: "Esta acción eliminará todas las plantillas de ejercicios, comidas, dietas y rutinas predefinidas. ¿Estás seguro?",
+        confirmText: "Purgar Todo",
+        variant: "danger",
+      });
+      if (!confirmed) return;
       try {
         const d = await purgeTemplates();
         log(`🧹 ${d} eliminados`, 'success');

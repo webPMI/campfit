@@ -7,6 +7,7 @@
 import { detectPageId, autofillFields, clearAllStorage, forceLogout, getLastAutofillEmail, getLastAutofillPassword } from './detector';
 import { pageRegistry } from './autofillers';
 import { getLogs, clearLogs, logsToText } from './logStore';
+import { showToast, showConfirm } from '@/lib/shared/ui';
 import type { AutofillProfile, DevToolsAction } from './types';
 
 const DEVTOOLS_STORAGE_KEY = 'cf_devtools_open';
@@ -203,11 +204,17 @@ function bindEvents(shadow: ShadowRoot, profiles: AutofillProfile[], actions: De
 
   shadow.getElementById('__cf_clear_storage')?.addEventListener('click', () => {
     clearAllStorage();
-    alert('✅ sessionStorage y localStorage limpiados.\nRecarga la página para aplicar cambios.');
+    showToast({ message: 'sessionStorage y localStorage limpiados. Recarga la página.', type: 'success' });
   });
 
-  shadow.getElementById('__cf_force_logout')?.addEventListener('click', () => {
-    if (confirm('¿Seguro? Se cerrará sesión y se limpiará todo el storage.')) {
+  shadow.getElementById('__cf_force_logout')?.addEventListener('click', async () => {
+    const confirmed = await showConfirm({
+      title: 'Forzar Cierre de Sesión',
+      message: '¿Seguro? Se cerrará la sesión actual y se limpiará todo el storage de la aplicación.',
+      confirmText: 'Cerrar Sesión',
+      variant: 'danger',
+    });
+    if (confirmed) {
       forceLogout();
     }
   });
@@ -220,12 +227,12 @@ function bindEvents(shadow: ShadowRoot, profiles: AutofillProfile[], actions: De
   shadow.getElementById('__cf_copy_logs')?.addEventListener('click', async () => {
     const text = logsToText();
     if (!text) {
-      alert('📋 No hay logs para copiar.');
+      showToast({ message: 'No hay logs para copiar.', type: 'info' });
       return;
     }
     try {
       await navigator.clipboard.writeText(text);
-      alert(`✅ ${getLogs().length} logs copiados al portapapeles.\n¡Pégalos en el chat para compartirlos!`);
+      showToast({ message: `${getLogs().length} logs copiados al portapapeles.`, type: 'success' });
     } catch {
       const ta = document.createElement('textarea');
       ta.value = text;
@@ -234,7 +241,7 @@ function bindEvents(shadow: ShadowRoot, profiles: AutofillProfile[], actions: De
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      alert(`✅ ${getLogs().length} logs copiados (fallback).`);
+      showToast({ message: `${getLogs().length} logs copiados (fallback).`, type: 'success' });
     }
   });
 

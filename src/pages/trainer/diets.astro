@@ -156,7 +156,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import { logger } from "@/lib/shared/logger";
   import { requireRole } from "@/lib/shared/authGuard";
   import { t, getStoredLanguage } from "@/i18n/client";
-  import { ICONS, escapeHtml, renderEmptyState, showToast } from "@/lib/shared/ui";
+  import { ICONS, escapeHtml, renderEmptyState, showToast, showConfirm, showSelectModal } from "@/lib/shared/ui";
   import {
     subscribeToClients,
     subscribeToDietsByTrainer,
@@ -402,27 +402,35 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           showToast({ message: "No tienes otros clientes a quienes clonar esta dieta", type: "error" });
           return;
         }
-        const clientOptions = otherClients.map((c, i) => `${i + 1}. ${c.name}`).join("\n");
-        const chosen = prompt(`¿A qué atleta deseas clonar el plan "${diet.name}"?\nIngresa el número:\n\n${clientOptions}`);
-        if (!chosen) return;
-        const index = parseInt(chosen.trim(), 10) - 1;
-        const targetClient = otherClients[index];
-        if (!targetClient) {
-          showToast({ message: "Selección no válida", type: "error" });
-          return;
-        }
-        cloneDietToClient(diet, targetClient.uid, currentTrainerId).then((newId) => {
-          if (newId && filterClientSelect) {
-            filterClientSelect.value = targetClient.uid;
-            renderDiets();
-          }
+        showSelectModal({
+          title: `Clonar "${diet.name}"`,
+          message: "Selecciona el atleta al que deseas asignar una copia de este plan nutricional:",
+          options: otherClients.map(c => ({
+            value: c.uid,
+            label: c.name,
+            sublabel: c.email,
+          })),
+        }).then((targetClientId) => {
+          if (!targetClientId) return;
+          cloneDietToClient(diet, targetClientId, currentTrainerId).then((newId) => {
+            if (newId && filterClientSelect) {
+              filterClientSelect.value = targetClientId;
+              renderDiets();
+            }
+          });
         });
       }
       if (action === "edit") {
         showEditor(diet);
       }
       if (action === "delete") {
-        if (confirm(t("trainer.deleteDiet") + ": " + diet.name + "?")) {
+        showConfirm({
+          title: t("trainer.deleteDiet") || "¿Eliminar dieta?",
+          message: `¿Estás seguro de que deseas eliminar permanentemente la dieta "${diet.name}"?`,
+          confirmText: t("common.delete") || "Eliminar",
+          variant: "danger",
+        }).then((confirmed) => {
+          if (!confirmed) return;
           deleteDiet(diet.id)
             .then((ok) => {
               if (ok) showToast({ message: t("trainer.diets.delete") + " OK", type: "success" });
@@ -431,7 +439,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               logger.error("TrainerDiets", "Error deleting diet", err);
               showToast({ message: t("common.error"), type: "error" });
             });
-        }
+        });
       }
     });
   }
@@ -935,9 +943,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           getStoredLanguage()
         );
         if (conflicts.length > 0) {
-          const proceed = confirm(
-            `⚠️ Atención: Se han detectado ${conflicts.length} conflicto(s) con las restricciones del cliente.\n\n¿Deseas guardar el plan de todos modos?`
-          );
+          const proceed = await showConfirm({
+            title: "Conflictos Dietéticos / Alérgenos Detectados",
+            message: `Se han detectado ${conflicts.length} conflicto(s) o ingredientes incompatibles con las intolerancias y restricciones médicas del atleta. ¿Deseas guardar el plan de todos modos?`,
+            confirmText: "Continuar y Guardar",
+            variant: "warning",
+          });
           if (!proceed) return;
         }
       }

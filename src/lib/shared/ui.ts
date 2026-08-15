@@ -288,3 +288,154 @@ export function renderErrorState(message: string, retryFn?: string): string {
     </div>
   `;
 }
+
+export interface ConfirmOptions {
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: 'danger' | 'warning' | 'info';
+}
+
+export interface SelectModalOptions {
+  title: string;
+  message?: string;
+  options: Array<{ value: string; label: string; sublabel?: string }>;
+  confirmText?: string;
+  cancelText?: string;
+}
+
+/**
+ * Muestra un modal de confirmación accesible, elegante y no bloqueante.
+ * Reemplaza totalmente a window.confirm().
+ */
+export function showConfirm(options: ConfirmOptions): Promise<boolean> {
+  if (typeof window === 'undefined') return Promise.resolve(false);
+  if (typeof (window as any).showConfirm === 'function') {
+    return (window as any).showConfirm(options);
+  }
+
+  return new Promise((resolve) => {
+    const existing = document.getElementById('campfit-confirm-dynamic-modal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'campfit-confirm-dynamic-modal';
+    overlay.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in';
+
+    const variant = options.variant || 'danger';
+    const isDanger = variant === 'danger';
+    const isWarning = variant === 'warning';
+    const accentColor = isDanger ? 'border-red-500/40 bg-red-500/10 text-red-400' : isWarning ? 'border-amber-500/40 bg-amber-500/10 text-amber-400' : 'border-blue-500/40 bg-blue-500/10 text-blue-400';
+    const btnConfirmClass = isDanger ? 'bg-red-600 hover:bg-red-500 text-white' : isWarning ? 'bg-amber-600 hover:bg-amber-500 text-white' : 'bg-blue-600 hover:bg-blue-500 text-white';
+
+    overlay.innerHTML = `
+      <div class="w-full max-w-md rounded-2xl border border-[var(--border-strong)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-xl animate-scale-in">
+        <div class="flex items-start gap-4">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${accentColor}">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <div class="flex-1 space-y-1">
+            <h3 class="text-base font-bold text-[var(--text-primary)]">${escapeHtml(options.title)}</h3>
+            <p class="text-xs text-[var(--text-secondary)] leading-relaxed">${escapeHtml(options.message)}</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-2.5">
+          <button id="cf-modal-cancel" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-white transition-all cursor-pointer">
+            ${escapeHtml(options.cancelText || 'Cancelar')}
+          </button>
+          <button id="cf-modal-confirm" class="rounded-xl ${btnConfirmClass} px-4 py-2 text-xs font-bold transition-all shadow-lg cursor-pointer">
+            ${escapeHtml(options.confirmText || 'Confirmar')}
+          </button>
+        </div>
+      </div>
+    `;
+
+    function cleanup(result: boolean) {
+      overlay.remove();
+      document.removeEventListener('keydown', handleKey);
+      resolve(result);
+    }
+
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') cleanup(false);
+      if (e.key === 'Enter') cleanup(true);
+    }
+
+    document.addEventListener('keydown', handleKey);
+    overlay.querySelector('#cf-modal-cancel')?.addEventListener('click', () => cleanup(false));
+    overlay.querySelector('#cf-modal-confirm')?.addEventListener('click', () => cleanup(true));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(false); });
+
+    document.body.appendChild(overlay);
+  });
+}
+
+/**
+ * Muestra un modal de selección interactivo con opciones visuales.
+ * Reemplaza totalmente a window.prompt().
+ */
+export function showSelectModal(options: SelectModalOptions): Promise<string | null> {
+  if (typeof window === 'undefined') return Promise.resolve(null);
+
+  return new Promise((resolve) => {
+    const existing = document.getElementById('campfit-select-dynamic-modal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'campfit-select-dynamic-modal';
+    overlay.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in';
+
+    overlay.innerHTML = `
+      <div class="w-full max-w-md rounded-2xl border border-[var(--border-strong)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-xl animate-scale-in flex flex-col max-h-[80vh]">
+        <div class="space-y-1 mb-4">
+          <h3 class="text-base font-bold text-[var(--text-primary)]">${escapeHtml(options.title)}</h3>
+          ${options.message ? `<p class="text-xs text-[var(--text-secondary)]">${escapeHtml(options.message)}</p>` : ''}
+        </div>
+
+        <div class="flex-1 overflow-y-auto space-y-2 pr-1 mb-6">
+          ${options.options.map((opt) => `
+            <button data-opt-value="${opt.value}" class="w-full text-left rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3 hover:border-amber-500/50 hover:bg-amber-500/10 transition-all flex items-center justify-between group cursor-pointer">
+              <div>
+                <p class="text-xs font-bold text-[var(--text-primary)] group-hover:text-amber-400">${escapeHtml(opt.label)}</p>
+                ${opt.sublabel ? `<p class="text-[11px] text-[var(--text-tertiary)] mt-0.5">${escapeHtml(opt.sublabel)}</p>` : ''}
+              </div>
+              <span class="text-amber-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity">Seleccionar →</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="flex justify-end gap-2.5 pt-3 border-t border-[var(--border-subtle)]">
+          <button id="cf-select-cancel" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-white transition-all cursor-pointer">
+            ${escapeHtml(options.cancelText || 'Cancelar')}
+          </button>
+        </div>
+      </div>
+    `;
+
+    function cleanup(result: string | null) {
+      overlay.remove();
+      document.removeEventListener('keydown', handleKey);
+      resolve(result);
+    }
+
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') cleanup(null);
+    }
+
+    document.addEventListener('keydown', handleKey);
+    overlay.querySelector('#cf-select-cancel')?.addEventListener('click', () => cleanup(null));
+    overlay.querySelectorAll('[data-opt-value]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-opt-value');
+        cleanup(val);
+      });
+    });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(null); });
+
+    document.body.appendChild(overlay);
+  });
+}

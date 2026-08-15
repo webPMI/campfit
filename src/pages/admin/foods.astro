@@ -321,7 +321,7 @@ import Skeleton from "@/components/Skeleton.astro";
 
 <script>
   import { requireRole } from "@/lib/shared/authGuard";
-  import { showToast, escapeHtml } from "@/lib/shared/ui";
+  import { showToast, escapeHtml, showConfirm } from "@/lib/shared/ui";
   import { logger } from "@/lib/shared/logger";
   import {
     subscribeToAllFoods,
@@ -408,12 +408,15 @@ import Skeleton from "@/components/Skeleton.astro";
       if (!id) return;
       const ref = doc(db, COLLECTION, id);
       const currentActive = !(document.getElementById("food-active") as HTMLInputElement).checked;
-      const confirm = window.confirm(
-        currentActive
-          ? "¿Reactivar este alimento en el catálogo?"
-          : "¿Desactivar este alimento? No se eliminará, pero no aparecerá en búsquedas."
-      );
-      if (!confirm) return;
+      const confirmed = await showConfirm({
+        title: currentActive ? "¿Reactivar Alimento?" : "¿Desactivar Alimento?",
+        message: currentActive
+          ? "¿Deseas reactivar este alimento para que vuelva a estar visible en el catálogo de dietas?"
+          : "¿Deseas desactivar este alimento? No se eliminará de Firestore pero no aparecerá en búsquedas ni planes.",
+        confirmText: currentActive ? "Reactivar" : "Desactivar",
+        variant: currentActive ? "info" : "warning",
+      });
+      if (!confirmed) return;
       try {
         await updateDoc(ref, { isActive: currentActive, updatedAt: serverTimestamp() });
         showToast({ message: currentActive ? "Alimento reactivado" : "Alimento desactivado", type: "success" });

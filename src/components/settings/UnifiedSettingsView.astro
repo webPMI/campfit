@@ -313,7 +313,7 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
 <script>
   import { initPage } from '@/lib/shared/initPage';
   import { loadProfile, updateProfile, changePassword } from '@/lib/shared/profileService';
-  import { showToast } from '@/lib/shared/ui';
+  import { showToast, showConfirm } from '@/lib/shared/ui';
   import { getStoredLanguage, setStoredLanguage } from '@/i18n/client';
   import { logger } from '@/lib/shared/logger';
   import { signOutUser } from '@/lib/shared/authGuard';
@@ -558,7 +558,13 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
     const logoutBtn = document.getElementById('btn-logout');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async () => {
-        if (!confirm(tr('admin.settings.logout.confirm'))) return;
+        const confirmed = await showConfirm({
+          title: tr('admin.settings.logout') || 'Cerrar Sesión',
+          message: tr('admin.settings.logout.confirm') || '¿Estás seguro de que deseas cerrar sesión?',
+          confirmText: tr('admin.settings.logout') || 'Cerrar Sesión',
+          variant: 'danger',
+        });
+        if (!confirmed) return;
         try {
           await signOutUser();
           window.location.href = '/login';
