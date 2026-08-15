@@ -85,7 +85,8 @@ const lang = Astro.params.lang || "es";
           var urlLang = url.searchParams.get("lang");
           var storedLang = localStorage.getItem("campfit_lang");
           var cookieLang = document.cookie.split("; ").find((r) => r.startsWith("cf_lang="));
-          cookieLang = cookieLang ? cookieLang.split("=")[1] : undefined;          var finalLang;
+          cookieLang = cookieLang ? cookieLang.split("=")[1] : undefined;
+          var finalLang;
           if (storedLang === "es" || storedLang === "en") {
             finalLang = storedLang;
           } else if (cookieLang === "es" || cookieLang === "en") {
@@ -121,6 +122,19 @@ const lang = Astro.params.lang || "es";
       initDevTools();
     </script>
   </body>
+
+  <!-- Logging service init -->
+  <script>
+    if (typeof window !== 'undefined') {
+      import('@/lib/shared/logService').then(({ logService }) => {
+        try {
+          logService.init();
+        } catch {
+          // No bloquear la app si el servicio de logging falla
+        }
+      });
+    }
+  </script>
 </html>
 
 <script>

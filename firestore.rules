@@ -229,5 +229,48 @@ service cloud.firestore {
     match /conversations/{convId} {
       allow read, write: if isAuth();
     }
+
+    // ── Logs de aplicación (/app_logs/{logId}) ────────────────────────────────
+    match /app_logs/{logId} {
+      // Solo admins pueden leer logs (contienen emails hash, rutas, errores técnicos)
+      allow read: if isAdmin();
+
+      // Solo usuarios autenticados pueden CREAR logs.
+      // Se valida coherencia de campos críticos y sanitización básica.
+      allow create: if isAuth()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.userRole in ['client', 'trainer', 'admin', 'unknown']
+        && request.resource.data.level in ['warn', 'error', 'critical']
+        && request.resource.data.timestamp is timestamp
+        && request.resource.data.activity is string
+        && request.resource.data.action is string
+        && request.resource.data.hash is string
+        && request.resource.data.sessionId is string
+        && request.resource.data.environment is string
+        // Sanitización forzada: no se permiten campos sensibles en payload
+        && !('password' in request.resource.data.payload)
+        && !('token' in request.resource.data.payload)
+        && !('secret' in request.resource.data.payload)
+        && !('medicalRecord' in request.resource.data.payload)
+        && !('diagnosis' in request.resource.data.payload)
+        && !('medication' in request.resource.data.payload)
+        && !('allergies' in request.resource.data.payload)
+        && !('dietaryRestrictions' in request.resource.data.payload);
+
+      // Los logs son inmutables: no se permiten updates.
+      allow update: if false;
+
+      // Solo admins pueden eliminar logs.
+      allow delete: if isAdmin();
+    }
+
+    // ── Deduplicación auxiliar (/app_logs_dedup/{hash}) ───────────────────────
+    // Colección interna para control de duplicados. No accesible desde cliente.
+    match /app_logs_dedup/{dedupId} {
+      allow read: if false;
+      allow create: if isAuth() && request.auth.uid == request.resource.data.createdBy;
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
   }
 }
