@@ -1,27 +1,54 @@
 # 🗺️ Mapa de Documentación de CampFit
 
-Este documento sirve como punto de entrada central para toda la documentación del proyecto. Su objetivo es evitar la dispersión y garantizar que el agente sepa dónde encontrar cada información.
+> **Punto de entrada central.** Si buscas "qué falta por hacer", ve a 👉
+> **[docs/TASKS_MASTER.md](./TASKS_MASTER.md)** (lista maestra de tareas pendientes, única fuente de verdad).
+>
+> Este mapa está organizado por tema. Los archivos históricos viven en `docs/_archive/`
+> y se listan al final para no entorpecer el día a día.
 
-## 🏗️ Arquitectura y Contexto
-- [CONTEXT.md](./CONTEXT.md) - Contexto general, stack tecnológico y mapa de rutas.
-- [AGENTS.md](./AGENTS.md) - Instrucciones generales y reglas de oro para agentes.
-- [docs/AGENT_ROLES.md](./AGENT_ROLES.md) - Definición de responsabilidades por rol de agente.
+---
 
-## 🛡️ Seguridad y Reglas Críticas
-- [docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md](./FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md) - Funcionalidades que NUNCA deben eliminarse.
-- [firestore.rules](./firestore.rules) - Reglas de seguridad de Firebase.
+## 🎯 Tareas & Estado
+- [docs/TASKS_MASTER.md](./TASKS_MASTER.md) — **Lista maestra de tareas pendientes** (P0–P4, estados verificables).
+- [TASK.md](../TASK.md) — Registro de agentes activos e historial (índice ligero).
+- [CHANGELOG.md](../CHANGELOG.md) — Registro de cambios del repositorio.
 
-## 🔍 Auditorías y Calidad
-- [docs/AUDITORIA_UNIFICADA.md](./AUDITORIA_UNIFICADA.md) - Consolidado de hallazgos críticos y verificaciones de seguridad.
-- [docs/AUDITORIA_2026-08-10.md](./AUDITORIA_2026-08-10.md) - (Histórico en docs/_archive/)
-- [docs/AUDITORIA_PROFUNDA_TRAINER.md](./AUDITORIA_PROFUNDA_TRAINER.md) - (Histórico en docs/_archive/)
-- [docs/AUDITORIA_TRAINER_CHAT.md](./AUDITORIA_TRAINER_CHAT.md) - (Histórico en docs/_archive/)
-- [docs/AUDITORIA_TRAINER_CLIENTES.md](./AUDITORIA_TRAINER_CLIENTES.md) - (Histórico en docs/_archive/)
+## 🏗️ Arquitectura & Contexto
+- [CONTEXT.md](../CONTEXT.md) — Stack, mapa de rutas, convenciones.
+- [AGENTS.md](../AGENTS.md) — Instrucciones y reglas de oro para agentes.
+- [docs/AGENT_ROLES.md](./AGENT_ROLES.md) — Responsabilidades por rol.
+- [docs/architecture/FIRESTORE_SCHEMA.md](./architecture/FIRESTORE_SCHEMA.md) — Esquema de datos Firestore.
 
-## 🎨 UI y Diseño
-- [docs/THEME.md](./THEME.md) - Especificaciones del sistema de temas y tokens de color.
-- [docs/REFERENCIA_RAPIDA.md](./REFERENCIA_RAPIDA.md) - Guía rápida de componentes y estilos comunes.
+## 🛡️ Seguridad & Reglas Críticas
+- [docs/FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md](./FUNCIONALIDADES_CRITICAS_PROTEGIDAS.md) — Funciones que NUNCA se eliminan.
+- [docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md](./MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md) — Matriz de consultas y reglas.
+- [firestore.rules](../firestore.rules) — Reglas de seguridad (fuente).
 
-## 📝 Logs y Registro
-- [CHANGELOG.md](./CHANGELOG.md) - Registro de cambios en el repositorio.
-- [TASK.md](./TASK.md) - Registro de tareas en curso y agentes activos.
+## 🔍 Auditorías & Calidad
+- [docs/AUDITORIA_UNIFICADA.md](./AUDITORIA_UNIFICADA.md) — Consolidado de hallazgos críticos.
+
+## 🎨 UI & Diseño
+- [docs/THEME.md](./THEME.md) — Sistema de temas y tokens.
+- [docs/REFERENCIA_RAPIDA.md](./REFERENCIA_RAPIDA.md) — Guía rápida de componentes.
+- [docs/UX_DESIGN_CALENDAR.md](./UX_DESIGN_CALENDAR.md) — Diseño UX de calendario.
+
+## 📝 Logging & Observabilidad
+- [docs/DESIGN_logging_firebase.md](./DESIGN_logging_firebase.md) — Diseño del sistema de logs.
+
+## 🍱 Features
+- [docs/features/BIBLIOTECA_ALIMENTOS.md](./features/BIBLIOTECA_ALIMENTOS.md)
+- [docs/features/BIBLIOTECA_EJERCICIOS.md](./features/BIBLIOTECA_EJERCICIOS.md)
+- [docs/features/CALENDAR_IMPLEMENTATION.md](./features/CALENDAR_IMPLEMENTATION.md)
+- [docs/features/CHAT_MULTIMEDIA_NOTIFICACIONES.md](./features/CHAT_MULTIMEDIA_NOTIFICACIONES.md)
+- [docs/features/DISENO_LISTA_COMIDAS_MULTILENGUAJE.md](./features/DISENO_LISTA_COMIDAS_MULTILENGUAJE.md)
+
+## 📦 Archivos Históricos (`docs/_archive/`)
+> Solo consulta de contexto. No editar. Más de 40 auditorías previas
+> (`AUDITORIA_*.md`, `TODO*.md`, `MASTER.md`, etc.) residen allí.
+
+---
+
+## 🔧 Mantenimiento
+- Toda tarea nueva → `docs/TASKS_MASTER.md` (con `#` y estado).
+- Todo agente → registro en `TASK.md`.
+- Cambio fusionado → entrada en `CHANGELOG.md`.

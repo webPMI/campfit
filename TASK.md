@@ -1,6 +1,14 @@
 # 📋 CampFit — Registro de Tareas y Agentes Activos (TASK.md)
 
-> **🔒 GOLDEN RULE DE COORDINACIÓN MULTI-AGENTE (MANDATORIA):**
+> **🔒 GOLDEN RULE DE COORDINACIÓN MULTI-AGENTE (MANDATORIA):** (ver debajo)
+>
+> **📌 ÍNDICE MAESTRO DE TAREAS:** Todas las tareas pendientes de la plataforma viven en
+> 👉 **[docs/TASKS_MASTER.md](./docs/TASKS_MASTER.md)** 👈 (único punto de verdad, con estados verificables).
+> Este archivo (`TASK.md`) es SOLO el registro de agentes activos e historial. No duplica la lista.
+
+---
+
+
 > Todo agente que comience a trabajar en el proyecto **DEBE registrarse inmediatamente** en esta hoja principal antes de modificar cualquier archivo, indicando:
 > - **Nombre del Agente:** (ej. `Antigravity Agent [ID/Nombre]`)
 > - **Día y Fecha / Hora:** (ej. `2026-08-15 11:15 CEST`)
@@ -19,6 +27,9 @@
 ## 📜 Historial de Tareas y Agentes Recientes
 
 | Fecha / Hora | Agente | Objetivo / Tarea | Archivos Modificados | Estado |
+| :--- | :--- | :--- | :--- | :--- |
+| `2026-08-15 23:28 CEST` | Antigravity Agent | Auditoría Global del Sistema y Creación de Lista Maestra de Tareas de Implementación | `docs/LISTA_TAREAS_IMPLEMENTACION_MAESTRA.md`, `TASK.md` | `[COMPLETADO]` |
+| `2026-08-15 23:22 CEST` | Antigravity Agent | Fusión y Rediseño Maestro de Admin Users & Clientes (Navbar limpio, Radar de entrenador/rutinas/dietas/médico, Filtros avanzados y Modal interactivo) | `src/layouts/AdminLayout.astro`, `src/pages/admin/clients.astro`, `src/pages/admin/users.astro`, `src/lib/admin/adminRender.ts` | `[COMPLETADO]` |
 | :--- | :--- | :--- | :--- | :--- |
 | `2026-08-15 20:24` | `Antigravity Agent 1` | Internacionalización i18n completa en `/trainer/clients`, `/trainer/clinical`, layouts y badges traducidos de objetivos y perfil médico | `src/pages/trainer/clients.astro`, `src/pages/trainer/clinical.astro`, `src/pages/trainer/diets.astro`, `src/layouts/TrainerLayout.astro`, `src/i18n/locales/*`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-15 20:20` | `Antigravity Agent 1` | Erradicación total de `alert()`, `confirm()`, y `prompt()` en todo el frontend. Implementación de `showConfirm` y `showSelectModal` en `src/lib/shared/ui.ts` y adición de la Regla de Oro 27 | `src/**/*.astro`, `src/lib/shared/ui.ts`, `.clinerules`, `AGENTS.md`, `TASK.md` | `[COMPLETADO]` |
