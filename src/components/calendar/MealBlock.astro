@@ -1,29 +1,33 @@
-<script>
-  let { meal } = $props();
-</script>
+---
+interface Props {
+  meal: {
+    name: string;
+    description?: string;
+    estimatedTime?: string;
+    isCompleted?: boolean;
+  };
+}
+
+const { meal } = Astro.props;
+---
 
 <div 
-  class="absolute left-2 right-2 p-3 rounded-lg border shadow-sm transition-all duration-300 z-10"
-  style="
-    top: {(meal.estimatedTime ? parseInt(meal.estimatedTime.split(':')[0]) * 60 : 0) - 30}px;
-    height: 60px;
-    background-color: {meal.isCompleted ? 'rgba(240, 240, 240, 0.5)' : 'rgba(59, 130, 246, 0.1)'};
-    border-color: {meal.isCompleted ? '#e5e7eb' : '#3b82f6'};
-  "
+  class={`p-3 rounded-lg border shadow-sm transition-all duration-300 z-10 ${
+    meal.isCompleted ? 'bg-zinc-100 border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 opacity-60' : 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800/30'
+  }`}
 >
   <div class="flex justify-between items-start">
-    <span class="font-bold text-sm {meal.isCompleted ? 'text-zinc-500' : 'text-blue-700'}">{meal.name}</span>
-    {#if meal.isCompleted}
+    <span class={`font-bold text-sm ${meal.isCompleted ? 'text-zinc-500' : 'text-blue-700 dark:text-blue-400'}`}>{meal.name}</span>
+    {meal.isCompleted && (
       <span class="text-green-600 text-xs font-bold">✓ Completado</span>
-    {/if}
+    )}
   </div>
-  <p class="text-xs text-zinc-500 line-clamp-1">{meal.description}</p>
-  {#if !meal.estimatedTime}
+  {meal.description && <p class="text-xs text-zinc-500 line-clamp-1">{meal.description}</p>}
+  {!meal.estimatedTime && (
     <button 
       class="mt-2 text-[10px] text-blue-600 underline hover:text-blue-800"
-      onclick="alert('Seleccionar hora...')"
     >
       Asignar hora
     </button>
-  {/if}
+  )}
 </div>

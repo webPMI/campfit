@@ -1,43 +1,54 @@
-<script>
-  import { type: 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'other', estimatedTime, isCompleted, completionTime } from '@/types';
-</script>
+---
+interface Props {
+  meals?: Array<{
+    name: string;
+    description?: string;
+    estimatedTime?: string;
+    isCompleted?: boolean;
+  }>;
+}
+
+const { meals = [] } = Astro.props;
+const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ':00');
+---
 
 <div class="calendar-grid w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
   <div class="grid grid-cols-1 md:grid-cols-[80px_1fr] divide-x divide-zinc-200 dark:divide-zinc-800">
     <!-- Time Labels -->
     <div class="bg-zinc-50 dark:bg-zinc-950 p-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-      {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ':00').map((time) => (
-        <div key={time} class="py-2 border-b border-zinc-100 dark:border-zinc-900">{time}</div>
+      {hours.map((time) => (
+        <div class="py-2 border-b border-zinc-100 dark:border-zinc-900">{time}</div>
       ))}
     </div>
 
     <!-- Blocks Container -->
     <div class="relative p-2 bg-white dark:bg-zinc-900">
       <div class="space-y-4">
-        <!-- Componentes de Comidas y Entrenamiento se inyectarán aquí -->
-        {#if meals.length === 0}
+        {meals.length === 0 ? (
           <div class="flex flex-col items-center justify-center py-12 text-zinc-400">
             <p>No hay actividades programadas para hoy.</p>
           </div>
-        {/if}
-        
-        {#each meals as meal}
-          <div 
-            class="p-3 rounded-lg border {meal.isCompleted ? 'bg-zinc-50 border-zinc-200 opacity-60' : 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800/30'} shadow-sm transition-all"
-            style="margin-top: {meal.estimatedTime ? (parseInt(meal.estimatedTime.split(':')[0]) * 60) : 0}px;"
-          >
-            <div class="flex justify-between items-start">
-              <span class="font-bold text-sm">{meal.name}</span>
-              {#if meal.isCompleted}
-                <span class="text-green-500 text-xs">✓ Completado</span>
-              {/if}
+        ) : (
+          meals.map((meal) => (
+            <div 
+              class={`p-3 rounded-lg border shadow-sm transition-all ${
+                meal.isCompleted 
+                  ? 'bg-zinc-50 border-zinc-200 opacity-60 dark:bg-zinc-800 dark:border-zinc-700' 
+                  : 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800/30'
+              }`}
+            >
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-sm text-zinc-800 dark:text-zinc-200">{meal.name}</span>
+                {meal.isCompleted && (
+                  <span class="text-green-500 text-xs font-semibold">✓ Completado</span>
+                )}
+              </div>
+              {meal.description && (
+                <p class="text-xs text-zinc-500 mt-1">{meal.description}</p>
+              )}
             </div>
-            <p class="text-xs text-zinc-500">{meal.description}</p>
-            {#if !meal.estimatedTime}
-              <button class="mt-2 text-[10px] text-blue-600 underline">Asignar hora</button>
-            {/if}
-          </div>
-        {/each}
+          ))
+        )}
       </div>
     </div>
   </div>

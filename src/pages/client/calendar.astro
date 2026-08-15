@@ -1,0 +1,65 @@
+---
+import ClientLayout from "@/layouts/ClientLayout.astro";
+import TimeGrid from "@/components/calendar/TimeGrid.astro";
+---
+
+<ClientLayout>
+  <section class="max-w-4xl mx-auto py-8 px-4">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">Mi Agenda de Hoy</h1>
+      <p class="text-zinc-500">Organiza tu día de nutrición y entrenamiento.</p>
+    </header>
+
+    <div id="calendar-container" class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-4">
+      <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+        <p>Cargando agenda...</p>
+      </div>
+      
+      <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-zinc-400">
+        <div class="mb-4 p-4 bg-zinc-50 dark:bg-zinc-800 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m0 5l4-4m-4 4l4 4m-8 8h10M3 12h17m-9 4h10M5 10v10" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-semibold mb-2">No tienes actividades hoy</h2>
+        <p class="text-sm text-center max-w-md">Tu agenda está vacía. Consulta con tu entrenador para recibir tu plan diario o revisa tus metas en el dashboard.</p>
+      </div>
+
+      <div id="calendar-content" class="hidden">
+        <TimeGrid />
+      </div>
+    </div>
+  </section>
+</ClientLayout>
+
+<script>
+  import { subscribeToDailySchedule } from '@/lib/client/dailyScheduleService';
+  import { setDailySchedule } from '@/stores/dailyScheduleStore';
+
+  const clientId = new URLSearchParams(window.location.search).get('uid') || '0'; // Simulación de ID de usuario
+
+  const loadingState = document.getElementById('loading-state');
+  const calendarContent = document.getElementById('calendar-content');
+  const emptyState = document.getElementById('empty-state');
+
+  let unsubscribe: () => void;
+
+  unsubscribe = subscribeToDailySchedule(clientId, (data) => {
+    if (loadingState) loadingState.classList.add('hidden');
+    
+    if (data.diets.length === 0 && data.workouts.length === 0) {
+      calendarContent.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+    } else {
+      calendarContent.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      setDailySchedule(data.diets, data.workouts);
+    }
+  }, (err) => {
+    console.error(err);
+    if (loadingState) {
+      loadingState.innerHTML = `<p class="text-red-500">Error al cargar la agenda.</p>`;
+    }
+  });
+</script>

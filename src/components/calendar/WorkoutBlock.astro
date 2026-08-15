@@ -1,0 +1,29 @@
+<script>
+  let { workout } = $props();
+</script>
+
+<div 
+  class="absolute left-2 right-2 p-3 rounded-lg border shadow-sm transition-all duration-300 z-10"
+  style="
+    top: {(workout.estimatedTime ? parseInt(workout.estimatedTime.split(':')[0]) * 60 : 0) - 30}px;
+    height: 60px;
+    background-color: {workout.isCompleted ? 'rgba(240, 240, 240, 0.5)' : 'rgba(231, 76, 6, 0.1)'};
+    border-color: {workout.isCompleted ? '#e5e7eb' : '#ef4444'};
+  "
+>
+  <div class="flex justify-between items-start">
+    <span class="font-bold text-sm {workout.isCompleted ? 'text-zinc-500' : 'text-red-700'}">{workout.name}</span>
+    {#if workout.isCompleted}
+      <span class="text-green-600 text-xs font-bold">✓ Completado</span>
+    {/if}
+  </div>
+  <p class="text-xs text-zinc-500 line-clamp-1">{workout.description}</p>
+  {#if !workout.estimatedTime}
+    <button 
+      class="mt-2 text-[10px] text-red-600 underline hover:text-red-800"
+      onclick="alert('Seleccionar hora...')"
+    >
+      Asignar hora
+    </button>
+  {/if}
+</div>
