@@ -37,7 +37,15 @@ vi.mock('@/lib/shared/logger', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-import { subscribeToDietTemplates, applyDietTemplateToClient, applyWorkoutTemplateToClient } from '@/lib/trainer/templateService';
+import {
+  subscribeToDietTemplates,
+  applyDietTemplateToClient,
+  applyWorkoutTemplateToClient,
+  auditDietTemplateForClient,
+  validateDietTemplateHealth,
+  validateWorkoutTemplateHealth,
+  invalidateTemplateCache,
+} from '@/lib/trainer/templateService';
 
 import { addDoc } from 'firebase/firestore';
 
@@ -207,6 +215,83 @@ describe('templateService', () => {
         applyWorkoutTemplateToClient('temp-2', 'client-123', 'trainer-999')
       ).rejects.toThrow('El cliente no está asignado a este entrenador.');
       expect(addDoc).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('auditDietTemplateForClient', () => {
+    it('✅ debe detectar alérgenos conflictivos y generar sugerencias', () => {
+      const template = {
+        id: 'tpl-peanut',
+        name: 'Dieta con Cacahuete',
+        type: 'normal' as const,
+        somatotype: 'mesomorph' as const,
+        totalCalories: 2000,
+        meals: [
+          {
+            id: 'm-1',
+            name: 'Desayuno',
+            description: 'Tostada con crema de cacahuete',
+            foodId: 'food-peanut-butter',
+            allergens: ['nuts', 'peanut'],
+            portionGrams: 30,
+            calories: 180,
+            protein: 8,
+            carbs: 6,
+            fat: 15,
+            order: 1,
+          },
+        ],
+      };
+
+      const medicalProfile = {
+        allergies: ['peanut', 'nuts'],
+        intolerances: [{ substance: 'nuts', severity: 'severe' as const, symptoms: 'Anafilaxia' }],
+        injuries: [],
+        medicalConditions: [],
+        dietaryRestrictions: {
+          vegetarian: false,
+          vegan: false,
+          glutenFree: false,
+          lactoseFree: false,
+          nutFree: true,
+          shellfishFree: false,
+        },
+      };
+
+      const audit = auditDietTemplateForClient(template, medicalProfile as any, 'es');
+      expect(audit.hasConflicts).toBe(true);
+      expect(audit.conflicts.length).toBeGreaterThan(0);
+      expect(audit.conflicts[0].severity).toBe('severe');
+    });
+  });
+
+  describe('validateTemplateHealth', () => {
+    it('✅ validateDietTemplateHealth debe reportar advertencias en IDs inexistentes', () => {
+      const template = {
+        name: 'Dieta Test IDs',
+        type: 'normal',
+        meals: [
+          { name: 'lunch', description: 'Plato raro', foodId: 'id-inexistente-12345' },
+        ],
+      };
+
+      const report = validateDietTemplateHealth(template as any);
+      expect(report.missingIds).toContain('id-inexistente-12345');
+      expect(report.warnings.length).toBeGreaterThan(0);
+    });
+
+    it('✅ validateWorkoutTemplateHealth debe reportar advertencias en IDs inexistentes', () => {
+      const template = {
+        name: 'Rutina Test IDs',
+        category: 'strength',
+        exercises: [
+          { name: 'Ejercicio Raro', exerciseId: 'id-ejercicio-fantasma-999' },
+        ],
+      };
+
+      const report = validateWorkoutTemplateHealth(template as any);
+      expect(report.missingIds).toContain('id-ejercicio-fantasma-999');
+      expect(report.warnings.length).toBeGreaterThan(0);
     });
   });
 });

@@ -36,7 +36,7 @@ export function initDevToolsPanel(): void {
 
 function render(shadow: ShadowRoot): void {
   const pageId = detectPageId();
-  const registry = pageRegistry[pageId];
+  const registry = pageRegistry[pageId] || { label: pageId, profiles: [], actions: [] };
   const profiles = registry.profiles || [];
   const actions = registry.actions || [];
   const logCount = getLogs().length;

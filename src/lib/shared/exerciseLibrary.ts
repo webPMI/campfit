@@ -108,6 +108,7 @@ export interface ExerciseItem {
   category: ExerciseCategory;          // Categoría principal del ejercicio
   equipment: EquipmentType[];          // Equipamiento necesario
   difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficultyLevel?: 1 | 2 | 3 | 4 | 5; // Nivel granular del 1 al 5
 
   // Valores por defecto para la rutina (para pre-rellenar el formulario)
   defaultSets: number;
@@ -223,10 +224,67 @@ export function searchExercisesLocal(query: string, exercises: ExerciseItem[]): 
   );
 }
 
+// ── Capa de Caché en Cliente (Memoria & SessionStorage) ───────────────────────
+
+const EXERCISES_CACHE_KEY = 'campfit_exercises_library_cache';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+
+let _memoryExercisesCache: { data: ExerciseItem[]; timestamp: number } | null = null;
+
+/**
+ * Obtiene los ejercicios cacheados si siguen siendo válidos.
+ */
+function getCachedExercises(): ExerciseItem[] | null {
+  const now = Date.now();
+  if (_memoryExercisesCache && now - _memoryExercisesCache.timestamp < CACHE_TTL_MS) {
+    return _memoryExercisesCache.data;
+  }
+
+  try {
+    const raw = sessionStorage.getItem(EXERCISES_CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { data: ExerciseItem[]; timestamp: number };
+      if (now - parsed.timestamp < CACHE_TTL_MS) {
+        _memoryExercisesCache = parsed;
+        return parsed.data;
+      }
+    }
+  } catch {
+    // Ignorar fallos de sessionStorage
+  }
+
+  return null;
+}
+
+/**
+ * Guarda los ejercicios en caché local.
+ */
+function setCachedExercises(exercises: ExerciseItem[]): void {
+  const record = { data: exercises, timestamp: Date.now() };
+  _memoryExercisesCache = record;
+  try {
+    sessionStorage.setItem(EXERCISES_CACHE_KEY, JSON.stringify(record));
+  } catch {
+    // Silencioso
+  }
+}
+
+/**
+ * Invalida manualmente la caché de ejercicios.
+ */
+export function invalidateExercisesCache(): void {
+  _memoryExercisesCache = null;
+  try {
+    sessionStorage.removeItem(EXERCISES_CACHE_KEY);
+  } catch {
+    // Silencioso
+  }
+}
+
 // ── Servicios de Firestore ───────────────────────────────────────────────────
 
 /**
- * Suscripción reactiva al catálogo de ejercicios activos.
+ * Suscripción reactiva al catálogo de ejercicios activos con caché Stale-While-Revalidate.
  * Filtra por isActive == true, ordenados por categoría.
  *
  * Para uso en trainer/workouts.astro y client/workouts.astro.
@@ -236,6 +294,12 @@ export function searchExercisesLocal(query: string, exercises: ExerciseItem[]): 
 export function subscribeToExercises(
   callback: (exercises: ExerciseItem[]) => void,
 ): Unsubscribe {
+  // 1. Emitir inmediatamente datos en caché si existen
+  const cached = getCachedExercises();
+  if (cached && cached.length > 0) {
+    callback(cached);
+  }
+
   const q = query(
     collection(db, 'exercises_library'),
     where('isActive', '==', true),
@@ -249,11 +313,14 @@ export function subscribeToExercises(
         id: doc.id,
         ...doc.data(),
       })) as ExerciseItem[];
+      setCachedExercises(exercises);
       callback(exercises);
     },
     (error) => {
       logger.error('exerciseLibrary', 'Error al suscribirse a exercises_library:', error);
-      callback([]);
+      if (!cached || cached.length === 0) {
+        callback([]);
+      }
     },
   );
 }

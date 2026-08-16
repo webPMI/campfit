@@ -11,72 +11,128 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   <div class="mx-auto max-w-6xl px-4 py-8">
     <PageTransition animation="fade-up" stagger>
       <!-- Header -->
-      <div class="flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 data-i18n="admin.logs" class="text-2xl font-bold">{t("admin.logs")}</h1>
+          <h1 data-i18n="admin.logs" class="text-2xl font-bold text-[var(--text-primary)]">{t("admin.logs")}</h1>
           <p data-i18n="admin.logs.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">
-            {t("admin.logs.desc") || "Registro de errores y warnings de la aplicación"}
+            {t("admin.logs.desc") || "Registro de errores, warnings y telemetría de la plataforma"}
           </p>
         </div>
         <div class="flex items-center gap-2">
           <button
+            id="manage-tokens-btn"
+            class="rounded-lg border border-purple-500/40 bg-purple-500/10 px-3.5 py-1.5 text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-all flex items-center gap-1.5"
+          >
+            <span>🔑</span>
+            <span>Tokens IA</span>
+          </button>
+          <button
             id="refresh-logs-btn"
-            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)] transition-all"
+            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)] transition-all"
           >
             {t("admin.refresh") || "Actualizar"}
           </button>
           <button
             id="cleanup-logs-btn"
-            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--danger)] hover:text-white hover:border-[var(--danger)] transition-all"
+            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all"
           >
             {t("admin.logs.cleanup") || "Limpiar antiguos"}
           </button>
         </div>
       </div>
 
-      <!-- Filters -->
-      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <!-- Token Management Panel (Collapsible / Modal) -->
+      <div id="tokens-panel" class="mt-6 hidden rounded-2xl border border-purple-500/30 bg-purple-950/20 p-5 backdrop-blur-md">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🤖</span>
+            <h3 class="text-sm font-bold text-purple-300">Tokens de Acceso para Agentes IA (Lectura de Logs)</h3>
+          </div>
+          <button id="close-tokens-panel-btn" class="text-xs text-zinc-400 hover:text-white">✕ Cerrar</button>
+        </div>
+        <p class="mt-1 text-xs text-zinc-400">
+          Genera un token de corta duración (24h) para permitir que los agentes de IA analicen logs del sistema vía endpoint <code class="text-purple-300 bg-purple-900/40 px-1.5 py-0.5 rounded">/api/ia/logs</code> con header <code class="text-purple-300 bg-purple-900/40 px-1.5 py-0.5 rounded">Authorization: Bearer [token]</code>.
+        </p>
+
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <input
+            id="token-reason-input"
+            type="text"
+            placeholder="Motivo (ej: Auditoría sesión Antigravity)"
+            class="flex-1 min-w-[240px] rounded-lg border border-purple-500/30 bg-[var(--surface-2)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-zinc-500 focus:outline-none focus:border-purple-400"
+          />
+          <button
+            id="generate-token-btn"
+            class="rounded-lg bg-purple-600 hover:bg-purple-500 px-4 py-2 text-xs font-bold text-white transition-all shadow-lg shadow-purple-600/20"
+          >
+            Generar Token
+          </button>
+        </div>
+
+        <div id="generated-token-container" class="mt-4 hidden rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-400">✅ Nuevo Token Generado (Expira en 24h):</span>
+            <button id="copy-token-btn" class="rounded bg-emerald-600/30 hover:bg-emerald-600/50 px-2.5 py-1 text-xs font-medium text-emerald-300 transition-colors">
+              📋 Copiar
+            </button>
+          </div>
+          <p id="generated-token-text" class="mt-2 font-mono text-xs text-emerald-200 break-all select-all"></p>
+        </div>
+      </div>
+
+      <!-- Filters & Date Range -->
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <select
           id="filter-level"
-          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-sm"
+          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-sm focus:outline-none"
         >
-          <option value="all">{t("admin.all") || "Todos"}</option>
-          <option value="critical">Critical</option>
-          <option value="error">Error</option>
-          <option value="warn">Warning</option>
+          <option value="all">{t("admin.all") || "Todos los niveles"}</option>
+          <option value="critical">🔴 Critical</option>
+          <option value="error">🟠 Error</option>
+          <option value="warn">🟡 Warning</option>
         </select>
 
         <select
           id="filter-feature"
-          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-sm"
+          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-sm focus:outline-none"
         >
-          <option value="all">{t("admin.all") || "Todos"}</option>
+          <option value="all">{t("admin.all") || "Todas las features"}</option>
           <option value="auth">Auth</option>
-          <option value="diet">Diet</option>
-          <option value="workout">Workout</option>
+          <option value="client">Client Portal</option>
+          <option value="trainer">Trainer Suite</option>
+          <option value="admin">Admin Panel</option>
+          <option value="diet">Dietas</option>
+          <option value="workout">Rutinas</option>
           <option value="chat">Chat</option>
           <option value="clinical">Clinical</option>
-          <option value="progress">Progress</option>
+          <option value="progress">Progreso</option>
           <option value="system">System</option>
         </select>
 
         <input
           id="filter-search"
           type="text"
-          placeholder={t("admin.search") || "Buscar..."}
-          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm"
+          placeholder={t("admin.search") || "Buscar en mensajes/usuarios..."}
+          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm focus:outline-none"
+        />
+
+        <input
+          id="filter-date-from"
+          type="date"
+          class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-secondary)] backdrop-blur-sm focus:outline-none"
         />
 
         <button
           id="apply-filters-btn"
-          class="rounded-lg bg-[var(--brand)] px-3 py-2 text-xs font-medium text-[var(--text-on-brand)] hover:bg-[var(--brand-hover)] transition-all"
+          class="rounded-lg bg-[var(--brand)] px-4 py-2 text-xs font-semibold text-[var(--text-on-brand)] hover:bg-[var(--brand-hover)] transition-all flex items-center justify-center gap-1.5"
         >
-          {t("admin.apply") || "Aplicar filtros"}
+          <span>🔍</span>
+          <span>{t("admin.apply") || "Filtrar"}</span>
         </button>
       </div>
 
       <!-- Logs table -->
-      <div class="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] overflow-hidden">
+      <div class="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] overflow-hidden shadow-lg">
         <div class="overflow-x-auto">
           <table class="w-full text-xs">
             <thead class="bg-[var(--surface-4)]">
@@ -86,7 +142,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 <th class="px-4 py-3 text-left font-medium text-[var(--text-tertiary)]">{t("admin.logs.activity") || "Actividad"}</th>
                 <th class="px-4 py-3 text-left font-medium text-[var(--text-tertiary)]">{t("admin.logs.level") || "Nivel"}</th>
                 <th class="px-4 py-3 text-left font-medium text-[var(--text-tertiary)]">{t("admin.logs.message") || "Mensaje"}</th>
-                <th class="px-4 py-3 text-left font-medium text-[var(--text-tertiary)]">{t("admin.logs.occurrences") || "Ocurrencias"}</th>
+                <th class="px-4 py-3 text-center font-medium text-[var(--text-tertiary)]">{t("admin.logs.occurrences") || "Ocurrencias"}</th>
                 <th class="px-4 py-3 text-right font-medium text-[var(--text-tertiary)]">{t("admin.logs.actions") || "Acciones"}</th>
               </tr>
             </thead>
@@ -102,22 +158,22 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       </div>
 
       <!-- Pagination -->
-      <div id="logs-pagination" class="mt-4 flex items-center justify-between">
+      <div id="logs-pagination" class="mt-4 flex items-center justify-between flex-wrap gap-2">
         <div class="text-xs text-[var(--text-tertiary)]">
-          <span id="logs-count">0</span> {t("admin.logs.total") || "logs encontrados"}
+          <span id="logs-count" class="font-bold text-[var(--text-primary)]">0</span> {t("admin.logs.total") || "logs encontrados"}
         </div>
-        <div class="flex gap-2">
+        <div class="flex items-center gap-2">
           <button
             id="prev-page-btn"
             disabled
-            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--surface-4)] transition-all"
+            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--surface-4)] transition-all"
           >
             {t("admin.prev") || "Anterior"}
           </button>
           <button
             id="next-page-btn"
             disabled
-            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--surface-4)] transition-all"
+            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--surface-4)] transition-all"
           >
             {t("admin.next") || "Siguiente"}
           </button>
@@ -127,11 +183,11 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   </div>
 
   <!-- Detail Modal -->
-  <div id="log-detail-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm">
+  <div id="log-detail-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-md">
     <div class="flex min-h-full items-center justify-center p-4">
       <div class="w-full max-w-2xl rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-xl">
         <div class="flex items-center justify-between">
-          <h3 data-i18n="admin.logs.detail" class="text-lg font-semibold">{t("admin.logs.detail") || "Detalle del log"}</h3>
+          <h3 data-i18n="admin.logs.detail" class="text-lg font-bold text-[var(--text-primary)]">{t("admin.logs.detail") || "Detalle del Log"}</h3>
           <button id="close-detail-modal" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-3)] transition-all">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"></path>
@@ -140,19 +196,19 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
 
         <div id="log-detail-content" class="mt-4 space-y-4 text-xs">
-          <!-- Content injected via JS -->
+          <!-- Injected via script -->
         </div>
 
         <div class="mt-6 flex justify-end gap-2">
           <button
             id="close-detail-btn"
-            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-3)] transition-all"
+            class="rounded-lg border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)] transition-all"
           >
             {t("admin.close") || "Cerrar"}
           </button>
           <button
             id="delete-log-btn"
-            class="rounded-lg bg-[var(--danger)] px-4 py-2 text-xs font-medium text-white hover:bg-[var(--danger-hover)] transition-all"
+            class="rounded-lg bg-rose-600 hover:bg-rose-500 px-4 py-2 text-xs font-semibold text-white transition-all shadow-lg shadow-rose-600/20"
           >
             {t("admin.delete") || "Eliminar"}
           </button>
@@ -163,128 +219,302 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 </AdminLayout>
 
 <script>
-  const API = '/api/admin/logs/query';
+  import { showToast, showConfirm, escapeHtml } from "@/lib/shared/ui";
+
+  interface LogData {
+    id: string;
+    timestamp?: { seconds?: number } | string | number;
+    level?: string;
+    feature?: string;
+    activity?: string;
+    action?: string;
+    message?: string;
+    userId?: string;
+    userRole?: string;
+    url?: string;
+    userAgent?: string;
+    errorStack?: string;
+    occurrenceCount?: number;
+  }
+
+  const API_LOGS = '/api/admin/logs/query';
+  const API_TOKENS = '/api/admin/logs/token';
   const PAGE_SIZE = 50;
 
-  const els = {
-    level: document.getElementById('filter-level'),
-    feature: document.getElementById('filter-feature'),
-    search: document.getElementById('filter-search'),
-    apply: document.getElementById('apply-filters-btn'),
-    table: document.getElementById('logs-table-body'),
-    count: document.getElementById('logs-count'),
-    prev: document.getElementById('prev-page-btn'),
-    next: document.getElementById('next-page-btn'),
-    refresh: document.getElementById('refresh-logs-btn'),
-    cleanup: document.getElementById('cleanup-logs-btn'),
-    detailModal: document.getElementById('log-detail-modal'),
-    detailContent: document.getElementById('log-detail-content'),
-    closeDetail: document.getElementById('close-detail-modal'),
-    closeDetailBtn: document.getElementById('close-detail-btn'),
-    deleteBtn: document.getElementById('delete-log-btn'),
-  };
+  const filterLevel = document.getElementById('filter-level') as HTMLSelectElement | null;
+  const filterFeature = document.getElementById('filter-feature') as HTMLSelectElement | null;
+  const filterSearch = document.getElementById('filter-search') as HTMLInputElement | null;
+  const filterDateFrom = document.getElementById('filter-date-from') as HTMLInputElement | null;
+  const applyBtn = document.getElementById('apply-filters-btn') as HTMLButtonElement | null;
+  const logsTableBody = document.getElementById('logs-table-body') as HTMLTableSectionElement | null;
+  const logsCount = document.getElementById('logs-count') as HTMLSpanElement | null;
+  const prevPageBtn = document.getElementById('prev-page-btn') as HTMLButtonElement | null;
+  const nextPageBtn = document.getElementById('next-page-btn') as HTMLButtonElement | null;
+  const refreshBtn = document.getElementById('refresh-logs-btn') as HTMLButtonElement | null;
+  const cleanupBtn = document.getElementById('cleanup-logs-btn') as HTMLButtonElement | null;
+  
+  const manageTokensBtn = document.getElementById('manage-tokens-btn') as HTMLButtonElement | null;
+  const tokensPanel = document.getElementById('tokens-panel') as HTMLDivElement | null;
+  const closeTokensPanelBtn = document.getElementById('close-tokens-panel-btn') as HTMLButtonElement | null;
+  const tokenReasonInput = document.getElementById('token-reason-input') as HTMLInputElement | null;
+  const generateTokenBtn = document.getElementById('generate-token-btn') as HTMLButtonElement | null;
+  const generatedTokenContainer = document.getElementById('generated-token-container') as HTMLDivElement | null;
+  const generatedTokenText = document.getElementById('generated-token-text') as HTMLParagraphElement | null;
+  const copyTokenBtn = document.getElementById('copy-token-btn') as HTMLButtonElement | null;
 
-  let currentStartAfter = null;
-  let currentLogs = [];
+  const detailModal = document.getElementById('log-detail-modal') as HTMLDivElement | null;
+  const detailContent = document.getElementById('log-detail-content') as HTMLDivElement | null;
+  const closeDetailModal = document.getElementById('close-detail-modal') as HTMLButtonElement | null;
+  const closeDetailBtn = document.getElementById('close-detail-btn') as HTMLButtonElement | null;
+  const deleteLogBtn = document.getElementById('delete-log-btn') as HTMLButtonElement | null;
 
-  const toQuery = () => {
-    const p = new URLSearchParams();
-    const level = els.level.value;
-    const feature = els.feature.value;
-    const search = els.search.value.trim();
-    if (level && level !== 'all') p.set('level', level);
-    if (feature && feature !== 'all') p.set('feature', feature);
-    if (search) p.set('search', search);
-    if (currentStartAfter) p.set('startAfter', currentStartAfter);
-    p.set('limit', String(PAGE_SIZE));
-    return p.toString();
-  };
+  let currentCursor: string | null = null;
+  let cursorStack: (string | null)[] = [];
+  let currentLogs: LogData[] = [];
+  let selectedLogId: string | null = null;
 
-  const load = async () => {
-    els.table.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[var(--text-tertiary)]">Cargando...</td></tr>';
-    const res = await fetch(`${API}?${toQuery()}`, { headers: { Accept: 'application/json' } });
-    const data = await res.json();
-    currentLogs = data.logs || [];
-    els.count.textContent = String(data.total || 0);
-    renderTable(currentLogs);
-    els.prev.disabled = !data.hasMore;
-    els.next.disabled = !data.hasMore;
-    currentStartAfter = data.nextCursor;
-  };
+  function buildQueryParams(cursor: string | null = null): string {
+    const params = new URLSearchParams();
+    const level = filterLevel?.value || 'all';
+    const feature = filterFeature?.value || 'all';
+    const search = filterSearch?.value?.trim() || '';
+    const dateFrom = filterDateFrom?.value || '';
 
-  const renderTable = (logs) => {
+    if (level && level !== 'all') params.set('level', level);
+    if (feature && feature !== 'all') params.set('feature', feature);
+    if (search) params.set('search', search);
+    if (dateFrom) params.set('dateFrom', dateFrom);
+    if (cursor) params.set('startAfter', cursor);
+    params.set('limit', String(PAGE_SIZE));
+
+    return params.toString();
+  }
+
+  async function loadLogs(cursor: string | null = null): Promise<void> {
+    if (logsTableBody) {
+      logsTableBody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[var(--text-tertiary)]">Cargando logs...</td></tr>';
+    }
+
+    try {
+      const res = await fetch(`${API_LOGS}?${buildQueryParams(cursor)}`, {
+        headers: { Accept: 'application/json' },
+      });
+      const data = await res.json();
+      currentLogs = (data.logs as LogData[]) || [];
+
+      if (logsCount) logsCount.textContent = String(data.total || currentLogs.length);
+      renderTable(currentLogs);
+
+      if (prevPageBtn) prevPageBtn.disabled = cursorStack.length === 0;
+      if (nextPageBtn) nextPageBtn.disabled = !data.hasMore;
+      currentCursor = data.nextCursor || null;
+    } catch {
+      if (logsTableBody) {
+        logsTableBody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-rose-400">Error al cargar los logs.</td></tr>';
+      }
+    }
+  }
+
+  function renderTable(logs: LogData[]): void {
+    if (!logsTableBody) return;
+
     if (!logs.length) {
-      els.table.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[var(--text-tertiary)]">Sin logs</td></tr>';
+      logsTableBody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[var(--text-tertiary)]">Sin logs registrados</td></tr>';
       return;
     }
-    const levelBadge = (level) => {
-      const map = {
-        critical: 'bg-red-500/15 text-red-600',
-        error: 'bg-orange-500/15 text-orange-600',
-        warn: 'bg-yellow-500/15 text-yellow-700',
+
+    const levelBadge = (level: string) => {
+      const map: Record<string, string> = {
+        critical: 'bg-rose-500/20 text-rose-300 border border-rose-500/30',
+        error: 'bg-orange-500/20 text-orange-300 border border-orange-500/30',
+        warn: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
       };
-      const cls = map[level] || 'bg-gray-500/15 text-gray-600';
-      return `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${cls}">${level.toUpperCase()}</span>`;
+      const cls = map[level] || 'bg-zinc-500/20 text-zinc-300 border border-zinc-500/30';
+      return `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${cls}">${escapeHtml(level.toUpperCase())}</span>`;
     };
-    els.table.innerHTML = logs.map((log) => {
-      const date = log.timestamp ? new Date(log.timestamp.seconds ? log.timestamp.seconds * 1000 : log.timestamp).toLocaleString() : '—';
+
+    function formatTimestamp(ts?: { seconds?: number } | string | number): string {
+      if (!ts) return '—';
+      if (typeof ts === 'object' && 'seconds' in ts && typeof ts.seconds === 'number') {
+        return new Date(ts.seconds * 1000).toLocaleString();
+      }
+      if (typeof ts === 'string' || typeof ts === 'number') {
+        return new Date(ts).toLocaleString();
+      }
+      return '—';
+    }
+
+    logsTableBody.innerHTML = logs.map((log) => {
+      const dateStr = formatTimestamp(log.timestamp);
+
       return `
         <tr class="hover:bg-[var(--surface-3)] transition-colors">
-          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-tertiary)]">${escapeHtml(date)}</td>
-          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-secondary)]">${escapeHtml(String(log.userId || '—'))}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-tertiary)] font-mono text-[11px]">${escapeHtml(dateStr)}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-[var(--text-secondary)] font-medium">${escapeHtml(String(log.userId || '—'))}</td>
           <td class="px-4 py-3 whitespace-nowrap text-[var(--text-secondary)]">${escapeHtml(String(log.activity || '—'))}</td>
           <td class="px-4 py-3 whitespace-nowrap">${levelBadge(log.level || 'error')}</td>
-          <td class="px-4 py-3 text-[var(--text-primary)] line-clamp-1">${escapeHtml(String(log.message || '—'))}</td>
-          <td class="px-4 py-3 text-center text-[var(--text-secondary)]">${log.occurrenceCount ?? 1}</td>
+          <td class="px-4 py-3 text-[var(--text-primary)] max-w-xs truncate">${escapeHtml(String(log.message || '—'))}</td>
+          <td class="px-4 py-3 text-center text-[var(--text-secondary)] font-semibold">${log.occurrenceCount ?? 1}</td>
           <td class="px-4 py-3 text-right">
-            <button data-id="${log.id}" data-action="detail" class="text-[var(--brand)] hover:underline text-[10px]">Ver</button>
+            <button data-id="${escapeHtml(log.id)}" data-action="detail" class="rounded px-2 py-1 text-xs font-bold text-[var(--brand)] hover:bg-[var(--brand)]/10 transition-colors">
+              Ver
+            </button>
           </td>
         </tr>
       `;
     }).join('');
 
-    els.table.querySelectorAll('[data-action="detail"]').forEach((btn) => {
-      btn.addEventListener('click', () => openDetail(btn.dataset.id));
+    logsTableBody.querySelectorAll('[data-action="detail"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = (btn as HTMLElement).dataset.id;
+        if (id) openDetail(id);
+      });
     });
-  };
+  }
 
-  const openDetail = (id) => {
+  function openDetail(id: string): void {
     const log = currentLogs.find((l) => l.id === id);
-    if (!log) return;
-    const date = log.timestamp ? new Date(log.timestamp.seconds ? log.timestamp.seconds * 1000 : log.timestamp).toLocaleString() : '—';
-    els.detailContent.innerHTML = `
+    if (!log || !detailContent || !detailModal) return;
+
+    selectedLogId = id;
+
+    const dateStr = (function(ts?: { seconds?: number } | string | number): string {
+      if (!ts) return '—';
+      if (typeof ts === 'object' && 'seconds' in ts && typeof ts.seconds === 'number') {
+        return new Date(ts.seconds * 1000).toLocaleString();
+      }
+      if (typeof ts === 'string' || typeof ts === 'number') {
+        return new Date(ts).toLocaleString();
+      }
+      return '—';
+    })(log.timestamp);
+
+    detailContent.innerHTML = `
       <div class="grid grid-cols-2 gap-4">
-        <div><span class="text-[var(--text-tertiary)]">ID</span><p class="mt-1 font-mono">${escapeHtml(log.id)}</p></div>
-        <div><span class="text-[var(--text-tertiary)]">Timestamp</span><p class="mt-1">${escapeHtml(date)}</p></div>
-        <div><span class="text-[var(--text-tertiary)]">Level</span><p class="mt-1">${escapeHtml(String(log.level))}</p></div>
-        <div><span class="text-[var(--text-tertiary)]">Feature</span><p class="mt-1">${escapeHtml(String(log.feature || '—'))}</p></div>
-        <div><span class="text-[var(--text-tertiary)]">User</span><p class="mt-1">${escapeHtml(String(log.userId || '—'))}</p></div>
-        <div><span class="text-[var(--text-tertiary)]">Role</span><p class="mt-1">${escapeHtml(String(log.userRole || '—'))}</p></div>
-        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">Message</span><p class="mt-1">${escapeHtml(String(log.message || '—'))}</p></div>
-        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">Activity</span><p class="mt-1">${escapeHtml(String(log.activity || '—'))} · ${escapeHtml(String(log.action || '—'))}</p></div>
-        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">URL</span><p class="mt-1 break-all">${escapeHtml(String(log.url || '—'))}</p></div>
-        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">UA</span><p class="mt-1 break-all">${escapeHtml(String(log.userAgent || '—'))}</p></div>
-        <div class="col-span-2"><span class="text-[var(--text-tertiary)]">Stack</span><pre class="mt-1 whitespace-pre-wrap rounded-lg bg-[var(--surface-4)] p-3 text-[10px]">${escapeHtml(String(log.errorStack || '—'))}</pre></div>
+        <div><span class="text-[var(--text-tertiary)] font-semibold">ID</span><p class="mt-1 font-mono text-[11px] text-zinc-300 break-all">${escapeHtml(log.id)}</p></div>
+        <div><span class="text-[var(--text-tertiary)] font-semibold">Fecha</span><p class="mt-1 font-mono text-[11px] text-zinc-300">${escapeHtml(dateStr)}</p></div>
+        <div><span class="text-[var(--text-tertiary)] font-semibold">Nivel</span><p class="mt-1 font-bold text-amber-400">${escapeHtml(String(log.level || 'error'))}</p></div>
+        <div><span class="text-[var(--text-tertiary)] font-semibold">Feature</span><p class="mt-1 text-zinc-300">${escapeHtml(String(log.feature || '—'))}</p></div>
+        <div><span class="text-[var(--text-tertiary)] font-semibold">Usuario ID</span><p class="mt-1 text-zinc-300">${escapeHtml(String(log.userId || '—'))}</p></div>
+        <div><span class="text-[var(--text-tertiary)] font-semibold">Rol</span><p class="mt-1 text-zinc-300 uppercase">${escapeHtml(String(log.userRole || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)] font-semibold">Mensaje</span><p class="mt-1 font-medium text-[var(--text-primary)] bg-[var(--surface-3)] p-2.5 rounded-lg">${escapeHtml(String(log.message || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)] font-semibold">Actividad / Acción</span><p class="mt-1 font-mono text-[11px] text-zinc-400">${escapeHtml(String(log.activity || '—'))} · ${escapeHtml(String(log.action || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)] font-semibold">URL</span><p class="mt-1 break-all font-mono text-[11px] text-zinc-400">${escapeHtml(String(log.url || '—'))}</p></div>
+        <div class="col-span-2"><span class="text-[var(--text-tertiary)] font-semibold">User Agent</span><p class="mt-1 break-all text-[11px] text-zinc-400">${escapeHtml(String(log.userAgent || '—'))}</p></div>
+        ${log.errorStack ? `<div class="col-span-2"><span class="text-[var(--text-tertiary)] font-semibold">Stack Trace</span><pre class="mt-1 whitespace-pre-wrap rounded-lg bg-zinc-950 p-3 text-[10px] text-rose-300 border border-rose-950">${escapeHtml(String(log.errorStack))}</pre></div>` : ''}
       </div>
     `;
-    els.deleteBtn.onclick = () => deleteLog(log.id);
-    els.detailModal.classList.remove('hidden');
-  };
 
-  const deleteLog = async (id) => {
-    await fetch(`${API}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-    els.detailModal.classList.add('hidden');
-    load();
-  };
+    detailModal.classList.remove('hidden');
+  }
 
-  const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  // Token management listeners
+  manageTokensBtn?.addEventListener('click', () => {
+    tokensPanel?.classList.toggle('hidden');
+  });
 
-  els.apply.addEventListener('click', () => { currentStartAfter = null; load(); });
-  els.prev.addEventListener('click', () => load());
-  els.next.addEventListener('click', () => load());
-  els.refresh.addEventListener('click', () => load());
-  els.closeDetail.addEventListener('click', () => els.detailModal.classList.add('hidden'));
-  els.closeDetailBtn.addEventListener('click', () => els.detailModal.classList.add('hidden'));
+  closeTokensPanelBtn?.addEventListener('click', () => {
+    tokensPanel?.classList.add('hidden');
+  });
 
-  load();
+  generateTokenBtn?.addEventListener('click', async () => {
+    const reason = tokenReasonInput?.value?.trim() || 'IA Agent debug session';
+    try {
+      generateTokenBtn.disabled = true;
+      generateTokenBtn.textContent = 'Generando...';
+      const res = await fetch(API_TOKENS, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason }),
+      });
+      const data = await res.json();
+      if (data.token && generatedTokenContainer && generatedTokenText) {
+        generatedTokenText.textContent = data.token;
+        generatedTokenContainer.classList.remove('hidden');
+        showToast({ message: 'Token IA generado con éxito (24h de validez)', type: 'success' });
+      }
+    } catch {
+      showToast({ message: 'Error al generar token IA', type: 'error' });
+    } finally {
+      if (generateTokenBtn) {
+        generateTokenBtn.disabled = false;
+        generateTokenBtn.textContent = 'Generar Token';
+      }
+    }
+  });
+
+  copyTokenBtn?.addEventListener('click', () => {
+    const token = generatedTokenText?.textContent;
+    if (token) {
+      navigator.clipboard.writeText(token).then(() => {
+        showToast({ message: 'Token copiado al portapapeles', type: 'success' });
+      });
+    }
+  });
+
+  // Table and filter listeners
+  applyBtn?.addEventListener('click', () => {
+    cursorStack = [];
+    currentCursor = null;
+    loadLogs(null);
+  });
+
+  refreshBtn?.addEventListener('click', () => {
+    loadLogs(currentCursor);
+  });
+
+  cleanupBtn?.addEventListener('click', async () => {
+    const confirmed = await showConfirm({
+      title: 'Limpiar logs antiguos',
+      message: '¿Deseas eliminar logs antiguos con más de 30 días de antigüedad?',
+      confirmText: 'Limpiar',
+      variant: 'danger',
+    });
+    if (confirmed) {
+      showToast({ message: 'Limpieza de logs programada', type: 'info' });
+    }
+  });
+
+  deleteLogBtn?.addEventListener('click', async () => {
+    if (!selectedLogId) return;
+    const confirmed = await showConfirm({
+      title: 'Eliminar log',
+      message: '¿Estás seguro de eliminar este log?',
+      confirmText: 'Eliminar',
+      variant: 'danger',
+    });
+    if (confirmed) {
+      try {
+        await fetch(API_LOGS, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ logIds: [selectedLogId] }),
+        });
+        showToast({ message: 'Log eliminado', type: 'success' });
+        detailModal?.classList.add('hidden');
+        loadLogs(currentCursor);
+      } catch {
+        showToast({ message: 'Error al eliminar log', type: 'error' });
+      }
+    }
+  });
+
+  closeDetailModal?.addEventListener('click', () => detailModal?.classList.add('hidden'));
+  closeDetailBtn?.addEventListener('click', () => detailModal?.classList.add('hidden'));
+
+  prevPageBtn?.addEventListener('click', () => {
+    if (cursorStack.length > 0) {
+      const prevCursor = cursorStack.pop() || null;
+      loadLogs(prevCursor);
+    }
+  });
+
+  nextPageBtn?.addEventListener('click', () => {
+    if (currentCursor) {
+      cursorStack.push(currentCursor);
+      loadLogs(currentCursor);
+    }
+  });
+
+  loadLogs(null);
 </script>

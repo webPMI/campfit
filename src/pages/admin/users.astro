@@ -381,18 +381,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     updateUserProfile,
     deleteUser,
     toggleUserBlock,
-    getUserName,
     type AdminUser,
     type TrainerOption,
   } from "@/lib/admin/adminUtils";
   import {
     ICONS,
     showToast,
+    showConfirm,
     escapeHtml,
     formatDate,
     getRoleBadge,
     renderEmptyState,
-    renderLoadingState,
   } from "@/lib/shared/ui";
   import { doc, getDoc } from "firebase/firestore";
   import { db } from "@/lib/firebase";
@@ -411,7 +410,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   let workoutCounts: Map<string, number> = new Map();
   let dietCounts: Map<string, number> = new Map();
   let editingUserId: string | null = null;
-  let medicalProfileData: Record<string, unknown> | null = null;
 
   requireAdmin(() => {
     initUsers();
@@ -468,6 +466,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const statusFilter = document.getElementById("status-filter") as HTMLSelectElement;
     const trainerAssignFilter = document.getElementById("trainer-assign-filter") as HTMLSelectElement;
     const searchInput = document.getElementById("search-input") as HTMLInputElement;
+
+    // Leer posibles filtros iniciales por URL (?role=trainer / ?role=client)
+    const urlParams = new URLSearchParams(window.location.search);
+    const roleParam = urlParams.get("role");
+    if (roleParam && roleFilter && ["client", "trainer", "admin"].includes(roleParam)) {
+      roleFilter.value = roleParam;
+    }
 
     let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -526,7 +531,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       container.innerHTML = filtered.map((user) => renderUserCardExtended(user, true)).join("");
 
       initGlobalActions("admin");
-      // Override edit button to open modal
+      // Open modal when clicking user card or edit button
+      document.querySelectorAll("[data-user-card]").forEach((card) => {
+        card.addEventListener("click", () => {
+          const uid = (card as HTMLElement).dataset.uid;
+          if (uid) openUserModal(uid);
+        });
+      });
+
       document.querySelectorAll("[data-edit-user]").forEach((btn) => {
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -663,7 +675,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   // === Modal Actions (replaced window.__* functions) ===
   function closeUserModal(): void {
     editingUserId = null;
-    medicalProfileData = null;
     document.getElementById("user-modal-overlay")!.classList.add("hidden");
   }
 
@@ -720,7 +731,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const newBlockedState = !user.isBlocked;
     const action = newBlockedState ? "bloquear" : "desbloquear";
 
-    const confirmed = await (window as any).showConfirm({
+    const confirmed = await showConfirm({
       title: `¿${newBlockedState ? "Bloquear" : "Desbloquear"} usuario?`,
       message: `¿Estás seguro de ${action} a ${user.name}?`,
       confirmText: newBlockedState ? "Bloquear" : "Desbloquear",
@@ -854,7 +865,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       return;
     }
 
-    const confirmed = await (window as any).showConfirm({
+    const confirmed = await showConfirm({
       title: "Resetear contraseña",
       message: `¿Enviar email de recuperación a ${user.email}?`,
       confirmText: "Enviar",
@@ -877,7 +888,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const user = allUsers.find((u) => u.uid === editingUserId);
     if (!user) return;
 
-    const confirmed = await (window as any).showConfirm({
+    const confirmed = await showConfirm({
       title: "Eliminar usuario",
       message: `¿Estás seguro de eliminar a ${user.name}? Esta acción no se puede deshacer.`,
       confirmText: "Eliminar",

@@ -213,7 +213,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           ${mp.bloodType ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🩸</span> <span class="text-[var(--text-secondary)]">${mp.bloodType}</span></div>` : ''}
           ${mp.gender ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚧</span> <span class="text-[var(--text-secondary)]">${genderLabel(mp.gender)}</span></div>` : ''}
           ${mp.height ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">📏</span> <span class="text-[var(--text-secondary)]">${mp.height} cm</span></div>` : ''}
-          ${mp.weight || mp.initialWeight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚖️</span> <span class="text-[var(--text-secondary)]">${mp.weight || mp.initialWeight} kg</span></div>` : ''}
+          ${mp.initialWeight ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">⚖️</span> <span class="text-[var(--text-secondary)]">${mp.initialWeight} kg</span></div>` : ''}
           ${mp.age ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">🎂</span> <span class="text-[var(--text-secondary)]">${mp.age} ${t('clinical.years')}</span></div>` : ''}
           ${mp.experience ? `<div class="rounded-lg bg-[var(--surface-4)] px-3 py-1.5"><span class="text-[var(--text-tertiary)]">💪</span> <span class="text-[var(--text-secondary)] capitalize">${mp.experience}</span></div>` : ''}
         </div>
@@ -317,7 +317,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         uid: c.uid,
         name: c.name,
         email: c.email || '',
-        medicalProfile: c.medicalProfile || null,
+        role: c.role || 'client',
+        medicalProfile: c.medicalProfile,
       }));
 
       updateStats();

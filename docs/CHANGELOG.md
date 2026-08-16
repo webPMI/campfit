@@ -1,6 +1,39 @@
-# 📋 Changelog - 2026-08-01
+# 📋 Changelog
 
-Sesión masiva de mejoras y optimización del sistema CampFit.
+## 🚀 Versión 2.4.0 — 2026-08-16 (Cloudflare R2, Vídeo Feedback, Poses de Progreso y Flujo de Eliminación)
+
+### ☁️ Cloudflare R2 Object Storage & Fallback Reactivo
+- **Arquitectura de Almacenamiento**: Conexión al bucket S3 `campfit` (`@aws-sdk/client-s3`) y Cloudflare Worker externo (`https://campfit-storage.servicioweb-pmi.workers.dev/upload`) para subidas multimedia seguras.
+- **Servicio Unificado (`r2Service.ts`)**: Timeout ordenado (15s con `AbortController`), fallback reactivo transparente a `/api/storage/upload` o DataURL, y logs descriptivos en consola (`📤 [Almacenamiento]...`, `✅ [Almacenamiento]...`).
+- **Limpieza de Nombres Técnicos**: Eliminación total de terminología "R2" de la interfaz para clientes y entrenadores (reemplazado por nombres amigables como *"Almacenamiento Seguro"*, *"Fotos de Evolución"*, *"Guardar Foto"*).
+
+### 🎥 Vídeo Feedback Bidireccional de Técnica (`techniqueCorrectionService.ts`)
+- **Para Alumnos (`/client/workouts`)**: Subida directa de vídeos de ejecución con notas personales para solicitar corrección al entrenador. Reproductor HD modal con controles.
+- **Para Entrenadores (`/trainer/workouts` & `/trainer/clients`)**:
+  - Subida de vídeos explicativos vinculados a ejercicios en el editor de rutinas.
+  - Bandeja centralizada de correcciones con selector de velocidad de reproducción en cámara lenta (`0.5x`, `1.0x`) y formulario de feedback técnico.
+
+### 🧍 Clasificación Visual de Poses Corporales (`/client/progress`)
+- **Selector de Poses 3-Card**:
+  - 🧍 **Frontal**: *"De frente, brazos a los costados y postura erguida"* (Esmeralda).
+  - 🚶 **Perfil (Lateral 90°)**: *"Giro lateral 90°, postura neutra y hombros alineados"* (Cian).
+  - 👤 **Espalda**: *"De espaldas a la cámara, dorsal y hombros relajados"* (Púrpura).
+- **Feedback en Tiempo Real**: Badge dinámico de pose en la vista previa y botón descriptivo (`Guardar Foto Frontal 🧍`, etc.).
+- **Filtro de Galería**: Pestañas de filtrado (`Todas`, `🧍 Frontal`, `🚶 Perfil`, `👤 Espalda`) con contadores independientes y badges de pose en cada miniatura.
+
+### 🗑️ Flujo de Eliminación con Confirmación Segura (Zero Native Dialogs)
+- **Fotos de Evolución**: Botón de papelera en miniatura y en modal a pantalla completa con confirmación mediante `showConfirm` y función `deleteProgressLog(logId)`.
+- **Vídeos de Técnica**: Botón de eliminación en *"Mis Vídeos de Técnica"* (cliente) y en la bandeja de correcciones (entrenador) mediante `deleteTechniqueCorrection(corrId)`.
+- **Editor de Ejercicios**: Botón `🗑️ Quitar` para desasociar vídeos explicativos en rutinas.
+
+### 🧹 Auditoría de Código Muerto en Sección Admin
+- **`/admin/users.astro`**: Eliminadas variables huérfanas (`medicalProfileData`, `getUserName`, `renderLoadingState`).
+- **`/api/admin/logs/query.ts`**: Eliminadas variables y módulos huérfanos (`userUid`, `auth`).
+- **`AdminLayout.astro`**: Limpieza de enlaces rotos y conexión de accesos directos a `/admin/logs`, `/admin/devtools`, `/admin/exercises` y `/admin/foods`.
+
+---
+
+## 📋 Changelog - 2026-08-01
 
 ## 🔐 Autenticación
 

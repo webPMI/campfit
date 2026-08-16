@@ -96,6 +96,21 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           </div>
         </div>
 
+        <!-- Historial de Vídeos y Correcciones de Técnica del Entrenador -->
+        <div id="techniqueCorrectionsCard" class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3 flex-wrap gap-2">
+            <div>
+              <h3 class="text-sm font-bold text-[var(--text-primary)]">📹 Mis Vídeos de Técnica & Correcciones</h3>
+              <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Grabaciones enviadas a tu entrenador con sus correcciones y consejos técnicos.</p>
+            </div>
+            <span id="corrections-count-badge" class="rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 px-2.5 py-0.5 text-xs font-semibold">0 enviadas</span>
+          </div>
+
+          <div id="client-corrections-list" class="space-y-3">
+            <p class="text-xs text-[var(--text-disabled)] text-center py-4">No has enviado vídeos de técnica aún. Usa el botón "📹 Enviar Vídeo" en cualquier ejercicio de tu rutina.</p>
+          </div>
+        </div>
+
         <!-- Estado de Día de Descanso o Sin Rutina -->
         <div id="emptyState" class="hidden flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center">
           <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)] text-2xl">
@@ -106,6 +121,90 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- Modal para Enviar Vídeo de Técnica al Entrenador -->
+  <div id="technique-submit-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md hidden animate-fade-in">
+    <div class="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">📹 Enviar Vídeo de Técnica</h3>
+          <p id="technique-modal-exercise-name" class="text-xs text-[var(--brand)] font-semibold mt-0.5"></p>
+        </div>
+        <button id="btn-close-technique-modal" class="text-[var(--text-tertiary)] hover:text-white text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-xs text-[var(--text-secondary)]">
+          Sube una grabación de tu serie para que tu entrenador asignado analice tu postura, rango de movimiento y tempo.
+        </p>
+
+        <!-- Dropzone de Vídeo -->
+        <div
+          id="techniqueVideoDropzone"
+          class="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--border-default)] bg-[var(--surface-3)] p-5 text-center hover:border-[var(--brand)] transition-all cursor-pointer"
+        >
+          <input
+            id="techniqueFileInput"
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime"
+            class="hidden"
+          />
+          <div id="techniquePrompt" class="space-y-1.5">
+            <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface-4)] text-xl">
+              🎥
+            </div>
+            <p class="text-xs font-semibold text-[var(--text-primary)]">Toca para seleccionar o grabar vídeo</p>
+            <p class="text-[10px] text-[var(--text-tertiary)]">MP4, WebM o MOV hasta 50MB</p>
+          </div>
+
+          <div id="techniquePreviewContainer" class="hidden w-full flex-col items-center space-y-2">
+            <video id="techniquePreviewVideo" controls class="max-h-48 w-full rounded-xl bg-black object-contain"></video>
+            <button id="btn-remove-technique-file" type="button" class="text-xs font-semibold text-rose-400 hover:text-rose-300">✕ Cambiar vídeo</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-[var(--text-secondary)] mb-1">Notas o sensaciones para tu coach (opcional):</label>
+          <textarea
+            id="technique-notes-input"
+            rows="2"
+            class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--brand)] resize-none"
+            placeholder="Ej: Siento que en la 4ª repetición pierdo la curvatura lumbar..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)]">
+        <button
+          id="btn-submit-technique-video"
+          disabled
+          class="flex-1 rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] px-4 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+        >
+          <span>🚀</span>
+          <span id="btn-submit-technique-text">Enviar a mi Entrenador</span>
+        </button>
+        <button
+          id="btn-cancel-technique"
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2.5 text-xs font-medium text-[var(--text-secondary)] hover:text-white"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Reproductor de Vídeo de Técnica / Coach -->
+  <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden animate-fade-in">
+    <div class="relative w-full max-w-2xl bg-zinc-900 border border-zinc-700 rounded-2xl overflow-hidden shadow-2xl space-y-3 p-4">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+        <h4 id="video-modal-title" class="text-sm font-bold text-white">Vídeo Explicativo del Coach</h4>
+        <button id="btn-close-video-modal" class="text-zinc-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+      <div class="relative aspect-video w-full bg-black rounded-xl overflow-hidden flex items-center justify-center">
+        <video id="client-video-player" controls class="w-full h-full object-contain"></video>
+      </div>
+    </div>
   </div>
 
   <!-- Modal de Solicitud de Exclusión de Ejercicio -->
@@ -177,11 +276,18 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     toggleFavorite,
     requestExerciseExclusion,
   } from "@/lib/client/exercisePreferencesService";
+  import {
+    subscribeToCorrectionsByClient,
+    submitTechniqueVideo,
+    deleteTechniqueCorrection,
+    type ExerciseCorrection,
+  } from "@/lib/shared/techniqueCorrectionService";
+  import { validateMediaFile } from "@/lib/storage/r2Service";
   import type { Workout, Exercise } from "@/lib/client/workoutService";
   import type { ExerciseExecutionLog } from "@/lib/trainer/types";
   import type { UserExercisePreferences } from "@/types";
   import { t } from "@/i18n/client";
-  import { escapeHtml } from "@/lib/shared/ui";
+  import { escapeHtml, showToast, showConfirm } from "@/lib/shared/ui";
 
   const loadingScreen = document.getElementById("loadingScreen")!;
   const loadingText = document.getElementById("loadingText")!;
@@ -197,87 +303,235 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const daysTabsContainer = document.getElementById("days-tabs-container")!;
   const activeDayLabel = document.getElementById("active-day-label")!;
   const completeWorkoutBtn = document.getElementById("completeWorkoutBtn")!;
-  const toast = document.getElementById("workout-toast")!;
 
-  // Exclusion Modal refs
+  // Modales de Vídeo & Corrección
+  const techniqueSubmitModal = document.getElementById("technique-submit-modal");
+  const techniqueModalExerciseName = document.getElementById("technique-modal-exercise-name");
+  const btnCloseTechniqueModal = document.getElementById("btn-close-technique-modal");
+  const btnCancelTechnique = document.getElementById("btn-cancel-technique");
+  const techniqueVideoDropzone = document.getElementById("techniqueVideoDropzone");
+  const techniqueFileInput = document.getElementById("techniqueFileInput") as HTMLInputElement | null;
+  const techniquePrompt = document.getElementById("techniquePrompt");
+  const techniquePreviewContainer = document.getElementById("techniquePreviewContainer");
+  const techniquePreviewVideo = document.getElementById("techniquePreviewVideo") as HTMLVideoElement | null;
+  const btnRemoveTechniqueFile = document.getElementById("btn-remove-technique-file");
+  const techniqueNotesInput = document.getElementById("technique-notes-input") as HTMLTextAreaElement | null;
+  const btnSubmitTechniqueVideo = document.getElementById("btn-submit-technique-video") as HTMLButtonElement | null;
+  const btnSubmitTechniqueText = document.getElementById("btn-submit-technique-text");
+
+  // Reproductor Modal
+  const videoModal = document.getElementById("video-modal");
+  const videoModalTitle = document.getElementById("video-modal-title");
+  const clientVideoPlayer = document.getElementById("client-video-player") as HTMLVideoElement | null;
+  const btnCloseVideoModal = document.getElementById("btn-close-video-modal");
+
+  // Historial de Correcciones
+  const clientCorrectionsList = document.getElementById("client-corrections-list");
+  const correctionsCountBadge = document.getElementById("corrections-count-badge");
+
+  let unsubCatalog: (() => void) | null = null;
+  let unsubPrefs: (() => void) | null = null;
+  let unsubWorkouts: (() => void) | null = null;
+  let unsubCorrections: (() => void) | null = null;
+
+  let currentWorkout: Workout | null = null;
+  let allCatalogExercises: ExerciseItem[] = [];
+  let userPrefs: UserExercisePreferences | null = null;
+  let activeUserUid = "";
+  let activeUserName = "";
+  let activeTrainerId = "";
+  let selectedDay = 1;
+  let exerciseStatuses: Record<string, "completed" | "partial" | "skipped"> = {};
+
+  let selectedTechniqueExercise: { id: string; name: string } | null = null;
+  let selectedTechniqueFile: File | null = null;
+
+  // Exclusion modal
   const exclusionModal = document.getElementById("exclusion-modal")!;
   const exclusionExerciseName = document.getElementById("exclusion-modal-exercise-name")!;
   const exclusionReasonsList = document.getElementById("exclusion-reasons-checklist")!;
   const exclusionCustomReason = document.getElementById("exclusion-custom-reason") as HTMLTextAreaElement;
-  const btnConfirmExclusion = document.getElementById("btn-confirm-exclusion")!;
-  const btnCancelExclusion = document.getElementById("btn-cancel-exclusion")!;
-  const btnCloseExclusion = document.getElementById("btn-close-exclusion")!;
-
+  const btnCloseExclusion = document.getElementById("btn-close-exclusion");
+  const btnCancelExclusion = document.getElementById("btn-cancel-exclusion");
+  const btnConfirmExclusion = document.getElementById("btn-confirm-exclusion");
   let selectedExclusionExercise: { id: string; name: string; item?: ExerciseItem } | null = null;
 
-  const dayKeys = ["day.mon", "day.tue", "day.wed", "day.thu", "day.fri", "day.sat", "day.sun"];
-  
-  // Calcular día de la semana actual (1=Lunes ... 7=Domingo)
-  const currentJsDay = new Date().getDay();
-  let selectedDay = currentJsDay === 0 ? 7 : currentJsDay;
-  const todayDayIndex = selectedDay;
+  const dayKeys = [
+    "common.day.monday",
+    "common.day.tuesday",
+    "common.day.wednesday",
+    "common.day.thursday",
+    "common.day.friday",
+    "common.day.saturday",
+    "common.day.sunday",
+  ];
 
-  let currentWorkout: Workout | null = null;
-  let activeUserUid = "";
-  let activeUserName = "Cliente";
-  let activeTrainerId: string | undefined = undefined;
-  let exerciseStatuses: Record<string, "completed" | "partial" | "skipped"> = {};
-  let allCatalogExercises: ExerciseItem[] = [];
-  let userPrefs: UserExercisePreferences | null = null;
+  // Controladores de modal de vídeo coach
+  btnCloseVideoModal?.addEventListener("click", () => {
+    if (clientVideoPlayer) {
+      clientVideoPlayer.pause();
+      clientVideoPlayer.src = "";
+    }
+    videoModal?.classList.add("hidden");
+  });
+  videoModal?.addEventListener("click", (e) => {
+    if (e.target === videoModal) {
+      if (clientVideoPlayer) {
+        clientVideoPlayer.pause();
+        clientVideoPlayer.src = "";
+      }
+      videoModal.classList.add("hidden");
+    }
+  });
 
-  let unsubWorkouts: (() => void) | null = null;
-  let unsubCatalog: (() => void) | null = null;
-  let unsubPrefs: (() => void) | null = null;
-
-  loadingText.textContent = t("dashboard.loading");
-
-  function showToast(msg: string): void {
-    toast.textContent = msg;
-    toast.classList.remove("hidden");
-    setTimeout(() => toast.classList.add("hidden"), 3500);
+  // Controladores de modal de subida de técnica
+  function closeTechniqueModal() {
+    techniqueSubmitModal?.classList.add("hidden");
+    selectedTechniqueExercise = null;
+    selectedTechniqueFile = null;
+    if (techniqueFileInput) techniqueFileInput.value = "";
+    if (techniqueNotesInput) techniqueNotesInput.value = "";
+    techniquePrompt?.classList.remove("hidden");
+    techniquePreviewContainer?.classList.add("hidden");
+    if (techniquePreviewVideo) {
+      techniquePreviewVideo.pause();
+      techniquePreviewVideo.src = "";
+    }
+    if (btnSubmitTechniqueVideo) btnSubmitTechniqueVideo.disabled = true;
   }
 
-  function renderDayTabs(): void {
-    daysTabsContainer.innerHTML = dayKeys
-      .map((key, idx) => {
-        const dayNum = idx + 1;
-        const name = t(key);
-        const isSelected = dayNum === selectedDay;
-        const isToday = dayNum === todayDayIndex;
+  btnCloseTechniqueModal?.addEventListener("click", closeTechniqueModal);
+  btnCancelTechnique?.addEventListener("click", closeTechniqueModal);
+  techniqueSubmitModal?.addEventListener("click", (e) => {
+    if (e.target === techniqueSubmitModal) closeTechniqueModal();
+  });
 
+  techniqueVideoDropzone?.addEventListener("click", () => {
+    if (!selectedTechniqueFile) techniqueFileInput?.click();
+  });
+
+  techniqueFileInput?.addEventListener("change", () => {
+    if (techniqueFileInput.files && techniqueFileInput.files[0]) {
+      const file = techniqueFileInput.files[0];
+      const val = validateMediaFile(file, 50);
+      if (!val.valid) {
+        showToast({ message: val.message || "Vídeo no válido", type: "error" });
+        return;
+      }
+
+      selectedTechniqueFile = file;
+      const objectUrl = URL.createObjectURL(file);
+      if (techniquePreviewVideo) techniquePreviewVideo.src = objectUrl;
+
+      techniquePrompt?.classList.add("hidden");
+      techniquePreviewContainer?.classList.remove("hidden");
+      if (btnSubmitTechniqueVideo) btnSubmitTechniqueVideo.disabled = false;
+    }
+  });
+
+  btnRemoveTechniqueFile?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    selectedTechniqueFile = null;
+    if (techniqueFileInput) techniqueFileInput.value = "";
+    techniquePrompt?.classList.remove("hidden");
+    techniquePreviewContainer?.classList.add("hidden");
+    if (techniquePreviewVideo) {
+      techniquePreviewVideo.pause();
+      techniquePreviewVideo.src = "";
+    }
+    if (btnSubmitTechniqueVideo) btnSubmitTechniqueVideo.disabled = true;
+  });
+
+  btnSubmitTechniqueVideo?.addEventListener("click", async () => {
+    if (!selectedTechniqueFile || !selectedTechniqueExercise || !activeUserUid) return;
+
+    try {
+      btnSubmitTechniqueVideo.disabled = true;
+      if (btnSubmitTechniqueText) btnSubmitTechniqueText.textContent = "Subiendo vídeo...";
+      console.log('📹 [TechniqueVideo] Enviando vídeo de ejecución:', {
+        ejercicio: selectedTechniqueExercise.name,
+        archivo: selectedTechniqueFile.name,
+        tamaño: `${(selectedTechniqueFile.size / (1024 * 1024)).toFixed(2)} MB`,
+      });
+
+      const notes = techniqueNotesInput?.value?.trim() || "";
+      await submitTechniqueVideo({
+        clientId: activeUserUid,
+        clientName: activeUserName,
+        trainerId: activeTrainerId || "default-trainer",
+        workoutId: currentWorkout?.id || "general",
+        workoutName: currentWorkout?.name || "Rutina",
+        exerciseId: selectedTechniqueExercise.id,
+        exerciseName: selectedTechniqueExercise.name,
+        file: selectedTechniqueFile,
+        notes,
+      });
+
+      console.log('✅ [TechniqueVideo] Vídeo enviado correctamente al entrenador');
+      showToast({ message: "¡Vídeo enviado a tu entrenador con éxito!", type: "success" });
+      closeTechniqueModal();
+    } catch (err: unknown) {
+      console.error('❌ [TechniqueVideo] Error al enviar vídeo:', err);
+      const msg = err instanceof Error ? err.message : "Error al enviar el vídeo";
+      showToast({ message: msg, type: "error" });
+    } finally {
+      if (btnSubmitTechniqueText) btnSubmitTechniqueText.textContent = "Enviar a mi Entrenador";
+      if (btnSubmitTechniqueVideo) btnSubmitTechniqueVideo.disabled = false;
+    }
+  });
+
+  function renderDayTabs(): void {
+    const todayIndex = new Date().getDay();
+    selectedDay = todayIndex === 0 ? 7 : todayIndex;
+
+    daysTabsContainer.innerHTML = dayKeys
+      .map((key, i) => {
+        const dayNum = i + 1;
+        const isToday = dayNum === selectedDay;
+        const label = t(key).slice(0, 3).toUpperCase();
         return `
           <button
             type="button"
             data-day="${dayNum}"
-            class="rounded-xl py-2 px-1 flex flex-col items-center transition-all border ${
-              isSelected
-                ? "bg-[var(--brand)] text-[var(--text-on-brand)] font-bold border-[var(--brand)] shadow-[var(--shadow-glow-sm)]"
-                : "bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)] border-[var(--border-subtle)]"
+            class="day-tab-btn flex flex-col items-center justify-center rounded-xl p-2 transition-all ${
+              isToday
+                ? "bg-[var(--brand)] text-[var(--text-on-brand)] font-bold shadow-lg shadow-[var(--shadow-glow-sm)] scale-105"
+                : "border border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white hover:bg-[var(--surface-4)]"
             }"
           >
-            <span data-i18n="${key}" class="text-[10px] uppercase opacity-80">${name}</span>
-            <span class="text-xs font-semibold">${dayNum}</span>
-            ${isToday ? `<span class="mt-0.5 h-1 w-1 rounded-full ${isSelected ? "bg-white" : "bg-[var(--brand)]"}"></span>` : ""}
+            <span class="text-[10px] font-bold">${label}</span>
+            <span class="text-xs font-mono font-bold">${dayNum}</span>
           </button>
         `;
       })
       .join("");
 
-    const dayKey = dayKeys[selectedDay - 1];
-    const dayName = dayKey ? t(dayKey) : "";
-    const isToday = selectedDay === todayDayIndex;
-    activeDayLabel.textContent = isToday ? `${dayName} (${t("client.today")})` : dayName;
+    updateActiveDayLabel();
 
-    daysTabsContainer.querySelectorAll("[data-day]").forEach((btn) => {
+    daysTabsContainer.querySelectorAll(".day-tab-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const day = Number((e.currentTarget as HTMLElement).getAttribute("data-day"));
         if (day) {
           selectedDay = day;
-          renderDayTabs();
+          daysTabsContainer.querySelectorAll(".day-tab-btn").forEach((b) => {
+            b.className =
+              "day-tab-btn flex flex-col items-center justify-center rounded-xl p-2 transition-all border border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white hover:bg-[var(--surface-4)]";
+          });
+          (e.currentTarget as HTMLElement).className =
+            "day-tab-btn flex flex-col items-center justify-center rounded-xl p-2 transition-all bg-[var(--brand)] text-[var(--text-on-brand)] font-bold shadow-lg shadow-[var(--shadow-glow-sm)] scale-105";
+
+          updateActiveDayLabel();
           renderActiveWorkout();
         }
       });
     });
+  }
+
+  function updateActiveDayLabel(): void {
+    const key = dayKeys[selectedDay - 1];
+    if (activeDayLabel && key) {
+      activeDayLabel.textContent = t(key);
+    }
   }
 
   function updateSessionCounters(): void {
@@ -331,7 +585,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const customText = exclusionCustomReason.value.trim();
 
     if (reasons.length === 0 && !customText) {
-      showToast("Por favor selecciona al menos un motivo o añade una descripción.");
+      showToast({ message: "Por favor selecciona al menos un motivo o añade una descripción.", type: "error" });
       return;
     }
 
@@ -366,15 +620,107 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         customText
       );
 
-      showToast("✅ Solicitud enviada a tu entrenador exitosamente.");
+      showToast({ message: "✅ Solicitud enviada a tu entrenador exitosamente.", type: "success" });
       closeExclusionModal();
-    } catch (err: any) {
-      showToast(err.message || "Error al enviar la solicitud.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error al enviar la solicitud.";
+      showToast({ message: msg, type: "error" });
     } finally {
       btnConfirmExclusion.removeAttribute("disabled");
       btnConfirmExclusion.classList.remove("opacity-50");
     }
   });
+
+  function renderCorrectionsHistory(corrections: ExerciseCorrection[]) {
+    if (!clientCorrectionsList) return;
+    if (correctionsCountBadge) {
+      correctionsCountBadge.textContent = `${corrections.length} ${corrections.length === 1 ? "enviada" : "enviadas"}`;
+    }
+
+    if (corrections.length === 0) {
+      clientCorrectionsList.innerHTML = `<p class="text-xs text-[var(--text-disabled)] text-center py-4">No has enviado vídeos de técnica aún. Usa el botón "📹 Enviar Vídeo" en cualquier ejercicio de tu rutina.</p>`;
+      return;
+    }
+
+    clientCorrectionsList.innerHTML = corrections.map((c) => {
+      const isReviewed = c.status === "reviewed";
+      const dateStr = c.createdAt && typeof (c.createdAt as { toDate?: () => Date }).toDate === "function"
+        ? (c.createdAt as { toDate: () => Date }).toDate().toLocaleDateString()
+        : "Reciente";
+
+      return `
+        <div class="rounded-xl border ${isReviewed ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-[var(--border-subtle)] bg-[var(--surface-3)]'} p-3.5 space-y-2.5 transition-all">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-xs text-[var(--text-primary)]">${escapeHtml(c.exerciseName)}</span>
+              <span class="text-[10px] text-[var(--text-tertiary)]">(${escapeHtml(c.workoutName)})</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="rounded-full px-2 py-0.5 text-[10px] font-bold ${isReviewed ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}">
+                ${isReviewed ? '✅ Revisado por tu Coach' : '⏳ En Revisión'}
+              </span>
+              <button type="button" class="btn-play-my-corr text-xs text-[var(--brand)] hover:underline font-semibold" data-video-url="${escapeHtml(c.videoUrl)}" data-title="Mi ejecución: ${escapeHtml(c.exerciseName)}">
+                ▶️ Ver vídeo
+              </button>
+              <button type="button" class="btn-delete-my-corr text-xs text-rose-400 hover:text-rose-300 font-semibold p-1 hover:bg-rose-500/10 rounded-md transition-all" data-corr-id="${escapeHtml(c.id)}" title="Eliminar grabación">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          ${c.clientNotes ? `<p class="text-[11px] text-zinc-400 italic">"Tu nota: ${escapeHtml(c.clientNotes)}"</p>` : ''}
+
+          ${isReviewed && c.trainerFeedback ? `
+            <div class="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-2.5 text-xs text-emerald-200">
+              <div class="font-bold flex items-center gap-1 mb-1">
+                <span>💬 Feedback de tu Coach:</span>
+              </div>
+              <p>${escapeHtml(c.trainerFeedback)}</p>
+            </div>
+          ` : !isReviewed ? `
+            <p class="text-[10px] text-amber-400/80">Tu entrenador ha recibido la grabación y te responderá pronto con correcciones de técnica.</p>
+          ` : ''}
+        </div>
+      `;
+    }).join("");
+
+    clientCorrectionsList.querySelectorAll(".btn-play-my-corr").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const url = (btn as HTMLElement).dataset.videoUrl;
+        const title = (btn as HTMLElement).dataset.title;
+        if (url && videoModal && clientVideoPlayer) {
+          clientVideoPlayer.src = url;
+          if (videoModalTitle) videoModalTitle.textContent = title || "Mi vídeo de técnica";
+          videoModal.classList.remove("hidden");
+          clientVideoPlayer.play().catch(() => {});
+        }
+      });
+    });
+
+    clientCorrectionsList.querySelectorAll(".btn-delete-my-corr").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const corrId = (btn as HTMLElement).dataset.corrId;
+        if (!corrId) return;
+
+        const confirmed = await showConfirm({
+          title: '¿Eliminar vídeo de técnica?',
+          message: '¿Estás seguro de que deseas eliminar este vídeo enviado? Tu entrenador ya no lo verá en su lista.',
+          confirmText: 'Sí, eliminar',
+          cancelText: 'Cancelar',
+          variant: 'danger',
+        });
+
+        if (confirmed) {
+          try {
+            await deleteTechniqueCorrection(corrId);
+            showToast({ message: 'Vídeo de técnica eliminado correctamente', type: 'success' });
+          } catch (err) {
+            showToast({ message: 'Error al eliminar el vídeo', type: 'error' });
+          }
+        }
+      });
+    });
+  }
 
   function renderActiveWorkout(): void {
     if (!currentWorkout) {
@@ -521,10 +867,59 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 <input type="text" data-ex-field="notes" placeholder="Ej: Aumenté carga" class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-1 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--border-brand)]" />
               </div>
             </div>
+
+            <!-- Botones de Técnica & Corrección de Vídeo (Cloudflare R2) -->
+            <div class="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-[var(--border-subtle)]">
+              <div class="flex items-center gap-2 flex-wrap">
+                ${ex.videoUrl ? `
+                  <button
+                    type="button"
+                    class="btn-watch-technique px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/25 transition-all flex items-center gap-1.5"
+                    data-video-url="${escapeHtml(ex.videoUrl)}"
+                    data-name="${escapeHtml(localizedName)}"
+                  >
+                    <span>▶️ Ver Técnica del Coach</span>
+                  </button>
+                ` : ""}
+                <button
+                  type="button"
+                  class="btn-open-technique-modal px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-500/15 border border-purple-500/30 text-purple-300 hover:bg-purple-500/25 transition-all flex items-center gap-1.5"
+                  data-ex-id="${ex.id}"
+                  data-ex-name="${escapeHtml(localizedName)}"
+                >
+                  <span>📹 Enviar Vídeo de mi Técnica</span>
+                </button>
+              </div>
+            </div>
           </div>
         `;
       })
       .join("");
+
+    // Ver vídeo de técnica del coach
+    exercisesList.querySelectorAll(".btn-watch-technique").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const url = (btn as HTMLElement).dataset.videoUrl;
+        const name = (btn as HTMLElement).dataset.name;
+        if (url && videoModal && clientVideoPlayer) {
+          clientVideoPlayer.src = url;
+          if (videoModalTitle) videoModalTitle.textContent = `Técnica del Coach: ${name || "Ejercicio"}`;
+          videoModal.classList.remove("hidden");
+          clientVideoPlayer.play().catch(() => {});
+        }
+      });
+    });
+
+    // Abrir modal de envío de vídeo de técnica del alumno
+    exercisesList.querySelectorAll(".btn-open-technique-modal").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const exId = (btn as HTMLElement).dataset.exId!;
+        const exName = (btn as HTMLElement).dataset.exName!;
+        selectedTechniqueExercise = { id: exId, name: exName };
+        if (techniqueModalExerciseName) techniqueModalExerciseName.textContent = exName;
+        techniqueSubmitModal?.classList.remove("hidden");
+      });
+    });
 
     // Star rating click handler
     exercisesList.querySelectorAll(".star-btn").forEach((btn) => {
@@ -534,7 +929,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         if (exId && activeUserUid && starVal) {
           const ok = await rateExercise(activeUserUid, exId, starVal);
           if (ok) {
-            showToast(`⭐ Calificación de ${starVal} estrellas guardada`);
+            showToast({ message: `⭐ Calificación de ${starVal} estrellas guardada`, type: "success" });
           }
         }
       });
@@ -547,7 +942,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         if (exId && activeUserUid) {
           const ok = await toggleFavorite(activeUserUid, exId);
           if (ok) {
-            showToast("⭐ Preferencia de favorito actualizada");
+            showToast({ message: "⭐ Preferencia de favorito actualizada", type: "success" });
           }
         }
       });
@@ -593,7 +988,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     onReady: async (firebaseUser, userData) => {
       activeUserUid = firebaseUser.uid;
       activeUserName = userData?.name || "Cliente";
-      activeTrainerId = userData?.assignedTrainerId;
+      activeTrainerId = userData?.assignedTrainerId || "";
       renderDayTabs();
 
       // Suscribirse al catálogo de ejercicios
@@ -624,10 +1019,15 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         }
         renderActiveWorkout();
       });
+
+      // Suscribirse al historial de correcciones del alumno
+      unsubCorrections = subscribeToCorrectionsByClient(firebaseUser.uid, (corrections) => {
+        renderCorrectionsHistory(corrections);
+      });
     },
   });
 
-  completeWorkoutBtn.addEventListener("click", async () => {
+  completeWorkoutBtn?.addEventListener("click", async () => {
     if (!currentWorkout || !activeUserUid) return;
 
     const rpeVal = parseInt((document.getElementById("session-rpe") as HTMLSelectElement).value) || 7;
@@ -656,7 +1056,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     });
 
     try {
-      showToast(t("diet.editor.saving"));
+      showToast({ message: t("diet.editor.saving") || "Guardando sesión...", type: "info" });
       await logWorkoutSession({
         clientId: activeUserUid,
         workoutId: currentWorkout.id,
@@ -668,9 +1068,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         exercises: logs,
       });
 
-      showToast("¡Sesión de entrenamiento registrada con éxito! 💪");
-    } catch (err: any) {
-      showToast(err.message || "Error al registrar entrenamiento");
+      showToast({ message: "¡Sesión de entrenamiento registrada con éxito! 💪", type: "success" });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error al registrar entrenamiento";
+      showToast({ message: msg, type: "error" });
     }
   });
 
@@ -678,6 +1079,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     unsubCatalog?.();
     unsubPrefs?.();
     unsubWorkouts?.();
+    unsubCorrections?.();
     cleanup?.();
   });
 </script>

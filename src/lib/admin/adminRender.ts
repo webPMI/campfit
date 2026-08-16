@@ -176,53 +176,103 @@ export function renderUserCard(user: AdminUser): string {
 
 /**
  * 🚨 CRITICAL: Renderiza una tarjeta de usuario extendida con chips de estado y botón de editar.
- * @protection Delega en renderUserRow para evitar duplicación de código.
  * @protection NO ELIMINAR el parámetro showEdit - Es usado por admin/users.astro para mostrar/ocultar el botón de editar.
  *
  * Chips mostrados (fusión Users/Clients):
  * - 🏋️ Entrenador asignado (o ⚠️ Sin entrenador)
- * - 🏋️ Rutinas (conteo)
- * - 🥗 Dietas (conteo)
+ * - 🏋️ Rutinas (conteo / sin rutina)
+ * - 🥗 Dietas (conteo / sin dieta)
  * - 🏥 Perfil médico (🟢/⚪)
  * - 🔒 Estado de cuenta (🟢 Activo / 🔴 Bloqueado)
  */
 export function renderUserCardExtended(user: AdminUser, showEdit: boolean = false): string {
-  const editBtn = showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-all">
+  const name = user.name || 'Sin nombre';
+  const email = user.email || '';
+  const initial = getUserInitial(name);
+  const roleColors: Record<string, string> = {
+    admin: 'bg-[var(--accent-purple-dim)] text-[var(--accent-purple)] border-[var(--accent-purple)]',
+    trainer: 'bg-[var(--info-dim)] text-[var(--info)] border-[var(--info)]',
+    client: 'bg-[var(--brand-dim)] text-[var(--brand)] border-[var(--brand)]',
+  };
+  const roleColor = roleColors[user.role] || 'bg-[var(--surface-3)] text-[var(--text-secondary)] border-[var(--border-default)]';
+
+  const editBtn = showEdit ? `<button data-edit-user data-uid="${user.uid}" class="rounded-lg p-1.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-all" title="Editar usuario">
     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
     </svg>
   </button>` : '';
 
-  // Chips de estado
-  const trainerChip = user.assignedTrainerName
-    ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--info-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--info)] border border-[var(--info)] border-opacity-20">🏋️ Coach: ${escapeHtml(user.assignedTrainerName)}</span>`
-    : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--warning-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--warning)] border border-[var(--warning)] border-opacity-20">⚠️ Sin entrenador</span>`;
+  // Chips de estado (radar a simple vista)
+  let chips = '';
+  if (user.role === 'client') {
+    const trainerChip = user.assignedTrainerName
+      ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--info-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--info)] border border-[var(--info)] border-opacity-20">🏋️ Coach: ${escapeHtml(user.assignedTrainerName)}</span>`
+      : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--warning-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--warning)] border border-[var(--warning)] border-opacity-20">⚠️ Sin entrenador</span>`;
 
-  const workoutsChip = `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--border-default)]">🏋️ Rutinas: ${user.workoutsCount ?? 0}</span>`;
-  const dietsChip = `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--border-default)]">🥗 Dietas: ${user.dietsCount ?? 0}</span>`;
+    const workoutsCount = user.workoutsCount ?? 0;
+    const workoutsChip = workoutsCount > 0
+      ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🏋️ ${workoutsCount} Rutina${workoutsCount > 1 ? 's' : ''}</span>`
+      : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-tertiary)] border border-[var(--border-default)]">🏋️ Sin rutina</span>`;
 
-  const medicalChip = user.medicalProfileComplete
-    ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🟢 Perfil médico</span>`
-    : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-disabled)] border border-[var(--border-default)]">⚪ Perfil médico</span>`;
+    const dietsCount = user.dietsCount ?? 0;
+    const dietsChip = dietsCount > 0
+      ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🥗 ${dietsCount} Dieta${dietsCount > 1 ? 's' : ''}</span>`
+      : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-tertiary)] border border-[var(--border-default)]">🥗 Sin dieta</span>`;
 
-  const accountChip = user.isBlocked
+    const medicalChip = user.medicalProfileComplete
+      ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🟢 Perfil médico</span>`
+      : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-disabled)] border border-[var(--border-default)]">⚪ Perfil médico</span>`;
+
+    chips = `
+      <div class="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border-subtle)]">
+        ${trainerChip}
+        ${workoutsChip}
+        ${dietsChip}
+        ${medicalChip}
+      </div>`;
+  } else if (user.role === 'trainer') {
+    chips = `
+      <div class="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border-subtle)]">
+        <span class="inline-flex items-center gap-1 rounded-full bg-[var(--info-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--info)] border border-[var(--info)] border-opacity-20">🏋️ Panel de Entrenador</span>
+      </div>`;
+  } else if (user.role === 'admin') {
+    chips = `
+      <div class="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border-subtle)]">
+        <span class="inline-flex items-center gap-1 rounded-full bg-[var(--accent-purple-dim)] px-2.5 py-1 text-[11px] font-medium text-[var(--accent-purple)] border border-[var(--accent-purple)] border-opacity-20">🛡️ Super Administrador</span>
+      </div>`;
+  }
+
+  const accountStatus = user.isBlocked
     ? `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--danger-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--danger)] border border-[var(--danger)] border-opacity-20">🔴 Bloqueado</span>`
     : `<span class="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] px-2 py-0.5 text-[10px] font-medium text-[var(--brand)] border border-[var(--brand)] border-opacity-20">🟢 Activo</span>`;
 
-  const chips = `
-    <div class="mt-3 flex flex-wrap gap-1.5">
-      ${trainerChip}
-      ${workoutsChip}
-      ${dietsChip}
-      ${medicalChip}
-      ${accountChip}
-    </div>`;
-
-  // Inyectamos los chips dentro de la fila: renderUserRow dibuja la tarjeta base;
-  // añadimos los chips envueltos en un contenedor extra.
-  const base = renderUserRow(user, editBtn);
-  // Insertamos los chips justo antes del cierre del div principal de la tarjeta.
-  return base.replace('</div>\n    </div>', `${chips}\n    </div>\n    </div>`);
+  return `
+    <div data-user-card data-uid="${user.uid}" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 backdrop-blur-sm transition-all duration-200 hover:border-[var(--border-strong)] hover:shadow-lg cursor-pointer group">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium bg-[var(--surface-3)] text-[var(--text-primary)] group-hover:scale-105 transition-transform">
+            ${initial}
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <p class="text-sm font-medium text-[var(--text-primary)] truncate group-hover:text-[var(--brand)] transition-colors">${escapeHtml(name)}</p>
+              ${user.hasActiveAlert ? '<span class="h-2 w-2 rounded-full bg-[var(--danger)] animate-pulse" title="Alerta activa"></span>' : ''}
+              ${accountStatus}
+            </div>
+            <p class="text-xs text-[var(--text-tertiary)] truncate">${escapeHtml(email)}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="rounded-full px-2 py-0.5 text-[10px] font-medium border border-opacity-30 ${roleColor}">${user.role}</span>
+          ${editBtn}
+          <svg class="h-4 w-4 text-[var(--text-tertiary)] group-hover:text-[var(--text-primary)] group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
+        </div>
+      </div>
+      ${chips}
+    </div>
+  `;
 }
 
 /**

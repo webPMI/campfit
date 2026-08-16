@@ -1,26 +1,23 @@
-# 🏋️ Feature Doc: Biblioteca de Ejercicios y Preferencias del Cliente
+# 🏋️ Especificación Técnica Viva: Biblioteca de Ejercicios y Preferencias (`exercises_library`)
 
-> **Módulo Central:** `src/lib/shared/exerciseLibrary.ts`  
-> **Preferencias Cliente:** `src/types/index.ts` (`UserExercisePreferences`, `ExerciseRequest`)  
+> **Fuente Canónica de Datos (Single Source of Truth):** [`src/lib/data/exercisesCatalog.ts`](file:///c:/Users/ink.enzo/Desktop/p/campfit/src/lib/data/exercisesCatalog.ts)  
+> **Validadores:** [`src/lib/data/foodValidators.ts`](file:///c:/Users/ink.enzo/Desktop/p/campfit/src/lib/data/foodValidators.ts) (`validateExerciseItem`)  
+> **Módulo Central & Caché:** [`src/lib/shared/exerciseLibrary.ts`](file:///c:/Users/ink.enzo/Desktop/p/campfit/src/lib/shared/exerciseLibrary.ts)  
+> **Preferencias Cliente:** [`src/types/index.ts`](file:///c:/Users/ink.enzo/Desktop/p/campfit/src/types/index.ts) (`UserExercisePreferences`, `ExerciseRequest`)  
 > **Reglas de Seguridad:** `firestore.rules` (`exercises_library`, `user_exercise_prefs`)  
-> **Seed Script:** `scripts/seed-exercises.mjs` (70 ejercicios)
+> **Seed Script:** [`scripts/seed-exercises.mjs`](file:///c:/Users/ink.enzo/Desktop/p/campfit/scripts/seed-exercises.mjs)
 
 ---
 
-## 1. Visión General
+## 1. Visión General y Arquitectura
 
-La **Biblioteca de Ejercicios** proporciona un catálogo central multilenguaje (Español, Inglés, Catalán) con 70 ejercicios clasificados por grupos musculares, categorías, tipo de equipamiento, nivel de dificultad y contraindicaciones de salud.
+La **Biblioteca de Ejercicios** proporciona el catálogo canónico tipado con 70 ejercicios clasificados por grupos musculares (primarios y secundarios), categorías, tipo de equipamiento, nivel de dificultad (1 a 5), vídeos explicativos alojados en Cloudflare R2 / YouTube y contraindicaciones de salud.
 
-Permite a los clientes:
-- Calificar ejercicios (rating 1 a 5 estrellas).
-- Marcar ejercicios favoritos (⭐) o solicitar exclusión (🚫).
-- Enviar solicitudes estructuradas al entrenador con checklist de motivos (dolor, lesión, falta de equipo, etc.) que notifican automáticamente al chat.
+### 🔄 Flujo de Datos y Rendimiento
 
-Permite a los entrenadores:
-- Asignar ejercicios del catálogo a las rutinas de sus clientes.
-- Recibir sugerencias no intrusivas basadas en los favoritos del cliente.
-- Ver alertas si intentan incluir un ejercicio excluido o contraindicado para el cliente.
-- Confirmar de forma silenciosa (`acknowledged`) las solicitudes recibidas.
+1. **Fuente de Verdad Única**: Definida en [`src/lib/data/exercisesCatalog.ts`](file:///c:/Users/ink.enzo/Desktop/p/campfit/src/lib/data/exercisesCatalog.ts).
+2. **Caché en Cliente**: [`src/lib/shared/exerciseLibrary.ts`](file:///c:/Users/ink.enzo/Desktop/p/campfit/src/lib/shared/exerciseLibrary.ts) mantiene una caché en `sessionStorage` y memoria con TTL de 5 minutos para carga instantánea al diseñar rutinas.
+3. **Filtros Avanzados**: Búsqueda por grupo muscular (`muscleGroups`), equipamiento (`equipment`), nivel (`difficultyLevel: 1..5`) y contraindicaciones (`contraindications`).
 
 ---
 
@@ -56,6 +53,7 @@ export interface ExerciseItem {
   category: ExerciseCategory;
   equipment: EquipmentType[];
   difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficultyLevel?: 1 | 2 | 3 | 4 | 5;
 
   defaultSets: number;
   defaultReps: number;
@@ -69,7 +67,7 @@ export interface ExerciseItem {
   contraindications?: string[]; // Ej: ['lumbar_herniation', 'knee_pain']
   tags: string[];
 
-  isActive: boolean; // Soft delete mandatory
+  isActive: boolean; // Soft delete obligatorio
   createdBy: string;
   createdAt: any;
   updatedAt: any;

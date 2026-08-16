@@ -1,10 +1,3 @@
-/**
- * Servicio de Despliegue y Purga de Plantillas Semilla (DevTools).
- * Permite a los administradores generar y limpiar colecciones semilla en Firestore.
- *
- * @module devtools/seedService
- */
-
 import {
   collection,
   doc,
@@ -14,10 +7,11 @@ import {
   where,
   writeBatch,
   serverTimestamp,
+  Timestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { SEED_EXERCISES, SEED_MEALS, SEED_DIETS, SEED_WORKOUTS } from './seedData';
-import type { DevToolsStats } from './types';
+import type { DevToolsStats, SeedDeploymentRecord } from './types';
 
 const COLLECTIONS = {
   EXERCISES: 'exercise_templates',
@@ -26,103 +20,198 @@ const COLLECTIONS = {
   WORKOUTS: 'workout_templates',
 };
 
+const SEED_DEPLOYMENTS_COLL = 'seed_deployments';
+const SEED_VERSION = 1;
+
+/**
+ * Genera un ID determinista a partir del nombre del item.
+ * Así cada nombre único tiene su propio documento y no se crean duplicados
+ * al volver a "desplegar" — se reemplaza el existente.
+ */
+function itemDocId(name: string): string {
+  // Hash simple: primeros 20 chars del nombre en minúsculas (los nombres son descriptivos y únicos)
+  return name.toLowerCase().slice(0, 48).replace(/\s+/g, '-');
+}
+
 /**
  * Despliega las plantillas de ejercicios en Firestore.
+ * Idempotente: cada ejercicio se guarda bajo su nombre como ID.
  */
-export async function seedExerciseTemplates(): Promise<number> {
+export async function seedExerciseTemplates(): Promise<{ created: number; skipped: number }> {
+  const collRef = collection(db, COLLECTIONS.EXERCISES);
+  const snap = await getDocs(collRef);
+  const existingMap = new Set(snap.docs.map((d) => d.id));
+
   const batch = writeBatch(db);
-  let count = 0;
+  let created = 0;
+  let skipped = 0;
 
   for (const item of SEED_EXERCISES) {
-    const docRef = doc(collection(db, COLLECTIONS.EXERCISES));
-    batch.set(docRef, {
-      ...item,
-      id: docRef.id,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    count++;
+    const docId = itemDocId(item.name);
+    const docRef = doc(db, COLLECTIONS.EXERCISES, docId);
+
+    if (existingMap.has(docId)) {
+      skipped++;
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+    } else {
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      created++;
+    }
   }
 
   await batch.commit();
-  return count;
+  return { created, skipped };
 }
 
-/**
- * Despliega las plantillas de comidas en Firestore.
- */
-export async function seedMealTemplates(): Promise<number> {
+export async function seedMealTemplates(): Promise<{ created: number; skipped: number }> {
+  const collRef = collection(db, COLLECTIONS.MEALS);
+  const snap = await getDocs(collRef);
+  const existingMap = new Set(snap.docs.map((d) => d.id));
+
   const batch = writeBatch(db);
-  let count = 0;
+  let created = 0;
+  let skipped = 0;
 
   for (const item of SEED_MEALS) {
-    const docRef = doc(collection(db, COLLECTIONS.MEALS));
-    batch.set(docRef, {
-      ...item,
-      id: docRef.id,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    count++;
+    const docId = itemDocId(item.name);
+    const docRef = doc(db, COLLECTIONS.MEALS, docId);
+
+    if (existingMap.has(docId)) {
+      skipped++;
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+    } else {
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      created++;
+    }
   }
 
   await batch.commit();
-  return count;
+  return { created, skipped };
 }
 
-/**
- * Despliega las plantillas de dietas en Firestore.
- */
-export async function seedDietTemplates(): Promise<number> {
+export async function seedDietTemplates(): Promise<{ created: number; skipped: number }> {
+  const collRef = collection(db, COLLECTIONS.DIETS);
+  const snap = await getDocs(collRef);
+  const existingMap = new Set(snap.docs.map((d) => d.id));
+
   const batch = writeBatch(db);
-  let count = 0;
+  let created = 0;
+  let skipped = 0;
 
   for (const item of SEED_DIETS) {
-    const docRef = doc(collection(db, COLLECTIONS.DIETS));
-    batch.set(docRef, {
-      ...item,
-      id: docRef.id,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    count++;
+    const docId = itemDocId(item.name);
+    const docRef = doc(db, COLLECTIONS.DIETS, docId);
+
+    if (existingMap.has(docId)) {
+      skipped++;
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+    } else {
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      created++;
+    }
   }
 
   await batch.commit();
-  return count;
+  return { created, skipped };
 }
 
-/**
- * Despliega las plantillas de rutinas en Firestore.
- */
-export async function seedWorkoutTemplates(): Promise<number> {
+export async function seedWorkoutTemplates(): Promise<{ created: number; skipped: number }> {
+  const collRef = collection(db, COLLECTIONS.WORKOUTS);
+  const snap = await getDocs(collRef);
+  const existingMap = new Set(snap.docs.map((d) => d.id));
+
   const batch = writeBatch(db);
-  let count = 0;
+  let created = 0;
+  let skipped = 0;
 
   for (const item of SEED_WORKOUTS) {
-    const docRef = doc(collection(db, COLLECTIONS.WORKOUTS));
-    batch.set(docRef, {
-      ...item,
-      id: docRef.id,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    count++;
+    const docId = itemDocId(item.name);
+    const docRef = doc(db, COLLECTIONS.WORKOUTS, docId);
+
+    if (existingMap.has(docId)) {
+      skipped++;
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+    } else {
+      batch.set(docRef, {
+        ...item,
+        id: docId,
+        isPreset: true,
+        version: 1,
+        source: 'system',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      created++;
+    }
   }
 
   await batch.commit();
-  return count;
+  return { created, skipped };
 }
 
 /**
- * Despliega TODAS las plantillas semilla (Ejercicios, Comidas, Dietas y Rutinas).
+ * Despliega TODAS las plantillas semilla.
+ * Registra el despliegue en seed_deployments para auditoría.
  */
 export async function seedAllTemplates(): Promise<{
-  exercises: number;
-  meals: number;
-  diets: number;
-  workouts: number;
-  total: number;
+  exercises: { created: number; skipped: number };
+  meals: { created: number; skipped: number };
+  diets: { created: number; skipped: number };
+  workouts: { created: number; skipped: number };
+  totalCreated: number;
+  totalSkipped: number;
 }> {
   const [exercises, meals, diets, workouts] = await Promise.all([
     seedExerciseTemplates(),
@@ -131,12 +220,28 @@ export async function seedAllTemplates(): Promise<{
     seedWorkoutTemplates(),
   ]);
 
+  const totalCreated = exercises.created + meals.created + diets.created + workouts.created;
+  const totalSkipped = exercises.skipped + meals.skipped + diets.skipped + workouts.skipped;
+
+  // Registrar este despliegue para auditoría
+  await recordSeedDeployment({
+    version: SEED_VERSION,
+    exercises: exercises.created + exercises.skipped,
+    meals: meals.created + meals.skipped,
+    diets: diets.created + diets.skipped,
+    workouts: workouts.created + workouts.skipped,
+    total: totalCreated + totalSkipped,
+    created: totalCreated,
+    skipped: totalSkipped,
+  });
+
   return {
     exercises,
     meals,
     diets,
     workouts,
-    total: exercises + meals + diets + workouts,
+    totalCreated,
+    totalSkipped,
   };
 }
 
@@ -164,15 +269,15 @@ export async function purgeTemplates(): Promise<number> {
 }
 
 /**
- * Obtiene las estadísticas actuales de plantillas desplegadas.
+ * Obtiene las estadísticas actuales de plantillas desplegadas (solo presets).
  */
 export async function getTemplateStats(): Promise<DevToolsStats> {
   try {
     const [exSnap, mealSnap, dietSnap, workSnap] = await Promise.all([
-      getDocs(collection(db, COLLECTIONS.EXERCISES)),
-      getDocs(collection(db, COLLECTIONS.MEALS)),
-      getDocs(collection(db, COLLECTIONS.DIETS)),
-      getDocs(collection(db, COLLECTIONS.WORKOUTS)),
+      getDocs(query(collection(db, COLLECTIONS.EXERCISES), where('isPreset', '==', true))),
+      getDocs(query(collection(db, COLLECTIONS.MEALS), where('isPreset', '==', true))),
+      getDocs(query(collection(db, COLLECTIONS.DIETS), where('isPreset', '==', true))),
+      getDocs(query(collection(db, COLLECTIONS.WORKOUTS), where('isPreset', '==', true))),
     ]);
 
     return {
@@ -181,8 +286,32 @@ export async function getTemplateStats(): Promise<DevToolsStats> {
       dietTemplatesCount: dietSnap.size,
       workoutTemplatesCount: workSnap.size,
       lastSeededAt: Date.now(),
+      seedVersion: SEED_VERSION,
     };
   } catch (error) {
     throw new Error(`Permisos insuficientes o error de Firestore: ${(error as Error).message}`);
   }
+}
+
+/**
+ * Registra un despliegue de seed en la colección seed_deployments.
+ * Sirve para auditoría: saber cuándo se desplegó, cuántos items, y ver histórico.
+ */
+async function recordSeedDeployment(record: {
+  version: number;
+  exercises: number;
+  meals: number;
+  diets: number;
+  workouts: number;
+  total: number;
+  created: number;
+  skipped: number;
+}): Promise<void> {
+  const deploymentsRef = collection(db, SEED_DEPLOYMENTS_COLL);
+  const docRef = doc(deploymentsRef);
+  await setDoc(docRef, {
+    ...record,
+    deployedAt: serverTimestamp(),
+    timestamp: Timestamp.now(),
+  });
 }

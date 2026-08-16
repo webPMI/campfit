@@ -280,6 +280,34 @@ const q = query(collection(db, 'diets'), where('clientId', '==', clientId), orde
 
 ---
 
+## 12. Sistema de Almacenamiento Cloudflare R2 (`src/lib/storage/r2Service.ts` & `src/lib/server/r2Client.ts`)
+
+### 🔒 `src/lib/storage/r2Service.ts`
+- **`uploadFileToR2()`** — Motor central de subida con timeout `AbortController` (15s) y fallback reactivo. **NUNCA eliminar** el manejo de fallback ni la captura de errores en consola.
+- **`uploadProgressPhotoToR2()`** — Subida de fotos de evolución clasificadas por pose. **NUNCA eliminar**.
+- **`validateImageFile()`, `validateMediaFile()`** — Validadores de tipo MIME y tamaño máximo. **NUNCA omitir** las validaciones previas a la subida.
+
+---
+
+## 13. Sistema Bidireccional de Vídeo Feedback de Técnica (`src/lib/shared/techniqueCorrectionService.ts`)
+
+### 🔒 `src/lib/shared/techniqueCorrectionService.ts`
+- **`submitTechniqueVideo()`** — Sube el vídeo del alumno a Cloudflare R2 y registra el documento en la colección `exercise_corrections`. **NUNCA omitir** el registro en Firestore tras la subida.
+- **`subscribeToCorrectionsByTrainer()`** — Consulta en tiempo real (`where('trainerId', '==', trainerId)`, `orderBy('createdAt', 'desc')`). **NUNCA eliminar** las cláusulas de consulta.
+- **`subscribeToCorrectionsByClient()`** — Consulta de vídeos del alumno (`where('clientId', '==', clientId)`, `orderBy('createdAt', 'desc')`). **NUNCA eliminar**.
+- **`reviewTechniqueCorrection()`** — Actualiza estado a `reviewed` y guarda feedback del coach con `reviewedAt: serverTimestamp()`. **NUNCA eliminar**.
+- **`deleteTechniqueCorrection()`** — Permite al alumno o entrenador eliminar grabaciones erróneas. **NUNCA omitir**.
+
+---
+
+## 14. Poses de Evolución Corporal y Borrado Seguro (`src/lib/client/progressService.ts`)
+
+### 🔒 `src/lib/client/progressService.ts`
+- **`registerProgressPhoto()`** — Registra la foto con su ángulo (`front`, `side`, `back`) y `storageProvider: 'cloudflare_r2'`. **NUNCA eliminar** la metadata de pose.
+- **`deleteProgressLog()`** — Elimina el registro de progreso en Firestore. **NUNCA eliminar** ni omitir el diálogo de confirmación custom (`showConfirm`, Zero Native Dialogs).
+
+---
+
 ## 📝 Reglas Estrictas para Agentes IA
 
 ### ❌ PROHIBIDO ELIMINAR:
@@ -288,11 +316,12 @@ const q = query(collection(db, 'diets'), where('clientId', '==', clientId), orde
 3. Verificaciones de ownership (`trainerId == request.auth.uid`)
 4. Campos `serverTimestamp()` en `createdAt`/`updatedAt`
 5. Manejo de errores con `showToast` o `logger.error`
-6. Cleanup de suscripciones (`unsubClients?.()`, `unsubDiets?.()`)
+6. Cleanup de suscripciones (`unsubClients?.()`, `unsubDiets?.()`, `unsubCorrections?.()`)
 7. Tipos union estrictos (`type: 'normal' | 'advanced'` en vez de `type: string`)
 8. Campos opcionales críticos (`allergens?: string[]`)
 9. Claves de traducción i18n
 10. Funciones de validación (`isValidEmail`, `isValidPassword`)
+11. **Diálogos Nativos (ZERO NATIVE DIALOGS)**: Prohibido usar `alert()`, `confirm()`, `prompt()`. Usar siempre `showToast`, `showConfirm` o modales custom.
 
 ### ✅ OBLIGATORIO ANTES DE MODIFICAR:
 1. Leer este documento completo
@@ -305,38 +334,3 @@ const q = query(collection(db, 'diets'), where('clientId', '==', clientId), orde
 ---
 
 **Este documento debe leerse ANTES de cualquier modificación al código fuente.**
-
-# task_progress
-
-You've made 60 API requests without a task_progress parameter. It is strongly recomended that you create one to track remaining work.
-
-
-1. To create or update a todo list, include the task_progress parameter in the next tool call
-2. Review each item and update its status:
-   - Mark completed items with: - [x]
-   - Keep incomplete items as: - [ ]
-   - Add new items if you discover additional steps
-3. Modify the list as needed:
-		- Add any new steps if you discover additional steps
-		- Reorder if the sequence has changed
-4. Ensure the list accurately reflects the current state
-
-**Remember:** Keeping the task_progress list updated helps track progress and ensures nothing is missed.
-
-<environment_details>
-# Visual Studio Code Visible Files
-src/lib/admin/adminUsers.ts
-
-# Visual Studio Code Open Tabs
-firestore.rules
-src/lib/admin/adminUsers.ts
-
-# Current Time
-8/15/2026, 1:11:48 PM (Europe/Madrid, UTC+2:00)
-
-# Context Window Usage
-158,214 / 1,000K tokens used (16%)
-
-# Current Mode
-ACT MODE
-</environment_details>

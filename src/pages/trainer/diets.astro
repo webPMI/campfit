@@ -163,6 +163,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     createDiet,
     updateDiet,
     deleteDiet,
+    cloneDietToClient,
   } from "@/lib/trainer/trainerUtils";
   import {
     subscribeToDietTemplates,
@@ -271,7 +272,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       const selectedClient = allClients.find((c) => c.uid === clientId);
       if (applyBtnLabel) {
-        applyBtnLabel.textContent = selectedClient ? `Asignar a ${escapeHtml(selectedClient.name.split(" ")[0])}` : "Asignar Dieta";
+        applyBtnLabel.textContent = selectedClient?.name ? `Asignar a ${escapeHtml(selectedClient.name.split(" ")[0] || "")}` : "Asignar Dieta";
       }
 
       if (!templateId || !previewBox) {
@@ -303,9 +304,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         if (!tmpl.meals || tmpl.meals.length === 0) {
           mealsEl.innerHTML = `<p class="text-zinc-500 italic">Esta plantilla no contiene comidas aún.</p>`;
         } else {
-          mealsEl.innerHTML = tmpl.meals.map((m, idx) => `
+          mealsEl.innerHTML = tmpl.meals.map((m: { name?: string; calories?: number; protein?: number; carbs?: number; fat?: number }, idx: number) => `
             <div class="flex items-center justify-between py-1 border-b border-zinc-800/60 last:border-0">
-              <span class="font-medium text-zinc-200">#${idx + 1} ${escapeHtml(m.name)}</span>
+              <span class="font-medium text-zinc-200">#${idx + 1} ${escapeHtml(m.name || "")}</span>
               <span class="text-amber-400/90 font-mono text-[11px]">${m.calories || 0} kcal · P:${m.protein || 0}g C:${m.carbs || 0}g G:${m.fat || 0}g</span>
             </div>
           `).join("");
@@ -321,7 +322,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             selectedClient.medicalProfile as MedicalProfile,
             getStoredLanguage()
           );
-          if (conflicts.length > 0) {
+          if (conflicts.length > 0 && conflicts[0]?.message) {
             conflictsEl.classList.remove("hidden");
             conflictsEl.innerHTML = `
               <div class="mt-2 rounded-lg border border-rose-500/40 bg-rose-500/10 p-2.5 space-y-1">
@@ -412,7 +413,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           })),
         }).then((targetClientId) => {
           if (!targetClientId) return;
-          cloneDietToClient(diet, targetClientId, currentTrainerId).then((newId) => {
+          cloneDietToClient(diet, targetClientId, currentTrainerId).then((newId: string | null) => {
             if (newId && filterClientSelect) {
               filterClientSelect.value = targetClientId;
               renderDiets();

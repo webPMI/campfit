@@ -1,0 +1,7 @@
+name = "campfit-storage"
+main = "src/index.ts"
+compatibility_date = "2024-08-01"
+
+[[r2_buckets]]
+binding = "STORAGE_BUCKET"
+bucket_name = "campfit"

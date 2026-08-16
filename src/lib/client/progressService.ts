@@ -113,3 +113,19 @@ export async function registerDailyChecklist(
     createdAt: serverTimestamp(),
   });
 }
+
+/**
+ * Elimina un registro o foto de evolución de Firestore.
+ */
+export async function deleteProgressLog(logId: string): Promise<boolean> {
+  if (!logId) return false;
+  try {
+    const { doc, deleteDoc } = await import('firebase/firestore');
+    await deleteDoc(doc(db, 'progress_logs', logId));
+    logger.info('Progress', `Log de progreso eliminado: ${logId}`);
+    return true;
+  } catch (error) {
+    logger.error('Progress', `Error al eliminar log ${logId}:`, error);
+    throw error;
+  }
+}

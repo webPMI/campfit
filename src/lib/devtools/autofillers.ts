@@ -214,6 +214,11 @@ export const pageRegistry: Record<PageId, PageRegistry> = {
   'admin-settings': { label: 'Admin - Configuración' },
   'admin-workouts': { label: 'Admin - Rutinas' },
   'admin-diets': { label: 'Admin - Dietas' },
+  'admin-exercises': { label: 'Admin - Ejercicios' },
+  'admin-foods': { label: 'Admin - Nutrición' },
+  'admin-logs': { label: 'Admin - Logs' },
+  'admin-devtools': { label: 'Admin - DevTools' },
+  'admin-seeds': { label: 'Admin - Gestor de Semillas' },
   'admin-progress': { label: 'Admin - Progreso' },
   'admin-chat': { label: 'Admin - Chat' },
   'admin-clinical': {

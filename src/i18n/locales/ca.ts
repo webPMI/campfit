@@ -1,4 +1,6 @@
-import type { TranslationMap } from '../types';
+import type {
+
+ TranslationMap } from '../types';
 
 export const ca: TranslationMap = {
   // Global & Common
@@ -344,7 +346,6 @@ export const ca: TranslationMap = {
   'admin.diets': 'Dietes',
   'admin.diets.total': 'Total de dietes',
   'admin.recent.users': 'Usuaris Recents',
-  'admin.loading': 'Carregant...',
   'admin.all': 'Tots',
   'admin.no.users': 'Sense usuaris registrats',
   'admin.no.clients': 'Sense clients registrats',
@@ -602,8 +603,6 @@ export const ca: TranslationMap = {
 
   // Common UI
   'common.edit': 'Editar',
-  'common.delete': 'Eliminar',
-  'common.error': 'Error',
   'common.client': 'Client',
   'common.select': 'Seleccionar',
   'common.validationError': 'Error de validació',
@@ -623,4 +622,6 @@ export const ca: TranslationMap = {
   'admin.tabs.deploy': 'Desplegar',
   'admin.tabs.devtools': 'DevTools',
   'admin.tabs.logs': 'Logs',
+
+
 };

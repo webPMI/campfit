@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 import { escapeHtml, getUserInitial, getRoleBadge } from '@/lib/shared/ui';
+import { uploadAvatar } from '@/lib/storage/r2Service';
 
 // ============================================================
 // Tipos
@@ -25,6 +26,7 @@ export interface ProfileData {
   name: string;
   email: string;
   role: 'admin' | 'trainer' | 'client';
+  photoURL?: string;
   hasActiveAlert?: boolean;
   assignedTrainerId?: string;
   assignedTrainerName?: string;
@@ -51,6 +53,7 @@ export interface MedicalProfileData {
 export interface UpdateProfilePayload {
   name?: string;
   email?: string;
+  photoURL?: string;
   medicalProfile?: MedicalProfileData;
 }
 
@@ -79,6 +82,7 @@ export async function loadProfile(uid: string): Promise<ProfileData | null> {
       name: data.name || 'Sin nombre',
       email: data.email || '',
       role: data.role || 'client',
+      photoURL: data.photoURL || undefined,
       hasActiveAlert: data.hasActiveAlert ?? false,
       assignedTrainerId: data.assignedTrainerId,
       medicalProfile: data.medicalProfile,
@@ -119,6 +123,7 @@ export async function updateProfile(uid: string, data: UpdateProfilePayload): Pr
 
     if (data.name !== undefined) updatePayload.name = data.name;
     if (data.email !== undefined) updatePayload.email = data.email;
+    if (data.photoURL !== undefined) updatePayload.photoURL = data.photoURL;
     if (data.medicalProfile !== undefined) updatePayload.medicalProfile = data.medicalProfile;
 
     await updateDoc(doc(db, 'users', uid), updatePayload);
@@ -127,6 +132,37 @@ export async function updateProfile(uid: string, data: UpdateProfilePayload): Pr
   } catch (error) {
     logger.error('Profile', 'Error al actualizar perfil:', error);
     return { success: false, message: 'Error al actualizar el perfil' };
+  }
+}
+
+/**
+ * Sube una nueva imagen de avatar a Cloudflare R2 y actualiza el documento de usuario.
+ * @param uid - ID del usuario
+ * @param file - Archivo de imagen seleccionado
+ * @returns Resultado con la URL pública de R2
+ */
+export async function uploadProfileAvatar(
+  uid: string,
+  file: File
+): Promise<{ success: boolean; photoUrl?: string; message: string }> {
+  try {
+    const uploadResult = await uploadAvatar(file, uid);
+    await updateDoc(doc(db, 'users', uid), {
+      photoURL: uploadResult.url,
+      updatedAt: serverTimestamp(),
+    });
+    logger.info('Profile', `Avatar actualizado en Cloudflare R2 para ${uid}: ${uploadResult.url}`);
+    return {
+      success: true,
+      photoUrl: uploadResult.url,
+      message: 'Foto de perfil actualizada correctamente en Cloudflare R2',
+    };
+  } catch (error) {
+    logger.error('Profile', 'Error al subir avatar a Cloudflare R2:', error);
+    return {
+      success: false,
+      message: 'Error al subir la imagen de perfil a Cloudflare R2',
+    };
   }
 }
 
@@ -189,12 +225,13 @@ export function renderProfileView(profile: ProfileData): string {
   const badge = getRoleBadge(profile.role);
   const initial = getUserInitial(profile.name);
   const hasTrainer = !!profile.assignedTrainerName;
+  const avatarHtml = profile.photoURL
+    ? `<img src="${escapeHtml(profile.photoURL)}" alt="${escapeHtml(profile.name)}" class="h-20 w-20 shrink-0 rounded-full object-cover border-2 border-[var(--border-brand)] shadow-[var(--shadow-glow-sm)]" />`
+    : `<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-3xl font-bold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">${initial}</div>`;
 
   return `
     <div class="flex items-center gap-5">
-      <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-3xl font-bold text-[var(--text-on-brand)] shadow-[var(--shadow-glow-sm)]">
-        ${initial}
-      </div>
+      ${avatarHtml}
       <div class="min-w-0">
         <h2 class="text-xl font-bold text-[var(--text-primary)] truncate">${escapeHtml(profile.name)}</h2>
         <p class="text-sm text-[var(--text-tertiary)] truncate">${escapeHtml(profile.email)}</p>

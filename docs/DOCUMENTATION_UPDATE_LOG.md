@@ -3,15 +3,15 @@
 > **Propósito:** Registrar de forma compacta cada mejora estructural, de consolidación o depuración
 > aplicada a la documentación del proyecto por Documentator Agent.
 
-## 2026-08-16 — Consolidación documental completa
+## 2026-08-16 — Sistema de Tickets de Soporte (Fase 1: Esqueleto)
 
-- **Eliminación de documentos duplicados:**
-  - `docs/LISTA_TAREAS_IMPLEMENTACION_MAESTRA.md` y `docs/TASKS_MASTER.md` eliminados (duplicaban `docs/BACKLOG.md`).
-  - `docs/CLOUDFLARE_R2_SETUP.md` eliminado — su contenido de configuración del dashboard Cloudflare fue absorbido por `docs/CLOUDFLARE_R2.md` (sección 5).
-  - `docs/DOCUMENTATION_UPDATE_LOG.md` eliminado — su función de registro de cambios documentales se redirige ahora a `docs/CHANGELOG.md`.
+- **T-1.1 completado:** Colección `support_tickets` creada en `firestore.rules` (reglas de seguridad: solo autenticados pueden crear, solo reporter y admins leen, solo admins actualizan, sin borrado físico) y documentada en `docs/architecture/FIRESTORE_SCHEMA.md`.
+- **T-1.2 completado:** API `POST /api/support/tickets` creada (`src/pages/api/support/tickets.ts`) — cualquier usuario autenticado puede reportar, con validación de título/descripción/categoría/severidad, soporte para anonimato opcional, hash de deduplicación.
+- **T-1.3 completado:** API `GET /api/support/tickets` (listado admin) integrada en mismo archivo — filtros por status/category/severity/search, paginación cursor-based, solo accesible por admins.
+- **Backend listo para T-1.6 (formulario cliente) y T-1.8 (panel admin).**
 
-- **Consolidación de funcionalidad:**
-  - `docs/CLOUDFLARE_R2.md` es ahora la única fuente de verdad sobre R2 (estado funcional + guía de configuración dashboard en sección 5).
-  - `docs/DOCUMENTATION_MAP.md` actualizada para reflejar la nueva estructura sin redundancias.
-
-- **Estado posterior:** Backlog maestro (`docs/BACKLOG.md`) es única fuente de tareas pendientes; mapa de documentación actualizado; archivo de cambios redirigido a `CHANGELOG.md`.
+### Archivos modificados/creados:
+- `src/pages/api/support/tickets.ts` — nuevo (POST + GET)
+- `docs/architecture/FIRESTORE_SCHEMA.md` — actualizado (colección support_tickets documentada)
+- `firestore.rules` — actualizado (reglas de support_tickets)
+- `docs/BACKLOG.md` — actualizado (T-1.1, T-1.2, T-1.3 marcados como ✅)

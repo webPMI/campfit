@@ -1,212 +1,346 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
 import PageTransition from "@/components/PageTransition.astro";
-import { translations, type Language } from "@/i18n/translations";
-
-const lang = (Astro.url.searchParams.get("lang") as Language) || "es";
-const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key] || key;
 ---
 
 <AdminLayout>
-  <div class="mx-auto max-w-6xl px-4 py-8">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 py-6 space-y-6">
     <PageTransition animation="fade-up" stagger>
-      <!-- Header -->
-      <div class="flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <div class="flex items-center gap-3">
-            <h1 data-i18n="admin.dashboard" class="text-2xl font-bold">{t("admin.dashboard")}</h1>
+      
+      <!-- Top Welcome & System Pulse Banner -->
+      <div class="rounded-3xl border border-[var(--border-subtle)] bg-gradient-to-r from-[var(--surface-1)] via-[var(--surface-2)] to-[var(--surface-1)] p-6 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                Centro de Mando
+              </span>
+              <span id="live-indicator" class="flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                En vivo
+              </span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] tracking-tight mt-1">
+              Panel Administrativo CampFit
+            </h1>
+            <p class="text-xs sm:text-sm text-[var(--text-tertiary)] mt-1 max-w-xl">
+              Control centralizado de atletas, entrenadores, catálogos multimedia y auditoría del sistema.
+            </p>
+          </div>
+
+          <div class="flex items-center flex-wrap gap-2">
             <a
-              href="/client/dashboard"
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-dim)] text-[var(--brand)] border border-[var(--border-brand)] text-xs font-semibold hover:bg-[var(--brand)] hover:text-white transition-all shadow-sm"
-              title="Ir al Dashboard de Cliente"
+              href="/admin/users"
+              class="px-4 py-2 rounded-xl bg-[var(--brand)] text-[var(--text-on-brand)] font-bold text-xs shadow-lg shadow-[var(--shadow-glow-sm)] hover:opacity-90 transition-all flex items-center gap-1.5"
             >
-              <span>👁️</span>
-              <span data-i18n="admin.view.client">{t("admin.view.client")}</span>
+              <span>➕</span>
+              <span>Gestionar Usuarios</span>
             </a>
+            <a
+              href="/admin/logs"
+              class="px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] text-[var(--text-primary)] font-semibold text-xs hover:bg-[var(--surface-3)] transition-all flex items-center gap-1.5"
+            >
+              <span>📜</span>
+              <span>Auditoría</span>
+            </a>
+            <div id="last-update" class="hidden sm:block text-[11px] text-[var(--text-tertiary)] px-3 py-2 rounded-xl bg-[var(--surface-3)] font-mono">
+              --:--
+            </div>
           </div>
-          <p data-i18n="admin.dashboard.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("admin.dashboard.desc")}</p>
-        </div>
-        <div id="last-update" class="text-xs text-[var(--text-disabled)] font-medium">
-          <span data-i18n="admin.updated">{t("admin.updated")}</span>: --
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="mt-6 flex gap-2 overflow-x-auto pb-2">
-        <button data-tab="overview" class="tab-btn active rounded-xl px-4 py-2 text-xs font-semibold transition-all" data-i18n="admin.tabs.overview">{t("admin.tabs.overview") || "Overview"}</button>
-        <button data-tab="deploy" class="tab-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all" data-i18n="admin.tabs.deploy">{t("admin.tabs.deploy") || "Deploy"}</button>
-        <button data-tab="devtools" class="tab-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all" data-i18n="admin.tabs.devtools">{t("admin.tabs.devtools") || "DevTools"}</button>
-        <button data-tab="logs" class="tab-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all" data-i18n="admin.tabs.logs">{t("admin.tabs.logs") || "Logs"}</button>
+      <!-- Key Performance Metrics Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Metric 1: Total Users -->
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 sm:p-5 backdrop-blur-md relative group hover:border-[var(--brand)] transition-all shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-tertiary)]">Total Registros</span>
+            <div class="h-8 w-8 rounded-xl bg-[var(--brand-dim)] flex items-center justify-center text-sm text-[var(--brand)]">
+              👥
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="stat-total-users" class="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">-</span>
+            <span class="text-[10px] text-emerald-400 font-bold">Cuentas activas</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-tertiary)]">
+            <span>Atletas: <strong id="stat-sub-clients" class="text-[var(--text-primary)]">-</strong></span>
+            <span>Coaches: <strong id="stat-sub-trainers" class="text-[var(--text-primary)]">-</strong></span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Clientes Activos -->
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 sm:p-5 backdrop-blur-md relative group hover:border-cyan-500/50 transition-all shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-tertiary)]">Atletas / Alumnos</span>
+            <div class="h-8 w-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-sm font-bold">
+              🏃
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="stat-total-clients" class="text-2xl sm:text-3xl font-extrabold text-cyan-400">-</span>
+            <span class="text-[10px] text-[var(--text-tertiary)]">En seguimiento</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-tertiary)]">
+            <a href="/admin/users?role=client" class="text-cyan-400 hover:underline font-semibold flex items-center gap-1">
+              Ver atletas →
+            </a>
+          </div>
+        </div>
+
+        <!-- Metric 3: Entrenadores -->
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 sm:p-5 backdrop-blur-md relative group hover:border-amber-500/50 transition-all shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-tertiary)]">Entrenadores (Staff)</span>
+            <div class="h-8 w-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-sm font-bold">
+              🏋️
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="stat-total-trainers" class="text-2xl sm:text-3xl font-extrabold text-amber-400">-</span>
+            <span class="text-[10px] text-[var(--text-tertiary)]">Coaches asignados</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-tertiary)]">
+            <a href="/admin/users?role=trainer" class="text-amber-400 hover:underline font-semibold flex items-center gap-1">
+              Ver entrenadores →
+            </a>
+          </div>
+        </div>
+
+        <!-- Metric 4: Alertas & Estado -->
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4 sm:p-5 backdrop-blur-md relative group hover:border-rose-500/50 transition-all shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-tertiary)]">Estado & Alertas</span>
+            <div class="h-8 w-8 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-sm font-bold">
+              🚨
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="stat-total-alerts" class="text-2xl sm:text-3xl font-extrabold text-rose-400">0</span>
+            <span class="text-[10px] text-[var(--text-tertiary)]">Incidencias</span>
+          </div>
+          <div class="mt-3 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-tertiary)]">
+            <span>Bloqueados: <strong id="stat-total-blocked" class="text-rose-400">0</strong></span>
+            <span class="text-emerald-400 font-bold">R2 Conectado ☁️</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Overview Tab -->
-      <section id="tab-overview" class="tab-panel mt-6 space-y-6">
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm">
-            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--brand-dim)]">
-              <svg class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-              </svg>
-            </div>
-            <h3 data-i18n="admin.users" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.users")}</h3>
-            <p id="stat-total-users" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
-            <p data-i18n="admin.totalUsers" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalUsers")}</p>
-          </div>
-
-          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm">
-            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--info-dim)]">
-              <svg class="h-5 w-5 text-[var(--info)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.926 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-              </svg>
-            </div>
-            <h3 data-i18n="admin.trainers" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.trainers")}</h3>
-            <p id="stat-total-trainers" class="mt-1 text-2xl font-bold text-[var(--info)]">-</p>
-            <p data-i18n="admin.totalTrainers" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalTrainers")}</p>
-          </div>
-
-          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm">
-            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--brand-dim)]">
-              <svg class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
-              </svg>
-            </div>
-            <h3 data-i18n="admin.clients" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.clients")}</h3>
-            <p id="stat-total-clients" class="mt-1 text-2xl font-bold text-[var(--brand)]">-</p>
-            <p data-i18n="admin.totalClients" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalClients")}</p>
-          </div>
-
-          <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 backdrop-blur-sm">
-            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--danger-dim)]">
-              <svg class="h-5 w-5 text-[var(--danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-              </svg>
-            </div>
-            <h3 data-i18n="admin.alerts" class="text-sm font-semibold text-[var(--text-primary)]">{t("admin.alerts")}</h3>
-            <p id="stat-total-alerts" class="mt-1 text-2xl font-bold text-[var(--danger)]">-</p>
-            <p data-i18n="admin.totalAlerts" class="mt-1 text-xs text-[var(--text-tertiary)]">{t("admin.totalAlerts")}</p>
-          </div>
+      <!-- Quick Action Command Matrix -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+            Accesos Rápidos & Gestión
+          </h2>
+          <span class="text-xs text-[var(--text-tertiary)]">Módulos Administrativos</span>
         </div>
 
-        <!-- Recent Alerts -->
-        <div>
-          <h2 data-i18n="admin.recentAlerts" class="text-lg font-semibold text-[var(--text-primary)]">{t("admin.recentAlerts")}</h2>
-          <div id="recent-alerts" class="mt-4 space-y-3">
-            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm">
-              <p data-i18n="admin.loading" class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- 1. Gestor de Usuarios -->
+          <a
+            href="/admin/users"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-[var(--brand)] transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              👥
             </div>
-          </div>
-        </div>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-[var(--brand)] transition-colors">
+                Usuarios & Clientes
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Asignación de entrenadores, estados de membresía y perfiles médicos.
+              </p>
+            </div>
+          </a>
 
-        <!-- Recent Users -->
-        <div>
-          <h2 data-i18n="admin.recent.users" class="text-lg font-semibold text-[var(--text-primary)]">{t("admin.recent.users")}</h2>
-          <div id="recent-users" class="mt-4 space-y-3">
-            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 text-center backdrop-blur-sm">
-              <p data-i18n="admin.loading" class="text-sm text-[var(--text-tertiary)]">{t("admin.loading")}</p>
+          <!-- 2. Catálogo de Ejercicios -->
+          <a
+            href="/admin/exercises"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-emerald-500/50 transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              🎯
             </div>
-          </div>
-        </div>
-      </section>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-emerald-400 transition-colors">
+                Biblioteca de Ejercicios
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Creación de ejercicios globales, grupos musculares y vídeos técnicos R2.
+              </p>
+            </div>
+          </a>
 
-      <!-- Deploy Tab -->
-      <section id="tab-deploy" class="tab-panel mt-6 hidden space-y-4">
-        <div class="rounded-2xl border border-[var(--border-brand)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-4">
-          <div class="flex items-center justify-between flex-wrap gap-3 border-b border-[var(--border-subtle)] pb-3">
-            <div class="flex items-center gap-2.5">
-              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-dim)] text-xl font-bold text-[var(--brand)]">⚡</div>
-              <div>
-                <h2 data-i18n="admin.quickDeploy.title" class="text-base font-bold text-[var(--text-primary)]">{t("admin.quickDeploy.title")}</h2>
-                <p data-i18n="admin.quickDeploy.desc" class="text-xs text-[var(--text-tertiary)]">{t("admin.quickDeploy.desc")}</p>
-              </div>
+          <!-- 3. Base Nutricional -->
+          <a
+            href="/admin/foods"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-amber-500/50 transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              🥗
             </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <a href="/trainer/workouts" class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:border-[var(--border-brand)] hover:bg-[var(--surface-3)] transition-all shadow-sm group">
-              <span class="text-2xl group-hover:scale-110 transition-transform">🏋️</span>
-              <div>
-                <p data-i18n="admin.quickDeploy.defaultWorkouts" class="text-xs font-bold text-[var(--text-primary)]">{t("admin.quickDeploy.defaultWorkouts")}</p>
-                <p data-i18n="admin.quickDeploy.defaultWorkouts.desc" class="text-[10px] text-[var(--text-tertiary)]">{t("admin.quickDeploy.defaultWorkouts.desc")}</p>
-              </div>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-amber-400 transition-colors">
+                Catálogo de Nutrición
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Base de datos de alimentos, macronutrientes, alérgenos y equivalencias.
+              </p>
+            </div>
+          </a>
+
+          <!-- 4. Visor de Logs -->
+          <a
+            href="/admin/logs"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-purple-500/50 transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              📜
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-purple-400 transition-colors">
+                Logs del Sistema
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Auditoría en tiempo real de llamadas API, errores e interacciones de IA.
+              </p>
+            </div>
+          </a>
+
+          <!-- 5. Gestor de Semillas & Ingesta -->
+          <a
+            href="/admin/seeds"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-emerald-500/50 transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              🌱
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-emerald-400 transition-colors">
+                Gestor de Semillas (Seeds)
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Ingesta masiva CSV/JSON, validación pre-flight Atwater y despliegue idempotente.
+              </p>
+            </div>
+          </a>
+
+          <!-- 6. DevTools & Panel -->
+          <a
+            href="/admin/devtools"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-cyan-500/50 transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              🛠️
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-cyan-400 transition-colors">
+                DevTools & Diagnósticos
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Inyección de datos de prueba, diagnósticos de rendimiento y utilidades.
+              </p>
+            </div>
+          </a>
+
+          <!-- 6. Configuración Global -->
+          <a
+            href="/admin/settings"
+            class="p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:border-zinc-400 transition-all flex items-start gap-3.5 group shadow-sm"
+          >
+            <div class="h-10 w-10 rounded-xl bg-zinc-500/10 text-zinc-300 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">
+              ⚙️
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-[var(--text-primary)] group-hover:text-zinc-200 transition-colors">
+                Configuración General
+              </h3>
+              <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5 leading-relaxed">
+                Preferencias de la cuenta administradora, interfaz y seguridad.
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Realtime Activity Radar & Recent Users -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+        <!-- Recent Signups & Registrations -->
+        <div class="rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-5 space-y-4 shadow-sm">
+          <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">✨</span>
+              <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                Últimos Registros
+              </h2>
+            </div>
+            <a href="/admin/users" class="text-xs text-[var(--brand)] font-semibold hover:underline">
+              Ver todos →
             </a>
-            <a href="/trainer/diets" class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:border-amber-400/40 hover:bg-[var(--surface-3)] transition-all shadow-sm group">
-              <span class="text-2xl group-hover:scale-110 transition-transform">🥗</span>
-              <div>
-                <p data-i18n="admin.quickDeploy.defaultDiets" class="text-xs font-bold text-[var(--text-primary)]">{t("admin.quickDeploy.defaultDiets")}</p>
-                <p data-i18n="admin.quickDeploy.defaultDiets.desc" class="text-[10px] text-[var(--text-tertiary)]">{t("admin.quickDeploy.defaultDiets.desc")}</p>
-              </div>
-            </a>
-            <a href="/admin/users" class="flex items-center gap-3 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:border-blue-400/40 hover:bg-[var(--surface-3)] transition-all shadow-sm group">
-              <span class="text-2xl group-hover:scale-110 transition-transform">👥</span>
-              <div>
-                <p data-i18n="admin.quickDeploy.clientManagement" class="text-xs font-bold text-[var(--text-primary)]">{t("admin.quickDeploy.clientManagement")}</p>
-                <p data-i18n="admin.quickDeploy.clientManagement.desc" class="text-[10px] text-[var(--text-tertiary)]">{t("admin.quickDeploy.clientManagement.desc")}</p>
-              </div>
-            </a>
           </div>
-        </div>
-      </section>
 
-      <!-- DevTools Tab -->
-      <section id="tab-devtools" class="tab-panel mt-6 hidden">
-        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-base font-bold text-[var(--text-primary)]">🛠️ DevTools</h2>
-            <a href="/admin/devtools" class="rounded-xl bg-[var(--brand)] px-3.5 py-1.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md hover:opacity-90 transition-all">Abrir</a>
+          <div id="recent-users" class="space-y-2.5">
+            <div class="p-6 text-center text-xs text-[var(--text-tertiary)]">
+              Cargando usuarios...
+            </div>
           </div>
-          <p class="text-xs text-[var(--text-tertiary)]">Herramientas de desarrollo, seed y depuración.</p>
         </div>
-      </section>
 
-      <!-- Logs Tab -->
-      <section id="tab-logs" class="tab-panel mt-6 hidden">
-        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-base font-bold text-[var(--text-primary)]">📋 Logs</h2>
-            <a href="/admin/logs" class="rounded-xl bg-[var(--brand)] px-3.5 py-1.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md hover:opacity-90 transition-all">Ver panel</a>
+        <!-- System Alerts & Audit Events -->
+        <div class="rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-5 space-y-4 shadow-sm">
+          <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🚨</span>
+              <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                Alertas de Salud y Cuentas
+              </h2>
+            </div>
+            <a href="/admin/logs" class="text-xs text-rose-400 font-semibold hover:underline">
+              Logs detallados →
+            </a>
           </div>
-          <p class="text-xs text-[var(--text-tertiary)]">Registro de errores, warnings y métricas de la aplicación.</p>
+
+          <div id="recent-alerts" class="space-y-2.5">
+            <div class="p-6 text-center text-xs text-[var(--text-tertiary)]">
+              Comprobando incidencias...
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
+
     </PageTransition>
   </div>
-
-  <script>
-    const tabs = document.querySelectorAll('.tab-btn');
-    const panels = document.querySelectorAll('.tab-panel');
-    function switchTab(name) {
-      tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-      panels.forEach(p => p.classList.toggle('hidden', p.id !== 'tab-' + name));
-    }
-    tabs.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
-    switchTab('overview');
-  </script>
 
   <script>
     import { requireAdmin } from "@/lib/shared/authGuard";
     import { subscribeToUsers, renderUserCard } from "@/lib/admin/adminUtils";
     import { ICONS, renderEmptyState } from "@/lib/shared/ui";
-    import { t } from "@/i18n/client";
 
-    let unsubUsers = null;
+    let unsubUsers: (() => void) | null = null;
 
     requireAdmin(() => initDashboard());
 
     window.addEventListener("beforeunload", () => unsubUsers?.());
 
     function initDashboard(): void {
-      const statTotalUsers = document.getElementById("stat-total-users")!;
-      const statTotalTrainers = document.getElementById("stat-total-trainers")!;
-      const statTotalClients = document.getElementById("stat-total-clients")!;
-      const statTotalBlocked = document.getElementById("stat-total-blocked")!;
-      const statTotalAlerts = document.getElementById("stat-total-alerts")!;
-      const recentContainer = document.getElementById("recent-users")!;
-      const alertsContainer = document.getElementById("recent-alerts")!;
-      const lastUpdateEl = document.getElementById("last-update")!;
+      const statTotalUsers = document.getElementById("stat-total-users");
+      const statTotalTrainers = document.getElementById("stat-total-trainers");
+      const statTotalClients = document.getElementById("stat-total-clients");
+      const statSubClients = document.getElementById("stat-sub-clients");
+      const statSubTrainers = document.getElementById("stat-sub-trainers");
+      const statTotalBlocked = document.getElementById("stat-total-blocked");
+      const statTotalAlerts = document.getElementById("stat-total-alerts");
+      const recentContainer = document.getElementById("recent-users");
+      const alertsContainer = document.getElementById("recent-alerts");
+      const lastUpdateEl = document.getElementById("last-update");
 
       function updateTimestamp(): void {
+        if (!lastUpdateEl) return;
         const now = new Date();
-        lastUpdateEl.innerHTML = `<span data-i18n="admin.updated">${t("admin.updated")}</span>: ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+        lastUpdateEl.textContent = `Actualizado: ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
       }
 
       unsubUsers = subscribeToUsers((users) => {
@@ -216,54 +350,61 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         const totalBlocked = users.filter((u) => u.isBlocked).length;
         const usersWithAlerts = users.filter((u) => u.hasActiveAlert);
 
-        statTotalUsers.textContent = String(totalUsers);
-        statTotalTrainers.textContent = String(totalTrainers);
-        statTotalClients.textContent = String(totalClients);
-        statTotalBlocked.textContent = String(totalBlocked);
-        statTotalAlerts.textContent = String(usersWithAlerts.length);
+        if (statTotalUsers) statTotalUsers.textContent = String(totalUsers);
+        if (statTotalTrainers) statTotalTrainers.textContent = String(totalTrainers);
+        if (statTotalClients) statTotalClients.textContent = String(totalClients);
+        if (statSubClients) statSubClients.textContent = String(totalClients);
+        if (statSubTrainers) statSubTrainers.textContent = String(totalTrainers);
+        if (statTotalBlocked) statTotalBlocked.textContent = String(totalBlocked);
+        if (statTotalAlerts) statTotalAlerts.textContent = String(usersWithAlerts.length);
 
         updateTimestamp();
 
-        if (usersWithAlerts.length === 0) {
-          alertsContainer.innerHTML = `
-            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
-              <div class="flex items-center gap-3">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand-dim)]">
-                  <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                </div>
-                <p data-i18n="admin.no.alerts" class="text-sm text-[var(--text-tertiary)]">${t("admin.no.alerts")}</p>
-              </div>
-            </div>`;
-        } else {
-          alertsContainer.innerHTML = usersWithAlerts
-            .slice(0, 5)
-            .map((user) => `
-            <div class="rounded-xl border border-red-900/30 bg-[var(--danger-dim)] p-4 backdrop-blur-sm">
-              <div class="flex items-center gap-3">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--danger-dim)]">
-                  <svg class="h-4 w-4 text-[var(--danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                  </svg>
+        if (alertsContainer) {
+          if (usersWithAlerts.length === 0) {
+            alertsContainer.innerHTML = `
+              <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 flex items-center gap-3">
+                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 text-base font-bold flex-shrink-0">
+                  ✓
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-[var(--text-primary)]">${user.name}</p>
-                  <p data-i18n="admin.alert.status" class="text-xs text-[var(--text-tertiary)]">${t("admin.alert.status")}</p>
+                  <p class="text-xs font-bold text-[var(--text-primary)]">Sin incidencias activas</p>
+                  <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5">Todas las cuentas y servicios se encuentran en estado saludable.</p>
                 </div>
+              </div>`;
+          } else {
+            alertsContainer.innerHTML = usersWithAlerts
+              .slice(0, 5)
+              .map((user) => `
+              <div class="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3.5 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-500/20 text-rose-300 text-sm flex-shrink-0">
+                    ⚠️
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[var(--text-primary)] truncate">${user.name || user.email}</p>
+                    <p class="text-[10px] text-rose-300">Alerta médica o de cuenta pendiente</p>
+                  </div>
+                </div>
+                <a href="/admin/users" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-200 text-[10px] font-bold hover:bg-rose-500/30 transition-all flex-shrink-0">
+                  Inspeccionar
+                </a>
               </div>
-            </div>
-          `)
-            .join("");
+            `)
+              .join("");
+          }
         }
 
-        const recentUsers = users.slice(0, 5);
-        if (recentUsers.length === 0) {
-          recentContainer.innerHTML = renderEmptyState(ICONS.users, t("admin.no.users") || "Sin usuarios registrados");
-        } else {
-          recentContainer.innerHTML = recentUsers.map((user) => renderUserCard(user)).join("");
+        if (recentContainer) {
+          const recentUsers = users.slice(0, 5);
+          if (recentUsers.length === 0) {
+            recentContainer.innerHTML = renderEmptyState(ICONS.users, "Sin usuarios registrados");
+          } else {
+            recentContainer.innerHTML = recentUsers.map((user) => renderUserCard(user)).join("");
+          }
         }
       });
     }
   </script>
 </AdminLayout>
+

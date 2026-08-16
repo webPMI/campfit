@@ -36,7 +36,7 @@ export const updateMeal = (mealId: string, updates: Partial<Meal>) => {
   const index = current.meals.findIndex(m => m.id === mealId);
   if (index !== -1) {
     const newMeals = [...current.meals];
-    newMeals[index] = { ...newMeals[index], ...updates };
+    newMeals[index] = { ...newMeals[index], ...updates } as Meal;
     dailyScheduleStore.set({ ...current, meals: newMeals });
   }
 };
@@ -49,7 +49,7 @@ export const updateWorkout = (workoutId: string, updates: Partial<Workout>) => {
   const index = current.workouts.findIndex(w => w.id === workoutId);
   if (index !== -1) {
     const newWorkouts = [...current.workouts];
-    newWorkouts[index] = { ...newWorkouts[index], ...updates };
+    newWorkouts[index] = { ...newWorkouts[index], ...updates } as Workout;
     dailyScheduleStore.set({ ...current, workouts: newWorkouts });
   }
 };

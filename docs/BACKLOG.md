@@ -61,9 +61,9 @@
 
 ### 🔴 Fase 1: Esqueleto (P0 — funcionalidad mínima viable)
 
-- [ ] **T-1.1** Crear collection `support_tickets` en schema y reglas de seguridad — Definir modelo, agregar a FIRESTORE_SCHEMA.md, agregar reglas a firestore.rules. (1h)
-- [ ] **T-1.2** Crear POST /api/support/tickets — API route Astro SSR con auth check + creación de documento. (1h)
-- [ ] **T-1.3** Crear GET /api/support/tickets (admin list) — API route con query/filtros básicos. (1h)
+- [x] **T-1.1** Crear collection `support_tickets` en schema y reglas de seguridad — Definir modelo, agregar a FIRESTORE_SCHEMA.md, agregar reglas a firestore.rules. ✅ 2026-08-16 (commit `ca2296b`)
+- [x] **T-1.2** Crear POST /api/support/tickets — API route Astro SSR con auth check + creación de documento. ✅ 2026-08-16 (commit `5b31c4f` + T-1.3 integrado)
+- [x] **T-1.3** Crear GET /api/support/tickets (admin list) — API route con query/filtros básicos. ✅ 2026-08-16 (integrado en same file como T-1.2)
 - [ ] **T-1.4** Crear GET /api/support/tickets/{id} (detalle) — API route para detalle. (30min)
 - [ ] **T-1.5** Crear PATCH /api/support/tickets/{id} (actualización admin) — API route para cambios de estado, notas, contacto. (1h)
 - [ ] **T-1.6** Página de reporte `/client/support/report` — Formulario con validación + submit. (2h)

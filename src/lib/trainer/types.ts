@@ -32,6 +32,8 @@ export interface TrainerWorkout {
   difficulty: string;
   description: string;
   exercises: Exercise[];
+  hasValidationWarnings?: boolean;
+  validationReport?: { hasWarnings: boolean; warnings: string[]; missingCount?: number };
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
 }
@@ -52,13 +54,19 @@ export interface Exercise {
   description: string;
   order: number;
   dayOfWeek: number;
+  /** Estado de verificación contra la biblioteca de semillas */
+  seedVerified?: boolean;
+  /** Estado de validación ('valid' = catálogo activo, 'warning' = desactualizado/no seguro, 'custom' = manual) */
+  validationStatus?: 'valid' | 'warning' | 'custom';
   /** Hora estimada para el ejercicio (Formato HH:mm). Opcional. */
-  estimatedTime: string | null;
+  estimatedTime?: string | null;
   /** Estado de completado por el cliente */
-  isCompleted: boolean;
+  isCompleted?: boolean;
   /** Timestamp de cuándo se marcó como completado */
-  completionTime: Timestamp | null;
+  completionTime?: { toDate: () => Date } | string | null;
 }
+
+export type Workout = TrainerWorkout;
 
 export interface TrainerDiet {
   id: string;
@@ -75,6 +83,8 @@ export interface TrainerDiet {
   totalCarbs?: number;
   totalFat?: number;
   meals: Meal[];
+  hasValidationWarnings?: boolean;
+  validationReport?: { hasWarnings: boolean; warnings: string[]; conflictsCount?: number };
   createdAt?: { toDate: () => Date } | null;
   updatedAt?: { toDate: () => Date } | null;
 }
@@ -96,6 +106,10 @@ export interface Meal {
   carbs: number;
   fat: number;
   order: number;
+  /** Estado de verificación contra la biblioteca de semillas */
+  seedVerified?: boolean;
+  /** Estado de validación ('valid' = catálogo activo, 'warning' = desactualizado/no seguro, 'custom' = manual) */
+  validationStatus?: 'valid' | 'warning' | 'custom';
   // 🔒 CRÍTICO: Campo allergens. NUNCA eliminar.
   // Si foodId existe: se copia automáticamente de FoodItem.allergens al seleccionar.
   // Si no hay foodId: el trainer los marca manualmente.

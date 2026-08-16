@@ -183,6 +183,23 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           </a>
         </div>
         ${medicalHTML}
+        
+        <!-- Sección de Vídeos de Técnica del Alumno -->
+        <div class="mt-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-[var(--text-secondary)] flex items-center gap-1.5">
+              <span>📹</span>
+              <span>Vídeos de Técnica & Correcciones</span>
+            </h3>
+            <a href="/trainer/workouts?clientId=${client.uid}" class="text-xs text-[var(--brand)] hover:underline font-medium">
+              Ir a Bandeja Completa →
+            </a>
+          </div>
+          <div id="client-corrections-container-${client.uid}" class="text-xs text-[var(--text-tertiary)]">
+            <p class="text-zinc-500 italic">Cargando vídeos de técnica de este alumno...</p>
+          </div>
+        </div>
+
         <div class="mt-5 grid grid-cols-2 gap-3">
           <a href="/trainer/workouts?clientId=${client.uid}" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-4)] transition-all text-center flex items-center justify-center gap-2">
             <span>🏋️</span>
@@ -194,5 +211,43 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           </a>
         </div>
       </div>`;
+
+    // Cargar vídeos de técnica de este cliente
+    loadClientTechniqueVideos(client.uid);
+  }
+
+  function loadClientTechniqueVideos(clientId: string) {
+    const container = document.getElementById(`client-corrections-container-${clientId}`);
+    if (!container) return;
+
+    import("@/lib/shared/techniqueCorrectionService").then(({ subscribeToCorrectionsByClient }) => {
+      subscribeToCorrectionsByClient(clientId, (corrections) => {
+        if (corrections.length === 0) {
+          container.innerHTML = `<p class="text-zinc-500 italic">Este alumno no ha enviado vídeos de técnica aún.</p>`;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            ${corrections.map(c => `
+              <div class="rounded-lg bg-[var(--surface-2)] p-2.5 border border-[var(--border-subtle)] flex items-center justify-between gap-2">
+                <div>
+                  <span class="font-bold text-zinc-200">${escapeHtml(c.exerciseName)}</span>
+                  <span class="text-[10px] text-zinc-400 block">${escapeHtml(c.workoutName)}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.status === 'pending' ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'}">
+                    ${c.status === 'pending' ? 'Pendiente' : 'Revisado'}
+                  </span>
+                  <a href="${escapeHtml(c.videoUrl)}" target="_blank" rel="noopener noreferrer" class="text-xs text-[var(--brand)] hover:underline font-semibold">
+                    ▶️ Ver
+                  </a>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      });
+    });
   }
 </script>

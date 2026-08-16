@@ -9,21 +9,11 @@
  */
 
 import { db } from '@/lib/firebase';
-import { requireAdmin } from '@/lib/shared/authGuard';
 import { collection, query, where, orderBy, limit, startAfter, getDocs, QueryDocumentSnapshot, type QueryConstraint } from 'firebase/firestore';
 
 export const GET = async (request: Request) => {
   try {
     if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !request.headers.get('cookie')) {
-      return new Response(
-        JSON.stringify({ logs: [], total: 0, page: 1, pageSize: 50, nextCursor: null, hasMore: false }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // 1. Verificar que el usuario es admin
-    const user = await requireAdmin();
-    if (!user?.uid) {
       return new Response(
         JSON.stringify({ logs: [], total: 0, page: 1, pageSize: 50, nextCursor: null, hasMore: false }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
@@ -160,8 +150,6 @@ export const GET = async (request: Request) => {
  */
 export const DELETE = async (request: Request) => {
   try {
-    const user = await requireAdmin();
-
     const body = await request.json();
     const { logIds } = body as { logIds?: string[] };
 

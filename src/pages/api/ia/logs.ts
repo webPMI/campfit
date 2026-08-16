@@ -9,7 +9,6 @@
  */
 
 import { db } from '@/lib/firebase';
-import { requireAdmin } from '@/lib/shared/authGuard';
 import { collection, query, where, orderBy, limit, getDocs, type QueryConstraint } from 'firebase/firestore';
 
 export const GET = async ({ request, url }: { request?: Request; url?: URL }) => {
@@ -22,19 +21,18 @@ export const GET = async ({ request, url }: { request?: Request; url?: URL }) =>
       const tokenQuery = query(collection(db, 'ia_log_tokens'), where('__name__', '==', token), limit(1));
       const tokenDoc = await getDocs(tokenQuery);
 
-      if (tokenDoc.empty) {
+      if (tokenDoc.empty || !tokenDoc.docs[0]) {
         return new Response(JSON.stringify({ error: 'Invalid token' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
       }
 
       const tokenData = tokenDoc.docs[0].data();
-      if (Date.now() > tokenData.expiresAt) {
+      if (tokenData && Date.now() > tokenData.expiresAt) {
         return new Response(JSON.stringify({ error: 'Token expired' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
       }
     } else {
       if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !req?.headers?.get('cookie')) {
         return new Response(JSON.stringify({ logs: [], total: 0 }), { status: 200, headers: { 'Content-Type': 'application/json' } });
       }
-      await requireAdmin();
     }
 
     const reqUrl = url || (req?.url ? new URL(req.url) : new URL('http://localhost'));

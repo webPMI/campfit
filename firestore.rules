@@ -281,5 +281,43 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if isAdmin();
     }
+
+    // ── Tickets de Soporte (/support_tickets/{ticketId}) ──────────────────────
+    // Cualquier usuario autenticado puede crear un ticket de reporte.
+    // El reporterUid debe coincidir con el auth.uid del creador.
+    // Solo el reporter puede leer su propio ticket (o admins lectura total).
+    // Solo admins pueden actualizar (cambiar estado, añadir notas, contactar).
+    // No se permite borrado físico (auditable, tickets nunca se eliminan).
+    match /support_tickets/{ticketId} {
+      allow create: if isAuth()
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 0
+        && request.resource.data.category in ['bug', 'misconduct', 'vulnerability', 'inquiry', 'suggestion', 'other']
+        && request.resource.data.severity in ['low', 'medium', 'high', 'critical']
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.lastActivityAt is timestamp
+        && (!('isAnonymous' in request.resource.data.keys()) || request.resource.data.isAnonymous == true || request.resource.data.isAnonymous == false);
+
+      allow read: if isAuth() && (
+        // El reporter lee su propio ticket
+        request.auth.uid == resource.data.reporterUid ||
+        // Admins leen todos los tickets
+        isAdmin()
+      );
+
+      allow update: if isAdmin() &&
+        // Solo admins pueden actualizar (cambiar estado, añadir notas, contactar, etc.)
+        // El reporter solo puede actualizar campos específicos si no es anónimo:
+        // (NO permitido actualizar description/title una vez creado — el ticket se lockea)
+        (true);
+
+      allow delete: if false; // 🔒 CRÍTICO: Los tickets nunca se borran físicamente.
+                               // Se cambian de estado a 'closed' cuando se resuelven.
+    }
   }
 }

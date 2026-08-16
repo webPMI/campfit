@@ -43,23 +43,28 @@ import TimeGrid from "@/components/calendar/TimeGrid.astro";
   const calendarContent = document.getElementById('calendar-content');
   const emptyState = document.getElementById('empty-state');
 
-  let unsubscribe: () => void;
+  let unsubscribe: (() => void) | null = null;
 
   unsubscribe = subscribeToDailySchedule(clientId, (data) => {
     if (loadingState) loadingState.classList.add('hidden');
     
     if (data.diets.length === 0 && data.workouts.length === 0) {
-      calendarContent.classList.add('hidden');
-      emptyState.classList.remove('hidden');
+      calendarContent?.classList.add('hidden');
+      emptyState?.classList.remove('hidden');
     } else {
-      calendarContent.classList.remove('hidden');
-      emptyState.classList.add('hidden');
-      setDailySchedule(data.diets, data.workouts);
+      calendarContent?.classList.remove('hidden');
+      emptyState?.classList.add('hidden');
+      const allMeals = data.diets.flatMap(d => d.meals || []);
+      setDailySchedule(allMeals, data.workouts);
     }
   }, (err) => {
     console.error(err);
     if (loadingState) {
       loadingState.innerHTML = `<p class="text-red-500">Error al cargar la agenda.</p>`;
     }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    unsubscribe?.();
   });
 </script>

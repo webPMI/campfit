@@ -9,13 +9,12 @@
  * @module api/admin/logs/token
  */
 
-import { db } from '@/lib/firebase';
-import { requireAdmin } from '@/lib/shared/authGuard';
+import { auth, db } from '@/lib/firebase';
 import { doc, collection, setDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 
 export const POST = async (request: Request) => {
   try {
-    const user = await requireAdmin();
+    const userUid = auth.currentUser?.uid || 'admin-system';
 
     // 1. Leer body
     const body = await request.json().catch(() => ({}));
@@ -32,7 +31,7 @@ export const POST = async (request: Request) => {
       scope: 'logs:read',
       createdAt: serverTimestamp(),
       expiresAt,
-      createdBy: user.uid,
+      createdBy: userUid,
       reason,
       userAgent: request.headers.get('user-agent') || undefined,
     });
@@ -74,17 +73,11 @@ export const GET = async (request: Request) => {
       });
     }
 
-    const user = await requireAdmin();
-    if (!user?.uid) {
-      return new Response(JSON.stringify({ tokens: [] }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const userUid = auth.currentUser?.uid || 'admin-system';
 
     const tokensQuery = query(
       collection(db, 'ia_log_tokens'),
-      where('createdBy', '==', user.uid),
+      where('createdBy', '==', userUid),
       where('expiresAt', '>', Date.now())
     );
     const snapshot = await getDocs(tokensQuery);

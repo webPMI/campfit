@@ -204,10 +204,67 @@ export function calcMacrosForPortion(
   };
 }
 
+// ── Capa de Caché en Cliente (Memoria & SessionStorage) ───────────────────────
+
+const FOODS_CACHE_KEY = 'campfit_foods_library_cache';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+
+let _memoryFoodsCache: { data: FoodItem[]; timestamp: number } | null = null;
+
+/**
+ * Obtiene los alimentos cacheados si siguen siendo válidos.
+ */
+function getCachedFoods(): FoodItem[] | null {
+  const now = Date.now();
+  if (_memoryFoodsCache && now - _memoryFoodsCache.timestamp < CACHE_TTL_MS) {
+    return _memoryFoodsCache.data;
+  }
+
+  try {
+    const raw = sessionStorage.getItem(FOODS_CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { data: FoodItem[]; timestamp: number };
+      if (now - parsed.timestamp < CACHE_TTL_MS) {
+        _memoryFoodsCache = parsed;
+        return parsed.data;
+      }
+    }
+  } catch {
+    // Ignorar fallos de sessionStorage (modo incógnito/cuota)
+  }
+
+  return null;
+}
+
+/**
+ * Guarda los alimentos en caché local.
+ */
+function setCachedFoods(foods: FoodItem[]): void {
+  const record = { data: foods, timestamp: Date.now() };
+  _memoryFoodsCache = record;
+  try {
+    sessionStorage.setItem(FOODS_CACHE_KEY, JSON.stringify(record));
+  } catch {
+    // Silencioso
+  }
+}
+
+/**
+ * Invalida manualmente la caché de alimentos (útil tras crear/editar un alimento).
+ */
+export function invalidateFoodsCache(): void {
+  _memoryFoodsCache = null;
+  try {
+    sessionStorage.removeItem(FOODS_CACHE_KEY);
+  } catch {
+    // Silencioso
+  }
+}
+
 // ── Servicios de Firestore ───────────────────────────────────────────────────
 
 /**
- * Suscripción reactiva al catálogo de alimentos activos.
+ * Suscripción reactiva al catálogo de alimentos activos con caché Stale-While-Revalidate.
  * Carga todos los alimentos con `isActive == true`, ordenados por categoría.
  *
  * Úsalo en trainer/diets.astro y client/medical-profile.astro.
@@ -217,6 +274,12 @@ export function calcMacrosForPortion(
 export function subscribeToFoods(
   callback: (foods: FoodItem[]) => void,
 ): Unsubscribe {
+  // 1. Emitir datos en caché inmediatamente si existen (render instantáneo)
+  const cached = getCachedFoods();
+  if (cached && cached.length > 0) {
+    callback(cached);
+  }
+
   const q = query(
     collection(db, 'foods_library'),
     where('isActive', '==', true),
@@ -230,11 +293,14 @@ export function subscribeToFoods(
         id: doc.id,
         ...doc.data(),
       })) as FoodItem[];
+      setCachedFoods(foods);
       callback(foods);
     },
     (error) => {
       logger.error('foodLibrary', 'Error al suscribirse a foods_library:', error);
-      callback([]);
+      if (!cached || cached.length === 0) {
+        callback([]);
+      }
     },
   );
 }

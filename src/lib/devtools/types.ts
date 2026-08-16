@@ -1,25 +1,12 @@
-/**
- * Tipos para el sistema de DevTools.
- * Aislado y escalable.
- *
- * @module devtools/types
- */
-
 export interface AutofillProfile {
-  /** Nombre descriptivo del perfil */
   name: string;
-  /** Campos a rellenar (selector CSS → valor) */
   fields: Record<string, string>;
 }
 
 export interface PageHandler {
-  /** Patrón de path que activa este handler */
   pathPattern: string | RegExp;
-  /** Etiqueta para mostrar en el panel */
   label: string;
-  /** Perfiles de autocompletado disponibles */
   autofillProfiles?: AutofillProfile[];
-  /** Acciones adicionales (limpiar campos, avanzar pasos, etc.) */
   actions?: DevToolsAction[];
 }
 
@@ -50,6 +37,11 @@ export type PageId =
   | 'admin-settings'
   | 'admin-workouts'
   | 'admin-diets'
+  | 'admin-exercises'
+  | 'admin-foods'
+  | 'admin-logs'
+  | 'admin-devtools'
+  | 'admin-seeds'
   | 'admin-progress'
   | 'admin-chat'
   | 'admin-clinical'
@@ -100,12 +92,14 @@ export interface DietTemplate {
   id?: string;
   name: string;
   type: string;
+  somatotype?: 'ectomorph' | 'mesomorph' | 'endomorph' | string;
+  totalCalories?: number;
   description?: string;
   meals?: MealTemplate[];
+  calorie?: number;
   isPreset?: boolean;
+  version?: number;
   source?: string;
-  somatotype?: string;
-  totalCalories?: number;
 }
 
 export interface WorkoutTemplate {
@@ -117,7 +111,21 @@ export interface WorkoutTemplate {
   duration?: string;
   difficulty?: string;
   isPreset?: boolean;
+  version?: number;
   source?: string;
+}
+
+export interface SeedDeploymentRecord {
+  id?: string;
+  version: number;
+  deployedAt?: number | unknown;
+  status: 'pending' | 'success' | 'failed';
+  counts?: {
+    exercises: number;
+    meals: number;
+    diets: number;
+    workouts: number;
+  };
 }
 
 export interface DevToolsStats {

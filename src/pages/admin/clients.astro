@@ -1,14 +1,4 @@
 ---
-// Redirección permanente de /admin/clients a /admin/users (fusión Users/Clients).
-// Evita enlaces rotos y accesos obsoletos tras la unificación del panel de administración.
-return Astro.redirect('/admin/users', 301);
+// 🔒 Redirección automática de /admin/clients a /admin/users para consolidación de paneles
+return Astro.redirect('/admin/users');
 ---
-
-<html lang="es">
-  <head>
-    <meta http-equiv="refresh" content="0; url=/admin/users" />
-  </head>
-  <body>
-    <p>Redirigiendo a la gestión unificada de usuarios…</p>
-  </body>
-</html>
