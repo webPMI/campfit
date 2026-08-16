@@ -1,7 +1,7 @@
 # 🗺️ Mapa de Documentación de CampFit
 
 > **Punto de entrada central.** Si buscas "qué falta por hacer", ve a 👉
-> **[docs/TASKS_MASTER.md](./TASKS_MASTER.md)** (lista maestra de tareas pendientes, única fuente de verdad).
+> **[docs/BACKLOG.md](./BACKLOG.md)** (lista maestra de tareas pendientes, única fuente de verdad).
 >
 > Este mapa está organizado por tema. Los archivos históricos viven en `docs/_archive/`
 > y se listan al final para no entorpecer el día a día.
@@ -9,9 +9,9 @@
 ---
 
 ## 🎯 Tareas & Estado
-- [docs/TASKS_MASTER.md](./TASKS_MASTER.md) — **Lista maestra de tareas pendientes** (P0–P4, estados verificables).
+- [docs/BACKLOG.md](./BACKLOG.md) — **Lista maestra de tareas pendientes** (formato checkbox P0–P3, con detalle).
 - [TASK.md](../TASK.md) — Registro de agentes activos e historial (índice ligero).
-- [CHANGELOG.md](../CHANGELOG.md) — Registro de cambios del repositorio.
+- [CHANGELOG.md](../CHANGELOG.md) — Registro de cambios del repositorio (tanto código como documentación).
 
 ## 🏗️ Arquitectura & Contexto
 - [CONTEXT.md](../CONTEXT.md) — Stack, mapa de rutas, convenciones.
@@ -24,18 +24,21 @@
 - [docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md](./MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md) — Matriz de consultas y reglas.
 - [firestore.rules](../firestore.rules) — Reglas de seguridad (fuente).
 
-## 🔍 Auditorías & Calidad
-- [docs/AUDITORIA_UNIFICADA.md](./AUDITORIA_UNIFICADA.md) — Consolidado de hallazgos críticos.
+## ☁️ Cloudflare R2 (Object Storage)
+- **[docs/CLOUDFLARE_R2.md](./CLOUDFLARE_R2.md)** — Estado de la integración: arquitectura, qué existe y funciona, flujo de subida, testing, limitaciones, alternativas futuras.
+
+## 📞 Sistema de Soporte & Tickets
+- **[docs/_audit/SUPPORT_TICKET_SYSTEM.md](./_audit/SUPPORT_TICKET_SYSTEM.md)** — Auditoría completa: estado actual, requisitos, arquitectura propuesta (colección `support_tickets`, APIs, UI cliente + admin), desglose por fases (P0/P1/P2), decisión de anonimato, casos límite, integraciones y riesgos.
+
+## 📝 Logging & Observabilidad
+- [docs/DESIGN_logging_firebase.md](./DESIGN_logging_firebase.md) — Diseño del sistema de logs.
 
 ## 🎨 UI & Diseño
 - [docs/THEME.md](./THEME.md) — Sistema de temas y tokens.
 - [docs/REFERENCIA_RAPIDA.md](./REFERENCIA_RAPIDA.md) — Guía rápida de componentes.
 - [docs/UX_DESIGN_CALENDAR.md](./UX_DESIGN_CALENDAR.md) — Diseño UX de calendario.
 
-## 📝 Logging & Observabilidad
-- [docs/DESIGN_logging_firebase.md](./DESIGN_logging_firebase.md) — Diseño del sistema de logs.
-
-## 🍱 Features
+## 📝 Features
 - [docs/features/BIBLIOTECA_ALIMENTOS.md](./features/BIBLIOTECA_ALIMENTOS.md)
 - [docs/features/BIBLIOTECA_EJERCICIOS.md](./features/BIBLIOTECA_EJERCICIOS.md)
 - [docs/features/CALENDAR_IMPLEMENTATION.md](./features/CALENDAR_IMPLEMENTATION.md)
@@ -49,6 +52,5 @@
 ---
 
 ## 🔧 Mantenimiento
-- Toda tarea nueva → `docs/TASKS_MASTER.md` (con `#` y estado).
-- Todo agente → registro en `TASK.md`.
-- Cambio fusionado → entrada en `CHANGELOG.md`.
+- Toda tarea nueva → `docs/BACKLOG.md` (checkboxes, P0–P3).
+- Cambio en documentación o código → entrada en `CHANGELOG.md`.
