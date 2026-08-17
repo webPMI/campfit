@@ -33507,3 +33507,430 @@ FirebaseError: Invalid document reference. Document references must have an even
 ============================================================
 [DEV SESSION STARTED] 2026-08-16T19:27:19.978Z
 ============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:28:53.545Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:32:59.527Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:35:14.989Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:38:10.249Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:38:36.542Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:39:33.991Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:41:41.741Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:42:31.075Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:43:13.321Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:48:10.584Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:49:14.068Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:49:38.628Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:50:32.677Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:50:49.937Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-16T19:54:52.946Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T14:53:46.061Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T14:54:33.551Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T14:58:51.683Z
+============================================================
+[2026-08-17T14:58:56.587Z] [CLIENT] [INFO] [/] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:00.619Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:04.682Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:13.384Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:13.551Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:irwYIbTi... en /client/calendar
+[2026-08-17T14:59:17.609Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:17.792Z] [CLIENT] [INFO] [/client/dashboard] [InitPage] Usuario autenticado UID:irwYIbTi... en /client/dashboard
+[2026-08-17T14:59:29.489Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:29.546Z] [CLIENT] [INFO] [/client/dashboard] [InitPage] No autenticado en /client/dashboard, redirigiendo a login
+[2026-08-17T14:59:29.732Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:32.244Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-17T14:59:49.914Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:50.316Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T14:59:50.588Z] [CLIENT] [INFO] [/client/dashboard] [InitPage] Usuario autenticado UID:irwYIbTi... en /client/dashboard
+[2026-08-17T15:00:04.517Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:06.846Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:07.305Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:08.846Z] [CLIENT] [INFO] [/admin/logs] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:12.227Z] [CLIENT] [INFO] [/admin/devtools] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:16.996Z] [CLIENT] [INFO] [/admin/seeds] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:18.631Z] [CLIENT] [INFO] [/admin/seeds] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:19.299Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:39.696Z] [CLIENT] [INFO] [/admin/devtools] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:46.429Z] [CLIENT] [INFO] [/admin/logs] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:00:48.444Z] [CLIENT] [INFO] [/admin/foods] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:18.509Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:23.689Z] [CLIENT] [INFO] [/admin/settings] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:23.883Z] [CLIENT] [INFO] [/admin/settings] [InitPage] Usuario autenticado UID:irwYIbTi... en /admin/settings
+[2026-08-17T15:01:29.184Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:32.698Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:33.307Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:43.198Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:01:43.317Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:03.113Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:03.312Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:23.411Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:23.463Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:45.110Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:45.315Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:56.795Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:02:57.320Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:03:03.909Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:03:04.314Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:03:29.925Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:03:30.329Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:03:57.478Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:03:57.509Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:10:15.312Z
+============================================================
+[2026-08-17T15:11:19.739Z] [CLIENT] [INFO] [/admin/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:41.510Z] [CLIENT] [INFO] [/admin/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:44.933Z] [CLIENT] [INFO] [/admin/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:45.368Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:50.414Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:50.864Z] [CLIENT] [WARN] [/admin/users] [Admin] Índice compuesto en proceso para admins, usando fallback sin ordenar en Firestore: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-08-17T15:11:50.871Z] [CLIENT] [WARN] [/admin/users] [Admin] Índice compuesto en proceso para trainers, usando fallback sin ordenar en Firestore: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-08-17T15:11:52.247Z] [CLIENT] [INFO] [/admin/users] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:52.681Z] [CLIENT] [WARN] [/admin/users] [Admin] Índice compuesto en proceso para trainers, usando fallback sin ordenar en Firestore: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-08-17T15:11:52.690Z] [CLIENT] [WARN] [/admin/users] [Admin] Índice compuesto en proceso para admins, usando fallback sin ordenar en Firestore: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/mallorca-campfit/firestore/indexes?create_composite=Ck5wcm9qZWN0cy9tYWxsb3JjYS1jYW1wZml0L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy91c2Vycy9pbmRleGVzL18QARoICgRyb2xlEAEaCAoEbmFtZRABGgwKCF9fbmFtZV9fEAE
+[2026-08-17T15:11:53.733Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:57.492Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:57.498Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:11:59.940Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:12:53.864Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:12:54.468Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-17T15:12:57.402Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:12:57.471Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:34.833Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:35.340Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:41.418Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:41.466Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:50.750Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:50.744Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:54.924Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:13:55.326Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:14:00.495Z
+============================================================
+[2026-08-17T15:14:05.231Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:05.339Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:12.632Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:12.643Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:26.964Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:27.335Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:32.849Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:33.350Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:37.164Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:37.352Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:37.964Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:38.331Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:41.134Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:14:41.338Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:14:45.076Z
+============================================================
+[2026-08-17T15:15:06.550Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:06.592Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:10.012Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:10.358Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:15.269Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:15.367Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:15:23.596Z
+============================================================
+[2026-08-17T15:15:24.139Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:24.343Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:57.296Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:15:57.380Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:16:00.821Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-17T15:16:03.763Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:16:04.343Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:16:05.135Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:16:05.332Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:16:10.985Z
+============================================================
+[2026-08-17T15:16:41.914Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:16:42.325Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:16:47.204Z
+============================================================
+[2026-08-17T15:17:16.654Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:17:17.335Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:17:22.834Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:17:23.335Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:18:03.916Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:18:04.339Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:18:56.566Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:18:56.590Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:19:05.378Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:19:05.409Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:19:11.298Z
+============================================================
+[2026-08-17T15:20:01.776Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:02.334Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:08.044Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:08.331Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:23.005Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:23.338Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:32.032Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:32.338Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:54.364Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:20:54.460Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:21:34.602Z] [CLIENT] [INFO] [/login] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:21:34.631Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:33:16.601Z] [CLIENT] [INFO] [/login] [AuthService] Iniciando login con Google...
+[2026-08-17T15:33:22.608Z] [CLIENT] [INFO] [/login] [AuthService] Google login exitoso UID:VOpR39cA... (exequiell152@gmail.com)
+[2026-08-17T15:33:22.829Z] [CLIENT] [INFO] [/login] [AuthService] Usuario Google existente: client
+[2026-08-17T15:33:22.953Z] [CLIENT] [INFO] [/client/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:33:23.176Z] [CLIENT] [INFO] [/client/dashboard] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/dashboard
+[2026-08-17T15:33:39.561Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:33:39.744Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:36:51.697Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:36:51.703Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:36:52.026Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:37:00.663Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:37:00.883Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:37:00.659Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:37:22.780Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:37:23.006Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:37:22.729Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:37:27.877Z
+============================================================
+[2026-08-17T15:38:17.599Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:38:17.639Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:38:17.945Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:38:26.773Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:38:26.787Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:38:26.998Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:38:40.620Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:38:40.823Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:38:40.601Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:38:47.599Z
+============================================================
+[2026-08-17T15:39:02.716Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:02.715Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:02.920Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:39:29.561Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:29.593Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:29.801Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:39:36.560Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:36.760Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:39:36.557Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:44.534Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:39:44.761Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:39:44.525Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:39:48.369Z
+============================================================
+[2026-08-17T15:40:10.676Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:40:10.687Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:40:10.891Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:40:15.085Z
+============================================================
+[2026-08-17T15:40:52.564Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:40:52.566Z] [CLIENT] [INFO] [/client/calendar] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:40:52.828Z] [CLIENT] [INFO] [/client/calendar] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/calendar
+[2026-08-17T15:41:45.332Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:41:45.588Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:41:45.686Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:43:32.723Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:43:32.733Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:43:33.005Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:43:33.392Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:43:45.746Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:43:46.170Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:43:46.274Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:43:45.723Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:43:54.563Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:43:54.779Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:43:54.899Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:43:54.558Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:44:07.408Z
+============================================================
+[2026-08-17T15:46:43.761Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:46:43.765Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:46:44.894Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:46:45.137Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:46:53.509Z
+============================================================
+[2026-08-17T15:47:17.871Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:47:17.855Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:47:18.167Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:47:18.284Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:47:32.767Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:47:32.758Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:47:32.975Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:47:33.105Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:48:50.602Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:48:50.889Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:48:51.183Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:48:50.595Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:48:55.627Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:48:55.934Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:48:56.052Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:48:55.616Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:34.657Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:35.032Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:51:35.199Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:51:34.645Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:45.767Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:46.012Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:51:46.122Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:51:45.769Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:52.597Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:52.591Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:51:52.810Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:51:52.919Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:52:10.639Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:52:10.950Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:52:11.062Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:52:10.639Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:52:19.590Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:52:19.829Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:52:19.975Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:52:19.591Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:52:26.332Z
+============================================================
+[2026-08-17T15:52:55.645Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:52:55.653Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:52:55.918Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:52:56.031Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:52:57.757Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:52:57.976Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:52:58.094Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:52:57.750Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:53:01.560Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:53:01.550Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:53:01.798Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:53:01.918Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:53:08.107Z
+============================================================
+[2026-08-17T15:53:32.677Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:53:33.002Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:53:33.198Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:53:32.674Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:53:46.617Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:53:46.851Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:53:46.966Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:53:46.606Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:53:50.900Z
+============================================================
+[2026-08-17T15:54:12.772Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:54:13.150Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:54:12.764Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:54:13.444Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:54:21.113Z
+============================================================
+[2026-08-17T15:54:28.667Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:54:28.663Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:54:29.382Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:54:29.594Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-17T15:54:46.926Z
+============================================================
+[2026-08-17T15:55:15.554Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:55:15.559Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:55:15.807Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:55:15.927Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+[2026-08-17T15:55:20.507Z] [CLIENT] [INFO] [/admin/dashboard] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:55:20.501Z] [CLIENT] [INFO] [/client/workouts] [Debug] 🔍 Firestore Debug disponible. Pulsa Ctrl+Shift+D para abrir.
+[2026-08-17T15:55:20.723Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
+[2026-08-17T15:55:20.842Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.

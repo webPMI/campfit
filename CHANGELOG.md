@@ -5,7 +5,45 @@ Todos los cambios notables de este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
-## [Sin versión] - 2026-08-14
+## [2.5.0] - 2026-08-17
+
+### 🛡️ Observabilidad y Trazabilidad de Logs en Vivo
+- **Persistencia Remota y Trazabilidad (`logService.ts`)**: Captura automática de `userId`, `sessionId`, `url`, `payload`, `stack_trace`, `viewport` y `breadcrumbs` con escritura fire-and-forget a la colección `app_logs` y cola offline en `IndexedDB`.
+- **Deduplicación Inteligente & Rate Limiting**: Ventanas adaptativas de deduplicación (5m para errores críticos, 15m para warnings) y límite de 50 logs/min por usuario.
+- **Centro de Mando con Radar en Vivo (`/admin/dashboard`)**: Detección de incidencias activas en tiempo real con banner de alertas del sistema.
+
+### 🏥 Seguridad Médica & Cruce de Lesiones (`injuryChecker.ts`)
+- **Detección Automática de Conflictos**: Cruce de `medicalProfile.injuries` y `conditions` con la anatomía y contraindicaciones de ejercicios de la rutina.
+- **Alertas Visuales Preventivas (`/client/workouts`)**: Banners contextuales de advertencia médica y sugerencia de exclusión antes de ejecutar ejercicios en articulaciones lesionadas.
+
+### 🗓️ Motor de Calendario y Agenda Compacta Pro (`TimeGrid.astro`)
+- **Eliminación de Scroll Innecesario**: Transformación de la grilla de 24 horas (1.920px muertos) a una Agenda Compacta estructurada por momentos del día (Mañana, Tarde, Noche).
+- **Línea Temporal Dinámica & Reprogramación**: Conector interactivo con marcador "AHORA" en vivo y selección de horario mediante `TimePicker`.
+- **Desglose Total de Ejercicios y Vídeos HD**: Visualización de series, repeticiones, descansos, checkboxes individuales de completado y reproductor modal de técnica.
+
+### 🧪 Suite de Pruebas Crítica (768 Tests Verificados)
+- **Cálculo de Macronutrientes y Fórmulas de Atwater (`macroCalculations.test.ts`)**: Validación estricta de 4P + 4C + 9G, ratios de distribución y límites biológicos.
+- **Asignación y Cascada de Entrenadores (`trainerAssignment.test.ts`)**: Pruebas de asignación, desasignación, transiciones de rol y bloqueo con `serverTimestamp()`.
+
+---
+
+## [2.4.0] - 2026-08-16
+
+### ☁️ Cloudflare R2 Object Storage & Fallback Reactivo
+- **Arquitectura de Almacenamiento**: Conexión al bucket S3 `campfit` (`@aws-sdk/client-s3`) y Cloudflare Worker externo para subidas multimedia seguras.
+- **Servicio Unificado (`r2Service.ts`)**: Timeout ordenado (15s con `AbortController`), fallback reactivo transparente a `/api/storage/upload` o DataURL, y logs descriptivos.
+- **Limpieza de Nombres Técnicos**: Eliminación total de terminología "R2" de la interfaz para clientes y entrenadores.
+
+### 🎥 Vídeo Feedback Bidireccional de Técnica (`techniqueCorrectionService.ts`)
+- **Para Alumnos (`/client/workouts`)**: Subida directa de vídeos de ejecución con notas personales para solicitar corrección al entrenador. Reproductor HD modal.
+- **Para Entrenadores (`/trainer/workouts` & `/trainer/clients`)**: Subida de vídeos explicativos vinculados a ejercicios y bandeja centralizada de correcciones con cámara lenta (`0.5x`, `1.0x`).
+
+### 🧍 Clasificación Visual de Poses Corporales (`/client/progress`)
+- **Selector de Poses 3-Card**: Frontal (Esmeralda), Perfil 90° (Cian), Espalda (Púrpura) con filtros de galería y contadores independientes.
+
+---
+
+## [2.3.0] - 2026-08-14
 
 ### 🔍 Auditoría Profunda - Módulo Entrenador Completo (`/trainer/*`)
 - **Informe generado**: Creado [docs/AUDITORIA_PROFUNDA_TRAINER.md](file:///c:/Users/ink.enzo/Desktop/p/campfit/docs/AUDITORIA_PROFUNDA_TRAINER.md).

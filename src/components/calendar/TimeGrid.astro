@@ -1,61 +1,820 @@
 ---
+import TimePicker from "./TimePicker.astro";
+
 interface Props {
-  meals?: Array<{
-    name: string;
-    description?: string;
-    estimatedTime?: string;
-    isCompleted?: boolean;
-  }>;
+  class?: string;
 }
 
-const { meals = [] } = Astro.props;
-const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ':00');
+const { class: className = "" } = Astro.props;
 ---
 
-<div class="calendar-grid w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-  <div class="grid grid-cols-1 md:grid-cols-[80px_1fr] divide-x divide-zinc-200 dark:divide-zinc-800">
-    <!-- Time Labels -->
-    <div class="bg-zinc-50 dark:bg-zinc-950 p-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-      {hours.map((time) => (
-        <div class="py-2 border-b border-zinc-100 dark:border-zinc-900">{time}</div>
-      ))}
+<div class={`proactive-calendar-wrapper space-y-4 ${className}`} id="proactiveCalendar">
+  
+  <!-- ========================================== -->
+  <!-- 1. BARRA SUPERIOR: RADAR Y ADHERENCIA      -->
+  <!-- ========================================== -->
+  <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-dim)] text-xl shadow-sm">
+        ⚡
+      </div>
+      <div>
+        <h2 class="text-sm font-bold text-[var(--text-primary)]">Radar de Actividad Diaria</h2>
+        <p class="text-[11px] text-[var(--text-tertiary)]" id="cal-time-focus">Plan cronológico activo de comidas y rutinas</p>
+      </div>
     </div>
 
-    <!-- Blocks Container -->
-    <div class="relative p-2 bg-white dark:bg-zinc-900">
-      <div class="space-y-4">
-        {meals.length === 0 ? (
-          <div class="flex flex-col items-center justify-center py-12 text-zinc-400">
-            <p>No hay actividades programadas para hoy.</p>
-          </div>
-        ) : (
-          meals.map((meal) => (
-            <div 
-              class={`p-3 rounded-lg border shadow-sm transition-all ${
-                meal.isCompleted 
-                  ? 'bg-zinc-50 border-zinc-200 opacity-60 dark:bg-zinc-800 dark:border-zinc-700' 
-                  : 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800/30'
-              }`}
-            >
-              <div class="flex justify-between items-start">
-                <span class="font-bold text-sm text-zinc-800 dark:text-zinc-200">{meal.name}</span>
-                {meal.isCompleted && (
-                  <span class="text-green-500 text-xs font-semibold">✓ Completado</span>
-                )}
-              </div>
-              {meal.description && (
-                <p class="text-xs text-zinc-500 mt-1">{meal.description}</p>
-              )}
-            </div>
-          ))
-        )}
+    <!-- Adherencia Widget -->
+    <div class="flex items-center gap-3">
+      <div class="text-right">
+        <span class="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider block">Adherencia Hoy</span>
+        <span class="text-base font-black text-[var(--brand)]" id="cal-adherence-pct">0%</span>
+      </div>
+      <div class="h-9 w-9 rounded-full border-2 border-[var(--brand)]/30 flex items-center justify-center p-1 bg-[var(--surface-2)] shadow-sm">
+        <div id="cal-adherence-circle" class="w-full h-full rounded-full bg-[var(--brand)]/20 flex items-center justify-center text-[11px] font-bold text-[var(--brand)]">
+          🎯
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- ========================================== -->
+  <!-- 2. WIDGET "QUÉ SIGUE" / FOCO ACTUAL        -->
+  <!-- ========================================== -->
+  <div id="cal-next-focus-card" class="rounded-2xl border border-[var(--border-brand)] bg-gradient-to-r from-[var(--surface-2)] via-[var(--surface-1)] to-[var(--brand-dim)] p-4 shadow-md backdrop-blur-xl flex items-center justify-between flex-wrap gap-3">
+    <div class="flex items-center gap-3">
+      <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand)] text-white text-xl shadow-md" id="focus-icon">
+        ⏳
+      </div>
+      <div class="space-y-0.5">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-black uppercase tracking-wider text-[var(--brand)]" id="focus-tag">Próxima Actividad</span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] px-2 py-0.2 text-[10px] font-mono font-bold text-[var(--text-secondary)]" id="focus-time-countdown">Calculando...</span>
+        </div>
+        <h3 class="text-sm font-bold text-[var(--text-primary)]" id="focus-title">Cargando tu siguiente objetivo...</h3>
+        <p class="text-[11px] text-[var(--text-tertiary)]" id="focus-desc">Revisando eventos del día</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        id="btn-focus-action"
+        class="rounded-xl bg-[var(--brand)] px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow hover:opacity-90 active:scale-95 transition-all"
+      >
+        <span>Ver Detalle</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. CONTROLES: VISTAS Y FILTROS RÁPIDOS     -->
+  <!-- ========================================== -->
+  <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+    <!-- Filtros de Contenido -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+      <button type="button" data-filter="all" class="cal-filter-btn active rounded-xl border border-[var(--brand)] bg-[var(--brand-dim)] px-3 py-1.5 text-xs font-bold text-[var(--brand)] transition-all">
+        Todos
+      </button>
+      <button type="button" data-filter="meals" class="cal-filter-btn rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--border-brand)] transition-all">
+        🥗 Comidas (<span id="count-meals">0</span>)
+      </button>
+      <button type="button" data-filter="workouts" class="cal-filter-btn rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--border-brand)] transition-all">
+        🏋️ Entrenamientos (<span id="count-workouts">0</span>)
+      </button>
+    </div>
+
+    <!-- Selector de Modo de Visualización -->
+    <div class="flex items-center gap-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] p-1">
+      <button
+        type="button"
+        id="btn-view-agenda"
+        class="cal-view-btn active rounded-lg px-2.5 py-1 text-xs font-bold bg-[var(--surface-1)] text-[var(--brand)] shadow-sm transition-all flex items-center gap-1.5"
+      >
+        <span>📋</span>
+        <span>Agenda Compacta</span>
+      </button>
+      <button
+        type="button"
+        id="btn-view-timeline"
+        class="cal-view-btn rounded-lg px-2.5 py-1 text-xs font-semibold text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all flex items-center gap-1.5"
+      >
+        <span>⏱️</span>
+        <span>Línea Temporal</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. CONTENEDOR PRINCIPAL PRO-UX             -->
+  <!-- ========================================== -->
+  <div class="relative w-full rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] shadow-sm overflow-hidden p-4 md:p-5">
+    
+    <!-- Contenedor de Elementos de la Agenda -->
+    <div id="calendar-blocks-container" class="space-y-4">
+      
+      <!-- Skeleton Loading -->
+      <div id="calendar-loading-skeleton" class="space-y-3">
+        <div class="h-20 rounded-xl bg-[var(--surface-2)] animate-pulse"></div>
+        <div class="h-20 rounded-xl bg-[var(--surface-2)] animate-pulse"></div>
+        <div class="h-20 rounded-xl bg-[var(--surface-2)] animate-pulse"></div>
+      </div>
+
+      <!-- Estado Vacío -->
+      <div id="calendar-empty-notice" class="hidden py-12 text-center space-y-2">
+        <span class="text-3xl block">📋</span>
+        <p class="text-sm font-bold text-[var(--text-primary)]">No hay actividades para el filtro seleccionado</p>
+        <p class="text-xs text-[var(--text-tertiary)]">Prueba cambiando el filtro de actividades arriba.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Vídeo de Técnica HD -->
+  <div id="cal-video-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in">
+    <div class="relative w-full max-w-2xl rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2.5">
+        <h3 id="cal-video-title" class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+          <span>▶️</span>
+          <span>Vídeo Demostrativo de Técnica</span>
+        </h3>
+        <button type="button" id="cal-video-close" class="rounded-lg p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] transition-all">
+          ✕
+        </button>
+      </div>
+      <div class="aspect-video w-full rounded-xl bg-black overflow-hidden flex items-center justify-center border border-white/5">
+        <iframe
+          id="cal-video-frame"
+          class="w-full h-full"
+          src=""
+          title="Técnica del Ejercicio"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- TimePicker Modal Integrado -->
+  <TimePicker id="cal-time-picker-modal" />
 </div>
 
-<style>
-  .calendar-grid {
-    min-height: 600px;
+<script>
+  import {
+    dailyScheduleStore,
+    rescheduleMeal,
+    rescheduleWorkout,
+    toggleMealCompleted,
+    toggleExerciseCompleted,
+    getScheduleAdherenceStats
+  } from "@/stores/dailyScheduleStore";
+  import { registerMealComplete } from "@/lib/client/dietService";
+  import { showToast } from "@/lib/shared/ui";
+
+  let activeFilter: 'all' | 'meals' | 'workouts' = 'all';
+  let activeViewMode: 'agenda' | 'timeline' = 'agenda';
+  let targetItemForReschedule: { id: string; type: 'meal' | 'workout' } | null = null;
+  let currentClientId = "";
+
+  const container = document.getElementById("calendar-blocks-container");
+  const skeleton = document.getElementById("calendar-loading-skeleton");
+  const emptyNotice = document.getElementById("calendar-empty-notice");
+  const adherencePct = document.getElementById("cal-adherence-pct");
+  const countMeals = document.getElementById("count-meals");
+  const countWorkouts = document.getElementById("count-workouts");
+
+  const focusTitle = document.getElementById("focus-title");
+  const focusDesc = document.getElementById("focus-desc");
+  const focusTag = document.getElementById("focus-tag");
+  const focusTimeCountdown = document.getElementById("focus-time-countdown");
+  const focusIcon = document.getElementById("focus-icon");
+  const btnFocusAction = document.getElementById("btn-focus-action");
+
+  const btnViewAgenda = document.getElementById("btn-view-agenda");
+  const btnViewTimeline = document.getElementById("btn-view-timeline");
+
+  const timePickerModal = document.getElementById("cal-time-picker-modal");
+  const timePickerInput = document.getElementById("time-picker-custom-input") as HTMLInputElement;
+  const timePickerConfirmBtn = document.getElementById("time-picker-confirm-btn");
+  const timePickerWarning = document.getElementById("time-picker-conflict-warning");
+  const timePickerConflictMsg = document.getElementById("time-picker-conflict-msg");
+  const timePickerCloseBtns = document.querySelectorAll(".time-picker-close, .time-picker-cancel-btn");
+  const timePresetBtns = document.querySelectorAll(".time-preset-btn");
+
+  const videoModal = document.getElementById("cal-video-modal");
+  const videoTitle = document.getElementById("cal-video-title");
+  const videoFrame = document.getElementById("cal-video-frame") as HTMLIFrameElement;
+  const videoClose = document.getElementById("cal-video-close");
+
+  window.addEventListener("schedule:client-ready", (e: any) => {
+    if (e.detail?.clientId) {
+      currentClientId = e.detail.clientId;
+    }
+  });
+
+  // Modal de Vídeo
+  if (videoClose && videoModal && videoFrame) {
+    videoClose.addEventListener("click", () => {
+      videoModal.classList.add("hidden");
+      videoFrame.src = "";
+    });
+    videoModal.addEventListener("click", (e) => {
+      if (e.target === videoModal) {
+        videoModal.classList.add("hidden");
+        videoFrame.src = "";
+      }
+    });
   }
-</style>
+
+  function openVideoModal(name: string, url: string) {
+    if (!videoModal || !videoFrame) return;
+    if (videoTitle) videoTitle.textContent = `▶️ Técnica: ${name}`;
+    
+    // Normalizar URL a Embed
+    let embedUrl = url;
+    if (url.includes('youtube.com/watch?v=')) {
+      embedUrl = url.replace('watch?v=', 'embed/');
+    } else if (url.includes('youtu.be/')) {
+      embedUrl = url.replace('youtu.be/', 'www.youtube.com/embed/');
+    }
+    videoFrame.src = embedUrl;
+    videoModal.classList.remove("hidden");
+  }
+
+  // Suscripción al store reactivo
+  dailyScheduleStore.subscribe((state) => {
+    if (skeleton) skeleton.classList.add("hidden");
+    renderSchedule(state);
+  });
+
+  function getIntensityMeta(difficultyLevel?: number, difficulty?: string) {
+    const level = difficultyLevel ?? (difficulty === 'Avanzado' || difficulty === 'advanced' ? 5 : difficulty === 'Intermedio' || difficulty === 'intermediate' ? 3 : 2);
+    if (level >= 4) {
+      return {
+        label: '🔥 Alta Intensidad',
+        colorClass: 'border-rose-500/40 bg-rose-500/10 text-rose-300',
+        badgeBg: 'bg-rose-500/20 text-rose-400 border border-rose-500/30',
+      };
+    } else if (level === 3) {
+      return {
+        label: '⚡ Media',
+        colorClass: 'border-amber-500/40 bg-amber-500/10 text-amber-300',
+        badgeBg: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+      };
+    } else {
+      return {
+        label: '🌱 Normal / Suave',
+        colorClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300',
+        badgeBg: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+      };
+    }
+  }
+
+  function getPeriodGroup(time: string): { title: string; icon: string; order: number } {
+    const hour = parseInt(time.split(':')[0] || '12', 10);
+    if (hour < 12) {
+      return { title: 'Mañana (06:00 - 12:00)', icon: '🌅', order: 1 };
+    } else if (hour < 19) {
+      return { title: 'Tarde (12:00 - 19:00)', icon: '☀️', order: 2 };
+    } else {
+      return { title: 'Noche (19:00 - 23:59)', icon: '🌙', order: 3 };
+    }
+  }
+
+  function renderSchedule(state: typeof dailyScheduleStore.value) {
+    if (!container) return;
+
+    const { meals, workouts } = state;
+    if (countMeals) countMeals.textContent = meals.length.toString();
+    if (countWorkouts) countWorkouts.textContent = workouts.length.toString();
+
+    // Actualizar adherencia
+    const stats = getScheduleAdherenceStats();
+    if (adherencePct) adherencePct.textContent = `${stats.overallPercentage}%`;
+
+    // Combinar y ordenar items
+    const items: Array<{
+      id: string;
+      type: 'meal' | 'workout';
+      title: string;
+      description: string;
+      time: string;
+      isCompleted: boolean;
+      calories?: number;
+      exercises?: any[];
+      difficultyLevel?: number;
+      difficulty?: string;
+      raw: any;
+    }> = [];
+
+    meals.forEach((m, idx) => {
+      const fallbackHour = (8 + idx * 3).toString().padStart(2, '0') + ':00';
+      items.push({
+        id: m.id || `meal-${idx}`,
+        type: 'meal',
+        title: m.name ? (m.name.charAt(0).toUpperCase() + m.name.slice(1)) : "Comida",
+        description: m.description || `${m.calories || 0} kcal`,
+        time: m.estimatedTime || fallbackHour,
+        isCompleted: !!m.isCompleted,
+        calories: m.calories,
+        raw: m,
+      });
+    });
+
+    workouts.forEach((w, idx) => {
+      const exercises = (w as any).exercises || [];
+      const completedEx = exercises.filter((e: any) => e.completed).length;
+      items.push({
+        id: w.id || `workout-${idx}`,
+        type: 'workout',
+        title: w.name || "Entrenamiento del Día",
+        description: exercises.length > 0 ? `${exercises.length} ejercicios asignados` : "Rutina programada",
+        time: (w as any).estimatedTime || "18:00",
+        isCompleted: exercises.length > 0 && completedEx === exercises.length,
+        exercises,
+        difficultyLevel: (w as any).difficultyLevel || (w.difficulty === 'Avanzado' ? 5 : w.difficulty === 'Intermedio' ? 3 : 2),
+        difficulty: w.difficulty,
+        raw: w,
+      });
+    });
+
+    // Ordenar cronológicamente
+    items.sort((a, b) => a.time.localeCompare(b.time));
+
+    // Calcular Widget de Foco Actual ("Qué Sigue")
+    const now = new Date();
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+
+    let upcomingItem = items.find((it) => {
+      if (it.isCompleted) return false;
+      const parts = (it.time || '12:00').split(':').map(Number);
+      const h = parts[0] ?? 0;
+      const m = parts[1] ?? 0;
+      return (h * 60 + m) >= (currentMin - 15);
+    });
+
+    if (!upcomingItem && items.length > 0) {
+      upcomingItem = items.find((it) => !it.isCompleted) || items[0];
+    }
+
+    if (upcomingItem && focusTitle && focusDesc && focusTimeCountdown && focusIcon && focusTag) {
+      focusTitle.textContent = upcomingItem.title;
+      focusDesc.textContent = upcomingItem.description;
+      focusIcon.textContent = upcomingItem.type === 'meal' ? '🥗' : '🏋️';
+
+      const parts = (upcomingItem.time || '12:00').split(':').map(Number);
+      const h = parts[0] ?? 0;
+      const m = parts[1] ?? 0;
+      const diff = (h * 60 + m) - currentMin;
+
+      if (upcomingItem.isCompleted) {
+        focusTag.textContent = "Objetivo Completado";
+        focusTimeCountdown.textContent = "✓ Listo";
+      } else if (diff >= -15 && diff <= 15) {
+        focusTag.textContent = "🔥 En Curso";
+        focusTimeCountdown.textContent = `A las ${upcomingItem.time}`;
+      } else if (diff > 15 && diff < 60) {
+        focusTag.textContent = "⏳ Próximo";
+        focusTimeCountdown.textContent = `En ${diff} min (${upcomingItem.time})`;
+      } else if (diff >= 60) {
+        const hoursLeft = Math.floor(diff / 60);
+        focusTag.textContent = "📅 Programado";
+        focusTimeCountdown.textContent = `En ${hoursLeft}h (${upcomingItem.time})`;
+      } else {
+        focusTag.textContent = "⏰ Pendiente de Hoy";
+        focusTimeCountdown.textContent = `Hora: ${upcomingItem.time}`;
+      }
+
+      if (btnFocusAction) {
+        btnFocusAction.onclick = () => {
+          if (upcomingItem.type === 'meal') {
+            window.location.href = '/client/diets';
+          } else {
+            window.location.href = '/client/workouts';
+          }
+        };
+      }
+    }
+
+    // Filtrar según botón activo
+    const filteredItems = items.filter((it) => {
+      if (activeFilter === 'all') return true;
+      if (activeFilter === 'meals') return it.type === 'meal';
+      if (activeFilter === 'workouts') return it.type === 'workout';
+      return true;
+    });
+
+    // Limpiar contenedor
+    const existingDynamic = container.querySelectorAll(".cal-rendered-content");
+    existingDynamic.forEach((c) => c.remove());
+
+    if (filteredItems.length === 0) {
+      if (emptyNotice) emptyNotice.classList.remove("hidden");
+      return;
+    } else {
+      if (emptyNotice) emptyNotice.classList.add("hidden");
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "cal-rendered-content space-y-6 animate-fade-in";
+
+    if (activeViewMode === 'agenda') {
+      // Agrupación por franjas del día (Mañana / Tarde / Noche)
+      const groups: Record<string, { title: string; icon: string; items: typeof filteredItems }> = {};
+
+      filteredItems.forEach((item) => {
+        const p = getPeriodGroup(item.time);
+        if (!groups[p.title]) {
+          groups[p.title] = { title: p.title, icon: p.icon, items: [] };
+        }
+        const targetGrp = groups[p.title];
+        if (targetGrp) {
+          targetGrp.items.push(item);
+        }
+      });
+
+      Object.values(groups).forEach((grp) => {
+        const grpEl = document.createElement("div");
+        grpEl.className = "space-y-3";
+        grpEl.innerHTML = `
+          <div class="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2 text-xs font-bold text-[var(--text-secondary)]">
+            <span class="text-sm">${grp.icon}</span>
+            <span>${grp.title}</span>
+            <span class="ml-auto rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-mono text-[var(--text-tertiary)]">${grp.items.length} ${grp.items.length === 1 ? 'actividad' : 'actividades'}</span>
+          </div>
+          <div class="space-y-3"></div>
+        `;
+        const cardList = grpEl.querySelector("div:last-child")!;
+        grp.items.forEach((item) => {
+          cardList.appendChild(createItemCard(item, currentMin));
+        });
+        wrapper.appendChild(grpEl);
+      });
+
+    } else {
+      // Línea de tiempo cronológica con indicador "AHORA"
+      const timelineEl = document.createElement("div");
+      timelineEl.className = "relative border-l-2 border-[var(--border-subtle)] ml-3 pl-4 md:pl-6 space-y-4";
+
+      let nowMarkerPlaced = false;
+
+      filteredItems.forEach((item) => {
+        const parts = (item.time || '12:00').split(':').map(Number);
+        const itemMin = (parts[0] ?? 0) * 60 + (parts[1] ?? 0);
+
+        if (!nowMarkerPlaced && itemMin >= currentMin) {
+          timelineEl.appendChild(createNowMarker(currentMin));
+          nowMarkerPlaced = true;
+        }
+
+        const card = createItemCard(item, currentMin, true);
+        timelineEl.appendChild(card);
+      });
+
+      if (!nowMarkerPlaced) {
+        timelineEl.appendChild(createNowMarker(currentMin));
+      }
+
+      wrapper.appendChild(timelineEl);
+    }
+
+    container.appendChild(wrapper);
+  }
+
+  function createNowMarker(currentMin: number): HTMLElement {
+    const h = Math.floor(currentMin / 60).toString().padStart(2, '0');
+    const m = (currentMin % 60).toString().padStart(2, '0');
+
+    const marker = document.createElement("div");
+    marker.className = "relative my-2 flex items-center gap-2 py-1 -ml-[25px]";
+    marker.innerHTML = `
+      <div class="h-4 w-4 rounded-full bg-rose-500 border-2 border-[var(--surface-1)] shadow-md animate-ping"></div>
+      <div class="h-4 w-4 rounded-full bg-rose-500 border-2 border-[var(--surface-1)] shadow-md absolute left-0"></div>
+      <span class="rounded-lg bg-rose-500/10 border border-rose-500/30 px-2.5 py-0.5 text-[10px] font-black text-rose-400 shadow-sm ml-2">
+        🔴 HORA ACTUAL (${h}:${m})
+      </span>
+      <div class="h-[1px] flex-1 bg-rose-500/20"></div>
+    `;
+    return marker;
+  }
+
+  function createItemCard(item: any, currentMin: number, isTimeline = false): HTMLElement {
+    const parts = (item.time || '12:00').split(':').map(Number);
+    const itemH = parts[0] ?? 0;
+    const itemM = parts[1] ?? 0;
+    const itemTotalMin = itemH * 60 + itemM;
+    const diffMin = itemTotalMin - currentMin;
+    const isImminent = !item.isCompleted && diffMin >= -15 && diffMin <= 45;
+
+    const intensity = item.type === 'workout' ? getIntensityMeta(item.difficultyLevel, item.difficulty) : null;
+    const exercises: any[] = item.exercises || [];
+    const completedExCount = exercises.filter((e) => e.completed).length;
+
+    const card = document.createElement("div");
+    card.className = `schedule-item-card rounded-2xl border p-4 transition-all duration-300 backdrop-blur-xl ${
+      item.isCompleted
+        ? 'border-emerald-500/30 bg-emerald-500/5 opacity-85'
+        : isImminent
+        ? 'border-amber-400/80 bg-amber-500/10 shadow-lg shadow-amber-500/10 animate-pulse-subtle'
+        : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-brand)]'
+    }`;
+
+    // Timeline Dot
+    if (isTimeline) {
+      const dot = document.createElement("div");
+      dot.className = `absolute -left-[23px] top-6 h-3.5 w-3.5 rounded-full border-2 border-[var(--surface-1)] shadow-sm ${
+        item.isCompleted ? 'bg-emerald-500' : isImminent ? 'bg-amber-400 animate-pulse' : 'bg-[var(--brand)]'
+      }`;
+      card.appendChild(dot);
+    }
+
+    card.innerHTML = `
+      <div class="space-y-3">
+        <!-- Cabecera de Tarjeta -->
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="cal-check-btn flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-all ${
+                item.isCompleted
+                  ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm scale-105'
+                  : 'border-[var(--border-default)] bg-[var(--surface-3)] hover:border-emerald-400 text-transparent'
+              }"
+              data-id="${item.id}"
+              data-type="${item.type}"
+              title="Marcar como completado"
+            >
+              ✓
+            </button>
+
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-base">${item.type === 'meal' ? '🥗' : '🏋️'}</span>
+                <h4 class="text-sm font-bold text-[var(--text-primary)] ${item.isCompleted ? 'line-through opacity-70' : ''}">${item.title}</h4>
+                ${
+                  intensity
+                    ? `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${intensity.badgeBg}">${intensity.label}</span>`
+                    : ''
+                }
+                ${
+                  isImminent
+                    ? `<span class="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-black text-amber-400 border border-amber-500/30 animate-pulse">⏳ ¡En Hora!</span>`
+                    : ''
+                }
+              </div>
+              <p class="text-xs text-[var(--text-tertiary)] mt-0.5">${item.description}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="cal-time-btn flex items-center gap-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-1.5 text-xs font-mono font-bold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all shadow-sm"
+              data-id="${item.id}"
+              data-type="${item.type}"
+              data-time="${item.time}"
+              title="Haz clic para cambiar la hora de esta actividad"
+            >
+              <span>⏰</span>
+              <span>${item.time}</span>
+              <span class="text-[10px] text-[var(--text-tertiary)]">✎</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Desglose de Ejercicios para Entrenamientos -->
+        ${
+          item.type === 'workout' && exercises.length > 0
+            ? `
+            <div class="mt-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)]/70 p-3 space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-[var(--text-secondary)] border-b border-[var(--border-subtle)] pb-1.5">
+                <span class="flex items-center gap-1.5">
+                  <span>💪</span>
+                  <span>Ejercicios de la Sesión (${completedExCount}/${exercises.length})</span>
+                </span>
+                <a
+                  href="/client/workouts"
+                  class="text-[11px] font-bold text-[var(--brand)] hover:underline flex items-center gap-1"
+                >
+                  <span>Iniciar Rutina</span>
+                  <span>→</span>
+                </a>
+              </div>
+
+              <div class="divide-y divide-[var(--border-subtle)]/40 max-h-48 overflow-y-auto space-y-1 pr-1">
+                ${exercises
+                  .map((ex: any, exIdx: number) => {
+                    const isExDone = !!ex.completed;
+                    const exName = ex.displayName || ex.name || `Ejercicio ${exIdx + 1}`;
+                    const setsReps = `${ex.sets || 3} series × ${ex.reps || 10} reps`;
+                    const rest = ex.restTime ? `(${ex.restTime})` : '';
+                    const video = ex.videoUrl || '';
+
+                    return `
+                      <div class="flex items-center justify-between gap-2 py-1.5 text-xs">
+                        <div class="flex items-center gap-2 min-w-0">
+                          <button
+                            type="button"
+                            class="cal-ex-check-btn flex h-5 w-5 shrink-0 items-center justify-center rounded-md border text-[10px] transition-all ${
+                              isExDone
+                                ? 'bg-emerald-500 border-emerald-500 text-white'
+                                : 'border-[var(--border-default)] bg-[var(--surface-2)] text-transparent hover:border-emerald-400'
+                            }"
+                            data-workout-id="${item.id}"
+                            data-ex-id="${ex.id || ex.exerciseId || exIdx}"
+                            title="Marcar ejercicio como completado"
+                          >
+                            ✓
+                          </button>
+                          <div class="truncate">
+                            <span class="font-semibold text-[var(--text-primary)] ${isExDone ? 'line-through opacity-60' : ''}">${exName}</span>
+                            <span class="text-[11px] text-[var(--text-tertiary)] ml-1">${setsReps} ${rest}</span>
+                          </div>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 shrink-0">
+                          ${
+                            video
+                              ? `
+                              <button
+                                type="button"
+                                class="cal-video-trigger flex items-center gap-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] hover:text-[var(--brand)] hover:border-[var(--brand)] transition-all"
+                                data-video="${video}"
+                                data-name="${exName}"
+                              >
+                                <span>▶️</span>
+                                <span class="hidden sm:inline">Vídeo</span>
+                              </button>
+                              `
+                              : ''
+                          }
+                        </div>
+                      </div>
+                    `;
+                  })
+                  .join('')}
+              </div>
+            </div>
+            `
+            : ''
+        }
+      </div>
+    `;
+
+    // Event listener de Check-in General
+    const checkBtn = card.querySelector(".cal-check-btn");
+    if (checkBtn) {
+      checkBtn.addEventListener("click", async () => {
+        if (item.type === 'meal') {
+          const newStatus = toggleMealCompleted(item.id);
+          if (newStatus) {
+            showToast({ message: `🎉 ¡Excelente! Has completado ${item.title}.`, type: "success" });
+            if (currentClientId) {
+              try {
+                await registerMealComplete(currentClientId, item.raw.dietId || "daily", item.id, item.title);
+              } catch (e) {
+                toggleMealCompleted(item.id);
+                showToast({ message: "No se pudo sincronizar el progreso con el servidor.", type: "error" });
+              }
+            }
+          }
+        } else {
+          // Marcar todos los ejercicios del entrenamiento como completados
+          if (exercises.length > 0) {
+            exercises.forEach((ex) => {
+              toggleExerciseCompleted(item.id, ex.id || ex.exerciseId);
+            });
+            showToast({ message: `🏋️ ¡Entrenamiento "${item.title}" marcado como completado!`, type: "success" });
+          } else {
+            showToast({ message: "Para registrar series y cargas en detalle, pulsa en 'Iniciar Rutina'.", type: "info" });
+          }
+        }
+      });
+    }
+
+    // Event listener de Check-in Individual de Ejercicios
+    const exCheckBtns = card.querySelectorAll(".cal-ex-check-btn");
+    exCheckBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const wId = btn.getAttribute("data-workout-id");
+        const eId = btn.getAttribute("data-ex-id");
+        if (wId && eId) {
+          const isDone = toggleExerciseCompleted(wId, eId);
+          if (isDone) {
+            showToast({ message: `💪 ¡Serie registrada con éxito!`, type: "success" });
+          }
+        }
+      });
+    });
+
+    // Event listener de Vídeo de Técnica
+    const videoTriggers = card.querySelectorAll(".cal-video-trigger");
+    videoTriggers.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const url = btn.getAttribute("data-video");
+        const name = btn.getAttribute("data-name") || "Ejercicio";
+        if (url) {
+          openVideoModal(name, url);
+        }
+      });
+    });
+
+    // Event listener de Re-programación de Horarios
+    const timeBtn = card.querySelector(".cal-time-btn");
+    if (timeBtn) {
+      timeBtn.addEventListener("click", () => {
+        targetItemForReschedule = { id: item.id, type: item.type };
+        if (timePickerInput) timePickerInput.value = item.time;
+        if (timePickerModal) timePickerModal.classList.remove("hidden");
+        if (timePickerWarning) timePickerWarning.classList.add("hidden");
+      });
+    }
+
+    return card;
+  }
+
+  // Manejo de Filtros
+  const filterBtns = document.querySelectorAll(".cal-filter-btn");
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove("active", "border-[var(--brand)]", "bg-[var(--brand-dim)]", "text-[var(--brand)]");
+        b.classList.add("border-[var(--border-default)]", "bg-[var(--surface-2)]", "text-[var(--text-secondary)]");
+      });
+      btn.classList.add("active", "border-[var(--brand)]", "bg-[var(--brand-dim)]", "text-[var(--brand)]");
+      btn.classList.remove("border-[var(--border-default)]", "bg-[var(--surface-2)]", "text-[var(--text-secondary)]");
+
+      activeFilter = (btn.getAttribute("data-filter") as any) || 'all';
+      renderSchedule(dailyScheduleStore.get());
+    });
+  });
+
+  // Manejo de Selector de Vistas (Agenda vs Línea Temporal)
+  if (btnViewAgenda && btnViewTimeline) {
+    btnViewAgenda.addEventListener("click", () => {
+      activeViewMode = 'agenda';
+      btnViewAgenda.classList.add("active", "bg-[var(--surface-1)]", "text-[var(--brand)]", "shadow-sm");
+      btnViewAgenda.classList.remove("text-[var(--text-tertiary)]");
+      btnViewTimeline.classList.remove("active", "bg-[var(--surface-1)]", "text-[var(--brand)]", "shadow-sm");
+      btnViewTimeline.classList.add("text-[var(--text-tertiary)]");
+      renderSchedule(dailyScheduleStore.get());
+    });
+
+    btnViewTimeline.addEventListener("click", () => {
+      activeViewMode = 'timeline';
+      btnViewTimeline.classList.add("active", "bg-[var(--surface-1)]", "text-[var(--brand)]", "shadow-sm");
+      btnViewTimeline.classList.remove("text-[var(--text-tertiary)]");
+      btnViewAgenda.classList.remove("active", "bg-[var(--surface-1)]", "text-[var(--brand)]", "shadow-sm");
+      btnViewAgenda.classList.add("text-[var(--text-tertiary)]");
+      renderSchedule(dailyScheduleStore.get());
+    });
+  }
+
+  // TimePicker Presets
+  timePresetBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const presetTime = btn.getAttribute("data-preset");
+      if (presetTime && timePickerInput) {
+        timePickerInput.value = presetTime;
+      }
+    });
+  });
+
+  // Cerrar TimePicker
+  timePickerCloseBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (timePickerModal) timePickerModal.classList.add("hidden");
+      targetItemForReschedule = null;
+    });
+  });
+
+  // Guardar Hora
+  if (timePickerConfirmBtn) {
+    timePickerConfirmBtn.addEventListener("click", () => {
+      const newTime = timePickerInput.value;
+      if (!newTime || !targetItemForReschedule) return;
+
+      let result;
+      if (targetItemForReschedule.type === 'meal') {
+        result = rescheduleMeal(targetItemForReschedule.id, newTime);
+      } else {
+        result = rescheduleWorkout(targetItemForReschedule.id, newTime);
+      }
+
+      if (result.success) {
+        if (result.conflictWith && timePickerWarning && timePickerConflictMsg) {
+          timePickerConflictMsg.textContent = `Atención: Se ha programado muy cerca de "${result.conflictWith}".`;
+          timePickerWarning.classList.remove("hidden");
+          setTimeout(() => {
+            if (timePickerModal) timePickerModal.classList.add("hidden");
+            targetItemForReschedule = null;
+            showToast({ message: `⏰ Hora actualizada a las ${newTime}.`, type: "success" });
+          }, 1200);
+        } else {
+          if (timePickerModal) timePickerModal.classList.add("hidden");
+          targetItemForReschedule = null;
+          showToast({ message: `⏰ Hora actualizada a las ${newTime}.`, type: "success" });
+        }
+      }
+    });
+  }
+</script>

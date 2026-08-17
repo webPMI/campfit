@@ -1,0 +1,382 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t('dashboard.loading')}</p>
+    </div>
+  </div>
+
+  <div id="reportContent" class="hidden">
+    <header class="border-b border-[var(--border-default)] bg-[var(--surface-1)]/50 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
+        <div class="flex items-center gap-3">
+          <a href={`/client/support?lang=${lang}`} class="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface-3)] hover:bg-[var(--surface-4)] transition-colors">
+            <svg class="h-5 w-5 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </a>
+          <div class="flex items-center gap-2">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-500/20">
+              <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+            </div>
+            <div>
+              <h1 data-i18n="report.title" class="text-lg font-bold text-[var(--text-primary)]">{t('report.title')}</h1>
+              <p data-i18n="report.subtitle" class="text-xs text-[var(--text-tertiary)]">{t('report.subtitle')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-4 py-6">
+      <div class="space-y-6 animate-fade-in">
+        <!-- Success message -->
+        <div id="successMessage" class="hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 backdrop-blur-sm">
+          <div class="flex items-start gap-4">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
+              <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p id="successTitle" class="font-semibold text-emerald-300"></p>
+              <p id="successDesc" class="mt-1 text-sm text-emerald-200/80"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div id="errorMessage" class="hidden rounded-2xl border border-red-500/30 bg-red-500/10 p-5 backdrop-blur-sm">
+          <div class="flex items-start gap-4">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/20">
+              <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 3.75c-1.026 0-2.052.29-2.898.834L2.697 16.126c.866 1.5 3.032 1.5 3.898 0L12 6.474l7.405 9.652c.866 1.5 3.032 1.5 3.898 0L21.303 16.126c-.866-1.5-3.032-1.5-3.898 0L12 6.474Z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p id="errorTitle" class="font-semibold text-red-300"></p>
+              <p id="errorDesc" class="mt-1 text-sm text-red-200/80"></p>
+            </div>
+            <button id="errorDismiss" class="shrink-0 rounded-lg p-1.5 text-red-300/70 hover:bg-red-500/20 hover:text-red-300 transition-colors">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl">
+          <form id="reportForm" class="space-y-5">
+            <!-- Título -->
+            <div>
+              <label for="title" data-i18n="report.title.label" class="block text-sm font-medium text-[var(--text-secondary)]">
+                {t('report.title.label')}
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                data-i18n-placeholder="report.title.placeholder"
+                placeholder="{t('report.title.placeholder')}"
+                maxlength="100"
+                required
+                class="mt-1.5 w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+              />
+              <div class="mt-1 flex justify-between">
+                <span id="titleCharCount" class="text-xs text-[var(--text-tertiary)]">0/100</span>
+                <span data-i18n="report.title.hint" class="text-xs text-[var(--text-tertiary)]">{t('report.title.hint')}</span>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div>
+              <label for="description" data-i18n="report.description.label" class="block text-sm font-medium text-[var(--text-secondary)]">
+                {t('report.description.label')}
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                data-i18n-placeholder="report.description.placeholder"
+                placeholder="{t('report.description.placeholder')}"
+                rows="5"
+                required
+                class="mt-1.5 w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] resize-y transition-all placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+              ></textarea>
+            </div>
+
+            <!-- Categoría + Severidad side by side -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label for="category" data-i18n="report.category.label" class="block text-sm font-medium text-[var(--text-secondary)]">
+                  {t('report.category.label')}
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  required
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] transition-all focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+                >
+                  <option value="" data-i18n="report.category.placeholder">{t('report.category.placeholder')}</option>
+                  <option value="bug" data-i18n="report.category.bug">{t('report.category.bug')}</option>
+                  <option value="misconduct" data-i18n="report.category.misconduct">{t('report.category.misconduct')}</option>
+                  <option value="vulnerability" data-i18n="report.category.vulnerability">{t('report.category.vulnerability')}</option>
+                  <option value="inquiry" data-i18n="report.category.inquiry">{t('report.category.inquiry')}</option>
+                  <option value="suggestion" data-i18n="report.category.suggestion">{t('report.category.suggestion')}</option>
+                  <option value="other" data-i18n="report.category.other">{t('report.category.other')}</option>
+                </select>
+                <p data-i18n="report.category.hint" class="mt-1 text-xs text-[var(--text-tertiary)]">{t('report.category.hint')}</p>
+              </div>
+
+              <div>
+                <label for="severity" data-i18n="report.severity.label" class="block text-sm font-medium text-[var(--text-secondary)]">
+                  {t('report.severity.label')}
+                </label>
+                <select
+                  id="severity"
+                  name="severity"
+                  required
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] transition-all focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+                >
+                  <option value="low" data-i18n="report.severity.low">{t('report.severity.low')}</option>
+                  <option value="medium" data-i18n="report.severity.medium" selected>{t('report.severity.medium')}</option>
+                  <option value="high" data-i18n="report.severity.high">{t('report.severity.high')}</option>
+                  <option value="critical" data-i18n="report.severity.critical">{t('report.severity.critical')}</option>
+                </select>
+                <p data-i18n="report.severity.hint" class="mt-1 text-xs text-[var(--text-tertiary)]">{t('report.severity.hint')}</p>
+              </div>
+            </div>
+
+            <!-- Related user (opcional) -->
+            <div>
+              <label for="relatedEmail" data-i18n="report.related.label" class="block text-sm font-medium text-[var(--text-secondary)]">
+                {t('report.related.label')}
+                <span data-i18n="report.related.optional" class="text-[var(--text-tertiary)]">{t('report.related.optional')}</span>
+              </label>
+              <input
+                type="email"
+                id="relatedEmail"
+                name="relatedEmail"
+                data-i18n-placeholder="report.related.placeholder"
+                placeholder="{t('report.related.placeholder')}"
+                class="mt-1.5 w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] transition-all placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+              />
+              <p data-i18n="report.related.hint" class="mt-1 text-xs text-[var(--text-tertiary)]">{t('report.related.hint')}</p>
+            </div>
+
+            <!-- Anonimato toggle -->
+            <div class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] p-4 backdrop-blur-sm">
+              <div class="flex items-start gap-3">
+                <label class="relative flex h-6 w-11 shrink-0 cursor-pointer items-center">
+                  <input type="checkbox" id="isAnonymous" class="peer sr-only" />
+                  <div class="peer-after:translate-x-6 peer-checked:bg-[var(--brand)] after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:shadow-md after:rounded-full after:h-5 after:w-5 after:transition-all after:shrink-0"></div>
+                </label>
+                <div class="flex-1">
+                  <p data-i18n="report.anonymous.label" class="text-sm font-medium text-[var(--text-primary)]">{t('report.anonymous.label')}</p>
+                  <p data-i18n="report.anonymous.desc" class="mt-0.5 text-xs text-[var(--text-tertiary)]">{t('report.anonymous.desc')}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex items-center gap-4">
+              <button
+                type="submit"
+                id="submitBtn"
+                class="flex-1 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent)] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-[var(--shadow-glow)] transition-all hover:shadow-xl hover:from-[var(--accent-hover)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span id="submitText" data-i18n="report.submit">{t('report.submit')}</span>
+                <span id="submitSpinner" class="hidden ml-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+              </button>
+              <a
+                href={`/client/support?lang=${lang}`}
+                class="rounded-xl px-4 py-3 text-sm font-medium text-[var(--text-tertiary)] transition-all hover:bg-[var(--surface-3)] hover:text-[var(--text-secondary)]"
+              >
+                {t('report.cancel')}
+              </a>
+            </div>
+
+            <!-- Privacy note -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/50 p-4 backdrop-blur-sm">
+              <div class="flex gap-3">
+                <svg class="h-5 w-5 shrink-0 mt-0.5 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25m0 0-.75-.75m.75.75h3.5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-.75.75h-3.5a.75.75 0 0 1-.75-.75v-3.5Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75m0 0-.75-.75m.75.75h3.5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-.75.75h-3.5a.75.75 0 0 1-.75-.75v-3.5Z" />
+                </svg>
+                <p class="text-xs leading-relaxed text-[var(--text-tertiary)]">
+                  <span data-i18n="report.privacy.note">{t('report.privacy.note')}</span>
+                  <span data-i18n="report.privacy.anonymous" class="font-medium text-[var(--text-secondary)]">{t('report.privacy.anonymous')}</span>
+                  <span data-i18n="report.privacy.normal" class="font-medium text-[var(--text-secondary)]">{t('report.privacy.normal')}</span>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Mis tickets link -->
+        <div class="rounded-xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <svg class="h-5 w-5 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A3.375 3.375 0 0 0 9 8.625V2.25A2.25 2.25 0 0 0 6.75 0H2.25A2.25 2.25 0 0 0 0 2.25v21A2.25 2.25 0 0 0 2.25 23.25h15A2.25 2.25 0 0 0 21 21V14.25Z" />
+              </svg>
+              <div>
+                <p data-i18n="report.myTickets.label" class="text-sm font-medium text-[var(--text-primary)]">{t('report.myTickets.label')}</p>
+                <p data-i18n="report.myTickets.desc" class="text-xs text-[var(--text-tertiary)]">{t('report.myTickets.desc')}</p>
+              </div>
+            </div>
+            <a href={`/client/support/my-tickets?lang=${lang}`} class="rounded-xl bg-[var(--surface-3)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-4)] hover:text-[var(--text-primary)]">
+              {t('report.myTickets.view')}
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</ClientLayout>
+
+<script>
+  import { initPage } from '@/lib/shared/initPage';
+
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const loadingText = document.getElementById('loadingText')!;
+  const reportContent = document.getElementById('reportContent')!;
+  const titleInput = document.getElementById('title') as HTMLInputElement;
+  const titleCharCount = document.getElementById('titleCharCount')!;
+  const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+  const submitText = document.getElementById('submitText')!;
+  const submitSpinner = document.getElementById('submitSpinner')!;
+  const successMessage = document.getElementById('successMessage')!;
+  const successTitle = document.getElementById('successTitle')!;
+  const successDesc = document.getElementById('successDesc')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const errorTitle = document.getElementById('errorTitle')!;
+  const errorDesc = document.getElementById('errorDesc')!;
+  const errorDismiss = document.getElementById('errorDismiss')!;
+
+  loadingText.textContent = 'Cargando...';
+
+  // Contador de caracteres
+  titleInput.addEventListener('input', () => {
+    titleCharCount.textContent = `${titleInput.value.length}/100`;
+  });
+
+  // Ocultar error al hacer clic en dismiss
+  errorDismiss.addEventListener('click', () => {
+    errorMessage.classList.add('hidden');
+  });
+
+  function showSuccess(title: string, desc: string) {
+    successTitle.textContent = title;
+    successDesc.textContent = desc;
+    successMessage.classList.remove('hidden');
+    errorMessage.classList.add('hidden');
+  }
+
+  function showError(title: string, desc: string) {
+    errorTitle.textContent = title;
+    errorDesc.textContent = desc;
+    errorMessage.classList.remove('hidden');
+    successMessage.classList.add('hidden');
+  }
+
+  function setLoading(loading: boolean) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitText.classList.add('hidden');
+      submitSpinner.classList.remove('hidden');
+    } else {
+      submitBtn.disabled = false;
+      submitText.classList.remove('hidden');
+      submitSpinner.classList.add('hidden');
+    }
+  }
+
+  function getLang(): string {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('lang') || 'es';
+  }
+
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async () => {
+      reportContent.classList.remove('hidden');
+      loadingScreen.classList.add('hidden');
+
+      const form = document.getElementById('reportForm') as HTMLFormElement;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = titleInput.value.trim();
+        const description = (document.getElementById('description') as HTMLTextAreaElement).value.trim();
+        const category = (document.getElementById('category') as HTMLSelectElement).value;
+        const severity = (document.getElementById('severity') as HTMLSelectElement).value;
+        const relatedEmail = (document.getElementById('relatedEmail') as HTMLInputElement).value.trim();
+        const isAnonymous = (document.getElementById('isAnonymous') as HTMLInputElement).checked;
+
+        if (!title || !description || !category) {
+          showError('Datos incompletos', 'Completa todos los campos requeridos antes de enviar.');
+          return;
+        }
+
+        setLoading(true);
+
+        try {
+          const lang = getLang();
+          const response = await fetch(`/api/support/create?lang=${lang}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title,
+              description,
+              category,
+              severity,
+              relatedEmail: relatedEmail || null,
+              isAnonymous,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            showError(
+              data.error || 'Error al enviar',
+              data.errorDetail || 'No se pudo procesar tu reporte. Intenta nuevamente.'
+            );
+            return;
+          }
+
+          // Mostrar éxito y redirigir a mis tickets
+          const ticketUrl = `/client/support/my-tickets?lang=${lang}`;
+          showSuccess(
+            data.message || 'Tu reporte ha sido enviado',
+            data.ticket
+              ? `Ticket #${data.ticket.id} — Estado: ${data.ticket.status}`
+              : 'Recibirás una respuesta si no eres anónimo.'
+          );
+
+          setTimeout(() => {
+            window.location.href = ticketUrl;
+          }, 3000);
+
+        } catch (err) {
+          showError('Error de conexión', 'No se pudo conectar con el servidor. Revisa tu conexión e intenta nuevamente.');
+        } finally {
+          setLoading(false);
+        }
+      });
+    },
+  });
+
+  document.addEventListener('astro:before-swap', cleanup);
+</script>

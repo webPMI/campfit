@@ -1,70 +1,112 @@
 ---
 import ClientLayout from "@/layouts/ClientLayout.astro";
 import TimeGrid from "@/components/calendar/TimeGrid.astro";
+import PageTransition from "@/components/PageTransition.astro";
+import SkeletonGroup from "@/components/SkeletonGroup.astro";
 ---
 
 <ClientLayout>
-  <section class="max-w-4xl mx-auto py-8 px-4">
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">Mi Agenda de Hoy</h1>
-      <p class="text-zinc-500">Organiza tu día de nutrición y entrenamiento.</p>
-    </header>
-
-    <div id="calendar-container" class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-4">
-      <div id="loading-state" class="flex flex-col items-center justify-center py-20">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-        <p>Cargando agenda...</p>
-      </div>
-      
-      <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-zinc-400">
-        <div class="mb-4 p-4 bg-zinc-50 dark:bg-zinc-800 rounded-full">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m0 5l4-4m-4 4l4 4m-8 8h10M3 12h17m-9 4h10M5 10v10" />
-          </svg>
+  <main class="mx-auto max-w-4xl px-4 py-6">
+    <PageTransition animation="fade-up">
+      <!-- Encabezado Pro-UX -->
+      <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📅</span>
+            <h1 class="text-2xl font-black tracking-tight text-[var(--text-primary)]">Mi Agenda Diaria</h1>
+          </div>
+          <p class="text-xs text-[var(--text-tertiary)] mt-1 font-medium">Plan estructurado de comidas y entrenamientos de hoy</p>
         </div>
-        <h2 class="text-xl font-semibold mb-2">No tienes actividades hoy</h2>
-        <p class="text-sm text-center max-w-md">Tu agenda está vacía. Consulta con tu entrenador para recibir tu plan diario o revisa tus metas en el dashboard.</p>
+
+        <a
+          href="/client/dashboard"
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] text-xs font-bold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all shadow-sm"
+        >
+          <span>←</span>
+          <span>Volver al Dashboard</span>
+        </a>
+      </header>
+
+      <!-- Estado de Carga -->
+      <div id="loading-state" class="min-h-[400px]">
+        <SkeletonGroup variant="dashboard" />
       </div>
 
+      <!-- Estado Empty Inteligente -->
+      <div id="empty-state" class="hidden rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-8 text-center backdrop-blur-xl space-y-4">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 text-3xl text-amber-400 border border-amber-500/20">
+          🗓️
+        </div>
+        <div class="space-y-1 max-w-md mx-auto">
+          <h2 class="text-base font-bold text-[var(--text-primary)]">No tienes actividades asignadas para hoy</h2>
+          <p class="text-xs text-[var(--text-tertiary)]">Tu entrenador aún no ha programado una rutina o plan nutricional para este día, o es tu día de descanso total.</p>
+        </div>
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <a
+            href="/client/chat"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--brand)] text-[var(--text-on-brand)] text-xs font-bold shadow-md hover:opacity-95 transition-all"
+          >
+            <span>💬</span>
+            <span>Contactar a mi Entrenador</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contenido Principal -->
       <div id="calendar-content" class="hidden">
         <TimeGrid />
       </div>
-    </div>
-  </section>
+    </PageTransition>
+  </main>
 </ClientLayout>
 
 <script>
+  import { initPage } from '@/lib/shared/initPage';
   import { subscribeToDailySchedule } from '@/lib/client/dailyScheduleService';
   import { setDailySchedule } from '@/stores/dailyScheduleStore';
-
-  const clientId = new URLSearchParams(window.location.search).get('uid') || '0'; // Simulación de ID de usuario
 
   const loadingState = document.getElementById('loading-state');
   const calendarContent = document.getElementById('calendar-content');
   const emptyState = document.getElementById('empty-state');
 
-  let unsubscribe: (() => void) | null = null;
+  let unsubSchedule: (() => void) | null = null;
 
-  unsubscribe = subscribeToDailySchedule(clientId, (data) => {
-    if (loadingState) loadingState.classList.add('hidden');
-    
-    if (data.diets.length === 0 && data.workouts.length === 0) {
-      calendarContent?.classList.add('hidden');
-      emptyState?.classList.remove('hidden');
-    } else {
-      calendarContent?.classList.remove('hidden');
-      emptyState?.classList.add('hidden');
-      const allMeals = data.diets.flatMap(d => d.meals || []);
-      setDailySchedule(allMeals, data.workouts);
-    }
-  }, (err) => {
-    console.error(err);
-    if (loadingState) {
-      loadingState.innerHTML = `<p class="text-red-500">Error al cargar la agenda.</p>`;
-    }
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async (firebaseUser, userData) => {
+      // Modo espejo: si un admin/trainer especifica ?uid=xxx, ver la agenda de ese cliente
+      const paramUid = new URLSearchParams(window.location.search).get('uid');
+      const targetUid = (userData?.role === 'admin' || userData?.role === 'trainer') && paramUid
+        ? paramUid
+        : firebaseUser.uid;
+
+      window.dispatchEvent(new CustomEvent('schedule:client-ready', { detail: { clientId: targetUid } }));
+
+      unsubSchedule = subscribeToDailySchedule(
+        targetUid,
+        (data) => {
+          if (loadingState) loadingState.classList.add('hidden');
+
+          const allMeals = data.diets.flatMap((d) => d.meals || []);
+          if (allMeals.length === 0 && data.workouts.length === 0) {
+            calendarContent?.classList.add('hidden');
+            emptyState?.classList.remove('hidden');
+          } else {
+            emptyState?.classList.add('hidden');
+            calendarContent?.classList.remove('hidden');
+            setDailySchedule(allMeals, data.workouts);
+          }
+        },
+        (_err) => {
+          if (loadingState) loadingState.classList.add('hidden');
+          if (emptyState) emptyState.classList.remove('hidden');
+        }
+      );
+    },
   });
 
-  window.addEventListener('beforeunload', () => {
-    unsubscribe?.();
+  document.addEventListener('astro:before-swap', () => {
+    unsubSchedule?.();
+    cleanup();
   });
 </script>

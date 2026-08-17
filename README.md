@@ -8,15 +8,16 @@
 
 | Tecnología | Versión | Uso |
 |------------|---------|-----|
-| **Astro** | 7.x | Framework web (SSR con `@astrojs/node` standalone) |
-| **Tailwind CSS** | 4.x | Estilos utilitarios con `@tailwindcss/vite` |
+| **Astro** | 7.x | Framework web (Static SSG con API endpoints optimizados) |
+| **Tailwind CSS** | 4.x | Estilos utilitarios de alto rendimiento con `@tailwindcss/vite` |
 | **Firebase** | 11.x | Autenticación + Firestore (base de datos en tiempo real) |
-| **Nanostores** | 1.x | Estado global reactivo (auth store) |
-| **TypeScript** | 5.x | Tipado estricto en todo el proyecto |
-| **Vitest** | 4.x | Tests unitarios |
-| **Playwright** | 1.x | Tests end-to-end |
+| **Cloudflare R2** | AWS S3 SDK | Almacenamiento multimedia seguro de fotos y vídeos de técnica |
+| **Nanostores** | 1.x | Estado global reactivo y sincronización en tiempo real |
+| **TypeScript** | 5.x | Tipado estricto en todo el proyecto (0 `any`) |
+| **Vitest** | 3.0.9 | Tests unitarios y suites de integración |
+| **Playwright** | 1.x | Tests end-to-end (E2E) |
 
-**Arquitectura:** Vanilla JS (sin React, sin librerías de UI). Componentes HTML renderizados desde JavaScript puro con streams en tiempo real de Firestore.
+**Arquitectura:** Vanilla JS / TypeScript reactivo sobre Astro (sin frameworks pesados como React/Vue en cliente). Componentes HTML renderizados dinámicamente con streams de Firestore en tiempo real y arquitectura Zero Native Dialogs.
 
 ---
 
@@ -24,40 +25,42 @@
 
 ```
 campfit-astro/
-├── public/                  # Archivos estáticos
+├── public/                  # Archivos estáticos e iconos PWA
 ├── src/
-│   ├── i18n/                # Internacionalización (es/en)
-│   │   ├── client.ts        # Traducciones para el cliente JS
-│   │   └── translations.ts  # Traducciones completas (SSR)
-│   ├── layouts/             # Layouts por rol
+│   ├── components/          # Componentes Astro reutilizables
+│   │   ├── calendar/        # TimeGrid compacto, TimePicker y radar horario
+│   │   └── ...              # Modales, Cards, Botones, Spinners
+│   ├── i18n/                # Internacionalización (es / en / ca)
+│   │   ├── client.ts        # Traducciones reactivas para el cliente JS
+│   │   ├── translations.ts  # Traducciones completas (SSR/SSG)
+│   │   └── locales/         # Diccionarios canónicos (es.ts, en.ts, ca.ts)
+│   ├── layouts/             # Layouts modulares por rol
 │   │   ├── BaseLayout.astro
 │   │   ├── AdminLayout.astro
 │   │   ├── ClientLayout.astro
 │   │   └── TrainerLayout.astro
-│   ├── lib/                 # Utilidades compartidas
-│   │   ├── admin/           # Utilidades específicas del panel admin
-│   │   │   └── adminUtils.ts
-│   │   ├── firebase.ts      # Configuración de Firebase
-│   │   ├── routeGuards.ts   # Guardias de ruta por rol
-│   │   └── validators.ts    # Validación de formularios
-│   ├── pages/               # Páginas (rutas)
-│   │   ├── index.astro      # Landing page
+│   ├── lib/                 # Capa de lógica de negocio y servicios
+│   │   ├── admin/           # Servicios y utilidades de administración
+│   │   ├── client/          # Rutinas, dietas, progreso y cruce de lesiones
+│   │   ├── trainer/         # Asignaciones, plantillas, clientes y feedback
+│   │   ├── devtools/        # Gestor de semillas, validadores y autofillers
+│   │   ├── storage/         # Cloudflare R2 / S3 y compresión multimedia
+│   │   ├── shared/          # Hidratación, logs remotos, chat y utilidades UI
+│   │   └── firebase/        # Configuración e inicialización de Firebase
+│   ├── pages/               # Páginas y rutas de la aplicación
+│   │   ├── index.astro      # Landing page pública
 │   │   ├── login.astro      # Inicio de sesión
-│   │   ├── register.astro   # Registro
-│   │   ├── recover.astro    # Recuperar contraseña
-│   │   ├── dashboard.astro  # Dashboard post-login
-│   │   ├── admin/           # Panel de administración
-│   │   ├── client/          # Panel de cliente
-│   │   ├── trainer/         # Panel de entrenador
-│   │   └── api/             # Endpoints API
-│   ├── services/            # Servicios (Firebase)
-│   │   ├── authService.ts   # Autenticación
-│   │   └── adminService.ts  # Administración
-│   ├── stores/              # Stores reactivos
-│   │   └── authStore.ts     # Estado de autenticación (Nanostores)
-│   └── types/               # Tipos TypeScript
-│       └── index.ts
-├── tests/                   # Tests
+│   │   ├── register.astro   # Registro y onboarding
+│   │   ├── admin/           # Panel de administración y gestión
+│   │   ├── client/          # Panel de cliente (dashboard, rutinas, dietas, calendario)
+│   │   ├── trainer/         # Panel de entrenador (fichas, rutinas, correcciones)
+│   │   └── api/             # Endpoints API de soporte y analítica
+│   ├── stores/              # Stores reactivos (Nanostores)
+│   │   ├── authStore.ts     # Estado de autenticación
+│   │   ├── themeStore.ts    # Control de temas y sabores visuales
+│   │   └── dailyScheduleStore.ts # Agenda y sincronización optimista
+│   └── types/               # Definiciones y contratos TypeScript
+├── tests/                   # Suites de tests unitarios, integración y E2E
 ├── astro.config.mjs         # Configuración de Astro
 ├── tsconfig.json            # Configuración de TypeScript
 └── package.json
@@ -96,9 +99,9 @@ campfit-astro/
 - Configuración del sistema
 
 ### 🌐 Internacionalización
-- Español e inglés
-- Persistencia del idioma en localStorage
-- Cambio de idioma vía query param `?lang=es|en`
+- Español, Inglés y Catalán (`es`, `en`, `ca`)
+- Persistencia del idioma en `localStorage` y cookies
+- Renderizado multilingüe SSG y client-side translation (`translateDOM`)
 
 ---
 

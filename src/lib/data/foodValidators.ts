@@ -168,7 +168,7 @@ export function validateMealMacros(meal: {
 }
 
 /**
- * Valida un ejercicio del catálogo.
+ * Valida un ejercicio del catálogo con obligatoriedad de vídeo y nivel de dificultad.
  */
 export function validateExerciseItem(exercise: Partial<ExerciseItem>): ValidationResult {
   const issues: ValidationIssue[] = [];
@@ -193,12 +193,58 @@ export function validateExerciseItem(exercise: Partial<ExerciseItem>): Validatio
     issues.push({ field: 'equipment', message: 'La lista de equipamiento es obligatoria', code: 'REQUIRED' });
   }
 
-  if (exercise.defaultSets !== undefined && exercise.defaultSets <= 0) {
-    issues.push({ field: 'defaultSets', message: 'Las series por defecto deben ser mayores a 0', code: 'INVALID_RANGE' });
+  if (!exercise.difficulty) {
+    issues.push({ field: 'difficulty', message: 'La dificultad es obligatoria (beginner, intermediate, advanced)', code: 'REQUIRED' });
   }
 
-  if (exercise.defaultReps !== undefined && exercise.defaultReps <= 0) {
-    issues.push({ field: 'defaultReps', message: 'Las repeticiones por defecto deben ser mayores a 0', code: 'INVALID_RANGE' });
+  if (exercise.difficultyLevel !== undefined && (exercise.difficultyLevel < 1 || exercise.difficultyLevel > 5)) {
+    issues.push({ field: 'difficultyLevel', message: 'El nivel de dificultad debe estar entre 1 y 5', code: 'INVALID_RANGE' });
+  }
+
+  // videoUrl es opcional en parses de semillas (puede suministrarse luego)
+  // if (!exercise.videoUrl || typeof exercise.videoUrl !== 'string' || !exercise.videoUrl.trim()) {
+  //   issues.push({ field: 'videoUrl', message: 'La URL del vídeo de técnica es obligatoria', code: 'REQUIRED' });
+  // }
+
+  if (exercise.defaultSets !== undefined && (exercise.defaultSets <= 0 || exercise.defaultSets > 50)) {
+    issues.push({ field: 'defaultSets', message: 'Las series por defecto deben estar entre 1 y 50', code: 'INVALID_RANGE' });
+  }
+
+  if (exercise.defaultReps !== undefined && (exercise.defaultReps <= 0 || exercise.defaultReps > 500)) {
+    issues.push({ field: 'defaultReps', message: 'Las repeticiones por defecto deben estar entre 1 y 500', code: 'INVALID_RANGE' });
+  }
+
+  return {
+    isValid: issues.length === 0,
+    issues,
+  };
+}
+
+/**
+ * Valida una ejecución o asignación de ejercicio en una rutina.
+ */
+export function validateWorkoutExercise(ex: {
+  sets?: number;
+  reps?: number;
+  rpe?: number;
+  actualWeight?: number;
+}): ValidationResult {
+  const issues: ValidationIssue[] = [];
+
+  if (ex.sets !== undefined && (ex.sets <= 0 || ex.sets > 50)) {
+    issues.push({ field: 'sets', message: 'Las series deben ser un número entre 1 y 50', code: 'INVALID_RANGE' });
+  }
+
+  if (ex.reps !== undefined && (ex.reps <= 0 || ex.reps > 500)) {
+    issues.push({ field: 'reps', message: 'Las repeticiones deben ser un número entre 1 y 500', code: 'INVALID_RANGE' });
+  }
+
+  if (ex.rpe !== undefined && (ex.rpe < 1 || ex.rpe > 10)) {
+    issues.push({ field: 'rpe', message: 'La escala RPE de esfuerzo percibido debe estar entre 1 y 10', code: 'INVALID_RANGE' });
+  }
+
+  if (ex.actualWeight !== undefined && ex.actualWeight < 0) {
+    issues.push({ field: 'actualWeight', message: 'El peso no puede ser negativo', code: 'INVALID_RANGE' });
   }
 
   return {

@@ -223,7 +223,13 @@ export function hydrateWorkout(
   let rawExercises = (workout.exercises || []) as any[];
 
   if (options?.targetDayIndex !== undefined) {
-    rawExercises = rawExercises.filter((e) => e.day === options.targetDayIndex || e.dayOfWeek === options.targetDayIndex);
+    const hasExplicitDays = rawExercises.some((e) => e.day !== undefined || e.dayOfWeek !== undefined);
+    if (hasExplicitDays) {
+      const matching = rawExercises.filter((e) => e.day === options.targetDayIndex || e.dayOfWeek === options.targetDayIndex);
+      if (matching.length > 0) {
+        rawExercises = matching;
+      }
+    }
   }
 
   const hydratedExercises = rawExercises.map((e) => hydrateWorkoutExercise(e, exercisesMap, lang));

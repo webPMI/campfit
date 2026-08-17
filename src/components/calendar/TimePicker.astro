@@ -1,0 +1,81 @@
+---
+interface Props {
+  id?: string;
+  initialTime?: string;
+  placeholder?: string;
+  class?: string;
+  label?: string;
+}
+
+const {
+  id = 'time-picker-modal',
+  initialTime = '12:00',
+  placeholder = 'Seleccionar hora',
+  class: className = '',
+  label = 'Cambiar hora de actividad',
+} = Astro.props;
+---
+
+<div id={id} class={`time-picker-dialog hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 ${className}`}>
+  <div class="relative w-full max-w-sm rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 shadow-2xl space-y-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand-dim)] text-base">⏰</span>
+        <h3 class="text-sm font-bold text-[var(--text-primary)]">{label}</h3>
+      </div>
+      <button type="button" class="time-picker-close rounded-lg p-1.5 text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] transition-all">
+        ✕
+      </button>
+    </div>
+
+    <!-- Presets Rápidos -->
+    <div class="space-y-2">
+      <p class="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Horarios frecuentes</p>
+      <div class="grid grid-cols-3 gap-2">
+        <button type="button" data-preset="08:00" class="time-preset-btn rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all">08:00 Desayuno</button>
+        <button type="button" data-preset="11:00" class="time-preset-btn rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all">11:00 Media m.</button>
+        <button type="button" data-preset="14:00" class="time-preset-btn rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all">14:00 Almuerzo</button>
+        <button type="button" data-preset="17:30" class="time-preset-btn rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all">17:30 Merienda</button>
+        <button type="button" data-preset="19:00" class="time-preset-btn rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all">19:00 Entreno</button>
+        <button type="button" data-preset="21:30" class="time-preset-btn rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all">21:30 Cena</button>
+      </div>
+    </div>
+
+    <!-- Input Personalizado -->
+    <div class="space-y-2">
+      <label class="block text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Hora exacta personalizada</label>
+      <div class="relative flex items-center">
+        <input
+          type="time"
+          id="time-picker-custom-input"
+          value={initialTime}
+          class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-3.5 py-2.5 text-sm font-bold text-[var(--text-primary)] focus:border-[var(--brand)] focus:outline-none transition-all"
+          placeholder={placeholder}
+        />
+      </div>
+    </div>
+
+    <!-- Mensaje de Conflicto -->
+    <div id="time-picker-conflict-warning" class="hidden rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-amber-400">
+      ⚠️ <span id="time-picker-conflict-msg">Atención: Hay un evento cercano a esta hora.</span>
+    </div>
+
+    <!-- Acciones -->
+    <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-subtle)]">
+      <button
+        type="button"
+        class="time-picker-cancel-btn rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-3)] transition-all"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        id="time-picker-confirm-btn"
+        class="rounded-xl bg-[var(--brand)] px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow-md hover:opacity-90 active:scale-95 transition-all"
+      >
+        Guardar hora
+      </button>
+    </div>
+  </div>
+</div>

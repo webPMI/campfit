@@ -1,0 +1,337 @@
+---
+import ClientLayout from '@/layouts/ClientLayout.astro';
+import { translations, type Language } from '@/i18n/translations';
+
+const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
+const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key] || key;
+---
+
+<ClientLayout>
+  <div id="loadingScreen" class="flex min-h-screen items-center justify-center">
+    <div class="text-center animate-fade-in">
+      <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-strong)] border-t-emerald-400"></div>
+      <p id="loadingText" class="mt-4 text-sm text-[var(--text-tertiary)]">{t('dashboard.loading')}</p>
+    </div>
+  </div>
+
+  <div id="myTicketsContent" class="hidden">
+    <header class="border-b border-[var(--border-default)] bg-[var(--surface-1)]/50 backdrop-blur-xl sticky top-0 z-10">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+        <div class="flex items-center gap-3">
+          <a href={`/client/support?lang=${lang}`} class="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface-3)] hover:bg-[var(--surface-4)] transition-colors">
+            <svg class="h-5 w-5 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </a>
+          <div class="flex items-center gap-2">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 shadow-lg shadow-indigo-500/20">
+              <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+              </svg>
+            </div>
+            <div>
+              <h1 data-i18n="myTickets.title" class="text-lg font-bold text-[var(--text-primary)]">{t('myTickets.title')}</h1>
+              <p data-i18n="myTickets.subtitle" class="text-xs text-[var(--text-tertiary)]">{t('myTickets.subtitle')}</p>
+            </div>
+          </div>
+        </div>
+        <a
+          href={`/client/support/report?lang=${lang}`}
+          class="shrink-0 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent)] px-4 py-2 text-sm font-medium text-white shadow-lg shadow-[var(--shadow-glow)] transition-all hover:from-[var(--accent-hover)] active:scale-[0.98]"
+        >
+          <span data-i18n="myTickets.newTicket">{t('myTickets.newTicket')}</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-4 py-6">
+      <div class="space-y-6 animate-fade-in">
+
+        <!-- Mensajes -->
+        <div id="successMessage" class="hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 backdrop-blur-sm">
+          <div class="flex items-start gap-4">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
+              <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p id="successTitle" class="font-semibold text-emerald-300"></p>
+              <p id="successDesc" class="mt-1 text-sm text-emerald-200/80"></p>
+            </div>
+          </div>
+        </div>
+
+        <div id="errorMessage" class="hidden rounded-2xl border border-red-500/30 bg-red-500/10 p-5 backdrop-blur-sm">
+          <div class="flex items-start gap-4">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/20">
+              <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 3.75c-1.026 0-2.052.29-2.898.834L2.697 16.126c.866 1.5 3.032 1.5 3.898 0L12 6.474l7.405 9.652c.866 1.5 3.032 1.5 3.898 0L21.303 16.126c-.866-1.5-3.032-1.5-3.898 0L12 6.474Z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p id="errorTitle" class="font-semibold text-red-300"></p>
+              <p id="errorDesc" class="mt-1 text-sm text-red-200/80"></p>
+            </div>
+            <button id="errorDismiss" class="shrink-0 rounded-lg p-1.5 text-red-300/70 hover:bg-red-500/20 hover:text-red-300 transition-colors">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado sin tickets -->
+        <div id="emptyState" class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-8 backdrop-blur-xl text-center">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--surface-3)]">
+            <svg class="h-8 w-8 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A3.375 3.375 0 0 0 9 8.625V2.25A2.25 2.25 0 0 0 6.75 0H2.25A2.25 2.25 0 0 0 0 2.25v21A2.25 2.25 0 0 0 2.25 23.25h15A2.25 2.25 0 0 0 21 21V14.25Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75h4.5m-4.5 3h4.5" />
+            </svg>
+          </div>
+          <p data-i18n="myTickets.empty.title" class="mt-4 text-lg font-semibold text-[var(--text-primary)]">{t('myTickets.empty.title')}</p>
+          <p data-i18n="myTickets.empty.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t('myTickets.empty.desc')}</p>
+          <a
+            href={`/client/support/report?lang=${lang}`}
+            class="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent)] px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-[var(--shadow-glow)] transition-all hover:shadow-xl hover:from-[var(--accent-hover)] active:scale-[0.98]"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+            <span data-i18n="myTickets.empty.action">{t('myTickets.empty.action')}</span>
+          </a>
+        </div>
+
+        <!-- Lista de tickets -->
+        <div id="ticketsList" class="hidden space-y-4">
+          <div class="flex items-center justify-between">
+            <p id="ticketsCount" class="text-sm text-[var(--text-tertiary)]"></p>
+            <div class="flex gap-2">
+              <button
+                id="filterOpen"
+                class="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === 'open' ? 'bg-[var(--accent)] text-white' : 'bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)]'}"
+              >
+                Abiertos
+              </button>
+              <button
+                id="filterResolved"
+                class="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === 'resolved' ? 'bg-[var(--accent)] text-white' : 'bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)]'}"
+              >
+                Resueltos
+              </button>
+            </div>
+          </div>
+          <div id="ticketsContainer" class="space-y-3"></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</ClientLayout>
+
+<script>
+  import { initPage } from '@/lib/shared/initPage';
+
+  const loadingScreen = document.getElementById('loadingScreen')!;
+  const loadingText = document.getElementById('loadingText')!;
+  const myTicketsContent = document.getElementById('myTicketsContent')!;
+  const emptyState = document.getElementById('emptyState')!;
+  const ticketsList = document.getElementById('ticketsList')!;
+  const ticketsContainer = document.getElementById('ticketsContainer')!;
+  const ticketsCount = document.getElementById('ticketsCount')!;
+  const filterOpen = document.getElementById('filterOpen')!;
+  const filterResolved = document.getElementById('filterResolved')!;
+  const successMessage = document.getElementById('successMessage')!;
+  const successTitle = document.getElementById('successTitle')!;
+  const successDesc = document.getElementById('successDesc')!;
+  const errorMessage = document.getElementById('errorMessage')!;
+  const errorTitle = document.getElementById('errorTitle')!;
+  const errorDesc = document.getElementById('errorDesc')!;
+  const errorDismiss = document.getElementById('errorDismiss')!;
+
+  loadingText.textContent = 'Cargando...';
+  let activeFilter: string = 'open';
+  let allTickets: Array<{ id: string; title: string; status: string; category: string; severity: string; createdAt: string; lastActivityAt: string; description: string }> = [];
+
+  errorDismiss.addEventListener('click', () => {
+    errorMessage.classList.add('hidden');
+  });
+
+  function showSuccess(title: string, desc: string) {
+    successTitle.textContent = title;
+    successDesc.textContent = desc;
+    successMessage.classList.remove('hidden');
+    errorMessage.classList.add('hidden');
+  }
+
+  function showError(title: string, desc: string) {
+    errorTitle.textContent = title;
+    errorDesc.textContent = desc;
+    errorMessage.classList.remove('hidden');
+    successMessage.classList.add('hidden');
+  }
+
+  function getLang(): string {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('lang') || 'es';
+  }
+
+  function renderTicket(ticket: typeof allTickets[0]) {
+    const statusColors: Record<string, string> = {
+      open: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+      in_review: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      awaiting_response: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+      resolved: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+      closed: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+    };
+
+    const statusLabels: Record<string, string> = {
+      open: 'Abierto',
+      in_review: 'En revisión',
+      awaiting_response: 'Esperando respuesta',
+      resolved: 'Resuelto',
+      closed: 'Cerrado',
+    };
+
+    const severityColors: Record<string, string> = {
+      low: 'text-gray-400',
+      medium: 'text-amber-400',
+      high: 'text-orange-400',
+      critical: 'text-red-400',
+    };
+
+    const severityLabels: Record<string, string> = {
+      low: 'Baja',
+      medium: 'Media',
+      high: 'Alta',
+      critical: 'Crítica',
+    };
+
+    const card = document.createElement('div');
+    card.className = 'card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl transition-all';
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="rounded-lg px-2 py-0.5 text-xs font-semibold border ${statusColors[ticket.status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}">
+              ${statusLabels[ticket.status] || ticket.status}
+            </span>
+            <span class="rounded-lg px-2 py-0.5 text-xs font-medium ${severityColors[ticket.severity] || 'text-gray-400'}">
+              ${severityLabels[ticket.severity] || ticket.severity} · ${ticket.category}
+            </span>
+          </div>
+          <h3 class="text-base font-semibold text-[var(--text-primary)] truncate">${ticket.title}</h3>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)] line-clamp-2">${ticket.description}</p>
+          <p class="mt-2 text-xs text-[var(--text-tertiary)]">
+            ${new Date(ticket.createdAt).toLocaleDateString()} · Actualizado ${new Date(ticket.lastActivityAt).toLocaleDateString()}
+          </p>
+        </div>
+        <div class="shrink-0 flex gap-2">
+          <button
+            data-id="${ticket.id}"
+            class="ticket-detail-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-[var(--surface-3)] text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-4)] hover:text-[var(--text-primary)]"
+          >
+            Ver detalle
+          </button>
+        </div>
+      </div>
+      <div class="ticket-detail hidden mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/50 p-4 backdrop-blur-sm">
+        <div class="space-y-3">
+          <div>
+            <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Descripción completa</p>
+            <p class="mt-1 text-sm text-[var(--text-secondary)] leading-relaxed">${ticket.description}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <p class="text-xs text-[var(--text-tertiary)]">Creado</p>
+              <p class="text-[var(--text-primary)]">${new Date(ticket.createdAt).toLocaleString()}</p>
+            </div>
+            <div>
+              <p class="text-xs text-[var(--text-tertiary)]">Última actividad</p>
+              <p class="text-[var(--text-primary)]">${new Date(ticket.lastActivityAt).toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const detailBtn = card.querySelector('.ticket-detail-btn') as HTMLButtonElement;
+    const detailPanel = card.querySelector('.ticket-detail') as HTMLDivElement;
+
+    detailBtn.addEventListener('click', () => {
+      detailPanel.classList.toggle('hidden');
+      detailBtn.textContent = detailPanel.classList.contains('hidden') ? 'Ver detalle' : 'Ocultar detalle';
+    });
+
+    return card;
+  }
+
+  async function loadTickets(statusFilter: string) {
+    try {
+      const lang = getLang();
+      const res = await fetch(`/api/support/create?lang=${lang}&status=${statusFilter}`, {
+        credentials: 'same-origin',
+      });
+
+      if (!res.ok) {
+        throw new Error('No se pudieron cargar los tickets');
+      }
+
+      const data = await res.json();
+
+      if (!data.tickets || !Array.isArray(data.tickets)) {
+        allTickets = [];
+        ticketsContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        ticketsList.classList.add('hidden');
+        return;
+      }
+
+      allTickets = data.tickets;
+      const filtered = allTickets;
+
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        ticketsList.classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      ticketsList.classList.remove('hidden');
+
+      ticketsCount.textContent = `${filtered.length} ticket${filtered.length > 1 ? 's' : ''} (${statusFilter === 'open' ? 'abiertos' : 'resueltos'})`;
+
+      ticketsContainer.innerHTML = '';
+      filtered.forEach((ticket) => {
+        ticketsContainer.appendChild(renderTicket(ticket));
+      });
+    } catch (err) {
+      showError('Error al cargar', 'No se pudieron cargar tus tickets. Revisa tu conexión e intenta nuevamente.');
+    }
+  }
+
+  filterOpen.addEventListener('click', () => {
+    activeFilter = 'open';
+    filterOpen.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--accent)] text-white';
+    filterResolved.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)]';
+    loadTickets('open');
+  });
+
+  filterResolved.addEventListener('click', () => {
+    activeFilter = 'resolved';
+    filterResolved.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--accent)] text-white';
+    filterOpen.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)]';
+    loadTickets('resolved');
+  });
+
+  const cleanup = initPage({
+    allowedRoles: ['client', 'admin', 'trainer'],
+    onReady: async () => {
+      myTicketsContent.classList.remove('hidden');
+      loadingScreen.classList.add('hidden');
+      loadTickets('open');
+    },
+  });
+
+  document.addEventListener('astro:before-swap', cleanup);
+</script>

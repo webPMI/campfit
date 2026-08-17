@@ -16,244 +16,250 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
   <!-- Contenido Principal del Dashboard -->
   <div id="dashboardContent" class="hidden">
-    <main class="mx-auto max-w-4xl px-4 py-4">
+    <main class="mx-auto max-w-4xl px-4 py-6">
       <PageTransition animation="fade-up">
         <div class="space-y-6">
           
-          <!-- Hero Banner de Bienvenida y Racha -->
-          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-gradient-to-br from-[var(--surface-1)] via-[var(--surface-2)] to-[var(--brand-dim)] p-6 backdrop-blur-xl space-y-3 relative overflow-hidden">
-            <div class="flex items-center justify-between flex-wrap gap-3 relative z-10">
-              <div>
+          <!-- ========================================== -->
+          <!-- 1. HERO BANNER & GREETING                  -->
+          <!-- ========================================== -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-gradient-to-br from-[var(--surface-1)] via-[var(--surface-2)] to-[var(--brand-dim)] p-5 md:p-6 backdrop-blur-xl relative overflow-hidden">
+            <div class="flex items-center justify-between flex-wrap gap-4 relative z-10">
+              <div class="space-y-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <h2 class="text-2xl font-black tracking-tight text-[var(--text-primary)]" id="greeting">
+                  <h1 class="text-2xl font-black tracking-tight text-[var(--text-primary)]" id="greeting">
                     {t("client.greeting")}...
-                  </h2>
+                  </h1>
                   <span class="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-bold text-amber-400 border border-amber-500/20 shadow-sm">
                     🔥 <span data-i18n="client.streak">{t("client.streak")}</span>: <span id="streak-days">3</span> <span data-i18n="client.stats.days">{t("client.stats.days")}</span>
                   </span>
                 </div>
-                <p data-i18n="app.tagline" class="text-xs text-[var(--text-tertiary)] mt-1 font-medium">{t("app.tagline")}</p>
+                <p data-i18n="app.tagline" class="text-xs text-[var(--text-tertiary)] font-medium">{t("app.tagline")}</p>
               </div>
 
-              <a href={`/client/progress?lang=${lang}`} class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--brand)] text-[var(--text-on-brand)] text-xs font-bold shadow-md hover:opacity-95 transition-all">
-                <span>📊</span>
-                <span data-i18n="dashboard.progress">{t("dashboard.progress")}</span>
-              </a>
-            </div>
-
-            <!-- Accesos Rápidos de Chequeo de Hábitos en el Hero -->
-            <div class="pt-3 border-t border-[var(--border-subtle)] grid grid-cols-2 sm:grid-cols-5 gap-2">
-              <button id="quick-habit-water" type="button" class="flex items-center justify-between p-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)]/60 text-xs font-semibold hover:border-blue-400/40 transition-all">
-                <span class="flex items-center gap-1.5">💧 <span data-i18n="client.water">{t("client.water")}</span></span>
-                <span id="quick-habit-water-val" class="text-[10px] text-blue-400 font-bold">0L</span>
-              </button>
-              <button id="quick-habit-workout" type="button" class="flex items-center justify-between p-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)]/60 text-xs font-semibold hover:border-emerald-400/40 transition-all">
-                <span class="flex items-center gap-1.5">🏋️ <span data-i18n="client.workout">{t("client.workout")}</span></span>
-                <span id="quick-habit-workout-st" data-i18n="client.today" class="text-[10px] text-emerald-400 font-bold">{t("client.today")}</span>
-              </button>
-              <button id="quick-habit-diet" type="button" class="flex items-center justify-between p-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)]/60 text-xs font-semibold hover:border-amber-400/40 transition-all">
-                <span class="flex items-center gap-1.5">🥗 <span data-i18n="client.diet">{t("client.diet")}</span></span>
-                <span id="quick-habit-diet-st" class="text-[10px] text-amber-400 font-bold">100%</span>
-              </button>
-              <button id="quick-habit-sleep" type="button" class="flex items-center justify-between p-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)]/60 text-xs font-semibold hover:border-purple-400/40 transition-all">
-                <span class="flex items-center gap-1.5">🛌 <span data-i18n="client.sleep">{t("client.sleep")}</span></span>
-                <span class="text-[10px] text-purple-400 font-bold">8h</span>
-              </button>
-              <button id="quick-habit-steps" type="button" class="flex items-center justify-between p-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)]/60 text-xs font-semibold hover:border-cyan-400/40 transition-all">
-                <span class="flex items-center gap-1.5">🚶 <span data-i18n="client.steps">{t("client.steps")}</span></span>
-                <span class="text-[10px] text-cyan-400 font-bold">10k</span>
-              </button>
+              <div class="flex items-center gap-2">
+                <a href="/client/calendar" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] text-xs font-bold text-[var(--text-primary)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all shadow-sm">
+                  <span>📅</span>
+                  <span>Mi Agenda</span>
+                </a>
+                <a href="/client/progress" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--brand)] text-[var(--text-on-brand)] text-xs font-bold shadow-md hover:opacity-95 transition-all">
+                  <span>📊</span>
+                  <span data-i18n="dashboard.progress">{t("dashboard.progress")}</span>
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- Rejilla Principal de Métricas Clave (4 Cards) -->
-          <div class="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
-            <!-- 1. Adherencia Rutina -->
-            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-2">
+          <!-- ========================================== -->
+          <!-- 2. ZONA DE ESTADO (STATUS BAR COMPACTA)     -->
+          <!-- ========================================== -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- Widget 1: Peso Actual -->
+            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-1.5">
               <div class="flex items-center justify-between">
-                <span data-i18n="client.workout.progress" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.workout.progress")}</span>
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--brand-dim)] text-xs text-[var(--brand)]">🏋️</span>
+                <span data-i18n="client.stats.weight" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.stats.weight")}</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/10 text-xs text-purple-400">⚖️</span>
               </div>
-              <p class="text-2xl font-black text-[var(--brand)]" id="workoutProgress">--%</p>
-              <div class="h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
-                <div id="workoutBar" class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500" style="width: 0%"></div>
-              </div>
-              <p data-i18n="client.workout.progress.desc" class="text-[10px] text-[var(--text-disabled)]">{t("client.workout.progress.desc")}</p>
+              <p class="text-xl font-black text-purple-400" id="lastWeight">-- kg</p>
+              <a href="/client/progress" class="text-[10px] text-[var(--text-tertiary)] hover:text-[var(--brand)] block">Registrar peso →</a>
             </div>
 
-            <!-- 2. Adherencia Dieta -->
-            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-2">
-              <div class="flex items-center justify-between">
-                <span data-i18n="client.diet.adherence" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.diet.adherence")}</span>
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 text-xs text-amber-400">🥗</span>
-              </div>
-              <p class="text-2xl font-black text-amber-400" id="dietAdherence">--%</p>
-              <div class="h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
-                <div id="dietBar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-500" style="width: 0%"></div>
-              </div>
-              <p class="text-[10px] text-[var(--text-disabled)]" id="todayCalories">-- <span data-i18n="client.todayCalories">{t("client.todayCalories")}</span></p>
-            </div>
-
-            <!-- 3. Hidratación Diaria Interactiva -->
-            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-2">
+            <!-- Widget 2: Hidratación Diaria Interactiva -->
+            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-1.5">
               <div class="flex items-center justify-between">
                 <span data-i18n="client.water" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.water")}</span>
-                <div class="flex items-center gap-1">
-                  <button id="dash-water-add-btn" class="h-6 w-6 rounded-md bg-blue-500 text-white font-bold text-xs flex items-center justify-center hover:bg-blue-600 transition-all">+</button>
-                </div>
+                <button
+                  id="dash-water-add-btn"
+                  type="button"
+                  class="h-6 px-2 rounded-lg bg-blue-500 text-white font-bold text-[10px] flex items-center gap-1 hover:bg-blue-600 active:scale-95 transition-all shadow-sm"
+                  title="Añadir 250ml de agua"
+                >
+                  <span>+</span> 250ml
+                </button>
               </div>
-              <p class="text-2xl font-black text-blue-400" id="dashWaterMl">0 ml</p>
+              <div class="flex items-baseline justify-between">
+                <p class="text-xl font-black text-blue-400" id="dashWaterMl">0 ml</p>
+                <span class="text-[10px] font-bold text-[var(--text-tertiary)]" id="dashWaterMeta">Meta: 2.5L</span>
+              </div>
               <div class="h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
                 <div id="dashWaterBar" class="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500" style="width: 0%"></div>
               </div>
-              <p data-i18n="client.waterMeta" class="text-[10px] text-[var(--text-disabled)]">{t("client.waterMeta")}</p>
             </div>
 
-            <!-- 4. Último Peso -->
-            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-2">
+            <!-- Widget 3: Progreso Rutina Hoy -->
+            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-1.5">
               <div class="flex items-center justify-between">
-                <span data-i18n="client.stats.weight" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.stats.weight")}</span>
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/10 text-xs text-purple-400">⚖️</span>
+                <span data-i18n="client.workout.progress" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.workout.progress")}</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--brand-dim)] text-xs text-[var(--brand)]">🏋️</span>
               </div>
-              <p class="text-2xl font-black text-purple-400" id="lastWeight">-- kg</p>
-              <p data-i18n="client.progress.history" class="text-[10px] text-[var(--text-disabled)]">{t("client.progress.history")}</p>
+              <p class="text-xl font-black text-[var(--brand)]" id="workoutProgress">--%</p>
+              <div class="h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
+                <div id="workoutBar" class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500" style="width: 0%"></div>
+              </div>
             </div>
-          </div>
 
-          <!-- Programación Semanal de Entrenamientos (Visual Tracker 7 Días) -->
-          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-3">
-            <div class="flex items-center justify-between">
-              <h3 data-i18n="client.weeklySchedule" class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">{t("client.weeklySchedule")}</h3>
-              <span id="current-day-badge" data-i18n="client.currentWeek" class="text-xs font-bold text-[var(--brand)]">{t("client.currentWeek")}</span>
-            </div>
-            <div class="grid grid-cols-7 gap-2 text-center" id="week-dots-grid">
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.mon" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.mon")}</span>
-                <span class="text-xs">🏋️</span>
+            <!-- Widget 4: Adherencia Dieta Hoy -->
+            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span data-i18n="client.diet.adherence" class="text-xs font-semibold text-[var(--text-secondary)]">{t("client.diet.adherence")}</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/10 text-xs text-amber-400">🥗</span>
               </div>
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.tue" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.tue")}</span>
-                <span class="text-xs">🏃</span>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.wed" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.wed")}</span>
-                <span class="text-xs">🏋️</span>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.thu" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.thu")}</span>
-                <span class="text-xs">🛌</span>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.fri" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.fri")}</span>
-                <span class="text-xs">🏋️</span>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.sat" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.sat")}</span>
-                <span class="text-xs">🏃</span>
-              </div>
-              <div class="p-2 rounded-xl bg-[var(--surface-3)] border border-[var(--border-subtle)] space-y-1">
-                <span data-i18n="day.sun" class="text-[10px] font-bold text-[var(--text-tertiary)] block">{t("day.sun")}</span>
-                <span class="text-xs">🛌</span>
+              <p class="text-xl font-black text-amber-400" id="dietAdherence">--%</p>
+              <div class="h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
+                <div id="dietBar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-500" style="width: 0%"></div>
               </div>
             </div>
           </div>
 
-          <!-- Bloque de Resumen de Entrenamiento y Nutrición de Hoy -->
+          <!-- ========================================== -->
+          <!-- 3. ZONA DE ACCIÓN CENTRAL (FOCUS DEL DÍA)   -->
+          <!-- ========================================== -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Tarjeta de Entrenamiento del Día -->
-            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-3 flex flex-col justify-between">
+            
+            <!-- TARJETA 1: TU ENTRENAMIENTO DE HOY -->
+            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-4 flex flex-col justify-between">
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <span class="text-lg">🏋️</span>
-                    <h3 data-i18n="client.quick.workout" class="text-sm font-bold text-[var(--text-primary)]">{t("client.quick.workout")}</h3>
+                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand-dim)] text-base">🏋️</span>
+                    <div>
+                      <h2 class="text-sm font-bold text-[var(--text-primary)]">Tu Entrenamiento de Hoy</h2>
+                      <p class="text-[11px] text-[var(--text-tertiary)]" id="today-workout-badge">Rutina asignada</p>
+                    </div>
                   </div>
-                  <span id="workout-day-badge" data-i18n="common.assigned" class="rounded-full bg-[var(--brand-dim)] px-2.5 py-0.5 text-[10px] font-bold text-[var(--brand)]">{t("common.assigned")}</span>
+                  <span id="workout-status-chip" class="rounded-full bg-[var(--brand-dim)] px-2.5 py-0.5 text-[10px] font-bold text-[var(--brand)]">
+                    Activo
+                  </span>
                 </div>
 
-                <div id="today-workout-box" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
-                  <p id="today-workout-title" class="text-sm font-bold text-[var(--text-primary)]">{t("client.no.workout")}</p>
-                  <p id="today-workout-desc" class="text-xs text-[var(--text-tertiary)]">{t("client.workout.assigned.desc")}</p>
+                <!-- Box de Detalle de Rutina -->
+                <div id="today-workout-box" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <h3 id="today-workout-title" class="text-sm font-bold text-[var(--text-primary)]">Cargando rutina...</h3>
+                    <span id="today-workout-count" class="text-xs font-semibold text-[var(--text-secondary)]">0 ejercicios</span>
+                  </div>
+                  <p id="today-workout-desc" class="text-xs text-[var(--text-tertiary)]">Revisando tus ejercicios programados para hoy...</p>
+
+                  <!-- Mini Radar de Ejercicios -->
+                  <div id="workout-exercises-preview" class="pt-2 border-t border-[var(--border-subtle)] space-y-1.5 hidden">
+                    <!-- Dinámico -->
+                  </div>
+                </div>
+
+                <!-- Empty State de Rutina -->
+                <div id="workout-empty-state" class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 text-center space-y-2">
+                  <span class="text-2xl block">🛌</span>
+                  <p class="text-xs font-bold text-[var(--text-primary)]">¡Día de Descanso o Sin Rutina Asignada!</p>
+                  <p class="text-[11px] text-[var(--text-tertiary)]">Aprovecha para recuperarte, hidratarte o consultar con tu entrenador.</p>
                 </div>
               </div>
 
               <a
-                href={`/client/workouts?lang=${lang}`}
-                class="flex items-center justify-center gap-2 w-full rounded-xl bg-[var(--brand)] px-4 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90 active:scale-95 mt-3"
+                href="/client/workouts"
+                id="btn-workout-action"
+                class="flex items-center justify-center gap-2 w-full rounded-xl bg-[var(--brand)] px-4 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90 active:scale-95 mt-2"
               >
-                <span data-i18n="client.viewFullWorkout">{t("client.viewFullWorkout")}</span>
+                <span>Ver Rutina Completa</span>
+                <span>→</span>
               </a>
             </div>
 
-            <!-- Tarjeta de Plan Nutricional del Día -->
-            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-3 flex flex-col justify-between">
+            <!-- TARJETA 2: TU NUTRICIÓN DE HOY -->
+            <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-4 flex flex-col justify-between">
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <span class="text-lg">🥗</span>
-                    <h3 data-i18n="client.quick.meal" class="text-sm font-bold text-[var(--text-primary)]">{t("client.quick.meal")}</h3>
+                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 text-base text-amber-400">🥗</span>
+                    <div>
+                      <h2 class="text-sm font-bold text-[var(--text-primary)]">Tu Nutrición de Hoy</h2>
+                      <p class="text-[11px] text-[var(--text-tertiary)]" id="todayCalories">0 kcal meta diaria</p>
+                    </div>
                   </div>
-                  <span id="diet-type-badge" data-i18n="client.prescribed" class="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-400 border border-amber-500/20">{t("client.prescribed")}</span>
+                  <span id="diet-type-badge" class="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-400 border border-amber-500/20">
+                    Prescrita
+                  </span>
                 </div>
 
-                <div id="today-diet-box" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
-                  <p id="today-diet-title" class="text-sm font-bold text-[var(--text-primary)]">{t("client.no.diet")}</p>
-                  <p id="today-diet-desc" class="text-xs text-[var(--text-tertiary)]">{t("client.diet.assigned.desc")}</p>
+                <!-- Box de Detalle de Dieta -->
+                <div id="today-diet-box" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <h3 id="today-diet-title" class="text-sm font-bold text-[var(--text-primary)]">Cargando plan nutricional...</h3>
+                    <span id="today-diet-count" class="text-xs font-semibold text-amber-400">0 comidas</span>
+                  </div>
+                  <p id="today-diet-desc" class="text-xs text-[var(--text-tertiary)]">Consultando tu distribución de macronutrientes...</p>
+
+                  <!-- Mini Radar de Comidas Pendientes/Completadas -->
+                  <div id="diet-meals-preview" class="pt-2 border-t border-[var(--border-subtle)] space-y-1.5 hidden">
+                    <!-- Dinámico -->
+                  </div>
+                </div>
+
+                <!-- Empty State de Dieta -->
+                <div id="diet-empty-state" class="hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 text-center space-y-2">
+                  <span class="text-2xl block">🥑</span>
+                  <p class="text-xs font-bold text-[var(--text-primary)]">Sin Plan Nutricional Asignado</p>
+                  <p class="text-[11px] text-[var(--text-tertiary)]">Completa tu perfil de intolerancias o solicita un plan a tu nutricionista.</p>
                 </div>
               </div>
 
               <a
-                href={`/client/diets?lang=${lang}`}
-                class="flex items-center justify-center gap-2 w-full rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:opacity-90 active:scale-95 mt-3"
+                href="/client/diets"
+                id="btn-diet-action"
+                class="flex items-center justify-center gap-2 w-full rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:opacity-90 active:scale-95 mt-2"
               >
-                <span data-i18n="client.viewFullDiet">{t("client.viewFullDiet")}</span>
+                <span>Ver Plan de Comidas</span>
+                <span>→</span>
               </a>
             </div>
           </div>
 
-          <!-- Acciones Rápidas & Bienestar Humano -->
+          <!-- ========================================== -->
+          <!-- 4. ZONA DE ACCESO RÁPIDO                   -->
+          <!-- ========================================== -->
           <div class="space-y-3">
-            <h3 data-i18n="client.quickHabitsTitle" class="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t("client.quickHabitsTitle")}</h3>
+            <h2 data-i18n="client.quickHabitsTitle" class="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t("client.quickHabitsTitle")}</h2>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <a
-                href={`/client/progress?lang=${lang}`}
-                class="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)] transition-all text-center space-y-1.5 shadow-sm"
+                href="/client/calendar"
+                class="flex flex-col items-center justify-center p-4 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--brand)] hover:bg-[var(--surface-2)] transition-all text-center space-y-1.5 shadow-sm group"
               >
-                <span class="text-2xl">📋</span>
-                <span data-i18n="client.checklistDiario" class="text-xs font-bold text-[var(--text-primary)]">{t("client.checklistDiario")}</span>
-                <span data-i18n="client.logHabits" class="text-[10px] text-[var(--text-tertiary)]">{t("client.logHabits")}</span>
+                <span class="text-2xl group-hover:scale-110 transition-transform">📅</span>
+                <span class="text-xs font-bold text-[var(--text-primary)]">Agenda Diaria</span>
+                <span class="text-[10px] text-[var(--text-tertiary)]">Horarios y check-in</span>
               </a>
 
               <a
-                href={`/client/progress?lang=${lang}`}
-                class="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)] transition-all text-center space-y-1.5 shadow-sm"
+                href="/client/progress"
+                class="flex flex-col items-center justify-center p-4 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--brand)] hover:bg-[var(--surface-2)] transition-all text-center space-y-1.5 shadow-sm group"
               >
-                <span class="text-2xl">📸</span>
-                <span data-i18n="client.fotosR2" class="text-xs font-bold text-[var(--text-primary)]">{t("client.fotosR2")}</span>
-                <span data-i18n="client.uploadCloudPhotos" class="text-[10px] text-[var(--text-tertiary)]">{t("client.uploadCloudPhotos")}</span>
-              </a>
-
-              <a
-                href={`/client/progress?lang=${lang}`}
-                class="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)] transition-all text-center space-y-1.5 shadow-sm"
-              >
-                <span class="text-2xl">⚖️</span>
+                <span class="text-2xl group-hover:scale-110 transition-transform">⚖️</span>
                 <span data-i18n="client.logWeight" class="text-xs font-bold text-[var(--text-primary)]">{t("client.logWeight")}</span>
                 <span data-i18n="client.weightTrend" class="text-[10px] text-[var(--text-tertiary)]">{t("client.weightTrend")}</span>
               </a>
 
               <a
-                href={`/client/chat?lang=${lang}`}
-                class="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)] transition-all text-center space-y-1.5 shadow-sm"
+                href="/client/progress"
+                class="flex flex-col items-center justify-center p-4 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--brand)] hover:bg-[var(--surface-2)] transition-all text-center space-y-1.5 shadow-sm group"
               >
-                <span class="text-2xl">💬</span>
+                <span class="text-2xl group-hover:scale-110 transition-transform">📸</span>
+                <span data-i18n="client.fotosR2" class="text-xs font-bold text-[var(--text-primary)]">{t("client.fotosR2")}</span>
+                <span data-i18n="client.uploadCloudPhotos" class="text-[10px] text-[var(--text-tertiary)]">{t("client.uploadCloudPhotos")}</span>
+              </a>
+
+              <a
+                href="/client/chat"
+                class="flex flex-col items-center justify-center p-4 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--brand)] hover:bg-[var(--surface-2)] transition-all text-center space-y-1.5 shadow-sm group"
+              >
+                <span class="text-2xl group-hover:scale-110 transition-transform">💬</span>
                 <span data-i18n="client.chatTrainer" class="text-xs font-bold text-[var(--text-primary)]">{t("client.chatTrainer")}</span>
                 <span data-i18n="client.directChat" class="text-[10px] text-[var(--text-tertiary)]">{t("client.directChat")}</span>
               </a>
             </div>
           </div>
 
-          <!-- Tarjeta de Entrenador Asignado -->
+          <!-- ========================================== -->
+          <!-- 5. TARJETA DE ENTRENADOR ASIGNADO          -->
+          <!-- ========================================== -->
           <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl flex items-center justify-between flex-wrap gap-3">
             <div class="flex items-center gap-3">
               <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold text-lg shadow-md">
@@ -264,7 +270,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
                 <p class="text-sm font-bold text-[var(--text-primary)]" id="trainer-name">CampFit Pro Support</p>
               </div>
             </div>
-            <a href={`/client/chat?lang=${lang}`} class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] px-4 py-2 text-xs font-bold text-[var(--brand)] hover:bg-[var(--brand)] hover:text-white transition-all shadow-sm">
+            <a href="/client/chat" class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] px-4 py-2 text-xs font-bold text-[var(--brand)] hover:bg-[var(--brand)] hover:text-white transition-all shadow-sm">
               <span data-i18n="dashboard.messages">{t("dashboard.messages")}</span>
             </a>
           </div>
@@ -295,13 +301,20 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const dashWaterMl = document.getElementById("dashWaterMl")!;
     const dashWaterBar = document.getElementById("dashWaterBar")!;
     const dashWaterAddBtn = document.getElementById("dash-water-add-btn");
-    const quickHabitWaterVal = document.getElementById("quick-habit-water-val");
 
+    const todayWorkoutBox = document.getElementById("today-workout-box");
     const todayWorkoutTitle = document.getElementById("today-workout-title")!;
     const todayWorkoutDesc = document.getElementById("today-workout-desc")!;
+    const todayWorkoutCount = document.getElementById("today-workout-count");
+    const workoutExercisesPreview = document.getElementById("workout-exercises-preview");
+    const workoutEmptyState = document.getElementById("workout-empty-state");
 
+    const todayDietBox = document.getElementById("today-diet-box");
     const todayDietTitle = document.getElementById("today-diet-title")!;
     const todayDietDesc = document.getElementById("today-diet-desc")!;
+    const todayDietCount = document.getElementById("today-diet-count");
+    const dietMealsPreview = document.getElementById("diet-meals-preview");
+    const dietEmptyState = document.getElementById("diet-empty-state");
 
     let currentUserId = "";
 
@@ -321,7 +334,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       }
 
       dashWaterMl.textContent = `${currentMl} ml`;
-      if (quickHabitWaterVal) quickHabitWaterVal.textContent = `${(currentMl / 1000).toFixed(1)}L`;
       const pct = Math.min(100, Math.round((currentMl / 2500) * 100));
       dashWaterBar.style.width = `${pct}%`;
     }
@@ -329,7 +341,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const cleanup = initPage({
       allowedRoles: ["client", "admin", "trainer"],
       onReady: async (firebaseUser, userData) => {
-        currentUserId = firebaseUser.uid;
+        // Soporte Modo Espejo: permitir ?uid=xxx para admin o trainer
+        const paramUid = new URLSearchParams(window.location.search).get("uid");
+        const targetUid = (userData?.role === "admin" || userData?.role === "trainer") && paramUid
+          ? paramUid
+          : firebaseUser.uid;
+
+        currentUserId = targetUid;
         const userName = userData?.name || firebaseUser.displayName || firebaseUser.email || "Usuario";
         greeting.textContent = `${t("client.greeting")}, ${userName}! 👋`;
 
@@ -342,55 +360,96 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         let unsubTodayMeals: (() => void) | null = null;
 
         // Suscripción a Rutinas
-        subscribeToWorkouts(firebaseUser.uid, (workouts) => {
+        subscribeToWorkouts(targetUid, (workouts) => {
           if (workouts.length > 0 && workouts[0]) {
             const workout = workouts[0];
-            const exercisesCount = workout.exercises?.length || 0;
+            const exercises = workout.exercises || [];
+            const exercisesCount = exercises.length;
+
+            if (todayWorkoutBox) todayWorkoutBox.classList.remove("hidden");
+            if (workoutEmptyState) workoutEmptyState.classList.add("hidden");
 
             todayWorkoutTitle.textContent = workout.name;
-            todayWorkoutDesc.textContent = `${exercisesCount} ${t("workout.exercises")} · ${t("common.assigned")}`;
+            todayWorkoutDesc.textContent = workout.description || `${exercisesCount} ejercicios asignados`;
+            if (todayWorkoutCount) todayWorkoutCount.textContent = `${exercisesCount} ejercicios`;
 
-            const completed = workout.exercises?.filter((ex: any) => ex.completed)?.length || 0;
+            const completed = exercises.filter((ex: any) => ex.completed).length;
             const pct = exercisesCount > 0 ? Math.round((completed / exercisesCount) * 100) : 0;
             workoutProgress.textContent = `${pct}%`;
             workoutBar.style.width = `${pct}%`;
+
+            // Mini lista de ejercicios
+            if (workoutExercisesPreview && exercisesCount > 0) {
+              workoutExercisesPreview.classList.remove("hidden");
+              workoutExercisesPreview.innerHTML = exercises.slice(0, 3).map((ex: any) => `
+                <div class="flex items-center justify-between text-xs py-0.5">
+                  <span class="text-[var(--text-secondary)] font-medium truncate max-w-[200px]">${ex.name}</span>
+                  <span class="${ex.completed ? 'text-emerald-400 font-bold' : 'text-[var(--text-tertiary)]'} text-[11px]">
+                    ${ex.completed ? '✓ Listo' : `${ex.sets || 3}x${ex.reps || 10}`}
+                  </span>
+                </div>
+              `).join('') + (exercisesCount > 3 ? `<p class="text-[10px] text-[var(--brand)] font-semibold pt-1">+${exercisesCount - 3} ejercicios más...</p>` : '');
+            }
           } else {
-            todayWorkoutTitle.textContent = t("client.no.workout");
-            todayWorkoutDesc.textContent = t("client.workout.assigned.desc");
+            if (todayWorkoutBox) todayWorkoutBox.classList.add("hidden");
+            if (workoutEmptyState) workoutEmptyState.classList.remove("hidden");
             workoutProgress.textContent = "0%";
             workoutBar.style.width = "0%";
           }
         });
 
         // Suscripción a Dietas
-        subscribeToDiets(firebaseUser.uid, (diets) => {
+        subscribeToDiets(targetUid, (diets) => {
           if (diets.length > 0 && diets[0]) {
             const diet = diets[0];
-            currentMealsCount = diet.meals?.length || 0;
+            const meals = diet.meals || [];
+            currentMealsCount = meals.length;
+
+            if (todayDietBox) todayDietBox.classList.remove("hidden");
+            if (dietEmptyState) dietEmptyState.classList.add("hidden");
 
             todayDietTitle.textContent = diet.name;
             todayDietDesc.textContent = `${diet.totalCalories || 0} kcal · ${currentMealsCount} ${t("diet.meals")}`;
-            todayCalories.textContent = `${diet.totalCalories || 0} ${t("client.todayCalories")}`;
+            todayCalories.textContent = `${diet.totalCalories || 0} kcal`;
+            if (todayDietCount) todayDietCount.textContent = `${currentMealsCount} comidas`;
 
             if (!unsubTodayMeals) {
-              unsubTodayMeals = subscribeToTodayMeals(firebaseUser.uid, (completedIds) => {
-                const pct = currentMealsCount > 0 ? Math.round((completedIds.length / currentMealsCount) * 100) : 0;
+              unsubTodayMeals = subscribeToTodayMeals(targetUid, (completedIds) => {
+                const completedCount = completedIds.length;
+                const pct = currentMealsCount > 0 ? Math.round((completedCount / currentMealsCount) * 100) : 0;
                 dietAdherence.textContent = `${pct}%`;
                 dietBar.style.width = `${pct}%`;
+
+                // Mini lista de comidas con estado
+                if (dietMealsPreview && currentMealsCount > 0) {
+                  dietMealsPreview.classList.remove("hidden");
+                  dietMealsPreview.innerHTML = meals.slice(0, 4).map((meal: any) => {
+                    const isDone = completedIds.includes(meal.id);
+                    const mealName = meal.name ? meal.name.charAt(0).toUpperCase() + meal.name.slice(1) : "Comida";
+                    return `
+                      <div class="flex items-center justify-between text-xs py-0.5">
+                        <span class="text-[var(--text-secondary)] font-medium">${mealName}</span>
+                        <span class="${isDone ? 'text-emerald-400 font-bold' : 'text-amber-400 font-semibold'} text-[11px]">
+                          ${isDone ? '✓ Listo' : (meal.estimatedTime || 'Pendiente')}
+                        </span>
+                      </div>
+                    `;
+                  }).join('');
+                }
               });
             }
           } else {
-            todayDietTitle.textContent = t("client.no.diet");
-            todayDietDesc.textContent = t("client.diet.assigned.desc");
+            if (todayDietBox) todayDietBox.classList.add("hidden");
+            if (dietEmptyState) dietEmptyState.classList.remove("hidden");
             dietAdherence.textContent = "0%";
             dietBar.style.width = "0%";
-            todayCalories.textContent = `0 ${t("client.todayCalories")}`;
+            todayCalories.textContent = `0 kcal`;
           }
         });
 
         // Suscripción a Registro de Peso
         subscribeToProgress(
-          firebaseUser.uid,
+          targetUid,
           "weight",
           (logs) => {
             if (logs.length > 0 && logs[0]) {

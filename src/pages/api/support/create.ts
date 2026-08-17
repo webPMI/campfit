@@ -2,11 +2,11 @@ import type { APIRoute } from 'astro';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, addDoc, serverTimestamp, query, where, orderBy, limit, startAfter, getDocs, type QueryConstraint } from 'firebase/firestore';
 
-export const POST = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // 1. Verificar autenticación
-    const sessionCookie = cookies.get('session') || cookies.get('__session');
-    if (!sessionCookie) {
+    const sessionUid = cookies.get('session')?.value || cookies.get('__session')?.value;
+    if (!sessionUid) {
       return new Response(
         JSON.stringify({ error: 'No autenticado. Inicia sesión para reportar un problema.' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
@@ -14,7 +14,7 @@ export const POST = async ({ request, cookies }) => {
     }
 
     // 2. Verificar que el usuario existe
-    const userDoc = await getDoc(doc(db, 'users', sessionCookie));
+    const userDoc = await getDoc(doc(db, 'users', sessionUid));
     if (!userDoc.exists()) {
       return new Response(
         JSON.stringify({ error: 'Usuario no encontrado.' }),
@@ -22,7 +22,7 @@ export const POST = async ({ request, cookies }) => {
       );
     }
 
-    const uid = sessionCookie;
+    const uid = sessionUid;
     const userData = userDoc.data();
     const email = userData.email || '';
     const name = userData.name || '';
@@ -141,11 +141,11 @@ export const POST = async ({ request, cookies }) => {
   }
 };
 
-export const GET = async ({ request, cookies }) => {
+export const GET: APIRoute = async ({ request, cookies }) => {
   try {
     // 1. Verificar que es admin
-    const sessionCookie = cookies.get('session') || cookies.get('__session');
-    if (!sessionCookie) {
+    const sessionUid = cookies.get('session')?.value || cookies.get('__session')?.value;
+    if (!sessionUid) {
       return new Response(
         JSON.stringify({ error: 'No autenticado. Solo admins pueden ver tickets.' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
@@ -153,7 +153,7 @@ export const GET = async ({ request, cookies }) => {
     }
 
     // 2. Verificar rol admin desde documento de usuario
-    const userDoc = await getDoc(doc(db, 'users', sessionCookie));
+    const userDoc = await getDoc(doc(db, 'users', sessionUid));
     if (!userDoc.exists()) {
       return new Response(
         JSON.stringify({ error: 'Usuario no encontrado.' }),
@@ -163,8 +163,8 @@ export const GET = async ({ request, cookies }) => {
 
     const userData = userDoc.data();
     const isAdminUser = userData.role === 'admin' ||
-      sessionCookie === 'servicioweb.pmi@gmail.com' ||
-      sessionCookie === 'sevicioweb.pmi@gmail.com';
+      sessionUid === 'servicioweb.pmi@gmail.com' ||
+      sessionUid === 'sevicioweb.pmi@gmail.com';
 
     if (!isAdminUser) {
       return new Response(

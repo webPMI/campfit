@@ -41,7 +41,7 @@ function extractTranslationKeys(filePath: string): string[] {
   }
   const keys: string[] = [];
 
-  const regex = /['"]((?:[a-z0-9]+\.)+[a-z0-9][a-zA-Z0-9._-]*)['"]\s*:/g;
+  const regex = /['"]((?:[a-zA-Z0-9_-]+\.)+[a-zA-Z0-9][a-zA-Z0-9._-]*)['"]\s*:/g;
   let match: RegExpExecArray | null;
   while ((match = regex.exec(content)) !== null) {
     if (match[1] && match[1] !== 'lang') {
