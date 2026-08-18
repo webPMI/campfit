@@ -59,21 +59,21 @@ service cloud.firestore {
       // 🔒 CRÍTICO: Restringe el rol en create para evitar escalada de privilegios.
       allow create: if isAuth() && (
         (request.auth.uid == userId &&
-         (!('role' in request.resource.data.keys()) || request.resource.data.role == 'client')) ||
+         (!('role' in request.resource.data) || request.resource.data.role == 'client')) ||
         isAdmin()
       );
 
       allow update: if isAuth() && (
         // El propio usuario puede actualizar su perfil sin cambiar rol ni bloqueo
         (request.auth.uid == userId &&
-          (!('role' in request.resource.data.keys()) || resource.data.role == request.resource.data.role) &&
-          (!('isBlocked' in request.resource.data.keys()) || resource.data.isBlocked == request.resource.data.isBlocked) &&
-          (!('assignedTrainerId' in request.resource.data.keys()) || 
+          (!('role' in request.resource.data) || resource.data.role == request.resource.data.role) &&
+          (!('isBlocked' in request.resource.data) || resource.data.isBlocked == request.resource.data.isBlocked) &&
+          (!('assignedTrainerId' in request.resource.data) ||
            (isAdmin() || (isTrainer() && resource.data.assignedTrainerId == request.auth.uid)))) ||
         // Trainers pueden gestionar información de sus clientes asignados
         (isTrainer() && (
           resource.data.role == 'client' &&
-          (!('role' in request.resource.data.keys()) || request.resource.data.role == 'client')
+          (!('role' in request.resource.data) || request.resource.data.role == 'client')
         )) ||
         // Admins pueden actualizar cualquier campo
         isAdmin()
@@ -301,7 +301,7 @@ service cloud.firestore {
         && request.resource.data.createdAt is timestamp
         && request.resource.data.updatedAt is timestamp
         && request.resource.data.lastActivityAt is timestamp
-        && (!('isAnonymous' in request.resource.data.keys()) || request.resource.data.isAnonymous == true || request.resource.data.isAnonymous == false);
+        && (!('isAnonymous' in request.resource.data) || request.resource.data.isAnonymous == true || request.resource.data.isAnonymous == false);
 
       allow read: if isAuth() && (
         // El reporter lee su propio ticket

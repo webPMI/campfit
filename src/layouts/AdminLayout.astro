@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import DecorativeBackground from "@/components/DecorativeBackground.astro";
 import LanguageSwitcherDropdown from "@/components/LanguageSwitcherDropdown.astro";
 import ChatNotificationListener from "@/components/ChatNotificationListener.astro";
+import VersionBadge from "@/components/VersionBadge.astro";
 import { translations } from "@/i18n/translations";
 import type { Language } from "@/i18n/translations";
 
@@ -52,6 +53,7 @@ const isDashboardActive = currentPath === "/admin/dashboard" || currentPath === 
           <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           Admin Suite
         </span>
+        <VersionBadge />
       </a>
 
       <!-- Center: Domain-Based Clustered Navigation (Desktop) -->

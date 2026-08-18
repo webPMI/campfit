@@ -10,6 +10,7 @@ import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
 
 export interface OnboardingData {
+  name?: string | null;
   birthdate?: string | null;
   height?: number | null;
   initialWeight?: number | null;
@@ -22,6 +23,9 @@ export interface OnboardingData {
   surgery?: string | null;
   emergencyName?: string | null;
   emergencyPhone?: string | null;
+  dietaryRestrictions?: string[] | null;
+  otherDietary?: string | null;
+  excludedFoodIds?: string[] | null;
 }
 
 /**
@@ -36,7 +40,7 @@ export async function saveOnboardingProfile(
     return false;
   }
 
-  const medicalProfile: Record<string, unknown> = { updatedAt: serverTimestamp() };
+  const medicalProfile: Record<string, unknown> = {};
   if (data.birthdate) medicalProfile.birthDate = data.birthdate;
   if (data.height) medicalProfile.height = data.height;
   if (data.initialWeight) medicalProfile.initialWeight = data.initialWeight;
@@ -49,6 +53,15 @@ export async function saveOnboardingProfile(
   if (data.surgery) medicalProfile.surgery = data.surgery;
   if (data.emergencyName) medicalProfile.emergencyName = data.emergencyName;
   if (data.emergencyPhone) medicalProfile.emergencyPhone = data.emergencyPhone;
+  if (data.dietaryRestrictions?.length) medicalProfile.dietaryRestrictions = data.dietaryRestrictions;
+  if (data.otherDietary) medicalProfile.otherDietary = data.otherDietary;
+  if (data.excludedFoodIds?.length) medicalProfile.excludedFoodIds = data.excludedFoodIds;
+
+  // 🔒 CRÍTICO: El nombre se guarda en el documento principal del usuario, no solo en medicalProfile
+  // Esto asegura que los usuarios aparezcan con su nombre real en el panel de administración
+  // 🔒 CRÍTICO: updatedAt solo a nivel principal, no dentro de medicalProfile
+  const userData: Record<string, unknown> = { medicalProfile, onboardingCompleted: true, updatedAt: serverTimestamp() };
+  if (data.name) userData.name = data.name;
 
   try {
     const userRef = doc(db, 'users', uid);
@@ -59,9 +72,13 @@ export async function saveOnboardingProfile(
     // Paso 1: setDoc (allow create)
     try {
       await setDoc(userRef, {
-        name: 'Nuevo Usuario', email: '', role: 'client', photoURL: '',
-        hasActiveAlert: false, medicalProfile, onboardingCompleted: true,
-        createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+        name: data.name || 'Nuevo Usuario',
+        email: '',
+        role: 'client',
+        photoURL: '',
+        hasActiveAlert: false,
+        ...userData,
+        createdAt: serverTimestamp(),
       });
       logger.info('OnboardingService', '✅ setDoc exitoso');
       await clearCache();
@@ -73,9 +90,7 @@ export async function saveOnboardingProfile(
 
       // Paso 2: updateDoc (allow update)
       try {
-        await updateDoc(userRef, {
-          medicalProfile, onboardingCompleted: true, updatedAt: serverTimestamp(),
-        });
+        await updateDoc(userRef, userData);
         logger.info('OnboardingService', '✅ updateDoc exitoso');
         await clearCache();
         return true;

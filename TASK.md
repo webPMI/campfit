@@ -28,6 +28,12 @@
 
 | Fecha / Hora | Agente | Objetivo / Tarea | Archivos Modificados | Estado |
 | :--- | :--- | :--- | :--- | :--- |
+| `2026-08-18 20:55:00` | Antigravity Agent | Deploy Producción v0.001: Build exitoso (43 páginas, 4.38s) y deploy a Firebase Hosting. Versión mantenida en 0.001 según confirmación del usuario (cambio de VersionBadge considerado no significativo). URL: https://mallorca-campfit.web.app | `dist/`, `TASK.md` | `[COMPLETADO]` |
+| `2026-08-18 21:15:00` | Antigravity Agent | Documentación de Control de Versiones: Adición de sección obligatoria en `AGENTS.md` con reglas estrictas de versionamiento. Los agentes deben PREGUNTAR explícitamente al usuario antes de incrementar la versión (+0.001) para cambios significativos. Definición clara de qué constituye un cambio significativo vs cambios menores | `AGENTS.md`, `TASK.md` | `[COMPLETADO]` |
+| `2026-08-18 21:00:00` | Antigravity Agent | Componente VersionBadge Reutilizable: Creación de componente `VersionBadge.astro` con indicador Beta v0.001 animado e integración en todos los layouts principales (AdminLayout, ClientLayout, TrainerLayout, PublicPageLayout) para mostrar la versión del sistema de forma consistente en toda la aplicación | `src/components/VersionBadge.astro`, `src/layouts/AdminLayout.astro`, `src/layouts/ClientLayout.astro`, `src/layouts/TrainerLayout.astro`, `src/layouts/PublicPageLayout.astro`, `TASK.md` | `[COMPLETADO]` |
+| `2026-08-18 20:51:00` | Antigravity Agent | Deploy Producción: Build exitoso (43 páginas, 18.41s) y deploy completo a Firebase Hosting + Firestore Rules corregidas. URL: https://mallorca-campfit.web.app | `dist/`, `firestore.rules`, `TASK.md` | `[COMPLETADO]` |
+| `2026-08-18 11:00:00` | Antigravity Agent | CORRECCIÓN CRÍTICA - Registro de Usuarios: Corrección de errores de sintaxis en `firestore.rules` que impedían el registro de nuevos usuarios. La sintaxis `request.resource.data.keys()` es incorrecta en Firestore Security Rules, debe ser `request.resource.data` para verificar existencia de claves con el operador `in`. Corregidas 4 instancias en líneas 62, 69, 70, 71, 76 y 304. También corregido el problema estructural de doble campo `updatedAt` en `onboardingService.ts` | `firestore.rules`, `src/lib/client/onboardingService.ts`, `TASK.md` | `[COMPLETADO]` |
+| `2026-08-18 10:30:00` | Antigravity Agent | Actualización del Onboarding: 1) Agregado de Paso 4 de Restricciones Dietéticas con selección de alimentos excluidos (checkboxes globales + buscador de alimentos específicos del catálogo), 2) Corrección del problema de usuarios nuevos apareciendo como "Nuevo Usuario" mediante la adición de campo de nombre en el onboarding y guardado correcto en el documento principal del usuario | `src/pages/onboarding.astro`, `src/lib/client/onboardingService.ts`, `src/i18n/locales/es.ts`, `src/i18n/locales/en.ts`, `src/i18n/locales/ca.ts`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-17 17:55 CEST` | Antigravity Agent | Auditoría y Consolidación de Documentación y Tipado: Unificación del CHANGELOG.md en la raíz con historial v2.5.0/v2.4.0, actualización técnica del README.md (Astro 7.x, Vitest 3.0.9, Cloudflare R2, Static SSG, estructura modular `src/lib/*`), corrección de enlaces relativos en `docs/README.md`, tipado estricto en `admin/tickets.astro`, limpieza de claves i18n duplicadas TS1117 en `es.ts` y `en.ts` y verificación integral con 768 tests aprobados y 0 errores de compilación | `CHANGELOG.md`, `README.md`, `docs/CHANGELOG.md`, `docs/README.md`, `src/pages/admin/tickets.astro`, `src/i18n/locales/*`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-17 17:40 CEST` | Antigravity Agent | Rediseño y Optimización Pro-UX del Calendario Diario: Eliminación de la columna estática de 24 horas (1.920px de espacio muerto innecesario) en favor de una Agenda Compacta Pro por franjas (Mañana, Tarde, Noche) y Línea Temporal Dinámica con conector en vivo y marcador AHORA contextual; Desglose interactivo de ejercicios en la tarjeta de entrenamiento (series, repeticiones, descanso, checkbox de completitud individual, vídeo de técnica HD) y reprogramación reactiva de entrenamientos y comidas con TimePicker | `src/components/calendar/TimeGrid.astro`, `src/stores/dailyScheduleStore.ts`, `src/lib/shared/hydrationService.ts`, `src/i18n/locales/*`, `TASK.md` | `[COMPLETADO]` |
 | `2026-08-17 17:05 CEST` | Antigravity Agent | Implementación de 4 Pilares de Calidad Pro en Rutinas y Ejercicios: Pilar 1 (Auditoría de biblioteca con URLs de vídeo demostrativas y niveles 1-5 obligatorios en `exercisesCatalog.ts`), Pilar 2 (Motor de Calendario con widget "Qué Sigue" en vivo, indicadores cromáticos de intensidad por nivel de esfuerzo y feedback de éxito), Pilar 3 (Internacionalización total de músculos, equipamiento y métricas en `translations.ts` y eliminación de hardcodings), Pilar 4 (Seguridad de datos, validación estricta de rangos en `foodValidators.ts` y cruce automático de lesiones médicas con `injuryChecker.ts`) | `src/lib/data/exercisesCatalog.ts`, `src/lib/data/foodValidators.ts`, `src/lib/client/injuryChecker.ts`, `src/i18n/locales/*`, `src/components/calendar/TimeGrid.astro`, `src/pages/client/workouts.astro`, `tests/unit/lib/client/injuryChecker.test.ts`, `TASK.md` | `[COMPLETADO]` |
@@ -76,12 +82,21 @@
 Al tomar una tarea, copia y añade este bloque en la sección de **Agentes Activos**:
 
 ```markdown
-### 🤖 Agente: Antigravity Agent [Nombre/ID]
-- **Fecha / Hora:** `YYYY-MM-DD HH:mm:ss`
-- **Objetivo / Problema:** [Descripción detallada de la tarea o bug a solucionar]
+### 🤖 Agente: Antigravity Agent [Sistema de Rutinas Flexibles]
+- **Fecha / Hora:** `2026-08-18 13:00:00 CEST`
+- **Objetivo / Problema:** Implementar frecuencia semanal (2/3/4+ días), días programados, y flexibilidad del cliente (reprogramar/saltar días) en el módulo de rutinas/workouts.
 - **Archivos Afectados / En Modificación:**
-  - `ruta/al/archivo1.ts`
-  - `ruta/al/archivo2.astro`
+  - `src/lib/trainer/types.ts` — nuevos campos en TrainerWorkout
+  - `src/lib/client/workoutService.ts` — nuevos campos en Workout + WorkoutDayDecision
+  - `src/lib/client/workoutDayDecisionsService.ts` — NUEVO: servicio de decisiones de días
+  - `src/lib/shared/hydrationService.ts` — soporte para scheduledDays
+  - `src/pages/trainer/workouts.astro` — editor con selector de días
+  - `src/pages/client/workouts.astro` — vista semanal + botones reprogramar/saltar
+  - `src/i18n/locales/es.ts` — claves i18n
+  - `src/i18n/locales/en.ts` — claves i18n
+  - `src/i18n/locales/ca.ts` — claves i18n
+  - `firestore.rules` — regla para workout_day_decisions
+  - `docs/MATRIZ_FIRESTORE_QUERIES_Y_REGLAS.md` — documentar nueva colección
 - **Estado:** `[EN PROGRESO]`
 ```
 Al terminar la sesión, actualiza el estado a `[COMPLETADO]` y mueve la entrada a la tabla del **Historial**.

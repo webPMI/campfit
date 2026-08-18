@@ -32,6 +32,15 @@ export interface TrainerWorkout {
   difficulty: string;
   description: string;
   exercises: Exercise[];
+  /** Frecuencia semanal: número de días de entrenamiento (2, 3, 4, 5, 6). */
+  daysPerWeek?: 2 | 3 | 4 | 5 | 6;
+  /** Días de la semana programados (1=Lunes … 7=Domingo). Ej: [1,3,5] = Lunes/Miércoles/Viernes */
+  scheduledDays?: number[];
+  /** Permisos del cliente para reprogramar o saltar sesiones. */
+  clientFlexibility?: {
+    allowReschedule?: boolean;  // El cliente puede mover un día a otro
+    allowSkip?: boolean;        // El cliente puede saltar un día con motivo
+  };
   hasValidationWarnings?: boolean;
   validationReport?: { hasWarnings: boolean; warnings: string[]; missingCount?: number };
   createdAt?: { toDate: () => Date } | null;
@@ -41,11 +50,7 @@ export interface TrainerWorkout {
 export interface Exercise {
   id: string;
   // 🔒 CRÍTICO: Referencia al ejercicio en exercises_library.
-  // Si el trainer seleccionó del catálogo → exerciseId apunta al documento.
-  // Si es texto libre (rutinas legacy) → exerciseId es undefined.
-  // NUNCA eliminar — se usa para mostrar detalles del catálogo, detectar exclusiones
-  // del cliente y sugerir sustitutos en trainer/workouts.astro.
-  exerciseId?: string;     // Ref a exercises_library/{exerciseId}
+  exerciseId?: string;
   name: string;
   sets: number;
   reps: number;

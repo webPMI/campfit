@@ -26,8 +26,30 @@ export interface Workout {
   difficulty: string;
   description: string;
   exercises: Exercise[];
+  /** Frecuencia semanal */
+  daysPerWeek?: 2 | 3 | 4 | 5 | 6;
+  /** Días programados */
+  scheduledDays?: number[];
+  /** Permisos de flexibilidad del cliente */
+  clientFlexibility?: {
+    allowReschedule?: boolean;
+    allowSkip?: boolean;
+  };
   createdAt: Timestamp;
   updatedAt: Timestamp;
+}
+
+/** Decisión de reprogramación/salto tomada por el cliente */
+export interface WorkoutDayDecision {
+  id: string;
+  workoutId: string;
+  originalDay: number;       // Día original programado (1-7)
+  decisionType: 'rescheduled' | 'skipped';
+  /** Si se reprogramó: nuevo día (1-7) */
+  newDay?: number;
+  /** Si se saltó: motivo opcional */
+  skipReason?: string;
+  decidedAt: Timestamp;
 }
 
 export function subscribeToWorkouts(

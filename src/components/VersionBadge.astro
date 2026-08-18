@@ -1,0 +1,13 @@
+---
+const { version = "0.002" } = Astro.props;
+const showBeta = true;
+---
+
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-300 text-[10px] font-semibold tracking-wider uppercase shadow-sm">
+  {showBeta && <span class="relative flex h-2 w-2">
+    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+  </span>}
+  <span>Beta</span>
+  <span class="text-amber-400/70">v{version}</span>
+</span>

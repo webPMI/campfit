@@ -223,7 +223,7 @@ Las reglas de seguridad desplegadas actualmente en Firebase siguen estos princip
 - Los mensajes del chat no se pueden editar ni eliminar una vez enviados
 - Las rutinas y dietas con `clientId == ''` son plantillas visibles para todos los autenticados
 
-> 📄 Ver `firebase_rules.md` en `nuevo_proyecto/` para las reglas completas.
+> 📄 Ver `firebase_rules.md` en `docs/_archive/nuevo_proyecto/` para las reglas completas.
 
 ---
 

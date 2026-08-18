@@ -184,15 +184,52 @@ export const authService = {
   /**
    * Iniciar sesión con Google (popup).
    * Si es primera vez, crea el perfil en Firestore.
+   * Captura datos adicionales: nombre, apellido, teléfono, idioma preferido.
    */
   async loginWithGoogle(): Promise<User> {
     logger.info('AuthService', 'Iniciando login con Google...');
     try {
       const provider = new GoogleAuthProvider();
+      // 🔒 CRÍTICO: Agregar scopes para obtener datos adicionales de Google
+      provider.addScope('profile');  // Nombre completo
+      provider.addScope('email');   // Email (verificado)
+      provider.addScope('phone');   // Número de teléfono (si está disponible)
+
       const credential = await signInWithPopup(auth, provider);
       const { user: firebaseUser } = credential;
       const uid = firebaseUser.uid;
       logger.info('AuthService', `Google login exitoso UID:${uid.slice(0, 8)}... (${firebaseUser.email})`);
+
+      // 🔒 CRÍTICO: Obtener datos adicionales del token de Google
+      const additionalData: Record<string, unknown> = {};
+      const accessToken = (credential as { _tokenResponse?: { access_token?: string } })._tokenResponse?.access_token;
+      
+      if (accessToken) {
+        try {
+          // Decodificar el token JWT de Google para obtener datos adicionales
+          const tokenParts = accessToken.split('.');
+          if (tokenParts.length === 3) {
+            const payload = JSON.parse(atob(tokenParts[1]));
+            logger.info('AuthService', `Datos adicionales de Google: ${JSON.stringify({
+              given_name: payload.given_name,
+              family_name: payload.family_name,
+              locale: payload.locale,
+              email_verified: payload.email_verified
+            })}`);
+            
+            if (payload.given_name) additionalData.firstName = payload.given_name;
+            if (payload.family_name) additionalData.lastName = payload.family_name;
+            if (payload.locale) additionalData.preferredLanguage = payload.locale;
+            if (payload.email_verified !== undefined) additionalData.emailVerified = payload.email_verified;
+          }
+        } catch (tokenError) {
+          logger.warn('AuthService', `Error al decodificar token de Google: ${String(tokenError)}`);
+        }
+      }
+
+      // Datos del usuario de Firebase
+      if (firebaseUser.phoneNumber) additionalData.phoneNumber = firebaseUser.phoneNumber;
+      if (firebaseUser.emailVerified !== undefined) additionalData.emailVerified = firebaseUser.emailVerified;
 
       const userDoc = await getDoc(doc(db, 'users', uid));
 
@@ -207,9 +244,15 @@ export const authService = {
           onboardingCompleted: false,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
+          // 🔒 CRÍTICO: Datos adicionales de Google
+          ...(additionalData.firstName && { firstName: additionalData.firstName }),
+          ...(additionalData.lastName && { lastName: additionalData.lastName }),
+          ...(additionalData.phoneNumber && { phoneNumber: additionalData.phoneNumber }),
+          ...(additionalData.preferredLanguage && { preferredLanguage: additionalData.preferredLanguage }),
+          ...(additionalData.emailVerified !== undefined && { emailVerified: additionalData.emailVerified }),
         };
         await setDoc(doc(db, 'users', uid), profile);
-        logger.info('AuthService', `Perfil Google creado con photoURL: ${firebaseUser.photoURL ? 'Sí' : 'No'}`);
+        logger.info('AuthService', `Perfil Google creado con ${Object.keys(additionalData).length} datos adicionales`);
         return {
           uid,
           email: firebaseUser.email || '',

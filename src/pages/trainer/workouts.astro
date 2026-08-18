@@ -784,6 +784,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const descVal = workout ? escapeHtml(workout.description || "") : "";
     const diffVal = workout ? workout.difficulty || "intermediate" : "intermediate";
     const selectedClientId = workout?.clientId || clientId;
+    const daysPerWeekVal = (workout?.daysPerWeek || 3) as 2 | 3 | 4 | 5 | 6;
+    const scheduledDaysVal: number[] = workout?.scheduledDays?.slice() || [1, 3, 5];
+    const allowRescheduleVal = workout?.clientFlexibility?.allowReschedule ?? true;
+    const allowSkipVal = workout?.clientFlexibility?.allowSkip ?? true;
 
     editingExercises = workout?.exercises ? JSON.parse(JSON.stringify(workout.exercises)) : [];
     if (editingExercises.length === 0) {
@@ -837,9 +841,49 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           <div id="exercises-list" class="space-y-3"></div>
         </div>
 
+        <!-- Frecuencia y Días Programados -->
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-4 backdrop-blur-sm space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <label class="text-xs font-semibold text-[var(--text-secondary)]">📅 Frecuencia Semanal</label>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] text-[var(--text-tertiary)]">${t("trainer.daysPerWeek")}</span>
+              <select id="workout-daysPerWeek" class="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1 text-xs text-[var(--text-primary)]">
+                <option value="2" ${daysPerWeekVal === 2 ? 'selected' : ''}>2 días</option>
+                <option value="3" ${daysPerWeekVal === 3 ? 'selected' : ''}>3 días</option>
+                <option value="4" ${daysPerWeekVal === 4 ? 'selected' : ''}>4 días</option>
+                <option value="5" ${daysPerWeekVal === 5 ? 'selected' : ''}>5 días</option>
+                <option value="6" ${daysPerWeekVal === 6 ? 'selected' : ''}>6 días</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 flex-wrap text-xs">
+            <span class="text-[var(--text-tertiary)] font-medium">${t("trainer.scheduledDays")}:</span>
+            ${[1,2,3,4,5,6,7].map(d => {
+              const dayName = ['', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'][d];
+              const checked = scheduledDaysVal.includes(d) ? 'checked' : '';
+              return `<label class="flex items-center gap-1 cursor-pointer bg-[var(--surface-2)] rounded-lg px-2.5 py-1 border border-[var(--border-subtle)] ${\
+                scheduledDaysVal.includes(d) ? 'border-[var(--brand)] bg-[var(--brand-dim)]/30' : '' \}">
+                <input type="checkbox" value="${d}" class="ex-scheduled-day accent-[var(--brand)]" ${checked} />
+                <span class="font-medium">${dayName}</span>
+                <span>(Día ${d})</span>
+              </label>`;
+            }).join('')}
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <label class="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] cursor-pointer">
+              <input type="checkbox" id="workout-allowReschedule" class="accent-[var(--brand)]" ${allowRescheduleVal ? 'checked' : ''} />
+              ${t("trainer.allowReschedule")}
+            </label>
+            <label class="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] cursor-pointer">
+              <input type="checkbox" id="workout-allowSkip" class="accent-[var(--brand)]" ${allowSkipVal ? 'checked' : ''} />
+              ${t("trainer.allowSkip")}
+            </label>
+          </div>
+        </div>
+
         <div class="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)]">
           <button id="btn-save-workout" class="flex-1 rounded-xl bg-[var(--brand)] px-5 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90">
-            ${isEditing ? "Guardar Cambios" : "Crear Rutina"}
+            ${isEditing ? t("trainer.workouts.edit") : t("trainer.workouts.new")}
           </button>
           <button id="btn-cancel-workout" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-5 py-2.5 text-xs font-bold text-[var(--text-secondary)]">
             Cancelar
@@ -861,7 +905,63 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
     renderExercisesEditor();
 
+    // --- Frecuencia y días programados ---
+    const daysPerWeekSelect = document.getElementById("workout-daysPerWeek") as HTMLSelectElement;
+    const scheduledDayCheckboxes = document.querySelectorAll(".ex-scheduled-day") as NodeListOf<HTMLInputElement>;
+    const allowRescheduleChk = document.getElementById("workout-allowReschedule") as HTMLInputElement;
+    const allowSkipChk = document.getElementById("workout-allowSkip") as HTMLInputElement;
+
+    daysPerWeekSelect?.addEventListener("change", () => {
+      const count = parseInt(daysPerWeekSelect.value) || 3;
+      // Auto-seleccionar días: distribuir a lo largo de la semana
+      const newDays: number[] = [];
+      const startDay = 1;
+      for (let i = 0; i < count; i++) {
+        newDays.push(startDay + i);
+      }
+      scheduledDaysVal = newDays;
+      scheduledDayCheckboxes.forEach(cb => {
+        cb.checked = newDays.includes(parseInt(cb.value));
+        const label = cb.closest('label');
+        if (label) {
+          label.classList.toggle('border-[var(--brand)]', cb.checked);
+          label.classList.toggle('bg-[var(--brand-dim)]/30', cb.checked);
+          label.classList.toggle('border-[var(--border-subtle)]', !cb.checked);
+          label.classList.toggle('bg-[var(--surface-2)]', !cb.checked);
+        }
+      });
+      renderExercisesEditor();
+    });
+
+    scheduledDayCheckboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        if (cb.checked) {
+          if (!scheduledDaysVal.includes(parseInt(cb.value))) {
+            scheduledDaysVal.push(parseInt(cb.value));
+          }
+        } else {
+          scheduledDaysVal = scheduledDaysVal.filter(d => d !== parseInt(cb.value));
+        }
+        const label = cb.closest('label');
+        if (label) {
+          label.classList.toggle('border-[var(--brand)]', cb.checked);
+          label.classList.toggle('bg-[var(--brand-dim)]/30', cb.checked);
+          label.classList.toggle('border-[var(--border-subtle)]', !cb.checked);
+          label.classList.toggle('bg-[var(--surface-2)]', !cb.checked);
+        }
+        renderExercisesEditor();
+      });
+    });
+
+    allowRescheduleChk?.addEventListener("change", () => {
+      allowRescheduleVal = allowRescheduleChk.checked;
+    });
+    allowSkipChk?.addEventListener("change", () => {
+      allowSkipVal = allowSkipChk.checked;
+    });
+
     document.getElementById("btn-add-exercise")?.addEventListener("click", () => {
+      const activeDay = scheduledDaysVal.length > 0 ? scheduledDaysVal[0] : 1;
       editingExercises.push({
         id: `ex-${Date.now()}-${editingExercises.length}`,
         name: "",
@@ -871,7 +971,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         videoUrl: "",
         description: "",
         order: editingExercises.length + 1,
-        dayOfWeek: 1,
+        dayOfWeek: activeDay,
       });
       renderExercisesEditor();
     });
@@ -914,12 +1014,23 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       try {
         showToast({ message: "Guardando rutina...", type: "info" });
+        const daysPerWeek = parseInt((document.getElementById("workout-daysPerWeek") as HTMLSelectElement).value) as 2 | 3 | 4 | 5 | 6;
+        const scheduledDays: number[] = Array.from(document.querySelectorAll(".ex-scheduled-day:checked")).map(cb => parseInt(cb.value));
+        const allowReschedule = (document.getElementById("workout-allowReschedule") as HTMLInputElement).checked;
+        const allowSkip = (document.getElementById("workout-allowSkip") as HTMLInputElement).checked;
+
         if (isEditing && workout) {
           await updateWorkout(workout.id, {
             name,
             clientId: targetClientId,
             description: desc,
             exercises: validExercises,
+            daysPerWeek,
+            scheduledDays,
+            clientFlexibility: {
+              allowReschedule,
+              allowSkip,
+            },
           });
         } else {
           await createWorkout({
@@ -929,6 +1040,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             description: desc,
             difficulty: diffVal as any,
             exercises: validExercises,
+            daysPerWeek,
+            scheduledDays,
+            clientFlexibility: {
+              allowReschedule,
+              allowSkip,
+            },
           });
         }
         showToast({ message: "Rutina guardada correctamente", type: "success" });
@@ -1001,7 +1118,10 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             <div>
               <label class="block text-[10px] text-[var(--text-tertiary)] mb-0.5">Día de la semana:</label>
               <select class="ex-day w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] px-2 py-1.5 text-xs text-[var(--text-primary)]">
-                ${[1,2,3,4,5,6,7].map(d => `<option value="${d}" ${d === (ex.dayOfWeek || 1) ? "selected" : ""}>Día ${d}</option>`).join("")}
+                ${scheduledDaysVal.length > 0
+                  ? scheduledDaysVal.map(d => `<option value="${d}" ${d === (ex.dayOfWeek || 1) ? "selected" : ""}>Día ${d}</option>`).join("")
+                  : [1,2,3,4,5,6,7].map(d => `<option value="${d}" ${d === (ex.dayOfWeek || 1) ? "selected" : ""}>Día ${d}</option>`).join("")
+                }
               </select>
             </div>
             <div>

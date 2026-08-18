@@ -30,6 +30,58 @@
 
 **Add inline comments `// 🔒 CRÍTICO: ...` to sensitive code to warn future agents.**
 
+## 📦 Control de Versiones (VERSION CONTROL)
+
+### 🚨 REGLA OBLIGATORIA DE VERSIONAMIENTO
+
+**Cada agente debe PREGUNTAR explícitamente antes de incrementar la versión.**
+
+#### Procedimiento de Versionamiento:
+
+1. **Al hacer deploy con cambios significativos:**
+   - Preguntar al usuario: "¿Este cambio es significativo y requiere incrementar la versión?"
+
+2. **Si el usuario confirma que es significativo:**
+   - Incrementar versión en `src/components/VersionBadge.astro`
+   - Formato estricto: incrementar +0.001 (ej: 0.001 → 0.002 → 0.003)
+   - Documentar el cambio en TASK.md
+
+3. **Si el usuario dice que NO es significativo:**
+   - NO cambiar la versión
+   - Solo hacer deploy del cambio
+
+#### ¿Qué constituye un cambio significativo?
+
+**SÍ incrementar versión (ejemplos):**
+- Nuevas funcionalidades principales
+- Cambios en UX/UI importantes
+- Correcciones críticas de seguridad
+- Cambios en la estructura de datos
+- Nuevas integraciones o APIs
+- Cambios en el flujo de usuario
+
+**NO incrementar versión (ejemplos):**
+- Correcciones de bugs menores
+- Mejoras de rendimiento
+- Ajustes de CSS/estilos
+- Actualizaciones de traducciones
+- Cambios en documentación
+- Limpieza de código
+
+#### Componente de Versión:
+```
+src/components/VersionBadge.astro
+- Prop: version (default: "0.001")
+- Ejemplo: <VersionBadge version="0.002" />
+```
+
+#### Ejemplo de interacción:
+```
+Agente: "¿Este cambio [descripción] es significativo y requiere incrementar la versión de 0.001 a 0.002?"
+Usuario: "Sí" → Agente incrementa versión y hace deploy
+Usuario: "No" → Agente hace deploy sin cambiar versión
+```
+
 ## Development
 When starting the dev server, use background mode:
 ```

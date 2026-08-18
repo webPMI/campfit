@@ -4,6 +4,7 @@ import DecorativeBackground from '@/components/DecorativeBackground.astro';
 import LanguageSwitcherDropdown from '@/components/LanguageSwitcherDropdown.astro';
 import AdminModeBanner from '@/components/AdminModeBanner.astro';
 import ChatNotificationListener from '@/components/ChatNotificationListener.astro';
+import VersionBadge from '@/components/VersionBadge.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
@@ -24,6 +25,7 @@ const currentPath = Astro.url.pathname;
           </svg>
         </div>
         CampFit
+        <VersionBadge />
       </a>
       <div class="flex items-center gap-2">
         <AdminModeBanner />

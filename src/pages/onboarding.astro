@@ -30,14 +30,14 @@ const currentPath = Astro.url.pathname;
       <div class="mb-6">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-[var(--text-tertiary)]">
-            <span id="stepLabel"><span data-i18n="onboarding.step">{t('onboarding.step')}</span> <span id="currentStep">1</span> <span data-i18n="onboarding.of">{t('onboarding.of')}</span> <span id="totalSteps">3</span></span>
+            <span id="stepLabel"><span data-i18n="onboarding.step">{t('onboarding.step')}</span> <span id="currentStep">1</span> <span data-i18n="onboarding.of">{t('onboarding.of')}</span> <span id="totalSteps">4</span></span>
           </span>
           <button id="skipBtn" data-i18n="onboarding.skip" class="text-xs text-[var(--text-disabled)] hover:text-[var(--text-secondary)] transition-colors">
             {t('onboarding.skip')}
           </button>
         </div>
         <div class="h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
-          <div id="progressBar" class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500" style="width: 33.33%"></div>
+          <div id="progressBar" class="h-full rounded-full bg-gradient-to-r from-[var(--brand)] to-emerald-400 transition-all duration-500" style="width: 25%"></div>
         </div>
       </div>
 
@@ -49,6 +49,15 @@ const currentPath = Astro.url.pathname;
           <p data-i18n="onboarding.personal.desc" class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.personal.desc')}</p>
 
           <div class="space-y-4">
+            <div>
+              <label for="name" data-i18n="onboarding.name" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.name')}</label>
+              <input
+                id="name"
+                type="text"
+                placeholder="Ej: Juan Pérez"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
+              />
+            </div>
             <div>
               <label for="birthdate" data-i18n="onboarding.birthdate" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.birthdate')}</label>
               <input
@@ -207,6 +216,85 @@ const currentPath = Astro.url.pathname;
           </div>
         </div>
 
+        <!-- Step 4: Dietary Restrictions -->
+        <div id="step4" class="step-content hidden">
+          <h2 data-i18n="onboarding.dietary.title" class="text-lg font-semibold mb-1">{t('onboarding.dietary.title')}</h2>
+          <p data-i18n="onboarding.dietary.desc" class="text-sm text-[var(--text-tertiary)] mb-6">{t('onboarding.dietary.desc')}</p>
+
+          <div class="space-y-4">
+            <!-- Global Dietary Restrictions -->
+            <div>
+              <label data-i18n="onboarding.dietary.restrictions" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('onboarding.dietary.restrictions')}</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                  <input type="checkbox" id="glutenFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                  <span class="text-xs font-medium text-[var(--text-primary)]">🌾 {t('clinical.diet.glutenFree')}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                  <input type="checkbox" id="lactoseFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                  <span class="text-xs font-medium text-[var(--text-primary)]">🥛 {t('clinical.diet.lactoseFree')}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                  <input type="checkbox" id="veganCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                  <span class="text-xs font-medium text-[var(--text-primary)]">🌱 {t('clinical.diet.vegan')}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                  <input type="checkbox" id="vegetarianCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                  <span class="text-xs font-medium text-[var(--text-primary)]">🥬 {t('clinical.diet.vegetarian')}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                  <input type="checkbox" id="nutFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                  <span class="text-xs font-medium text-[var(--text-primary)]">🥜 {t('clinical.diet.nutFree')}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] cursor-pointer hover:border-[var(--border-brand)] transition-all">
+                  <input type="checkbox" id="shellfishFreeCheck" class="rounded border-[var(--border-default)] text-[var(--brand)] focus:ring-[var(--brand)]" />
+                  <span class="text-xs font-medium text-[var(--text-primary)]">🦐 {t('clinical.diet.shellfishFree')}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Other Dietary Restrictions -->
+            <div>
+              <label for="otherDietaryInput" data-i18n="onboarding.dietary.other" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.dietary.other')}</label>
+              <input
+                id="otherDietaryInput"
+                type="text"
+                placeholder="Ej: piña, café, cerdo"
+                class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
+              />
+            </div>
+
+            <!-- Excluded Foods -->
+            <div>
+              <label data-i18n="onboarding.dietary.excludedFoods" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.dietary.excludedFoods')}</label>
+              <p data-i18n="onboarding.dietary.excludedFoods.desc" class="text-xs text-[var(--text-tertiary)] mb-2">{t('onboarding.dietary.excludedFoods.desc')}</p>
+              
+              <div class="relative">
+                <input
+                  id="foodSearchInput"
+                  type="text"
+                  placeholder={t('onboarding.dietary.searchPlaceholder')}
+                  autocomplete="off"
+                  class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-2.5 pl-10 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
+                />
+                <svg class="absolute left-3.5 top-3 h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <div id="foodSearchResults" class="hidden absolute top-full left-0 right-0 z-20 mt-1 max-h-48 overflow-y-auto rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] shadow-xl divide-y divide-[var(--border-subtle)]">
+                </div>
+              </div>
+
+              <!-- Excluded Foods List -->
+              <div class="mt-3">
+                <div class="text-xs font-medium text-[var(--text-secondary)] mb-2" data-i18n="onboarding.dietary.selected">{t('onboarding.dietary.selected')}</div>
+                <div id="excludedFoodsList" class="flex flex-wrap gap-2 min-h-[36px] p-2 rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--surface-3)]/40">
+                  <span id="noExcludedFoodsText" class="text-xs text-[var(--text-tertiary)] italic self-center" data-i18n="onboarding.dietary.none">{t('onboarding.dietary.none')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Navigation Buttons -->
         <div class="mt-8 flex items-center gap-3">
           <button
@@ -243,6 +331,13 @@ const currentPath = Astro.url.pathname;
   import { db } from '@/lib/firebase';
   import { t, getStoredLanguage, setStoredLanguage } from '@/i18n/client';
   import type { Language } from '@/i18n/client';
+  import {
+    subscribeToFoods,
+    getFoodName,
+    searchFoodsLocal,
+    type FoodItem,
+    type FoodCategory,
+  } from '@/lib/shared/foodLibrary';
 
   // Sincronizar idioma: leer de URL o de localStorage
   const onboardingContainer = document.getElementById('onboardingContainer')!;
@@ -255,7 +350,7 @@ const currentPath = Astro.url.pathname;
   // State
   // ============================================================
 
-  const TOTAL_STEPS = 3;
+  const TOTAL_STEPS = 4;
   let currentStep = 1;
   let currentUser: import('firebase/auth').User | null = null;
 
@@ -263,6 +358,7 @@ const currentPath = Astro.url.pathname;
   const step1 = document.getElementById('step1')!;
   const step2 = document.getElementById('step2')!;
   const step3 = document.getElementById('step3')!;
+  const step4 = document.getElementById('step4')!;
   const backBtn = document.getElementById('backBtn') as HTMLButtonElement;
   const nextBtn = document.getElementById('nextBtn') as HTMLButtonElement;
   const skipBtn = document.getElementById('skipBtn')!;
@@ -271,6 +367,24 @@ const currentPath = Astro.url.pathname;
   const totalStepsEl = document.getElementById('totalSteps')!;
   const errorMsg = document.getElementById('errorMsg') as HTMLDivElement;
   const errorText = document.getElementById('errorText') as HTMLSpanElement;
+
+  // Dietary restrictions DOM refs
+  const glutenFreeCheck = document.getElementById('glutenFreeCheck') as HTMLInputElement;
+  const lactoseFreeCheck = document.getElementById('lactoseFreeCheck') as HTMLInputElement;
+  const veganCheck = document.getElementById('veganCheck') as HTMLInputElement;
+  const vegetarianCheck = document.getElementById('vegetarianCheck') as HTMLInputElement;
+  const nutFreeCheck = document.getElementById('nutFreeCheck') as HTMLInputElement;
+  const shellfishFreeCheck = document.getElementById('shellfishFreeCheck') as HTMLInputElement;
+  const otherDietaryInput = document.getElementById('otherDietaryInput') as HTMLInputElement;
+  const foodSearchInput = document.getElementById('foodSearchInput') as HTMLInputElement;
+  const foodSearchResults = document.getElementById('foodSearchResults')!;
+  const excludedFoodsList = document.getElementById('excludedFoodsList')!;
+  const noExcludedFoodsText = document.getElementById('noExcludedFoodsText')!;
+
+  // Food library state
+  let allCatalogFoods: FoodItem[] = [];
+  let excludedFoodIds: string[] = [];
+  let unsubFoods: (() => void) | null = null;
 
   totalStepsEl.textContent = String(TOTAL_STEPS);
 
@@ -323,12 +437,103 @@ const currentPath = Astro.url.pathname;
 
   function showStep(step: number): void {
     hideError();
-    [step1, step2, step3].forEach((el, i) => {
+    [step1, step2, step3, step4].forEach((el, i) => {
       el.classList.toggle('hidden', i + 1 !== step);
     });
     currentStep = step;
     updateProgress();
   }
+
+  // ============================================================
+  // Food Library Functions
+  // ============================================================
+
+  function renderExcludedFoods() {
+    excludedFoodsList.innerHTML = '';
+    if (excludedFoodIds.length === 0) {
+      noExcludedFoodsText.classList.remove('hidden');
+      excludedFoodsList.appendChild(noExcludedFoodsText);
+      return;
+    }
+
+    noExcludedFoodsText.classList.add('hidden');
+    excludedFoodIds.forEach((foodId) => {
+      const food = allCatalogFoods.find((f) => f.id === foodId);
+      const name = food ? getFoodName(food, urlLang) : foodId;
+      const chip = document.createElement('div');
+      chip.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-medium animate-fade-in';
+      chip.innerHTML = `
+        <span>🚫 ${name}</span>
+        <button type="button" class="text-rose-400 hover:text-rose-200 ml-1 font-bold">×</button>
+      `;
+      chip.querySelector('button')?.addEventListener('click', () => {
+        excludedFoodIds = excludedFoodIds.filter((id) => id !== foodId);
+        renderExcludedFoods();
+      });
+      excludedFoodsList.appendChild(chip);
+    });
+  }
+
+  function setupFoodSearch() {
+    foodSearchInput.addEventListener('input', () => {
+      const q = foodSearchInput.value.trim();
+      if (!q) {
+        foodSearchResults.classList.add('hidden');
+        return;
+      }
+      const matches = searchFoodsLocal(q, allCatalogFoods).slice(0, 8);
+      if (matches.length === 0) {
+        foodSearchResults.innerHTML = `<div class="p-3 text-xs text-[var(--text-tertiary)] italic">${t('onboarding.dietary.noResults')}</div>`;
+        foodSearchResults.classList.remove('hidden');
+        return;
+      }
+
+      foodSearchResults.innerHTML = matches
+        .map((food) => {
+          const isSelected = excludedFoodIds.includes(food.id);
+          return `
+            <button type="button" data-id="${food.id}" class="w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-[var(--surface-3)] transition-colors ${
+              isSelected ? 'opacity-50 pointer-events-none' : ''
+            }">
+              <span class="font-medium text-[var(--text-primary)]">${getFoodName(food, urlLang)}</span>
+              <span class="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">${food.category}</span>
+            </button>
+          `;
+        })
+        .join('');
+
+      foodSearchResults.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          if (id && !excludedFoodIds.includes(id)) {
+            excludedFoodIds.push(id);
+            renderExcludedFoods();
+            foodSearchInput.value = '';
+            foodSearchResults.classList.add('hidden');
+          }
+        });
+      });
+
+      foodSearchResults.classList.remove('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!foodSearchInput.contains(e.target as Node) && !foodSearchResults.contains(e.target as Node)) {
+        foodSearchResults.classList.add('hidden');
+      }
+    });
+  }
+
+  // ============================================================
+  // Load Food Library
+  // ============================================================
+
+  unsubFoods = subscribeToFoods((foods) => {
+    allCatalogFoods = foods;
+    if (currentStep === 4) {
+      setupFoodSearch();
+    }
+  });
 
   import { saveOnboardingProfile, skipOnboarding, type OnboardingData } from '@/lib/client/onboardingService';
 
@@ -337,6 +542,7 @@ const currentPath = Astro.url.pathname;
   // ============================================================
 
   function collectData(): OnboardingData {
+    const name = (document.getElementById('name') as HTMLInputElement).value;
     const birthdate = (document.getElementById('birthdate') as HTMLInputElement).value;
     const height = (document.getElementById('height') as HTMLInputElement).value;
     const weight = (document.getElementById('weight') as HTMLInputElement).value;
@@ -354,7 +560,19 @@ const currentPath = Astro.url.pathname;
     const emergencyName = (document.getElementById('emergencyName') as HTMLInputElement).value;
     const emergencyPhone = (document.getElementById('emergencyPhone') as HTMLInputElement).value;
 
+    // Dietary restrictions
+    const dietaryRestrictions: string[] = [];
+    if (glutenFreeCheck.checked) dietaryRestrictions.push('glutenFree');
+    if (lactoseFreeCheck.checked) dietaryRestrictions.push('lactoseFree');
+    if (veganCheck.checked) dietaryRestrictions.push('vegan');
+    if (vegetarianCheck.checked) dietaryRestrictions.push('vegetarian');
+    if (nutFreeCheck.checked) dietaryRestrictions.push('nutFree');
+    if (shellfishFreeCheck.checked) dietaryRestrictions.push('shellfishFree');
+
+    const otherDietary = otherDietaryInput.value || null;
+
     return {
+      name: name || null,
       birthdate: birthdate || null,
       height: height ? parseFloat(height) : null,
       initialWeight: weight ? parseFloat(weight) : null,
@@ -367,6 +585,9 @@ const currentPath = Astro.url.pathname;
       surgery: surgery || null,
       emergencyName: emergencyName || null,
       emergencyPhone: emergencyPhone || null,
+      dietaryRestrictions: dietaryRestrictions.length > 0 ? dietaryRestrictions : null,
+      otherDietary: otherDietary,
+      excludedFoodIds: excludedFoodIds.length > 0 ? excludedFoodIds : null,
     };
   }
 
@@ -418,6 +639,9 @@ const currentPath = Astro.url.pathname;
   skipBtn.addEventListener('click', async () => {
     if (currentUser) {
       await skipOnboarding(currentUser.uid);
+    }
+    if (unsubFoods) {
+      unsubFoods();
     }
     window.location.href = `/client/dashboard?lang=${currentLang}`;
   });

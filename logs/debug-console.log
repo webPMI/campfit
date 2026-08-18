@@ -33934,3 +33934,11 @@ FirebaseError: Missing or insufficient permissions.
 [2026-08-17T15:55:20.723Z] [CLIENT] [INFO] [/client/workouts] [InitPage] Usuario autenticado UID:VOpR39cA... en /client/workouts
 [2026-08-17T15:55:20.842Z] [CLIENT] [ERROR] [/client/workouts] [TechniqueCorrection] Error al suscribirse a correcciones de cliente: FirebaseError: Missing or insufficient permissions.
 FirebaseError: Missing or insufficient permissions.
+
+============================================================
+[DEV SESSION STARTED] 2026-08-18T18:51:03.930Z
+============================================================
+
+============================================================
+[DEV SESSION STARTED] 2026-08-18T18:55:12.162Z
+============================================================

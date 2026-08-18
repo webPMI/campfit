@@ -66,6 +66,10 @@ export interface HydratedExercise {
 export interface HydratedWorkout extends Omit<Workout, 'exercises'> {
   exercises: HydratedExercise[];
   dayExercises?: Record<number, HydratedExercise[]>;
+  /** Días de la semana programados por el trainer */
+  scheduledDays?: number[];
+  /** Frecuencia semanal declarada */
+  daysPerWeek?: 2 | 3 | 4 | 5 | 6;
 }
 
 /**
@@ -285,6 +289,9 @@ export function createWorkoutSnapshot(workout: Workout): Workout {
   const hydrated = hydrateWorkout(workout, 'es');
   return {
     ...workout,
+    daysPerWeek: workout.daysPerWeek,
+    scheduledDays: workout.scheduledDays,
+    clientFlexibility: workout.clientFlexibility,
     exercises: hydrated.exercises.map((e) => ({
       id: e.id,
       exerciseId: e.exerciseId,
