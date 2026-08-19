@@ -319,5 +319,29 @@ service cloud.firestore {
       allow delete: if false; // 🔒 CRÍTICO: Los tickets nunca se borran físicamente.
                                // Se cambian de estado a 'closed' cuando se resuelven.
     }
+
+    // ── Propuestas de Personalización de Planes (/plan_proposals/{proposalId}) 
+    // Los alumnos pueden crear propuestas para que su entrenador las revise y asesore.
+    match /plan_proposals/{proposalId} {
+      allow read: if isAuth() && (
+        resource.data.clientId == request.auth.uid ||
+        resource.data.trainerId == request.auth.uid ||
+        isStaff()
+      );
+
+      // Alumno crea propuesta para su entrenador asignado
+      allow create: if isAuth() && (
+        request.resource.data.clientId == request.auth.uid &&
+        request.resource.data.status == 'pending_review'
+      );
+
+      // Entrenador asignado o Admin revisa, aprueba o asesora
+      allow update: if isAuth() && (
+        (isTrainer() && resource.data.trainerId == request.auth.uid) ||
+        isAdmin()
+      );
+
+      allow delete: if isAdmin();
+    }
   }
 }

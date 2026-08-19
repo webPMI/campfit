@@ -1,8 +1,8 @@
 # 📝 BACKLOG MAESTRO - CampFit
 
 > **Fuente Única de Verdad de tareas pendientes del proyecto.**
-> Estado del proyecto actualizado: 2026-08-16.
-> Tests: 684 passed / 4 skipped · Build: 39 páginas · Deploy: live ✅
+> Estado del proyecto actualizado: 2026-08-19.
+> Tests: 768 passed / 4 skipped · Type-Check: 0 errores · Build: 43 páginas · Deploy: live ✅
 >
 > **Regla de oro:** Todo cambio en esta lista debe ser registrado en `docs/DOCUMENTATION_UPDATE_LOG.md`.
 > Tareas completadas → marcar ✅ y registrar. Tareas nuevas → añadir aquí.
@@ -15,19 +15,20 @@
 - [x] **Admin UX: Radar Visual de estado en lista de usuarios** — entrenador asignado, rutinas, dietas, perfil médico, estado de cuenta. ✅ 2026-08-16
 - [x] **System logging: Fase 2 completa** — panel `/admin/logs`, APIs admin/ia, token rotativo IA, i18n paridad, firestore.rules tokens. ✅ 2026-08-15 (commit `518ea15`)
 - [x] **Soporte: Sistema de Tickets & Reportes — Auditoría completa** — Documentación del estado actual, arquitectura propuesta, desglose de tareas en 3 fases, decisión de anonimato, casos límite. ✅ 2026-08-16 (`docs/_audit/SUPPORT_TICKET_SYSTEM.md`)
-- [ ] **SEC-001/002/003**: Verificar que `routeGuards.ts` cubre todas las rutas nuevas (calendario, etc.) — revisar diffs post-calendario.
-- [ ] **P0-1**: `firestore.rules` — `isStaff()` verifica ownership entrenadores sobre dietas/rutinas. Revisar tras fusión users/clients.
-- [ ] **P0-3**: `registerMealComplete('', ...)` en `client/diets.astro` — usar `clientId` correcto. Revisar después de cambios recientes.
-- [ ] **P0-4**: Revisar `templateService.ts` por corrupción de caracteres (reportado en BACKLOG anterior).
+- [x] **SEC-001/002/003**: Verificar que `routeGuards.ts` cubre todas las rutas nuevas (calendario, soporte, clinical, devtools). ✅ 2026-08-19
+- [x] **P0-1**: `firestore.rules` — `isStaff()` y `isTrainer()` verifican ownership entrenadores sobre dietas/rutinas. ✅ 2026-08-19
+- [x] **P0-3**: `registerMealComplete(clientId, ...)` en `client/diets.astro` — usa `clientId` correcto. ✅ 2026-08-19
+- [x] **P0-4**: Revisar `templateService.ts` por corrupción de caracteres — archivo limpio con `isClientAssignedToTrainer()`. ✅ 2026-08-19
+- [x] **P0-5**: Tipado y estabilidad en Auth / Rutinas — corrección de template literals y tipado estricto en `authService.ts` y `workouts.astro`. ✅ 2026-08-19
 
 ---
 
 ## 🟡 P1 — Rendimiento y Calidad de Código
 
-- [ ] **Refactorización archivos > 300 líneas**: `admin/users.astro` (ya mejorado pero sigue grande), `admin/diets.astro`, `devtools/seedData.ts`.
-- [ ] **Manejo de memoria**: Revisar `onSnapshot` sin `unsubscribe` en servicios (dietService, workoutService, progressService, achievementsService, templateService) tras auditorías recientes.
-- [ ] **Paridad i18n**: Completar claves faltantes en `ca.ts` (admin section + cualquier key missing reportado).
-- [ ] **Tipado estricto**: Eliminar `any` en `src/types/index.ts` (reporte previo).
+- [ ] **Refactorización archivos > 300 líneas**: `admin/users.astro`, `admin/diets.astro`, `devtools/seedData.ts`.
+- [ ] **Manejo de memoria**: Revisar `onSnapshot` sin `unsubscribe` en servicios secundarios tras auditorías recientes.
+- [x] **Paridad i18n**: Completar claves faltantes en `ca.ts`, `en.ts` y `es.ts` (tickets, reportes, rutinas, admin). ✅ 2026-08-19
+- [ ] **Tipado estricto**: Eliminar `any` restantes en `src/types/index.ts`.
 
 ---
 
@@ -70,7 +71,7 @@
 - [x] **T-1.7** Página de lista de tickets del usuario `/client/support/my-tickets` — Ver propios tickets. ✅ 2026-08-16 (my-tickets.astro, lista + filtros + detalle expandible)
 - [ ] **T-1.8** Panel de admin `/admin/tickets` — Tabla con filtros + vista de detalle. (3h)
 - [ ] **T-1.9** Integración R2 para adjuntos en tickets — Reusar `r2Service.ts` para subir capturas. (1h)
-- [ ] **T-1.10** i18n: keys de tickets/reporte en es/en/ca — Todas las strings necesarias. (1h)
+- [x] **T-1.10** i18n: keys de tickets/reporte en es/en/ca — Todas las strings añadidas y sincronizadas. ✅ 2026-08-19
 
 ### 🟡 Fase 2: Mejoras (P1 — calidad y casos límite)
 

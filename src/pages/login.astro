@@ -124,7 +124,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       <p class="mt-6 text-center text-sm">
         <a
-          href={`/recover?lang=${lang}`}
+          href="/recover"
           data-i18n="auth.forgot.password"
           class="text-sm text-[var(--text-tertiary)] transition-colors duration-200 hover:text-[var(--text-primary)]"
         >{t("auth.forgot.password")}</a>
@@ -133,7 +133,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       <p class="mt-4 text-center text-sm text-[var(--text-tertiary)]">
         <span data-i18n="auth.no.account">{t("auth.no.account")}</span>
         <a
-          href={`/register?lang=${lang}`}
+          href="/register"
           data-i18n="auth.create.link"
           class="font-medium text-[var(--brand)] transition-colors duration-200 hover:text-[var(--brand-hover)]"
         >{t("auth.create.link")}</a>

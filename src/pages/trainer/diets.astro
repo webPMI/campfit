@@ -31,12 +31,25 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </button>
       </div>
 
-      <!-- Preset Diet Templates Quick-Deploy Banner -->
-      <!-- Luxury Preset Diets & Smart Nutrition Assignment Hub -->
-      <div
-        id="template-banner"
-        class="mt-6 rounded-2xl border border-amber-500/40 bg-zinc-900/90 p-5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(245,158,11,0.15)] space-y-4"
-      >
+      <!-- Navegación de Pestañas: Dietas Asignadas vs Propuestas de Alumnos -->
+      <div class="mt-6 flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2 flex-wrap">
+        <button id="tab-btn-diets" class="tab-btn active rounded-xl px-4 py-2 text-xs font-bold text-[var(--brand)] bg-[var(--brand-dim)] border border-[var(--border-brand)] transition-all flex items-center gap-2">
+          <span>🥗 Dietas Asignadas</span>
+        </button>
+        <button id="tab-btn-diet-proposals" class="tab-btn rounded-xl px-4 py-2 text-xs font-bold text-[var(--text-secondary)] hover:text-white bg-[var(--surface-2)] border border-[var(--border-subtle)] transition-all flex items-center gap-2">
+          <span>✨ Propuestas de Alumnos</span>
+          <span id="pending-diet-proposals-badge" class="hidden rounded-full bg-amber-500 text-black text-[10px] font-extrabold px-2 py-0.5 animate-pulse">0</span>
+        </button>
+      </div>
+
+      <!-- Sección de Dietas -->
+      <div id="diets-main-section" class="space-y-6">
+        <!-- Preset Diet Templates Quick-Deploy Banner -->
+        <!-- Luxury Preset Diets & Smart Nutrition Assignment Hub -->
+        <div
+          id="template-banner"
+          class="mt-6 rounded-2xl border border-amber-500/40 bg-zinc-900/90 p-5 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(245,158,11,0.15)] space-y-4"
+        >
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div class="flex items-center gap-3">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 text-lg shadow-inner">
@@ -149,7 +162,22 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
       </div>
     </div>
+
+    <!-- Sección de Propuestas de Dieta de Alumnos -->
+    <div id="diet-proposals-section" class="hidden space-y-6">
+      <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">✨ Propuestas de Dieta y Horarios de Alumnos</h3>
+          <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Revisa las solicitudes de horarios de comidas de tus alumnos, asesóralos nutricionalmente y aprueba sus dietas.</p>
+        </div>
+
+        <div id="trainer-diet-proposals-list" class="space-y-4">
+          <div class="text-center py-8 text-xs text-[var(--text-disabled)]">Cargando propuestas de dietas...</div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 </TrainerLayout>
 
 <script>
@@ -176,6 +204,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     type FoodItem,
   } from "@/lib/shared/foodLibrary";
   import { checkDietConflicts, type DietConflict } from "@/lib/client/intoleranceChecker";
+  import {
+    subscribeToTrainerProposals,
+    approvePlanProposal,
+    requestChangesOnProposal,
+    type PlanProposal,
+  } from "@/lib/shared/planProposalService";
   import type { DietTemplate } from "@/lib/devtools/types";
   import type { TrainerClient, TrainerDiet, Meal } from "@/lib/trainer/types";
   import type { MedicalProfile } from "@/types";
@@ -184,11 +218,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   let unsubDiets: (() => void) | null = null;
   let unsubTemplates: (() => void) | null = null;
   let unsubFoods: (() => void) | null = null;
+  let unsubDietProposals: (() => void) | null = null;
 
   let allClients: TrainerClient[] = [];
   let allDiets: TrainerDiet[] = [];
   let allTemplates: DietTemplate[] = [];
   let allCatalogFoods: FoodItem[] = [];
+  let allDietProposals: PlanProposal[] = [];
 
   let currentTrainerId = "";
   let editingDiet: TrainerDiet | null = null;
@@ -203,6 +239,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     unsubDiets?.();
     unsubTemplates?.();
     unsubFoods?.();
+    unsubDietProposals?.();
   });
 
   function initDiets(trainerId: string): void {
@@ -211,6 +248,167 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const btnCreate = document.getElementById("btn-create-diet")!;
     const searchInput = document.getElementById("diet-search") as HTMLInputElement;
     const filterClientSelect = document.getElementById("filter-client") as HTMLSelectElement;
+
+    // Pestañas
+    const tabBtnDiets = document.getElementById("tab-btn-diets");
+    const tabBtnDietProposals = document.getElementById("tab-btn-diet-proposals");
+    const dietsMainSection = document.getElementById("diets-main-section");
+    const dietProposalsSection = document.getElementById("diet-proposals-section");
+    const pendingDietProposalsBadge = document.getElementById("pending-diet-proposals-badge");
+    const trainerDietProposalsList = document.getElementById("trainer-diet-proposals-list");
+
+    tabBtnDiets?.addEventListener("click", () => {
+      tabBtnDiets.classList.add("active", "text-[var(--brand)]", "bg-[var(--brand-dim)]", "border-[var(--border-brand)]");
+      tabBtnDiets.classList.remove("text-[var(--text-secondary)]", "bg-[var(--surface-2)]", "border-[var(--border-subtle)]");
+      tabBtnDietProposals?.classList.remove("active", "text-[var(--brand)]", "bg-[var(--brand-dim)]", "border-[var(--border-brand)]");
+      tabBtnDietProposals?.classList.add("text-[var(--text-secondary)]", "bg-[var(--surface-2)]", "border-[var(--border-subtle)]");
+      dietsMainSection?.classList.remove("hidden");
+      dietProposalsSection?.classList.add("hidden");
+    });
+
+    tabBtnDietProposals?.addEventListener("click", () => {
+      tabBtnDietProposals.classList.add("active", "text-[var(--brand)]", "bg-[var(--brand-dim)]", "border-[var(--border-brand)]");
+      tabBtnDietProposals.classList.remove("text-[var(--text-secondary)]", "bg-[var(--surface-2)]", "border-[var(--border-subtle)]");
+      tabBtnDiets?.classList.remove("active", "text-[var(--brand)]", "bg-[var(--brand-dim)]", "border-[var(--border-brand)]");
+      tabBtnDiets?.classList.add("text-[var(--text-secondary)]", "bg-[var(--surface-2)]", "border-[var(--border-subtle)]");
+      dietsMainSection?.classList.add("hidden");
+      dietProposalsSection?.classList.remove("hidden");
+      renderDietProposalsList();
+    });
+
+    unsubDietProposals = subscribeToTrainerProposals(trainerId, (proposals) => {
+      allDietProposals = proposals.filter((p) => p.type === "diet");
+      const pendingCount = allDietProposals.filter((p) => p.status === "pending_review").length;
+      if (pendingDietProposalsBadge) {
+        if (pendingCount > 0) {
+          pendingDietProposalsBadge.textContent = String(pendingCount);
+          pendingDietProposalsBadge.classList.remove("hidden");
+        } else {
+          pendingDietProposalsBadge.classList.add("hidden");
+        }
+      }
+      renderDietProposalsList();
+    });
+
+    function renderDietProposalsList() {
+      if (!trainerDietProposalsList) return;
+      if (allDietProposals.length === 0) {
+        trainerDietProposalsList.innerHTML = `<div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-8 text-center text-xs text-[var(--text-disabled)]">No hay propuestas de dietas registradas.</div>`;
+        return;
+      }
+
+      trainerDietProposalsList.innerHTML = allDietProposals.map((p) => {
+        const estTimes = p.proposedSchedule?.estimatedTimes || {};
+        const isPending = p.status === "pending_review";
+
+        return `
+          <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-5 space-y-4 shadow-sm" data-proposal-id="${p.id}">
+            <div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-[var(--border-subtle)]">
+              <div>
+                <h4 class="text-sm font-bold text-white">👤 ${escapeHtml(p.clientName || "Alumno")}</h4>
+                <p class="text-xs text-[var(--brand)] mt-0.5">Propuesta: ${escapeHtml((p.proposedData as any)?.name || "Plan Nutricional")}</p>
+              </div>
+              <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${isPending ? "bg-amber-500/20 text-amber-300 border border-amber-500/40" : p.status === "approved" ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" : "bg-rose-500/20 text-rose-300 border border-rose-500/40"}">
+                ${isPending ? "Pendiente" : p.status === "approved" ? "Aprobada" : "Cambios Solicitados"}
+              </span>
+            </div>
+
+            <!-- Horarios Propuestos de Comidas -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-[var(--surface-3)] p-3 rounded-xl">
+              <div>
+                <span class="text-[10px] text-zinc-400 font-semibold">🍳 Desayuno:</span>
+                <p class="font-bold text-amber-300">${estTimes.breakfast || "08:00"}</p>
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-400 font-semibold">🥗 Almuerzo:</span>
+                <p class="font-bold text-amber-300">${estTimes.lunch || "13:30"}</p>
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-400 font-semibold">🍎 Merienda:</span>
+                <p class="font-bold text-amber-300">${estTimes.snack || "17:00"}</p>
+              </div>
+              <div>
+                <span class="text-[10px] text-zinc-400 font-semibold">🍲 Cena:</span>
+                <p class="font-bold text-amber-300">${estTimes.dinner || "21:00"}</p>
+              </div>
+              ${p.clientNotes ? `
+                <div class="col-span-2 sm:col-span-4 pt-2 border-t border-zinc-700/60">
+                  <span class="text-[11px] text-zinc-400 font-semibold">💬 Notas o preferencias del alumno:</span>
+                  <p class="text-zinc-200 italic mt-0.5">${escapeHtml(p.clientNotes)}</p>
+                </div>
+              ` : ""}
+            </div>
+
+            ${isPending ? `
+              <div class="space-y-3 pt-2">
+                <div>
+                  <label class="block text-[11px] font-semibold text-zinc-300 mb-1">Tu asesoramiento nutricional o notas:</label>
+                  <textarea class="proposal-feedback-input w-full rounded-xl border border-zinc-700 bg-zinc-900 p-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[var(--brand)] resize-none" rows="2" placeholder="Ej: Los horarios están bien distribuidos. Te recomiendo tomar más agua antes del almuerzo..."></textarea>
+                </div>
+                <div class="flex items-center gap-2 pt-1 flex-wrap">
+                  <button class="btn-approve-diet-proposal flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-2 px-3 text-xs hover:opacity-95 transition-all flex items-center justify-center gap-1.5 shadow-md">
+                    <span>✅</span>
+                    <span>Aprobar y Activar Dieta</span>
+                  </button>
+                  <button class="btn-advise-diet-proposal rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 font-semibold py-2 px-3 text-xs hover:bg-amber-500/20 transition-all flex items-center justify-center gap-1.5">
+                    <span>💬</span>
+                    <span>Sugerir Cambios</span>
+                  </button>
+                </div>
+              </div>
+            ` : p.trainerFeedback ? `
+              <div class="text-xs bg-zinc-900/60 p-3 rounded-xl border border-zinc-800 text-zinc-300">
+                <span class="font-semibold text-zinc-400">Feedback enviado:</span>
+                <p class="italic text-zinc-300 mt-0.5">${escapeHtml(p.trainerFeedback)}</p>
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }).join("");
+
+      // Action listeners
+      trainerDietProposalsList.querySelectorAll(".btn-approve-diet-proposal").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const card = btn.closest("[data-proposal-id]") as HTMLElement;
+          const proposalId = card?.dataset.proposalId;
+          const feedback = (card?.querySelector(".proposal-feedback-input") as HTMLTextAreaElement)?.value.trim();
+          if (!proposalId) return;
+
+          btn.setAttribute("disabled", "true");
+          btn.textContent = "Aprobando...";
+          const success = await approvePlanProposal(proposalId, trainerId, feedback);
+          if (success) {
+            showToast({ message: "¡Propuesta de dieta aprobada y activada con éxito!", type: "success" });
+          } else {
+            showToast({ message: "Error al aprobar la propuesta", type: "error" });
+            btn.removeAttribute("disabled");
+            btn.textContent = "Aprobar y Activar Dieta";
+          }
+        });
+      });
+
+      trainerDietProposalsList.querySelectorAll(".btn-advise-diet-proposal").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const card = btn.closest("[data-proposal-id]") as HTMLElement;
+          const proposalId = card?.dataset.proposalId;
+          const feedback = (card?.querySelector(".proposal-feedback-input") as HTMLTextAreaElement)?.value.trim();
+          if (!proposalId) return;
+          if (!feedback) {
+            showToast({ message: "Escribe tus recomendaciones antes de enviar asesoramiento.", type: "info" });
+            return;
+          }
+
+          btn.setAttribute("disabled", "true");
+          const success = await requestChangesOnProposal(proposalId, trainerId, feedback);
+          if (success) {
+            showToast({ message: "Asesoramiento nutricional enviado al alumno.", type: "success" });
+          } else {
+            showToast({ message: "Error al enviar asesoramiento", type: "error" });
+            btn.removeAttribute("disabled");
+          }
+        });
+      });
+    }
 
     const presetDietTemplateSelect = document.getElementById(
       "preset-diet-template-select"

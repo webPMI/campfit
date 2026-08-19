@@ -24,6 +24,12 @@ export interface User {
   lastActivityAt?: any;
   createdAt?: any;
   updatedAt?: any;
+  // 🔒 CRÍTICO: Datos extra capturados de Google en loginWithGoogle()
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  preferredLanguage?: string;
+  emailVerified?: boolean;
 }
 
 export interface DietaryRestrictions {
@@ -177,4 +183,59 @@ export class AuthError extends Error {
     this.name = 'AuthError';
     this.code = code;
   }
+}
+
+// ── Propuestas de personalización de planes por clientes ───────────────────────
+
+export type PlanProposalType = 'workout' | 'diet';
+export type PlanProposalStatus = 'pending_review' | 'approved' | 'changes_requested';
+
+export interface PlanProposalSchedule {
+  scheduledDays?: number[];
+  estimatedTimes?: Record<string, string>; // ID de ejercicio o comida -> "HH:mm"
+}
+
+export interface PlanProposal {
+  id: string;
+  clientId: string;
+  clientName?: string;
+  trainerId: string;
+  type: PlanProposalType;
+  status: PlanProposalStatus;
+  clientNotes?: string;
+  trainerFeedback?: string;
+  proposedSchedule: PlanProposalSchedule;
+  proposedData: Record<string, unknown>; // Datos completos de la rutina o dieta personalizada
+  originalPlanId?: string;
+  createdAt: any;
+  updatedAt: any;
+  reviewedAt?: any;
+  reviewedBy?: string;
+}
+
+// ── Enfoques y Recomendaciones de Fortalecimiento Atlético ───────────────────
+
+export type AthleticFocusType = 'balanced' | 'sport_performance' | 'hybrid';
+
+export type AthleticSport =
+  | 'football'
+  | 'running'
+  | 'padel_tennis'
+  | 'basketball'
+  | 'swimming'
+  | 'cycling'
+  | 'martial_arts'
+  | 'strength';
+
+export interface AthleticRecommendation {
+  focusType: AthleticFocusType;
+  title: string;
+  subtitle: string;
+  sport?: AthleticSport;
+  priorityMuscles: string[]; // Grupos musculares prioritarios (e.g. ['core', 'hamstrings', 'glutes'])
+  muscleLabels: Record<string, string>;
+  keyBenefits: string[];
+  biomechanicalAdvice: string;
+  suggestedCategories: string[];
+  preventiveTips: string[];
 }

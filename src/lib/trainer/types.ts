@@ -38,8 +38,8 @@ export interface TrainerWorkout {
   scheduledDays?: number[];
   /** Permisos del cliente para reprogramar o saltar sesiones. */
   clientFlexibility?: {
-    allowReschedule?: boolean;  // El cliente puede mover un día a otro
-    allowSkip?: boolean;        // El cliente puede saltar un día con motivo
+    allowReschedule?: boolean;
+    allowSkip?: boolean;
   };
   hasValidationWarnings?: boolean;
   validationReport?: { hasWarnings: boolean; warnings: string[]; missingCount?: number };

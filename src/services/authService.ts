@@ -191,9 +191,10 @@ export const authService = {
     try {
       const provider = new GoogleAuthProvider();
       // 🔒 CRÍTICO: Agregar scopes para obtener datos adicionales de Google
-      provider.addScope('profile');  // Nombre completo
-      provider.addScope('email');   // Email (verificado)
-      provider.addScope('phone');   // Número de teléfono (si está disponible)
+      if (typeof (provider as any)?.addScope === 'function') {
+        provider.addScope('email');   // Email (verificado)
+        provider.addScope('phone');   // Número de teléfono (si está disponible)
+      }
 
       const credential = await signInWithPopup(auth, provider);
       const { user: firebaseUser } = credential;
@@ -201,15 +202,27 @@ export const authService = {
       logger.info('AuthService', `Google login exitoso UID:${uid.slice(0, 8)}... (${firebaseUser.email})`);
 
       // 🔒 CRÍTICO: Obtener datos adicionales del token de Google
-      const additionalData: Record<string, unknown> = {};
+      interface GoogleAdditionalData {
+        firstName?: string;
+        lastName?: string;
+        phoneNumber?: string;
+        preferredLanguage?: string;
+        emailVerified?: boolean;
+      }
+      const additionalData: GoogleAdditionalData = {};
       const accessToken = (credential as { _tokenResponse?: { access_token?: string } })._tokenResponse?.access_token;
       
       if (accessToken) {
         try {
           // Decodificar el token JWT de Google para obtener datos adicionales
           const tokenParts = accessToken.split('.');
-          if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
+          if (tokenParts.length === 3 && tokenParts[1]) {
+            const payload = JSON.parse(atob(tokenParts[1])) as {
+              given_name?: string;
+              family_name?: string;
+              locale?: string;
+              email_verified?: boolean;
+            };
             logger.info('AuthService', `Datos adicionales de Google: ${JSON.stringify({
               given_name: payload.given_name,
               family_name: payload.family_name,
@@ -244,7 +257,7 @@ export const authService = {
           onboardingCompleted: false,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-          // 🔒 CRÍTICO: Datos adicionales de Google
+          // 🔒 CRÍTICO: Datos extra de Google
           ...(additionalData.firstName && { firstName: additionalData.firstName }),
           ...(additionalData.lastName && { lastName: additionalData.lastName }),
           ...(additionalData.phoneNumber && { phoneNumber: additionalData.phoneNumber }),
@@ -265,22 +278,37 @@ export const authService = {
           lastActivityAt: undefined,
           createdAt: undefined,
           updatedAt: undefined,
+          // 🔒 CRÍTICO: datos extra de Google
+          firstName: additionalData.firstName,
+          lastName: additionalData.lastName,
+          phoneNumber: additionalData.phoneNumber,
+          preferredLanguage: additionalData.preferredLanguage,
+          emailVerified: additionalData.emailVerified,
         };
       }
 
       logger.info('AuthService', `Usuario Google existente: ${userDoc.data().role || 'client'}`);
+      const existingData = userDoc.data();
       return {
         uid,
         email: firebaseUser.email || '',
-        name: userDoc.data().name || firebaseUser.displayName || 'Usuario',
-        photoURL: userDoc.data().photoURL || firebaseUser.photoURL || '',
-        role: userDoc.data().role || 'client',
-        hasActiveAlert: userDoc.data().hasActiveAlert ?? false,
-        assignedTrainerId: userDoc.data().assignedTrainerId,
-        medicalProfile: userDoc.data().medicalProfile,
-        lastActivityAt: userDoc.data().lastActivityAt,
-        createdAt: userDoc.data().createdAt,
-        updatedAt: userDoc.data().updatedAt,
+        name: existingData.name || firebaseUser.displayName || 'Usuario',
+        photoURL: existingData.photoURL || firebaseUser.photoURL || '',
+        role: existingData.role || 'client',
+        hasActiveAlert: existingData.hasActiveAlert ?? false,
+        assignedTrainerId: existingData.assignedTrainerId,
+        medicalProfile: existingData.medicalProfile,
+        lastActivityAt: existingData.lastActivityAt,
+        createdAt: existingData.createdAt,
+        updatedAt: existingData.updatedAt,
+        // 🔒 CRÍTICO: datos extra de Google (prefieren los de token si existen, luego los de Firestore)
+        firstName: additionalData.firstName || existingData.firstName,
+        lastName: additionalData.lastName || existingData.lastName,
+        phoneNumber: additionalData.phoneNumber || existingData.phoneNumber,
+        preferredLanguage: additionalData.preferredLanguage || existingData.preferredLanguage,
+        emailVerified: additionalData.emailVerified !== undefined
+          ? additionalData.emailVerified
+          : (existingData.emailVerified ?? firebaseUser.emailVerified),
       };
     } catch (err) {
       logger.error('AuthService', `Error en login Google: ${String(err)}`, err);

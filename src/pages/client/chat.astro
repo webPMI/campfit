@@ -171,17 +171,40 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           trainerName.textContent = tData.name || "Entrenador Asignado";
           trainerStatus.textContent = tData.email || "Online";
         } else {
-          trainerName.textContent = "Soporte Central";
+          trainerName.textContent = "Entrenador Asignado";
           trainerStatus.textContent = "Online";
         }
       } else {
-        activeTrainerId = "admin";
-        trainerName.textContent = "Equipo CampFit (Soporte)";
-        trainerStatus.textContent = "Online";
+        activeTrainerId = "";
+        trainerName.textContent = "Sin Entrenador Asignado";
+        trainerStatus.textContent = "No tienes coach asignado";
+        if (chatInput) {
+          chatInput.disabled = true;
+          chatInput.placeholder = "Para chatear necesitas tener un entrenador asignado...";
+        }
+        if (sendBtn) sendBtn.disabled = true;
+        if (btnAttachMedia) btnAttachMedia.disabled = true;
       }
 
       loadingScreen.classList.add("hidden");
       chatContent.classList.remove("hidden");
+
+      if (!activeTrainerId) {
+        messagesContainer.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-center space-y-3 py-12 px-4">
+            <span class="text-4xl">👨‍🏫</span>
+            <h3 class="text-sm font-bold text-white">Aún no tienes un entrenador asignado</h3>
+            <p class="text-xs text-[var(--text-tertiary)] max-w-md">
+              El chat directo conecta a alumnos con sus entrenadores personales para seguimiento y dudas técnicas. 
+              Si necesitas asistencia con tu cuenta o dudas generales, utiliza el canal de soporte.
+            </p>
+            <a href="/client/support" class="mt-2 rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] transition-all shadow-md">
+              Ir a Soporte Oficial →
+            </a>
+          </div>
+        `;
+        return;
+      }
 
       const chatQuery = query(
         collection(db, "messages"),
@@ -297,6 +320,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
   async function handleSendMessage(e: Event) {
     e.preventDefault();
+    if (!activeTrainerId) return;
     const content = chatInput.value.trim();
     if ((!content && !selectedFile) || !auth.currentUser) return;
 

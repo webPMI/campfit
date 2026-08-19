@@ -5,6 +5,16 @@ Todos los cambios notables de este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto usa [Semantic Versioning](https://semver.org/lang/es/).
 
+## [2.5.1] - 2026-08-19
+
+### 🛡️ Auditoría Integral, Estabilidad de Build y Paridad i18n
+- **Estabilización de Compilación & Tipado Estricto**: Corrección de sintaxis en template literals de `workouts.astro`, tipado estricto con `GoogleAdditionalData` en `authService.ts` y protección de métodos `addScope`.
+- **Integridad de Traducciones (es / en / ca)**: Sincronización completa de claves de rutinas (`trainer.daysPerWeek`, `trainer.scheduledDays`, `trainer.allowReschedule`, `trainer.allowSkip`) y soporte de incidencias (`report.*`, `myTickets.*`). Eliminación de duplicidades en `ca.ts`.
+- **Optimización de Flujo Login / Register / Onboarding**: Eliminación de parámetros `?lang` hardcodeados en enlaces estáticos para respetar el almacenamiento en `localStorage`, pre-rellenado unificado de datos (Google OAuth + Email Register) y validación de campos obligatorios paso a paso en `onboarding.astro`.
+- **Documentación Técnica & Auditoría Maestra**: Creación de `docs/features/AUTH_Y_ONBOARDING.md`, actualización de `docs/AUDITORIA_UNIFICADA.md` y sincronización del backlog maestro `docs/BACKLOG.md`.
+
+---
+
 ## [2.5.0] - 2026-08-17
 
 ### 🛡️ Observabilidad y Trazabilidad de Logs en Vivo

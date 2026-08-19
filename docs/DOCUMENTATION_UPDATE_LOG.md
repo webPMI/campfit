@@ -3,6 +3,16 @@
 > **Propósito:** Registrar de forma compacta cada mejora estructural, de consolidación o depuración
 > aplicada a la documentación del proyecto por Documentator Agent.
 
+## 2026-08-19 — Auditoría Integral, Estabilidad de Auth/Onboarding e i18n Parity
+
+- **Estabilización de Código y Build**: Corrección de sintaxis en `src/pages/trainer/workouts.astro` (template literals), tipado estricto de Google Auth en `src/services/authService.ts`, y mocks de pruebas unitarias.
+- **Auditoría y Mapeo de Documentación**: Creación de `docs/features/AUTH_Y_ONBOARDING.md` con especificación del ciclo de vida de autenticación, captura de Google metadata y flujo multi-paso de onboarding.
+- **Consolidación de Auditoría**: Actualizado `docs/AUDITORIA_UNIFICADA.md` con estado verificado del repositorio (768 tests aprobados, 0 errores en 199 archivos, 43 páginas SSG).
+- **Paridad de Traducciones**: Corrección de claves faltantes en `es.ts`, `en.ts`, `ca.ts` y eliminación de duplicados en `ca.ts`.
+- **Backlog Maestro**: Sincronización de `docs/BACKLOG.md` con tareas P0 completadas y detalle de prioridades.
+
+---
+
 ## 2026-08-17 — Camino a la Calidad Pro (v2.5.0)
 
 - **Observabilidad & Trazabilidad**: Integración de logging remoto en `app_logs` con `logService.ts` (`sessionId`, `userId`, `url`, `stack_trace`, rate limiting y deduplicación inteligente).

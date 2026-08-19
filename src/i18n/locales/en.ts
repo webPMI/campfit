@@ -938,4 +938,32 @@ export const en: TranslationMap = {
   "common.day.friday": "Friday",
   "common.day.saturday": "Saturday",
   "common.day.sunday": "Sunday",
+
+  // Trainer routines
+  "trainer.daysPerWeek": "Days per week",
+  "trainer.scheduledDays": "Scheduled days",
+  "trainer.allowReschedule": "Allow client to reschedule days",
+  "trainer.allowSkip": "Allow client to skip workouts",
+
+  // Plan customization proposals and advising
+  "proposal.customize.workout": "Customize Workout",
+  "proposal.customize.diet": "Customize Diet & Hours",
+  "proposal.schedule.title": "Schedule & Planned Days",
+  "proposal.schedule.desc": "Adapt days and hours to your daily routine",
+  "proposal.schedule.time": "Scheduled time",
+  "proposal.notes.label": "Notes for your trainer",
+  "proposal.notes.placeholder": "E.g., I shifted the hour earlier and tweaked rest times...",
+  "proposal.submit.btn": "Send proposal to my trainer",
+  "proposal.submitting": "Sending proposal...",
+  "proposal.success.title": "Proposal Sent!",
+  "proposal.success.desc": "Your trainer will review it shortly to advise you or activate it.",
+  "proposal.status.pending": "Pending review",
+  "proposal.status.approved": "Approved",
+  "proposal.status.changes_requested": "Changes requested",
+  "proposal.trainer.pendingTitle": "Client Proposals",
+  "proposal.trainer.pendingBadge": "pending review",
+  "proposal.trainer.reviewBtn": "Review proposal",
+  "proposal.trainer.approveBtn": "Approve and activate plan",
+  "proposal.trainer.changesBtn": "Suggest changes / Advise",
+  "proposal.trainer.feedbackPlaceholder": "Write your feedback and advice for the client...",
 };

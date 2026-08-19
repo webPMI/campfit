@@ -17,5 +17,7 @@ export const createUserWithEmailAndPassword = vi.fn();
 export const signOut = vi.fn();
 export const sendPasswordResetEmail = vi.fn();
 export const onAuthStateChanged = vi.fn(() => () => {});
-export const GoogleAuthProvider = vi.fn(() => ({}));
+export const GoogleAuthProvider = vi.fn(() => ({
+  addScope: vi.fn(),
+}));
 export const signInWithPopup = vi.fn();

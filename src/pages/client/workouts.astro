@@ -23,6 +23,31 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             <h2 data-i18n="dashboard.routines" class="text-xl font-bold text-[var(--text-primary)]">{t("dashboard.routines")}</h2>
             <p data-i18n="dashboard.routines.desc" class="mt-1 text-sm text-[var(--text-tertiary)]">{t("dashboard.routines.desc")}</p>
           </div>
+          <button
+            id="btn-open-proposal-modal"
+            class="rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] px-3.5 py-2 text-xs font-semibold text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all flex items-center gap-1.5 shadow-sm"
+          >
+            <span>✨</span>
+            <span data-i18n="proposal.customize.workout">{t("proposal.customize.workout")}</span>
+          </button>
+        </div>
+
+        <!-- Banner de Estado de Propuesta de Personalización -->
+        <div id="proposal-status-banner" class="hidden rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 backdrop-blur-xl space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📋</span>
+              <div>
+                <h4 class="text-xs font-bold text-blue-300">Propuesta de Rutina en Revisión</h4>
+                <p id="proposal-banner-desc" class="text-[11px] text-blue-200/80">Tu entrenador está revisando los días y horas que propusiste.</p>
+              </div>
+            </div>
+            <span id="proposal-banner-status" class="rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Pendiente</span>
+          </div>
+          <div id="proposal-banner-feedback" class="hidden text-xs bg-zinc-900/80 p-3 rounded-xl border border-zinc-700 text-zinc-300">
+            <p class="font-bold text-amber-300 mb-0.5">💬 Consejo de tu entrenador:</p>
+            <p id="proposal-feedback-text"></p>
+          </div>
         </div>
 
         <!-- Navegación por Días de la Semana (Lunes a Domingo) -->
@@ -255,6 +280,159 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     </div>
   </div>
 
+  <!-- Modal para Personalizar Rutina y Horarios -->
+  <div id="customize-workout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md hidden animate-fade-in">
+    <div class="relative w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">✨ Personalizar Rutina y Horarios</h3>
+          <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Adapta los días y horas a tu semana para que tu coach lo revise.</p>
+        </div>
+        <button id="btn-close-proposal-modal" class="text-[var(--text-tertiary)] hover:text-white text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Selector de Enfoque / Objetivo Atlético -->
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3.5 space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-[var(--text-primary)]">🎯 Enfoque y Objetivo Físico</label>
+            <p class="text-[11px] text-[var(--text-tertiary)] mt-0.5">Elige cómo quieres enfocar tu desarrollo muscular y rendimiento:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="focus-option-card flex flex-col p-2.5 rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="radio" name="athletic-focus" value="balanced" class="sr-only" checked />
+              <span class="text-base mb-1">⚖️</span>
+              <span class="text-xs font-bold text-[var(--brand)]">Equilibrado</span>
+              <span class="text-[10px] text-zinc-400 mt-0.5 leading-tight">Simetría, postura y salud articular</span>
+            </label>
+
+            <label class="focus-option-card flex flex-col p-2.5 rounded-xl border border-zinc-700 bg-zinc-800/40 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="radio" name="athletic-focus" value="sport_performance" class="sr-only" />
+              <span class="text-base mb-1">⚡</span>
+              <span class="text-xs font-bold text-white">Deportivo</span>
+              <span class="text-[10px] text-zinc-400 mt-0.5 leading-tight">Potencia máxima para tu deporte</span>
+            </label>
+
+            <label class="focus-option-card flex flex-col p-2.5 rounded-xl border border-zinc-700 bg-zinc-800/40 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="radio" name="athletic-focus" value="hybrid" class="sr-only" />
+              <span class="text-base mb-1">🔥</span>
+              <span class="text-xs font-bold text-white">Híbrido</span>
+              <span class="text-[10px] text-zinc-400 mt-0.5 leading-tight">Fuerza atlética + estética</span>
+            </label>
+          </div>
+
+          <!-- Selector de Deporte Específico (solo si elige Deportivo) -->
+          <div id="sport-selector-container" class="hidden pt-2 border-t border-zinc-700/60 space-y-1.5">
+            <label class="block text-[11px] font-bold text-amber-300">🏅 Disciplina deportiva principal:</label>
+            <select id="proposal-sport-select" class="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+              <option value="football">⚽ Fútbol / Futsal</option>
+              <option value="running">🏃 Running / Trail</option>
+              <option value="padel_tennis">🎾 Pádel / Tenis</option>
+              <option value="basketball">🏀 Baloncesto / Vóley</option>
+              <option value="swimming">🏊 Natación</option>
+              <option value="cycling">🚴 Ciclismo / Triatlón</option>
+              <option value="martial_arts">🥊 Artes Marciales / Boxeo</option>
+              <option value="strength">🏋️ Deportes de Fuerza / Powerlifting</option>
+            </select>
+          </div>
+
+          <!-- Tarjeta Dinámica de Recomendación y Zonas a Fortalecer -->
+          <div id="athletic-recommendation-box" class="rounded-xl border border-amber-500/30 bg-black/40 p-3 text-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span id="rec-title" class="font-bold text-amber-300">Plan de Armonía Funcional y Simetría</span>
+              <span id="rec-badge" class="rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 text-[9px] font-bold uppercase">Recomendado</span>
+            </div>
+            
+            <div>
+              <p class="text-[10px] font-semibold text-zinc-400 mb-1">💪 Partes prioritarias a fortalecer:</p>
+              <div id="rec-priority-muscles" class="flex flex-wrap gap-1.5">
+                <!-- Badges de músculos prioritarios -->
+              </div>
+            </div>
+
+            <p id="rec-biomechanical-advice" class="text-[11px] text-zinc-300 italic pt-1 border-t border-zinc-800">
+              Prioriza ejercicios bilaterales compuestos combinados con trabajo unilateral para corregir asimetrías.
+            </p>
+          </div>
+        </div>
+
+        <!-- Días de la semana -->
+        <div>
+          <label class="block text-xs font-bold text-[var(--text-secondary)] mb-1.5">📅 Días programados de entreno</label>
+          <div class="grid grid-cols-7 gap-1.5 text-center text-xs">
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="1" class="day-proposal-cb accent-[var(--brand)]" checked />
+              <span class="text-[10px] text-zinc-400 mt-1">L</span>
+            </label>
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="2" class="day-proposal-cb accent-[var(--brand)]" />
+              <span class="text-[10px] text-zinc-400 mt-1">M</span>
+            </label>
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="3" class="day-proposal-cb accent-[var(--brand)]" checked />
+              <span class="text-[10px] text-zinc-400 mt-1">X</span>
+            </label>
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="4" class="day-proposal-cb accent-[var(--brand)]" />
+              <span class="text-[10px] text-zinc-400 mt-1">J</span>
+            </label>
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="5" class="day-proposal-cb accent-[var(--brand)]" checked />
+              <span class="text-[10px] text-zinc-400 mt-1">V</span>
+            </label>
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="6" class="day-proposal-cb accent-[var(--brand)]" />
+              <span class="text-[10px] text-zinc-400 mt-1">S</span>
+            </label>
+            <label class="day-checkbox-card flex flex-col items-center justify-center p-2 rounded-xl border border-zinc-700 bg-zinc-800/60 cursor-pointer hover:border-[var(--brand)] transition-all">
+              <input type="checkbox" value="7" class="day-proposal-cb accent-[var(--brand)]" />
+              <span class="text-[10px] text-zinc-400 mt-1">D</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Hora programada estimada -->
+        <div>
+          <label class="block text-xs font-bold text-[var(--text-secondary)] mb-1.5">⏰ Hora estimada de inicio</label>
+          <input
+            id="proposal-workout-time"
+            type="time"
+            value="18:30"
+            class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]"
+          />
+        </div>
+
+        <!-- Notas / Dudas para el Entrenador -->
+        <div>
+          <label class="block text-xs font-bold text-[var(--text-secondary)] mb-1.5">💬 Notas o dudas para tu entrenador</label>
+          <textarea
+            id="proposal-workout-notes"
+            rows="3"
+            class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--brand)] resize-none"
+            placeholder="Ej: He seleccionado potenciación para fútbol y me gustaría enfocarme en aceleración e isquiotibiales..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)]">
+        <button
+          id="btn-submit-workout-proposal"
+          class="flex-1 rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] px-4 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all flex items-center justify-center gap-1.5"
+        >
+          <span>🚀</span>
+          <span id="btn-submit-workout-proposal-text">Enviar propuesta a mi entrenador</span>
+        </button>
+        <button
+          id="btn-cancel-proposal-modal"
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2.5 text-xs font-medium text-[var(--text-secondary)] hover:text-white"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notificaciones -->
   <div id="workout-toast" class="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-xl border border-emerald-500/30 bg-[var(--brand-dim)] px-6 py-3 text-sm font-medium text-[var(--brand)] backdrop-blur-xl shadow-2xl hidden"></div>
 </ClientLayout>
@@ -262,6 +440,11 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 <script>
   import { initPage } from "@/lib/shared/initPage";
   import { subscribeToWorkouts, logWorkoutSession } from "@/lib/client/workoutService";
+  import {
+    createPlanProposal,
+    subscribeToClientProposals,
+    type PlanProposal,
+  } from "@/lib/shared/planProposalService";
   import {
     subscribeToExercises,
     getExerciseName,
@@ -284,6 +467,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   } from "@/lib/shared/techniqueCorrectionService";
   import { validateMediaFile } from "@/lib/storage/r2Service";
   import { checkExerciseInjuryConflicts } from "@/lib/client/injuryChecker";
+  import {
+    getAthleticRecommendation,
+    type AthleticFocusType,
+    type AthleticSport,
+    MUSCLE_SPANISH_LABELS,
+  } from "@/lib/shared/athleticAdvisorService";
   import type { Workout } from "@/lib/client/workoutService";
   import type { ExerciseExecutionLog } from "@/lib/trainer/types";
   import type { UserExercisePreferences, MedicalProfile } from "@/types";
@@ -1043,7 +1232,185 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       unsubCorrections = subscribeToCorrectionsByClient(firebaseUser.uid, (corrections) => {
         renderCorrectionsHistory(corrections);
       });
+
+      // Suscribirse a las propuestas de personalización del alumno
+      unsubProposals = subscribeToClientProposals(firebaseUser.uid, (proposals) => {
+        const workoutProposal = proposals.find((p) => p.type === "workout");
+        renderProposalStatus(workoutProposal);
+      });
     },
+  });
+
+  // Modal de propuesta de personalización
+  const proposalModal = document.getElementById("customize-workout-modal") as HTMLDivElement;
+  const btnOpenProposal = document.getElementById("btn-open-proposal-modal") as HTMLButtonElement;
+  const btnCloseProposal = document.getElementById("btn-close-proposal-modal") as HTMLButtonElement;
+  const btnCancelProposal = document.getElementById("btn-cancel-proposal-modal") as HTMLButtonElement;
+  const btnSubmitProposal = document.getElementById("btn-submit-workout-proposal") as HTMLButtonElement;
+
+  // Selector de Enfoque y Recomendaciones Atléticas
+  const focusRadios = document.querySelectorAll('input[name="athletic-focus"]') as NodeListOf<HTMLInputElement>;
+  const sportSelectorContainer = document.getElementById("sport-selector-container") as HTMLDivElement;
+  const sportSelect = document.getElementById("proposal-sport-select") as HTMLSelectElement;
+  const recTitle = document.getElementById("rec-title");
+  const recPriorityMuscles = document.getElementById("rec-priority-muscles");
+  const recBiomechanicalAdvice = document.getElementById("rec-biomechanical-advice");
+
+  function getSelectedFocus(): AthleticFocusType {
+    const checked = document.querySelector('input[name="athletic-focus"]:checked') as HTMLInputElement;
+    return (checked?.value as AthleticFocusType) || "balanced";
+  }
+
+  function updateAthleticRecommendationUI() {
+    const focus = getSelectedFocus();
+    const sport = (sportSelect?.value as AthleticSport) || "football";
+
+    if (focus === "sport_performance") {
+      sportSelectorContainer?.classList.remove("hidden");
+    } else {
+      sportSelectorContainer?.classList.add("hidden");
+    }
+
+    // Update active card styling
+    document.querySelectorAll(".focus-option-card").forEach((card) => {
+      const input = card.querySelector("input") as HTMLInputElement;
+      if (input.checked) {
+        card.className = "focus-option-card flex flex-col p-2.5 rounded-xl border border-[var(--border-brand)] bg-[var(--brand-dim)] cursor-pointer hover:border-[var(--brand)] transition-all";
+        const title = card.querySelector(".text-xs");
+        if (title) title.className = "text-xs font-bold text-[var(--brand)]";
+      } else {
+        card.className = "focus-option-card flex flex-col p-2.5 rounded-xl border border-zinc-700 bg-zinc-800/40 cursor-pointer hover:border-[var(--brand)] transition-all";
+        const title = card.querySelector(".text-xs");
+        if (title) title.className = "text-xs font-bold text-white";
+      }
+    });
+
+    const rec = getAthleticRecommendation(focus, sport);
+    if (recTitle) recTitle.textContent = rec.title;
+    if (recBiomechanicalAdvice) recBiomechanicalAdvice.textContent = rec.biomechanicalAdvice;
+
+    if (recPriorityMuscles) {
+      recPriorityMuscles.innerHTML = rec.priorityMuscles
+        .map((m) => {
+          const label = MUSCLE_SPANISH_LABELS[m] || m;
+          return `<span class="rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 text-[10px] font-semibold">${label}</span>`;
+        })
+        .join("");
+    }
+  }
+
+  focusRadios.forEach((radio) => {
+    radio.addEventListener("change", updateAthleticRecommendationUI);
+  });
+  sportSelect?.addEventListener("change", updateAthleticRecommendationUI);
+  updateAthleticRecommendationUI();
+
+  btnOpenProposal?.addEventListener("click", () => {
+    if (!activeTrainerId) {
+      showToast({ message: "Aún no tienes un entrenador asignado para revisar tu propuesta.", type: "info" });
+      return;
+    }
+    updateAthleticRecommendationUI();
+    proposalModal?.classList.remove("hidden");
+  });
+
+  const closeProposalModal = () => proposalModal?.classList.add("hidden");
+  btnCloseProposal?.addEventListener("click", closeProposalModal);
+  btnCancelProposal?.addEventListener("click", closeProposalModal);
+
+  function renderProposalStatus(proposal?: PlanProposal) {
+    const banner = document.getElementById("proposal-status-banner");
+    const desc = document.getElementById("proposal-banner-desc");
+    const statusBadge = document.getElementById("proposal-banner-status");
+    const feedbackBox = document.getElementById("proposal-banner-feedback");
+    const feedbackText = document.getElementById("proposal-feedback-text");
+
+    if (!banner || !proposal) {
+      banner?.classList.add("hidden");
+      return;
+    }
+
+    if (proposal.status === "pending_review") {
+      banner.classList.remove("hidden");
+      if (statusBadge) {
+        statusBadge.textContent = "Pendiente";
+        statusBadge.className = "rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider";
+      }
+      if (desc) desc.textContent = `Propuesta enviada. Días propuestos: ${(proposal.proposedSchedule?.scheduledDays || []).join(", ")}.`;
+      feedbackBox?.classList.add("hidden");
+    } else if (proposal.status === "changes_requested") {
+      banner.classList.remove("hidden");
+      if (statusBadge) {
+        statusBadge.textContent = "Cambios Sugeridos";
+        statusBadge.className = "rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider";
+      }
+      if (desc) desc.textContent = "Tu entrenador ha revisado tu propuesta y te ha dejado recomendaciones.";
+      if (proposal.trainerFeedback && feedbackBox && feedbackText) {
+        feedbackBox.classList.remove("hidden");
+        feedbackText.textContent = proposal.trainerFeedback;
+      }
+    } else {
+      banner.classList.add("hidden");
+    }
+  }
+
+  btnSubmitProposal?.addEventListener("click", async () => {
+    if (!activeUserUid || !activeTrainerId) return;
+
+    const checkedBoxes = Array.from(document.querySelectorAll(".day-proposal-cb:checked")) as HTMLInputElement[];
+    const scheduledDays = checkedBoxes.map((cb) => parseInt(cb.value));
+    const timeVal = (document.getElementById("proposal-workout-time") as HTMLInputElement).value;
+    const notesVal = (document.getElementById("proposal-workout-notes") as HTMLTextAreaElement).value.trim();
+
+    if (scheduledDays.length === 0) {
+      showToast({ message: "Selecciona al menos un día para tu entrenamiento.", type: "error" });
+      return;
+    }
+
+    try {
+      btnSubmitProposal.disabled = true;
+      const btnText = document.getElementById("btn-submit-workout-proposal-text");
+      if (btnText) btnText.textContent = "Enviando propuesta...";
+
+      const athleticFocusType = getSelectedFocus();
+      const athleticSport = (sportSelect?.value as AthleticSport) || "football";
+      const athleticRec = getAthleticRecommendation(athleticFocusType, athleticSport);
+
+      await createPlanProposal({
+        clientId: activeUserUid,
+        clientName: activeUserName,
+        trainerId: activeTrainerId,
+        type: "workout",
+        clientNotes: notesVal,
+        proposedSchedule: {
+          scheduledDays,
+          estimatedTimes: { workoutTime: timeVal },
+        },
+        proposedData: {
+          name: currentWorkout?.name ? `${currentWorkout.name} (Personalizado)` : "Rutina Personalizada",
+          scheduledDays,
+          scheduledTime: timeVal,
+          athleticFocus: {
+            focusType: athleticFocusType,
+            sport: athleticFocusType === "sport_performance" ? athleticSport : undefined,
+            priorityMuscles: athleticRec.priorityMuscles,
+            title: athleticRec.title,
+            biomechanicalAdvice: athleticRec.biomechanicalAdvice,
+          },
+          exercises: currentWorkout?.exercises || [],
+        },
+        originalPlanId: currentWorkout?.id,
+      });
+
+      showToast({ message: "¡Propuesta de rutina y enfoque atlético enviada a tu entrenador!", type: "success" });
+      closeProposalModal();
+    } catch {
+      showToast({ message: "Error al enviar la propuesta.", type: "error" });
+    } finally {
+      btnSubmitProposal.disabled = false;
+      const btnText = document.getElementById("btn-submit-workout-proposal-text");
+      if (btnText) btnText.textContent = "Enviar propuesta a mi entrenador";
+    }
   });
 
   completeWorkoutBtn?.addEventListener("click", async () => {
@@ -1094,11 +1461,14 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     }
   });
 
+  let unsubProposals: (() => void) | null = null;
+
   document.addEventListener("astro:before-swap", () => {
     unsubCatalog?.();
     unsubPrefs?.();
     unsubWorkouts?.();
     unsubCorrections?.();
+    unsubProposals?.();
     cleanup?.();
   });
 </script>

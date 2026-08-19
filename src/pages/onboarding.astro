@@ -55,6 +55,8 @@ const currentPath = Astro.url.pathname;
                 id="name"
                 type="text"
                 placeholder="Ej: Juan Pérez"
+                required
+                autocomplete="name"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               />
             </div>
@@ -63,6 +65,7 @@ const currentPath = Astro.url.pathname;
               <input
                 id="birthdate"
                 type="date"
+                required
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               />
             </div>
@@ -74,6 +77,9 @@ const currentPath = Astro.url.pathname;
                 type="number"
                 step="0.1"
                 placeholder="175"
+                required
+                min="50"
+                max="300"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               />
             </div>
@@ -85,6 +91,9 @@ const currentPath = Astro.url.pathname;
                 type="number"
                 step="0.1"
                 placeholder="75"
+                required
+                min="10"
+                max="600"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               />
             </div>
@@ -93,6 +102,7 @@ const currentPath = Astro.url.pathname;
               <label for="experience" data-i18n="onboarding.experience" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.experience')}</label>
               <select
                 id="experience"
+                required
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               >
                 <option value="">Seleccionar</option>
@@ -327,8 +337,6 @@ const currentPath = Astro.url.pathname;
 
 <script>
   import { authService } from '@/services/authService';
-  import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-  import { db } from '@/lib/firebase';
   import { t, getStoredLanguage, setStoredLanguage } from '@/i18n/client';
   import type { Language } from '@/i18n/client';
   import {
@@ -336,7 +344,6 @@ const currentPath = Astro.url.pathname;
     getFoodName,
     searchFoodsLocal,
     type FoodItem,
-    type FoodCategory,
   } from '@/lib/shared/foodLibrary';
 
   // Sincronizar idioma: leer de URL o de localStorage
@@ -398,6 +405,10 @@ const currentPath = Astro.url.pathname;
       return;
     }
     currentUser = firebaseUser;
+    const nameInput = document.getElementById('name') as HTMLInputElement;
+    if (nameInput && !nameInput.value && firebaseUser.displayName) {
+      nameInput.value = firebaseUser.displayName;
+    }
   });
 
   // ============================================================
@@ -537,6 +548,41 @@ const currentPath = Astro.url.pathname;
 
   import { saveOnboardingProfile, skipOnboarding, type OnboardingData } from '@/lib/client/onboardingService';
 
+  // 🔒 CRÍTICO: Datos extra de Google o Formulario de Registro para pre-rellenar el onboarding
+  function getPreFillData(): { name?: string } | null {
+    // 1. Google Auth Data
+    const rawGoogle = sessionStorage.getItem('googleAuthData');
+    if (rawGoogle) {
+      try {
+        const data = JSON.parse(rawGoogle);
+        sessionStorage.removeItem('googleAuthData'); // Consumir una sola vez
+        const fullName = data.fullName || [data.firstName, data.lastName].filter(Boolean).join(' ') || undefined;
+        if (fullName) return { name: fullName };
+      } catch {}
+    }
+    // 2. Register Form Data (Email/Password)
+    const rawRegister = sessionStorage.getItem('registerFormData');
+    if (rawRegister) {
+      try {
+        const data = JSON.parse(rawRegister);
+        sessionStorage.removeItem('registerFormData'); // Consumir una sola vez
+        if (data.name) return { name: data.name };
+      } catch {}
+    }
+    return null;
+  }
+
+  // ============================================================
+  // Pre-rellenado inicial al cargar
+  // ============================================================
+  const preFill = getPreFillData();
+  if (preFill?.name) {
+    const nameInput = document.getElementById('name') as HTMLInputElement;
+    if (nameInput && !nameInput.value) {
+      nameInput.value = preFill.name;
+    }
+  }
+
   // ============================================================
   // Collect data from all steps
   // ============================================================
@@ -591,12 +637,66 @@ const currentPath = Astro.url.pathname;
     };
   }
 
+  function validateCurrentStep(step: number): boolean {
+    if (step === 1) {
+      const name = (document.getElementById('name') as HTMLInputElement).value.trim();
+      const birthdate = (document.getElementById('birthdate') as HTMLInputElement).value;
+      const height = (document.getElementById('height') as HTMLInputElement).value;
+      const weight = (document.getElementById('weight') as HTMLInputElement).value;
+      const experience = (document.getElementById('experience') as HTMLSelectElement).value;
+
+      const missing: string[] = [];
+      if (!name) missing.push(t('onboarding.name'));
+      if (!birthdate) missing.push(t('onboarding.birthdate'));
+      if (!height) missing.push(t('client.medical.height'));
+      if (!weight) missing.push(t('client.medical.weight'));
+      if (!experience) missing.push(t('onboarding.experience'));
+
+      if (missing.length > 0) {
+        showError(`${t('error.required')}: ${missing.join(', ')}`);
+        return false;
+      }
+    }
+    if (step === 3) {
+      const emergencyName = (document.getElementById('emergencyName') as HTMLInputElement).value.trim();
+      const emergencyPhone = (document.getElementById('emergencyPhone') as HTMLInputElement).value.trim();
+
+      const missing: string[] = [];
+      if (!emergencyName) missing.push(t('client.medical.emergency.name'));
+      if (!emergencyPhone) missing.push(t('client.medical.emergency.phone'));
+
+      if (missing.length > 0) {
+        showError(`${t('error.required')}: ${missing.join(', ')}`);
+        return false;
+      }
+    }
+    return true;
+  }
+
   async function handleSaveOnboarding(): Promise<boolean> {
     if (!currentUser) {
       showError('Debes iniciar sesión');
       return false;
     }
     const data = collectData();
+
+    // 🔒 CRÍTICO: Validar campos obligatorios antes de guardar
+    const requiredFields: Array<{ label: string; value: unknown }> = [
+      { label: t('onboarding.name'), value: data.name },
+      { label: t('onboarding.birthdate'), value: data.birthdate },
+      { label: t('client.medical.height'), value: data.height },
+      { label: t('client.medical.weight'), value: data.initialWeight },
+      { label: t('onboarding.experience'), value: data.experience },
+      { label: t('client.medical.emergency.name'), value: data.emergencyName },
+      { label: t('client.medical.emergency.phone'), value: data.emergencyPhone },
+    ];
+    const missing = requiredFields.filter((f) => f.value === null || f.value === '' || f.value === undefined);
+    if (missing.length > 0) {
+      const fieldList = missing.map((f) => f.label).join(', ');
+      showError(`${t('error.required')}: ${fieldList}`);
+      return false;
+    }
+
     const success = await saveOnboardingProfile(currentUser.uid, data);
     if (!success) {
       showError(t('onboarding.error'));
@@ -608,10 +708,12 @@ const currentPath = Astro.url.pathname;
   // Navigation
   // ============================================================
 
-  const currentLang = onboardingContainer.dataset.lang || 'es';
-
   nextBtn.addEventListener('click', async () => {
     hideError();
+
+    if (!validateCurrentStep(currentStep)) {
+      return;
+    }
 
     if (currentStep < TOTAL_STEPS) {
       showStep(currentStep + 1);
@@ -622,7 +724,7 @@ const currentPath = Astro.url.pathname;
 
       const success = await handleSaveOnboarding();
       if (success) {
-        window.location.href = `/client/dashboard?lang=${currentLang}`;
+        window.location.href = '/client/dashboard';
       } else {
         nextBtn.disabled = false;
         nextBtn.textContent = t('onboarding.finish');
@@ -643,6 +745,6 @@ const currentPath = Astro.url.pathname;
     if (unsubFoods) {
       unsubFoods();
     }
-    window.location.href = `/client/dashboard?lang=${currentLang}`;
+    window.location.href = '/client/dashboard';
   });
 </script>

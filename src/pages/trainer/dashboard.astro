@@ -59,6 +59,21 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
       </div>
 
+      <!-- Radar de Propuestas de Alumnos -->
+      <div id="proposals-radar-card" class="mt-8 hidden rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5 backdrop-blur-md space-y-3 animate-fade-in">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xl">✨</span>
+            <div>
+              <h2 class="text-sm font-extrabold text-amber-300">Propuestas de Personalización de Alumnos</h2>
+              <p class="text-xs text-amber-200/80">Tus alumnos han solicitado ajustes en sus días, horas o planes.</p>
+            </div>
+          </div>
+          <span id="proposals-count-badge" class="rounded-full bg-amber-500 text-black text-xs font-bold px-2.5 py-0.5">0 pendientes</span>
+        </div>
+        <div id="proposals-preview-list" class="space-y-2 pt-2 border-t border-amber-500/20"></div>
+      </div>
+
       <div class="mt-8">
         <div class="flex items-center justify-between">
           <h2 data-i18n="trainer.clients" class="text-lg font-semibold text-[var(--text-primary)]">{t("trainer.clients")}</h2>
@@ -104,14 +119,16 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     import { t } from "@/i18n/client";
     import { ICONS, escapeHtml, renderEmptyState } from "@/lib/shared/ui";
     import { subscribeToClients, subscribeToWorkoutsByTrainer, subscribeToDietsByTrainer, subscribeToConversations, renderClientCard, renderWorkoutCard, renderDietCard } from "@/lib/trainer/trainerUtils";
+    import { subscribeToTrainerProposals, type PlanProposal } from "@/lib/shared/planProposalService";
 
     let unsubClients: (() => void) | null = null;
     let unsubWorkouts: (() => void) | null = null;
     let unsubDiets: (() => void) | null = null;
     let unsubMessages: (() => void) | null = null;
+    let unsubProposals: (() => void) | null = null;
 
     requireRole(["trainer", "admin"], async (user) => { initDashboard(user.uid); });
-    window.addEventListener("beforeunload", () => { unsubClients?.(); unsubWorkouts?.(); unsubDiets?.(); unsubMessages?.(); });
+    window.addEventListener("beforeunload", () => { unsubClients?.(); unsubWorkouts?.(); unsubDiets?.(); unsubMessages?.(); unsubProposals?.(); });
 
     async function initDashboard(trainerId: string) {
       const statClients = document.getElementById("stat-total-clients")!;
@@ -124,6 +141,9 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       const alertsContainer = document.getElementById("alerts-section")!;
       const lastUpdateEl = document.getElementById("last-update")!;
       const noAlertsText = document.getElementById("no-alerts-text");
+      const proposalsCard = document.getElementById("proposals-radar-card");
+      const proposalsBadge = document.getElementById("proposals-count-badge");
+      const proposalsList = document.getElementById("proposals-preview-list");
 
       function updateTimestamp(label: string) {
         const now = new Date();
@@ -133,6 +153,38 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       }
 
       try {
+        unsubProposals = subscribeToTrainerProposals(trainerId, (proposals) => {
+          const pending = proposals.filter((p) => p.status === "pending_review");
+          if (proposalsCard && proposalsBadge && proposalsList) {
+            if (pending.length === 0) {
+              proposalsCard.classList.add("hidden");
+            } else {
+              proposalsCard.classList.remove("hidden");
+              proposalsBadge.textContent = `${pending.length} pendiente${pending.length > 1 ? "s" : ""}`;
+              proposalsList.innerHTML = pending
+                .slice(0, 3)
+                .map((p) => {
+                  const targetUrl = p.type === "workout" ? "/trainer/workouts" : "/trainer/diets";
+                  const icon = p.type === "workout" ? "🏋️" : "🥗";
+                  const typeLabel = p.type === "workout" ? "Rutina" : "Dieta";
+                  return `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900/80 border border-amber-500/30 text-xs">
+                      <div class="flex items-center gap-2">
+                        <span>${icon}</span>
+                        <div>
+                          <p class="font-bold text-white">${escapeHtml(p.clientName || "Alumno")} — <span class="text-amber-300">${typeLabel}</span></p>
+                          <p class="text-[11px] text-zinc-400">${escapeHtml(p.clientNotes || "Propuesta de días/horas")}</p>
+                        </div>
+                      </div>
+                      <a href="${targetUrl}" class="rounded-lg bg-amber-500 hover:bg-amber-400 text-black px-3 py-1.5 font-bold text-xs transition-all">Revisar →</a>
+                    </div>
+                  `;
+                })
+                .join("");
+            }
+          }
+        });
+
         unsubClients = subscribeToClients(trainerId, (clients) => {
           statClients.textContent = String(clients.length);
           if (clients.length === 0) {

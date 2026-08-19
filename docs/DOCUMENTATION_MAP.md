@@ -39,6 +39,9 @@
 - [docs/UX_DESIGN_CALENDAR.md](./UX_DESIGN_CALENDAR.md) — Diseño UX de calendario.
 
 ## 📝 Features
+- [docs/features/MARKETPLACE_INVITACIONES_Y_REVIEWS_ENTRENADORES.md](./features/MARKETPLACE_INVITACIONES_Y_REVIEWS_ENTRENADORES.md) — Marketplace de entrenadores, enlaces de invitación viral, sistema de reviews verificadas (1-5 ⭐) y solicitudes de match.
+- [docs/features/AUTONOMIA_Y_ASESORAMIENTO_PLANES.md](./features/AUTONOMIA_Y_ASESORAMIENTO_PLANES.md) — Autonomía de alumnos (personalización de días/horas de dietas y rutinas) y asesoramiento formativo de entrenadores.
+- [docs/features/AUTH_Y_ONBOARDING.md](./features/AUTH_Y_ONBOARDING.md) — Arquitectura y flujo de autenticación, Google OAuth y onboarding multi-paso.
 - [docs/features/BIBLIOTECA_ALIMENTOS.md](./features/BIBLIOTECA_ALIMENTOS.md)
 - [docs/features/BIBLIOTECA_EJERCICIOS.md](./features/BIBLIOTECA_EJERCICIOS.md)
 - [docs/features/CALENDAR_IMPLEMENTATION.md](./features/CALENDAR_IMPLEMENTATION.md)
