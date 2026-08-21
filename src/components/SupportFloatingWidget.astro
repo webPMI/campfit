@@ -128,13 +128,21 @@
       </div>
 
       <!-- Actions -->
-      <div class="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
-        <a
-          href="/client/support/my-tickets"
-          class="text-xs text-[var(--text-tertiary)] hover:text-[var(--brand)] hover:underline transition-colors"
-        >
-          📋 Ver mis tickets
-        </a>
+      <div class="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <a
+            href="/client/support/my-tickets"
+            class="text-xs text-[var(--text-tertiary)] hover:text-[var(--brand)] hover:underline transition-colors"
+          >
+            📋 Mis tickets
+          </a>
+          <a
+            href="/client/support"
+            class="text-xs text-amber-400/80 hover:text-amber-300 hover:underline transition-colors"
+          >
+            ✨ Novedades v0.006
+          </a>
+        </div>
         <div class="flex items-center gap-2">
           <button
             id="btn-cancel-quick-support"

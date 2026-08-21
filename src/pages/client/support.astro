@@ -104,6 +104,83 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
           </div>
         </div>
+
+        <!-- Changelog / Registro de Versiones -->
+        <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">✨</span>
+              <div>
+                <h3 class="text-base font-bold text-[var(--text-primary)]">Historial de Novedades & Versiones</h3>
+                <p class="text-xs text-[var(--text-tertiary)]">Transparencia total: consulta qué mejoras y correcciones añadimos en cada actualización.</p>
+              </div>
+            </div>
+            <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              En Vivo: v0.006 Beta
+            </span>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <!-- Version 0.006 -->
+            <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.006</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Changelog Público & Control de Versiones Transparente</span>
+                </div>
+                <span class="text-[11px] text-[var(--text-tertiary)]">Actual</span>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>Visualización pública del historial de versiones y novedades en el Centro de Soporte.</li>
+                <li>Actualización instantánea de badges de versión en tiempo real en cada despliegue.</li>
+              </ul>
+            </div>
+
+            <!-- Version 0.005 -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-[var(--surface-4)] border border-[var(--border-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase">v0.005</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Trazabilidad Técnica en Soporte & Persistencia de Onboarding</span>
+                </div>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>Widget flotante global de feedback y reporte de bugs con captura de URL, dispositivo y resolución de pantalla.</li>
+                <li>Persistencia de borrador en el Onboarding ("Nada se pierde al refrescar") para recuperar tus datos automáticamente.</li>
+              </ul>
+            </div>
+
+            <!-- Version 0.004 -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-[var(--surface-4)] border border-[var(--border-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase">v0.004</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Hub de Autonomía & Modo Kickstart para Alumnos</span>
+                </div>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>3 Programas predeterminados de inicio (Full Body 3D, Torso/Pierna 4D, Movilidad/Core) listos para entrenar.</li>
+                <li>Calculadora metabólica interactiva de TDEE/BMR con tracker de hidratación y explorador de ejercicios con vídeo.</li>
+                <li>Sincronización automática de peso entre la Ficha Médica y las gráficas de evolución temporal.</li>
+              </ul>
+            </div>
+
+            <!-- Version 0.003 -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-[var(--surface-4)] border border-[var(--border-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase">v0.003</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Gestión de Tickets de Soporte & Chat con Coach</span>
+                </div>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>Bandeja de seguimiento de tickets para clientes y panel de resolución para administración.</li>
+                <li>Integración de avatares reales y foto de perfil en el chat interactivo.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
