@@ -65,6 +65,51 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
         <!-- Weight Tab -->
         <div id="weightTab" class="space-y-5">
+          <!-- Cortisol & Retention Alert Banner -->
+          <div id="cortisolAlertBanner" class="hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 p-4 backdrop-blur-xl animate-fade-in">
+            <div class="flex items-start gap-3">
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-300 text-lg border border-amber-500/30">
+                🧬
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-xs font-bold text-amber-300 uppercase tracking-wider">Aviso Fisiológico de Retención (Cortisol)</h4>
+                <p id="cortisolAlertMessage" class="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  Tus marcadores recientes de estrés o déficit de descanso pueden provocar retención hídrica temporal. El promedio móvil de 7 días te mostrará tu tendencia real.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Readiness & Vitals Summary Widget -->
+          <div id="readinessCard" class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--brand-dim)] text-xs text-[var(--brand)] border border-[var(--border-brand)]/20">⚡</span>
+                <h3 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">Estado de Hoy & Readiness Score</h3>
+              </div>
+              <span id="readinessLevelBadge" class="rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 text-[11px] font-bold">
+                Calculando...
+              </span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+              <div class="sm:col-span-3 flex items-center gap-3">
+                <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-3)] border border-[var(--border-subtle)]">
+                  <span id="readinessScoreVal" class="text-2xl font-black text-[var(--brand)]">--</span>
+                  <span class="absolute -bottom-1 text-[9px] font-bold text-[var(--text-tertiary)] uppercase">Score</span>
+                </div>
+                <div>
+                  <p class="text-[11px] font-semibold text-[var(--text-tertiary)]">Nivel de Recuperación</p>
+                  <p id="readinessLabel" class="text-xs font-bold text-[var(--text-primary)]">--</p>
+                </div>
+              </div>
+              <div class="sm:col-span-9 bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-xl p-3">
+                <p id="readinessRecommendation" class="text-xs text-[var(--text-secondary)] leading-relaxed italic">
+                  Registra tu bio-feedback diario para obtener recomendaciones de intensidad y volumen en tiempo real.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Weight KPI Summary Cards -->
           <div id="weightSummaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
@@ -80,8 +125,30 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               <p id="kpiWeightDiff" class="mt-1 text-lg font-black text-[var(--text-primary)]">--</p>
             </div>
             <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
-              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Media Reciente</span>
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Tendencia 7D (Media)</span>
               <p id="kpiAvgWeight" class="mt-1 text-lg font-black text-cyan-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span></p>
+            </div>
+          </div>
+
+          <!-- Interactive Trend Chart Card -->
+          <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Curva de Peso Real vs Promedio Móvil 7D</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">El promedio móvil (línea cyan) filtra las retenciones de agua y muestra tu progreso real</p>
+              </div>
+              <div class="flex items-center gap-1.5 self-start sm:self-auto">
+                <button type="button" class="chart-range-btn active rounded-lg bg-[var(--surface-3)] px-2.5 py-1 text-[11px] font-bold text-[var(--brand)] border border-[var(--border-brand)]/30" data-range="7">7D</button>
+                <button type="button" class="chart-range-btn rounded-lg bg-[var(--surface-4)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-tertiary)] hover:text-white" data-range="30">30D</button>
+                <button type="button" class="chart-range-btn rounded-lg bg-[var(--surface-4)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-tertiary)] hover:text-white" data-range="all">Todo</button>
+              </div>
+            </div>
+            <div class="relative h-48 w-full">
+              <canvas id="weightTrendCanvas" class="h-full w-full"></canvas>
+            </div>
+            <div class="flex items-center justify-center gap-6 pt-1 text-[11px] text-[var(--text-tertiary)]">
+              <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-400"></span> Peso Diario</span>
+              <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-cyan-400"></span> Tendencia 7D (Media Móvil)</span>
             </div>
           </div>
 
@@ -733,6 +800,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     type BodyMeasurements,
     type BioFeedback
   } from "@/lib/client/progressService";
+  import {
+    calculateMovingAverage,
+    calculateReadinessScore,
+    detectCortisolRetentionAlert,
+    validateWeightChangeSafety,
+    normalizeLogDate
+  } from "@/lib/client/progressAnalytics";
   import { uploadProgressPhotoToR2, validateImageFile } from "@/lib/storage/r2Service";
   import { showToast, showConfirm, escapeHtml } from "@/lib/shared/ui";
   import { t } from "@/i18n/client";
@@ -749,6 +823,19 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const measurementsTab = document.getElementById("measurementsTab")!;
   const biofeedbackTab = document.getElementById("biofeedbackTab")!;
   const photosTab = document.getElementById("photosTab")!;
+
+  // Cortisol alert & Readiness elements
+  const cortisolAlertBanner = document.getElementById("cortisolAlertBanner");
+  const cortisolAlertMessage = document.getElementById("cortisolAlertMessage");
+  const readinessLevelBadge = document.getElementById("readinessLevelBadge");
+  const readinessScoreVal = document.getElementById("readinessScoreVal");
+  const readinessLabel = document.getElementById("readinessLabel");
+  const readinessRecommendation = document.getElementById("readinessRecommendation");
+
+  // Chart elements
+  const weightTrendCanvas = document.getElementById("weightTrendCanvas") as HTMLCanvasElement | null;
+  const chartRangeBtns = document.querySelectorAll<HTMLButtonElement>(".chart-range-btn");
+  let currentChartRange: '7' | '30' | 'all' = '7';
 
   // Weight form & KPI elements
   const weightInput = document.getElementById("weightInput") as HTMLInputElement;
@@ -1254,6 +1341,185 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     return new Date();
   }
 
+  function drawWeightTrendChart(logs: ProgressLog[], range: '7' | '30' | 'all') {
+    if (!weightTrendCanvas) return;
+    const ctx = weightTrendCanvas.getContext('2d');
+    if (!ctx) return;
+
+    // Retina HiDPI scaling
+    const rect = weightTrendCanvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    weightTrendCanvas.width = rect.width * dpr;
+    weightTrendCanvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const w = rect.width;
+    const h = rect.height;
+    ctx.clearRect(0, 0, w, h);
+
+    if (!logs || logs.length === 0) {
+      ctx.fillStyle = '#71717a';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Añade registros de peso para visualizar la curva de tendencia', w / 2, h / 2);
+      return;
+    }
+
+    // Sort chronologically ascending
+    const chrono = [...logs]
+      .filter(l => Number(l.value?.weight) > 0)
+      .sort((a, b) => getLogDateObject(a.date).getTime() - getLogDateObject(b.date).getTime());
+
+    if (chrono.length === 0) return;
+
+    // Filter by selected range
+    let filtered = chrono;
+    if (range === '7') {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      filtered = chrono.filter(l => getLogDateObject(l.date) >= sevenDaysAgo);
+      if (filtered.length < 2) filtered = chrono.slice(-7);
+    } else if (range === '30') {
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      filtered = chrono.filter(l => getLogDateObject(l.date) >= thirtyDaysAgo);
+      if (filtered.length < 2) filtered = chrono.slice(-30);
+    }
+
+    const dataPoints = filtered.map(l => ({ date: getLogDateObject(l.date), value: Number(l.value?.weight) }));
+    const maPoints = calculateMovingAverage(dataPoints, 7);
+
+    // Find min and max for scaling
+    const allValues = [
+      ...dataPoints.map(p => p.value),
+      ...maPoints.map(p => p.movingAverage)
+    ];
+    const minVal = Math.floor(Math.min(...allValues) - 1);
+    const maxVal = Math.ceil(Math.max(...allValues) + 1);
+    const rangeVal = Math.max(2, maxVal - minVal);
+
+    const padding = { top: 20, right: 25, bottom: 25, left: 35 };
+    const chartW = w - padding.left - padding.right;
+    const chartH = h - padding.top - padding.bottom;
+
+    const getX = (idx: number, total: number) => {
+      if (total <= 1) return padding.left + chartW / 2;
+      return padding.left + (idx / (total - 1)) * chartW;
+    };
+
+    const getY = (val: number) => {
+      return padding.top + chartH - ((val - minVal) / rangeVal) * chartH;
+    };
+
+    // Draw grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#71717a';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'right';
+
+    const gridSteps = 4;
+    for (let i = 0; i <= gridSteps; i++) {
+      const val = minVal + (i / gridSteps) * rangeVal;
+      const y = getY(val);
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(w - padding.right, y);
+      ctx.stroke();
+      ctx.fillText(`${val.toFixed(0)}k`, padding.left - 6, y + 3);
+    }
+
+    // 1. Draw Moving Average Line (Cyan with Glow)
+    if (maPoints.length > 1) {
+      ctx.save();
+      ctx.strokeStyle = '#22d3ee';
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = 'rgba(34, 211, 238, 0.4)';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      maPoints.forEach((p, idx) => {
+        const x = getX(idx, maPoints.length);
+        const y = getY(p.movingAverage);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 2. Draw Daily Weight Line & Dots (Emerald)
+    if (dataPoints.length > 0) {
+      // Area Fill gradient
+      const grad = ctx.createLinearGradient(0, padding.top, 0, h - padding.bottom);
+      grad.addColorStop(0, 'rgba(52, 211, 153, 0.15)');
+      grad.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+
+      ctx.beginPath();
+      dataPoints.forEach((p, idx) => {
+        const x = getX(idx, dataPoints.length);
+        const y = getY(p.value);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.lineTo(getX(dataPoints.length - 1, dataPoints.length), h - padding.bottom);
+      ctx.lineTo(getX(0, dataPoints.length), h - padding.bottom);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke Line
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      dataPoints.forEach((p, idx) => {
+        const x = getX(idx, dataPoints.length);
+        const y = getY(p.value);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Point circles
+      dataPoints.forEach((p, idx) => {
+        const x = getX(idx, dataPoints.length);
+        const y = getY(p.value);
+        ctx.fillStyle = '#09090b';
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#34d399';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    // Draw date labels on X axis
+    if (dataPoints.length > 0) {
+      ctx.fillStyle = '#71717a';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      const firstX = getX(0, dataPoints.length);
+      const lastX = getX(dataPoints.length - 1, dataPoints.length);
+      const firstD = dataPoints[0]?.date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+      const lastD = dataPoints[dataPoints.length - 1]?.date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+      if (firstD) ctx.fillText(firstD, firstX + 8, h - 8);
+      if (lastD && dataPoints.length > 1) ctx.fillText(lastD, lastX - 8, h - 8);
+    }
+  }
+
+  // Chart range buttons listeners
+  chartRangeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      chartRangeBtns.forEach(b => {
+        b.classList.remove('active', 'bg-[var(--surface-3)]', 'text-[var(--brand)]', 'border', 'border-[var(--border-brand)]/30');
+        b.classList.add('bg-[var(--surface-4)]', 'text-[var(--text-tertiary)]');
+      });
+      btn.classList.add('active', 'bg-[var(--surface-3)]', 'text-[var(--brand)]', 'border', 'border-[var(--border-brand)]/30');
+      btn.classList.remove('bg-[var(--surface-4)]', 'text-[var(--text-tertiary)]');
+
+      currentChartRange = (btn.dataset.range as '7' | '30' | 'all') || '7';
+      drawWeightTrendChart(cachedWeightLogs, currentChartRange);
+    });
+  });
+
   function renderWeightLogs(logs: ProgressLog[]) {
     cachedWeightLogs = logs;
 
@@ -1267,10 +1533,11 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       if (kpiCurrentWeight) kpiCurrentWeight.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>';
       if (kpiWeightDiff) kpiWeightDiff.textContent = '--';
       if (kpiAvgWeight) kpiAvgWeight.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>';
+      drawWeightTrendChart([], currentChartRange);
       return;
     }
 
-    // Sort chronologically ascending for stats
+    // Sort chronologically ascending for stats and moving average
     const chronoLogs = [...logs].sort((a, b) => getLogDateObject(a.date).getTime() - getLogDateObject(b.date).getTime());
     const oldestLog = chronoLogs[0];
     const newestLog = chronoLogs[chronoLogs.length - 1];
@@ -1279,9 +1546,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const currentW = Number(newestLog?.value?.weight) || 0;
     const diff = currentW - initialW;
 
-    // Recent 7 entries average
-    const recentLogs = chronoLogs.slice(-7);
-    const avgW = recentLogs.reduce((acc, l) => acc + (Number(l.value?.weight) || 0), 0) / recentLogs.length;
+    // Moving average of 7 days
+    const dataPoints = chronoLogs
+      .filter(l => Number(l.value?.weight) > 0)
+      .map(l => ({ date: getLogDateObject(l.date), value: Number(l.value?.weight) }));
+    
+    const maPoints = calculateMovingAverage(dataPoints, 7);
+    const latestMA = maPoints.length > 0 ? maPoints[maPoints.length - 1]?.movingAverage : currentW;
 
     if (kpiInitialWeight) kpiInitialWeight.innerHTML = `${initialW.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
     if (kpiCurrentWeight) kpiCurrentWeight.innerHTML = `${currentW.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
@@ -1299,7 +1570,12 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       }
     }
 
-    if (kpiAvgWeight) kpiAvgWeight.innerHTML = `${avgW.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
+    if (kpiAvgWeight && latestMA != null) {
+      kpiAvgWeight.innerHTML = `${latestMA.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
+    }
+
+    // Draw interactive trend chart
+    drawWeightTrendChart(chronoLogs, currentChartRange);
 
     // Render list (descending)
     weightHistory.innerHTML = "";
@@ -1606,6 +1882,34 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     const chronoLogs = [...logs].sort((a, b) => getLogDateObject(a.date).getTime() - getLogDateObject(b.date).getTime());
     const recentLogs = chronoLogs.slice(-7);
 
+    // Update Readiness Card and Cortisol Alert
+    const newestBio = chronoLogs[chronoLogs.length - 1];
+    if (newestBio?.value) {
+      const evaluation = calculateReadinessScore(newestBio.value as BioFeedback);
+      if (readinessScoreVal) readinessScoreVal.textContent = String(evaluation.score);
+      if (readinessLevelBadge) {
+        readinessLevelBadge.textContent = evaluation.label;
+        readinessLevelBadge.className = `rounded-full bg-[var(--surface-3)] px-2.5 py-0.5 text-[11px] font-bold ${evaluation.colorClass}`;
+      }
+      if (readinessLabel) {
+        readinessLabel.textContent = `${evaluation.label} (${evaluation.score}/100)`;
+        readinessLabel.className = `text-xs font-bold ${evaluation.colorClass}`;
+      }
+      if (readinessRecommendation) {
+        readinessRecommendation.textContent = evaluation.recommendation;
+      }
+    }
+
+    const cortisolCheck = detectCortisolRetentionAlert(cachedWeightLogs, cachedBioLogs);
+    if (cortisolCheck.hasAlert && cortisolAlertBanner) {
+      cortisolAlertBanner.classList.remove('hidden');
+      if (cortisolAlertMessage && cortisolCheck.message) {
+        cortisolAlertMessage.textContent = cortisolCheck.message;
+      }
+    } else if (cortisolAlertBanner) {
+      cortisolAlertBanner.classList.add('hidden');
+    }
+
     const avgSleep = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.sleepHours) || 0), 0) / recentLogs.length;
     const avgEnergy = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.energyLevel) || 0), 0) / recentLogs.length;
     const avgStress = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.stressLevel) || 0), 0) / recentLogs.length;
@@ -1770,6 +2074,24 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           showToast({ message: 'Por favor, introduce un peso válido.', type: 'error' });
           weightInput.focus();
           return;
+        }
+
+        // Physiological validation check (>5% in 24h)
+        const latestWeight = cachedWeightLogs.length > 0 ? Number(cachedWeightLogs[0]?.value?.weight) : null;
+        if (latestWeight && latestWeight > 0) {
+          const validation = validateWeightChangeSafety(latestWeight, val);
+          if (validation.isSignificantChange && validation.warning) {
+            const confirmed = await showConfirm({
+              title: 'Aviso de Variación Fisiológica',
+              message: validation.warning,
+              confirmText: 'Sí, es correcto',
+              cancelText: 'Revisar valor',
+              variant: 'warning',
+            });
+            if (!confirmed) {
+              return;
+            }
+          }
         }
 
         saveWeightBtn.setAttribute('disabled', 'true');

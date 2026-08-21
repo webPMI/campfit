@@ -117,19 +117,35 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
             <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400 flex items-center gap-1.5">
               <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              En Vivo: v0.009 Beta
+              En Vivo: v0.010 Beta
             </span>
           </div>
 
           <div class="space-y-3 pt-2">
-            <!-- Version 0.009 -->
+            <!-- Version 0.010 -->
             <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.009</span>
-                  <span class="text-xs font-bold text-[var(--text-primary)]">Suite de Seguimiento Élite: Antropometría, Perímetros & Bio-Feedback</span>
+                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.010</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Motor de Análisis Fisiológico, Readiness Diario & Gráficos 7D</span>
                 </div>
                 <span class="text-[11px] text-[var(--text-tertiary)]">Actual</span>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>Motor de Promedio Móvil 7D (Moving Average): Gráfico interactivo que filtra la retención de agua/glucógeno y muestra la tendencia biológica real.</li>
+                <li>Widget "Estado de Hoy & Readiness Score": Evaluación de 0 a 100 del estado de preparación diaria y recomendaciones de entrenamiento.</li>
+                <li>Detector de Retención por Cortisol: Alerta preventiva si el estrés elevado y déficit de sueño enmascaran el progreso en báscula.</li>
+                <li>Validación de Seguridad Fisiológica: Advertencia interactiva si se introduce una variación de peso &gt;5% en 24h para prevenir errores tipográficos.</li>
+              </ul>
+            </div>
+
+            <!-- Version 0.009 -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-[var(--surface-4)] border border-[var(--border-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase">v0.009</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Suite de Seguimiento Élite: Antropometría, Perímetros & Bio-Feedback</span>
+                </div>
               </div>
               <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
                 <li>Módulo de Perímetros Antropométricos: Pecho, Cintura, Cadera, Bíceps (izq/der), Muslos (izq/der) y Gemelos en centímetros con edición y KPIs.</li>
