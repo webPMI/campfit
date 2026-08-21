@@ -532,7 +532,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import {
     calculateMetabolicProfile,
     saveUserMetabolicGoal,
-    getCachedMetabolicProfile,
     type UserMetabolicInput,
     type MetabolicCalculationResult,
     type ActivityLevel,
@@ -545,9 +544,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import type { MedicalProfile } from "@/types";
 
   // ─── DOM refs ────────────────────────────────────────────────────────────────
-  const loadingScreen = document.getElementById("loadingScreen")!;
   const loadingText = document.getElementById("loadingText")!;
-  const dietsContent = document.getElementById("dietsContent")!;
   const dietCard = document.getElementById("dietCard")!;
   const emptyState = document.getElementById("emptyState")!;
   const dietName = document.getElementById("dietName")!;

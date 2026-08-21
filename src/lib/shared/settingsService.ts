@@ -4,8 +4,8 @@
  *
  * @module shared/settingsService
  */
-import { showToast } from '@/lib/shared/ui';
-import { loadProfile, updateProfile, changePassword, renderProfileView, renderProfileLoadingState } from '@/lib/shared/profileService';
+import { showToast, renderLoadingState } from '@/lib/shared/ui';
+import { loadProfile, updateProfile, changePassword, renderProfileView } from '@/lib/shared/profileService';
 
 /**
  * Initializes the profile section with loading state, then loads and renders the profile.
@@ -18,7 +18,7 @@ export async function initProfileSection(
     emailInput: HTMLInputElement,
     tr: (key: string) => string
 ): Promise<void> {
-    profileSection.innerHTML = renderProfileLoadingState();
+    profileSection.innerHTML = renderLoadingState('Cargando perfil...');
     const profile = await loadProfile(userId);
 
     if (profile) {
@@ -56,7 +56,7 @@ export function renderProfileEmptyState(
     </div>
   `;
     document.getElementById('btn-retry-profile')?.addEventListener('click', async () => {
-        container.innerHTML = renderProfileLoadingState();
+        container.innerHTML = renderLoadingState('Cargando perfil...');
         const retryProfile = await loadProfile(userId);
         if (retryProfile) {
             container.innerHTML = `

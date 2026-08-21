@@ -9,6 +9,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // Mocks para dependencias externas
 vi.mock('@/lib/shared/ui', () => ({
     showToast: vi.fn(),
+    renderLoadingState: vi.fn((label?: string) => `<div id="loading">${label || 'Cargando...'}</div>`),
 }));
 
 vi.mock('@/lib/shared/profileService', () => ({

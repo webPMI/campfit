@@ -100,6 +100,10 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
       lastActivityAt: serverTimestamp(),
     };
 
+    if (severity && ['low', 'medium', 'high', 'critical'].includes(severity)) {
+      updates.severity = severity;
+    }
+
     const statusHistoryEntry = {
       status: ticketData.status,
       changedAt: serverTimestamp(),

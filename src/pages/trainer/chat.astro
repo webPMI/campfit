@@ -219,10 +219,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
   async function initChat(uid: string): Promise<void> {
     trainerId = uid;
-    const conversationList = document.getElementById("conversation-list")!;
-    const chatView = document.getElementById("chat-view")!;
-    const chatEmpty = document.getElementById("chat-empty")!;
-    const messagesContainer = document.getElementById("messages-container")!;
     const chatInput = document.getElementById("chat-input") as HTMLInputElement;
     const btnSend = document.getElementById("btn-send-message")!;
     const btnAlert = document.getElementById("btn-send-alert")!;

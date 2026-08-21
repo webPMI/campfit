@@ -223,7 +223,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   let allProposals: PlanProposal[] = [];
   let currentClientPrefs: UserExercisePreferences | null = null;
 
-  let currentTrainerId = "";
   let editingExercises: Exercise[] = [];
   let editingScheduledDays: number[] = [1, 3, 5];
   let editingAllowReschedule: boolean = true;
@@ -241,7 +240,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   });
 
   async function initWorkouts(trainerId: string) {
-    currentTrainerId = trainerId;
     const container = document.getElementById("workouts-container")!;
     const btnCreate = document.getElementById("btn-create-workout")!;
     const clientFilter = document.getElementById("client-filter") as HTMLSelectElement;

@@ -557,7 +557,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     subscribeToExercises,
     getExerciseName,
     EXCLUSION_REASON_LABELS,
-    MUSCLE_LABELS,
     type ExerciseItem,
     type ExclusionReason,
   } from "@/lib/shared/exerciseLibrary";
@@ -566,8 +565,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     rateExercise,
     toggleFavorite,
     requestExerciseExclusion,
-    toggleFavoriteExercise,
-    toggleExcludeExercise,
   } from "@/lib/client/exercisePreferencesService";
   import {
     subscribeToCorrectionsByClient,
@@ -597,7 +594,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   import { escapeHtml, showToast, showConfirm } from "@/lib/shared/ui";
 
   const loadingScreen = document.getElementById("loadingScreen")!;
-  const loadingText = document.getElementById("loadingText")!;
   const workoutsContent = document.getElementById("workoutsContent")!;
   const workoutCard = document.getElementById("workoutCard")!;
   const emptyState = document.getElementById("emptyState")!;
@@ -972,7 +968,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2">
               <span class="font-bold text-xs text-[var(--text-primary)]">${escapeHtml(c.exerciseName)}</span>
-              <span class="text-[10px] text-[var(--text-tertiary)]">(${escapeHtml(c.workoutName)})</span>
+              <span class="text-[10px] text-[var(--text-tertiary)]">(${escapeHtml(c.workoutName)}) · ${dateStr}</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="rounded-full px-2 py-0.5 text-[10px] font-bold ${isReviewed ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}">

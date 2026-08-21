@@ -203,7 +203,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     calcMacrosForPortion,
     type FoodItem,
   } from "@/lib/shared/foodLibrary";
-  import { checkDietConflicts, type DietConflict } from "@/lib/client/intoleranceChecker";
+  import { checkDietConflicts } from "@/lib/client/intoleranceChecker";
   import {
     subscribeToTrainerProposals,
     approvePlanProposal,
