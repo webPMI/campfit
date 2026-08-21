@@ -853,8 +853,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       </body>
       </html>
     `;
-    printWindow.document.write(html);
-    printWindow.document.close();
+    printWindow.document.documentElement.innerHTML = html;
     printWindow.focus();
     setTimeout(() => { printWindow.print(); }, 250);
   }

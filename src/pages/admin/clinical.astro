@@ -325,29 +325,34 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     clinicalList.classList.add('hidden');
 
     try {
-      // Load trainers map
+      // 🔒 CRÍTICO: Carga optimizada de usuarios en una sola consulta reduciendo costes de Firestore
       const allUsersSnap = await getDocs(collection(db, 'users'));
       const trainerMap = new Map<string, string>();
+      const rawClients: Array<{ uid: string; name: string; email: string; assignedTrainerId?: string; medicalProfile: any }> = [];
+
       allUsersSnap.forEach(d => {
         const data = d.data();
-        if (data.role === 'trainer') {
+        if (data.role === 'trainer' || data.role === 'admin') {
           trainerMap.set(d.id, data.name || data.email || '');
+        }
+        if (data.role === 'client') {
+          rawClients.push({
+            uid: d.id,
+            name: data.name || data.email || d.id,
+            email: data.email || '',
+            assignedTrainerId: data.assignedTrainerId,
+            medicalProfile: data.medicalProfile || null,
+          });
         }
       });
 
-      // Load clients
-      const clientsSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'client')));
-      allClients = clientsSnap.docs.map(doc => {
-        const data = doc.data();
-        const mp = data.medicalProfile;
-        return {
-          uid: doc.id,
-          name: data.name || data.email || doc.id,
-          email: data.email || '',
-          trainerName: trainerMap.get(data.assignedTrainerId) || '',
-          medicalProfile: mp || null,
-        };
-      });
+      allClients = rawClients.map(c => ({
+        uid: c.uid,
+        name: c.name,
+        email: c.email,
+        trainerName: c.assignedTrainerId ? (trainerMap.get(c.assignedTrainerId) || 'Entrenador Asignado') : '',
+        medicalProfile: c.medicalProfile,
+      }));
 
       updateStats();
       renderClients(allClients);
