@@ -302,7 +302,14 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             ${ticket.reporterName ? `<span>·</span><span>De: ${ticket.reporterName}</span>` : ''}
           </div>
         </div>
-        <div class="shrink-0 flex gap-2">
+        <div class="shrink-0 flex items-center gap-2">
+          <button
+            class="ticket-copy-agent-btn rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all hover:bg-indigo-500/30 flex items-center gap-1 shadow-sm"
+            data-id="${ticket.id}"
+            title="Copiar reporte formateado para pasar a agentes de desarrollo"
+          >
+            📋 Copiar para Agente AI
+          </button>
           <button
             class="ticket-detail-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-[var(--surface-3)] text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-4)] hover:text-[var(--text-primary)]"
             data-id="${ticket.id}"
@@ -335,7 +342,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           ${ticket.reporterName ? `
             <div>
               <p class="text-[10px] text-[var(--text-tertiary)]">Reportero</p>
-              <p class="text-xs text-[var(--text-primary)]">${ticket.reporterName} ${ticket.reporterEmail ? `(${ticket.reporterEmail})` : ''}</p>
+              <p class="text-xs text-[var(--text-primary)]">${ticket.reporterName} ${ticket.reporterEmail ? `(${ticket.reporterEmail})` : ''} · <span class="font-mono text-[10px] text-[var(--text-tertiary)]">UID: ${ticket.reporterUid}</span></p>
             </div>
           ` : `
             <div class="rounded-lg bg-gray-500/10 border border-gray-500/20 p-2.5 text-xs text-gray-400">
@@ -346,6 +353,25 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             <p class="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Descripción completa</p>
             <p class="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">${ticket.description}</p>
           </div>
+          ${ticket.snapshotData ? `
+            <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-3 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-1">
+                  <span>🧬</span> Telemetría y Contexto Técnico Capturado
+                </p>
+                <span class="rounded bg-indigo-500/20 px-1.5 py-0.5 text-[9px] font-mono text-indigo-300 font-bold">
+                  ${(ticket.snapshotData as any).appVersion || 'v0.011'}
+                </span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[var(--text-secondary)]">
+                <div><b>URL:</b> <span class="font-mono text-[10px] text-cyan-300 truncate block">${(ticket.snapshotData as any).currentUrl || 'N/A'}</span></div>
+                <div><b>Resolución:</b> <span>${(ticket.snapshotData as any).screenResolution || 'N/A'}</span></div>
+                <div><b>Rol Usuario:</b> <span class="capitalize">${(ticket.snapshotData as any).userRole || 'client'}</span></div>
+                <div><b>Conexión / RAM:</b> <span>${(ticket.snapshotData as any).connectionType || 'N/A'} • ${(ticket.snapshotData as any).deviceMemory || 'N/A'}</span></div>
+                <div class="sm:col-span-2"><b>User-Agent:</b> <span class="font-mono text-[9px] text-[var(--text-tertiary)] block truncate">${(ticket.snapshotData as any).userAgent || 'N/A'}</span></div>
+              </div>
+            </div>
+          ` : ''}
           ${ticket.adminNotes && ticket.adminNotes.length > 0 ? `
             <div>
               <p class="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Notas internas (${ticket.adminNotes.length})</p>
@@ -397,6 +423,40 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     detailBtn.addEventListener('click', () => {
       detailPanel.classList.toggle('hidden');
       detailBtn.textContent = detailPanel.classList.contains('hidden') ? 'Detalle' : 'Ocultar';
+    });
+
+    // Botón Copiar para Agente AI
+    const copyAgentBtn = card.querySelector('.ticket-copy-agent-btn');
+    copyAgentBtn?.addEventListener('click', async () => {
+      const snap = ticket.snapshotData as any;
+      const markdownPrompt = [
+        `🚨 [INCIDENCIA DE USUARIO / TICKET SOPORTE]`,
+        `- **Ticket ID:** #${ticket.id}`,
+        `- **Título:** ${ticket.title}`,
+        `- **Categoría / Severidad:** ${ticket.category.toUpperCase()} | ${ticket.severity.toUpperCase()}`,
+        `- **Estado Actual:** ${ticket.status.toUpperCase()}`,
+        `- **Usuario:** ${ticket.reporterName || 'Anónimo'} (${ticket.reporterEmail || 'N/A'}) - UID: \`${ticket.reporterUid || 'N/A'}\``,
+        `- **Fecha:** ${formatDateTime(ticket.createdAt)}`,
+        ``,
+        `### 📝 Descripción del Problema:`,
+        `${ticket.description}`,
+        ``,
+        `### 🔍 Contexto Técnico y Telemetría:`,
+        snap ? `- **App Version:** ${snap.appVersion || 'v0.011'}
+- **URL donde ocurrió:** ${snap.currentUrl || 'N/A'}
+- **Rol:** ${snap.userRole || 'client'}
+- **Dispositivo / SO / Browser:** \`${snap.userAgent || 'N/A'}\`
+- **Resolución:** ${snap.screenResolution || 'N/A'}
+- **Conexión / Memoria:** ${snap.connectionType || 'N/A'} • ${snap.deviceMemory || 'N/A'}
+- **Timestamp ISO:** ${snap.timestampIso || 'N/A'}` : `- Sin telemetría adicional.`,
+      ].join('\n');
+
+      try {
+        await navigator.clipboard.writeText(markdownPrompt);
+        showToast({ message: '📋 Resumen copiado al portapapeles para el Agente AI', type: 'success' });
+      } catch {
+        showToast({ message: 'No se pudo copiar automáticamente', type: 'error' });
+      }
     });
 
     // Cambio de estado

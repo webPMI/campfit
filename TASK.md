@@ -1,20 +1,20 @@
-### 🤖 Agente: Antigravity Agent [Motor de Análisis Fisiológico, Readiness Diario & Gráficos 7D]
-- **Fecha / Hora:** `2026-08-21 19:16:30 CEST`
-- **Objetivo / Problema:** Implementación del motor analítico y visual de alto rendimiento:
-  1. **Motor de Promedio Móvil 7D**: Filtro de fluctuaciones de agua/glucógeno y cálculo de tendencia biológica real (`calculateMovingAverage`).
-  2. **Gráfico Canvas Interactivo Dual-Series**: Curva de peso real vs promedio móvil 7D con selector de rangos (7D, 30D, Histórico).
-  3. **Widget "Estado de Hoy & Readiness Score"**: Algoritmo de scoring 0-100% de preparación fisiológica basado en biometría y descanso (`calculateReadinessScore`).
-  4. **Detector de Retención por Cortisol**: Alerta automática cuando el estrés alto y mal sueño enmascaran el progreso en báscula (`detectCortisolRetentionAlert`).
-  5. **Validación de Seguridad Anti-Errores**: Alerta interactiva con confirmación si se introduce una variación &gt;5% en 24h (`validateWeightChangeSafety`).
+### 🤖 Agente: Antigravity Agent [Gestión Integral de Soporte: Telemetría Automática & Copia para Agente AI]
+- **Fecha / Hora:** `2026-08-21 20:28:00 CEST`
+- **Objetivo / Problema:** Conexión completa del ciclo de incidencias y soporte en vivo:
+  1. **Navegación Admin Directa**: Enlace de `/admin/tickets` en barra superior y drawer móvil de `AdminLayout.astro`.
+  2. **Telemetría Automática de Contexto**: Captura en `createSupportTicket` de versión de app (`v0.011`), URL de origen, user-agent, SO, resolución de pantalla, tipo de conexión y rol.
+  3. **Botón de 1-Click "📋 Copiar para Agente AI"**: Exportación estructurada en Markdown del reporte para agilizar la resolución directa con agentes AI.
 - **Estado:** `[COMPLETADO]`
 - **Validación:**
   - `npm run type-check`: 0 errores, 0 warnings.
   - `npx vitest run`: 77 suites pasadas, 810 tests completados (0 fallos).
   - `npm run build`: 43 páginas estáticas generadas en <1s.
-- **Versión:** `v0.010`
+- **Versión:** `v0.011`
 - **Git Commit:** Sincronizado a `origin/master`.
 
 ---
+
+
 
 
 

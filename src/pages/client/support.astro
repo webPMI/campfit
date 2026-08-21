@@ -117,19 +117,34 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
             <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400 flex items-center gap-1.5">
               <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              En Vivo: v0.010 Beta
+              En Vivo: v0.011 Beta
             </span>
           </div>
 
           <div class="space-y-3 pt-2">
-            <!-- Version 0.010 -->
+            <!-- Version 0.011 -->
             <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.010</span>
-                  <span class="text-xs font-bold text-[var(--text-primary)]">Motor de Análisis Fisiológico, Readiness Diario & Gráficos 7D</span>
+                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.011</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Gestión Integral de Soporte: Telemetría Automática & Copia para Agente AI</span>
                 </div>
                 <span class="text-[11px] text-[var(--text-tertiary)]">Actual</span>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>Integración total en el menú de navegación del Administrador (`/admin/tickets`) para acceso y gestión en tiempo real.</li>
+                <li>Telemetría automática en reportes de incidencias: versión activa, URL de origen, sistema operativo, navegador, memoria y resolución.</li>
+                <li>Botón de 1-click "📋 Copiar para Agente AI": exporta el reporte completo formateado en Markdown para acelerar el ciclo de resolución con los agentes de desarrollo.</li>
+              </ul>
+            </div>
+
+            <!-- Version 0.010 -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-[var(--surface-4)] border border-[var(--border-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase">v0.010</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Motor de Análisis Fisiológico, Readiness Diario & Gráficos 7D</span>
+                </div>
               </div>
               <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
                 <li>Motor de Promedio Móvil 7D (Moving Average): Gráfico interactivo que filtra la retención de agua/glucógeno y muestra la tendencia biológica real.</li>

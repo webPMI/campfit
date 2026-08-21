@@ -197,7 +197,7 @@ const isDashboardActive = currentPath === "/admin/dashboard" || currentPath === 
           <button
             type="button"
             class={`relative px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              isSistemaActive
+              isSistemaActive || currentPath.startsWith("/admin/tickets")
                 ? "bg-[var(--brand)]/15 text-white font-black border border-[var(--brand)]/40 shadow-sm shadow-[var(--brand)]/20"
                 : "text-[var(--text-secondary)] hover:text-white hover:bg-[var(--surface-2)]"
             }`}
@@ -210,7 +210,18 @@ const isDashboardActive = currentPath === "/admin/dashboard" || currentPath === 
           </button>
 
           <!-- Dropdown Sistema -->
-          <div class="absolute left-0 top-full mt-1.5 w-52 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)]/98 backdrop-blur-2xl p-1.5 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+          <div class="absolute left-0 top-full mt-1.5 w-56 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)]/98 backdrop-blur-2xl p-1.5 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+            <a
+              href="/admin/tickets"
+              class={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                currentPath.startsWith("/admin/tickets")
+                  ? "bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30"
+                  : "text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
+              }`}
+            >
+              <span>🎫</span>
+              <span>Tickets & Incidencias</span>
+            </a>
             <a
               href="/admin/logs"
               class={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
@@ -246,6 +257,20 @@ const isDashboardActive = currentPath === "/admin/dashboard" || currentPath === 
             </a>
           </div>
         </div>
+
+        <!-- 5. Direct Tickets Header Link -->
+        <a
+          href="/admin/tickets"
+          class={`relative px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+            currentPath.startsWith("/admin/tickets")
+              ? "bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm"
+              : "text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
+          }`}
+          title="Gestión de Tickets de Soporte e Incidencias"
+        >
+          <span>🎫</span>
+          <span>Tickets</span>
+        </a>
       </nav>
     </div>
 
@@ -419,13 +444,26 @@ const isDashboardActive = currentPath === "/admin/dashboard" || currentPath === 
               Sistema & Auditoría
             </div>
 
+            <!-- Tickets & Incidencias -->
+            <a
+              href="/admin/tickets"
+              class={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs transition-all ${
+                currentPath.startsWith("/admin/tickets")
+                  ? "bg-amber-500/20 text-amber-300 border-l-2 border-amber-400 shadow-sm font-extrabold"
+                  : "text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 font-semibold"
+              }`}
+            >
+              <span class="text-sm">🎫</span>
+              <span>Tickets & Incidencias</span>
+            </a>
+
             <!-- Logs -->
             <a
               href="/admin/logs"
               class={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs transition-all ${
                 currentPath.startsWith("/admin/logs")
                   ? "bg-[var(--brand-dim)] text-[var(--brand)] border-l-2 border-[var(--brand)] shadow-sm font-extrabold"
-                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)] font-semibold"
+                  : "text-[var(--text-secondary)] hover:text-primary hover:bg-[var(--surface-2)] font-semibold"
               }`}
             >
               <span class="text-sm">📜</span>

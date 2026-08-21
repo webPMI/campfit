@@ -328,6 +328,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         setLoading(true);
 
         try {
+          // 🔒 CRÍTICO: Telemetría de contexto técnico automática para auditoría de agentes
+          const technicalSnapshot = {
+            appVersion: '0.011',
+            currentUrl: window.location.href,
+            referrer: document.referrer || 'direct',
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            screenResolution: `${window.innerWidth}x${window.innerHeight} (Física: ${window.screen.width}x${window.screen.height})`,
+            deviceMemory: (navigator as any).deviceMemory ? `${(navigator as any).deviceMemory} GB` : 'N/A',
+            hardwareConcurrency: navigator.hardwareConcurrency || 'N/A',
+            connectionType: (navigator as any).connection?.effectiveType || 'N/A',
+            userRole: userData?.role || 'client',
+            timestampIso: new Date().toISOString(),
+          };
+
           // 🔒 CRÍTICO: Envío directo a Firestore autenticado mediante el SDK cliente
           const result = await createSupportTicket({
             reporterUid: firebaseUser.uid,
@@ -339,6 +354,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             severity,
             isAnonymous,
             relatedUserId: relatedEmail || null,
+            snapshotData: technicalSnapshot,
           });
 
           if (!result.success) {
