@@ -35,19 +35,32 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-2 border-b border-[var(--border-default)] pb-2">
+        <!-- Tabs -->
+        <div class="flex gap-2 border-b border-[var(--border-default)] pb-2 overflow-x-auto scrollbar-none">
           <button
             id="tabWeight"
-            data-i18n="client.progress.tabWeight"
-            class="tab-btn active rounded-lg px-4 py-2 text-sm font-medium text-[var(--brand)] bg-[var(--brand-dim)] transition-all"
-            >{t('client.progress.tabWeight') || "Peso Corporal"}</button
+            class="tab-btn active rounded-xl px-4 py-2 text-xs font-bold text-[var(--brand)] bg-[var(--brand-dim)] transition-all whitespace-nowrap"
           >
+            ⚖️ Peso & Composición
+          </button>
+          <button
+            id="tabMeasurements"
+            class="tab-btn rounded-xl px-4 py-2 text-xs font-bold text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all whitespace-nowrap"
+          >
+            📏 Perímetros & Medidas
+          </button>
+          <button
+            id="tabBiofeedback"
+            class="tab-btn rounded-xl px-4 py-2 text-xs font-bold text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all whitespace-nowrap"
+          >
+            ⚡ Bio-Feedback Diario
+          </button>
           <button
             id="tabPhotos"
-            data-i18n="client.progress.tabPhotos"
-            class="tab-btn rounded-lg px-4 py-2 text-sm font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all"
-            >{t('client.progress.tabPhotos') || "Fotos de Evolución"}</button
+            class="tab-btn rounded-xl px-4 py-2 text-xs font-bold text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all whitespace-nowrap"
           >
+            📸 Fotos de Evolución
+          </button>
         </div>
 
         <!-- Weight Tab -->
@@ -136,6 +149,229 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
             </div>
             <div id="weightHistory" class="space-y-2.5">
               <p class="text-sm text-[var(--text-disabled)]">Sin registros de peso aún.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Measurements Tab -->
+        <div id="measurementsTab" class="hidden space-y-5">
+          <!-- Measurements KPI Summary -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Pecho / Torso</span>
+              <p id="kpiChest" class="mt-1 text-lg font-black text-[var(--text-primary)]">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Cintura</span>
+              <p id="kpiWaist" class="mt-1 text-lg font-black text-amber-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Cadera / Glúteo</span>
+              <p id="kpiHips" class="mt-1 text-lg font-black text-cyan-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Bíceps Promedio</span>
+              <p id="kpiArms" class="mt-1 text-lg font-black text-purple-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span></p>
+            </div>
+          </div>
+
+          <!-- Register Measurements Card -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Registrar Perímetros Corporales</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Medición antropométrica en centímetros (cm) con cinta métrica</p>
+              </div>
+              <span class="rounded-full bg-cyan-500/10 text-cyan-400 px-2.5 py-0.5 text-[10px] font-bold border border-cyan-500/20">📏 Antropometría</span>
+            </div>
+
+            <form id="measurementsForm" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="measDateInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Fecha de Medición</label>
+                  <input id="measDateInput" type="date" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measChestInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Pecho / Pectoral (cm)</label>
+                  <input id="measChestInput" type="number" step="0.5" min="40" max="250" placeholder="Ej: 102.5" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measWaistInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Cintura (cm) *</label>
+                  <input id="measWaistInput" type="number" step="0.5" min="40" max="250" required placeholder="Ej: 82.0" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label for="measHipsInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Cadera (cm)</label>
+                  <input id="measHipsInput" type="number" step="0.5" min="40" max="250" placeholder="Ej: 98.0" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measArmLeftInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Bíceps Izq (cm)</label>
+                  <input id="measArmLeftInput" type="number" step="0.5" min="15" max="80" placeholder="Ej: 36.5" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measArmRightInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Bíceps Der (cm)</label>
+                  <input id="measArmRightInput" type="number" step="0.5" min="15" max="80" placeholder="Ej: 37.0" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measThighLeftInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Muslo Izq (cm)</label>
+                  <input id="measThighLeftInput" type="number" step="0.5" min="20" max="120" placeholder="Ej: 58.0" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="measThighRightInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Muslo Der (cm)</label>
+                  <input id="measThighRightInput" type="number" step="0.5" min="20" max="120" placeholder="Ej: 58.5" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measCalvesInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Gemelos (cm)</label>
+                  <input id="measCalvesInput" type="number" step="0.5" min="20" max="80" placeholder="Ej: 38.0" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="measNotesInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Notas (Opcional)</label>
+                  <input id="measNotesInput" type="text" placeholder="Ej: En ayunas, post descanso" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button
+                  id="saveMeasBtn"
+                  type="submit"
+                  class="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+                >
+                  <span id="saveMeasBtnText">Guardar Medidas</span>
+                  <span>📏</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Measurements History -->
+          <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Historial de Perímetros</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Control de ganancias y reducción por grupo muscular</p>
+              </div>
+              <span id="measCountBadge" class="text-xs font-bold text-[var(--text-tertiary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-lg">0 registros</span>
+            </div>
+            <div id="measurementsHistory" class="space-y-2.5">
+              <p class="text-sm text-[var(--text-disabled)]">Sin registros de perímetros aún.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio-Feedback Tab -->
+        <div id="biofeedbackTab" class="hidden space-y-5">
+          <!-- Bio-Feedback KPI Summary -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Sueño Promedio</span>
+              <p id="kpiSleep" class="mt-1 text-lg font-black text-indigo-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">h</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Nivel de Energía</span>
+              <p id="kpiEnergy" class="mt-1 text-lg font-black text-amber-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">/10</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Estrés Percibido</span>
+              <p id="kpiStress" class="mt-1 text-lg font-black text-rose-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">/10</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Agua Promedio</span>
+              <p id="kpiWater" class="mt-1 text-lg font-black text-cyan-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">L</span></p>
+            </div>
+          </div>
+
+          <!-- Register Bio-Feedback Card -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Check-in de Recuperación y Estado Diario</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Bio-Feedback diario para modular volumen, intensidad y descanso</p>
+              </div>
+              <span class="rounded-full bg-amber-500/10 text-amber-400 px-2.5 py-0.5 text-[10px] font-bold border border-amber-500/20">⚡ Recuperación</span>
+            </div>
+
+            <form id="biofeedbackForm" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="bioDateInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Fecha</label>
+                  <input id="bioDateInput" type="date" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="bioSleepInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Horas de Sueño</label>
+                  <input id="bioSleepInput" type="number" step="0.5" min="2" max="16" placeholder="Ej: 7.5" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="bioSleepQualInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Calidad del Sueño</label>
+                  <select id="bioSleepQualInput" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]">
+                    <option value="5">⭐⭐⭐⭐⭐ Excelente (Profundo y reparador)</option>
+                    <option value="4" selected>⭐⭐⭐⭐ Bueno</option>
+                    <option value="3">⭐⭐⭐ Regular / Interrumpido</option>
+                    <option value="2">⭐⭐ Malo (Insomnio / Despertares)</option>
+                    <option value="1">⭐ Pésimo (Fatiga extrema)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="bioEnergyInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Nivel de Energía (1 al 10)</label>
+                  <input id="bioEnergyInput" type="number" min="1" max="10" value="8" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="bioStressInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Nivel de Estrés (1 al 10)</label>
+                  <input id="bioStressInput" type="number" min="1" max="10" value="3" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div>
+                  <label for="bioDomsInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Agujetas / Fatiga Muscular</label>
+                  <select id="bioDomsInput" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]">
+                    <option value="none">🟢 Sin dolor muscular (Fresco)</option>
+                    <option value="mild" selected>🟡 Agujetas leves (Óptimo)</option>
+                    <option value="moderate">🟠 Agujetas moderadas</option>
+                    <option value="severe">🔴 Agujetas intensas / Sobrecarga</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="bioWaterInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Agua Consumida (Litros)</label>
+                  <input id="bioWaterInput" type="number" step="0.25" min="0" max="10" placeholder="Ej: 2.5" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label for="bioNotesInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Sensaciones / Notas</label>
+                  <input id="bioNotesInput" type="text" placeholder="Ej: Mucha fuerza en banca, digestión ligera" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+                </div>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button
+                  id="saveBioBtn"
+                  type="submit"
+                  class="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+                >
+                  <span id="saveBioBtnText">Guardar Bio-Feedback</span>
+                  <span>⚡</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Bio-Feedback History -->
+          <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Historial de Estado Diario</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Tendencias de recuperación y preparación fisiológica</p>
+              </div>
+              <span id="bioCountBadge" class="text-xs font-bold text-[var(--text-tertiary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-lg">0 registros</span>
+            </div>
+            <div id="biofeedbackHistory" class="space-y-2.5">
+              <p class="text-sm text-[var(--text-disabled)]">Sin registros de bio-feedback aún.</p>
             </div>
           </div>
         </div>
@@ -347,12 +583,156 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       </form>
     </div>
   </div>
+
+  <!-- Edit Measurements Modal -->
+  <div id="editMeasModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-2xl animate-scale-up max-h-[90vh] overflow-y-auto">
+      <button id="closeEditMeasModal" type="button" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-white text-sm font-bold p-1">✕</button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 text-xl border border-cyan-500/20">
+          📏
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">Editar Perímetros Corporales</h3>
+          <p class="text-xs text-[var(--text-tertiary)]">Actualiza las mediciones en centímetros</p>
+        </div>
+      </div>
+      <form id="editMeasForm" class="space-y-3">
+        <input type="hidden" id="editMeasLogId" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="editMeasDate" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Fecha</label>
+            <input id="editMeasDate" type="date" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editMeasChest" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Pecho (cm)</label>
+            <input id="editMeasChest" type="number" step="0.5" min="40" max="250" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="editMeasWaist" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Cintura (cm) *</label>
+            <input id="editMeasWaist" type="number" step="0.5" min="40" max="250" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editMeasHips" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Cadera (cm)</label>
+            <input id="editMeasHips" type="number" step="0.5" min="40" max="250" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label for="editMeasArmLeft" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Bíceps Izq</label>
+            <input id="editMeasArmLeft" type="number" step="0.5" min="15" max="80" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editMeasArmRight" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Bíceps Der</label>
+            <input id="editMeasArmRight" type="number" step="0.5" min="15" max="80" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editMeasThighLeft" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Muslo Izq</label>
+            <input id="editMeasThighLeft" type="number" step="0.5" min="20" max="120" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editMeasThighRight" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Muslo Der</label>
+            <input id="editMeasThighRight" type="number" step="0.5" min="20" max="120" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="editMeasCalves" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Gemelos (cm)</label>
+            <input id="editMeasCalves" type="number" step="0.5" min="20" max="80" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editMeasNotes" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Notas</label>
+            <input id="editMeasNotes" type="text" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-subtle)]">
+          <button id="cancelEditMeasBtn" type="button" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)]">Cancelar</button>
+          <button id="submitEditMeasBtn" type="submit" class="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 text-xs font-bold text-white shadow-md">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Bio-Feedback Modal -->
+  <div id="editBioModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-2xl animate-scale-up">
+      <button id="closeEditBioModal" type="button" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-white text-sm font-bold p-1">✕</button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 text-xl border border-amber-500/20">
+          ⚡
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">Editar Bio-Feedback Diario</h3>
+          <p class="text-xs text-[var(--text-tertiary)]">Actualiza tus sensaciones y estado de recuperación</p>
+        </div>
+      </div>
+      <form id="editBioForm" class="space-y-3">
+        <input type="hidden" id="editBioLogId" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="editBioDate" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Fecha</label>
+            <input id="editBioDate" type="date" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editBioSleep" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Horas de Sueño</label>
+            <input id="editBioSleep" type="number" step="0.5" min="2" max="16" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div>
+            <label for="editBioEnergy" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Energía (1-10)</label>
+            <input id="editBioEnergy" type="number" min="1" max="10" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div>
+            <label for="editBioStress" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Estrés (1-10)</label>
+            <input id="editBioStress" type="number" min="1" max="10" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <label for="editBioWater" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Agua (L)</label>
+            <input id="editBioWater" type="number" step="0.25" min="0" max="10" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+          </div>
+        </div>
+        <div>
+          <label for="editBioDoms" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Agujetas / Fatiga Muscular</label>
+          <select id="editBioDoms" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]">
+            <option value="none">🟢 Sin dolor muscular (Fresco)</option>
+            <option value="mild">🟡 Agujetas leves (Óptimo)</option>
+            <option value="moderate">🟠 Agujetas moderadas</option>
+            <option value="severe">🔴 Agujetas intensas / Sobrecarga</option>
+          </select>
+        </div>
+        <div>
+          <label for="editBioNotes" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Notas</label>
+          <input id="editBioNotes" type="text" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-subtle)]">
+          <button id="cancelEditBioBtn" type="button" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)]">Cancelar</button>
+          <button id="submitEditBioBtn" type="submit" class="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-xs font-bold text-white shadow-md">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </ClientLayout>
 
 <script>
   import { logger } from "@/lib/shared/logger";
   import { initPage } from "@/lib/shared/initPage";
-  import { subscribeToProgress, registerWeight, updateWeightLog, registerProgressPhoto, deleteProgressLog, type ProgressLog } from "@/lib/client/progressService";
+  import {
+    subscribeToProgress,
+    registerWeight,
+    updateWeightLog,
+    registerMeasurements,
+    updateMeasurementsLog,
+    registerBioFeedback,
+    updateBioFeedbackLog,
+    registerProgressPhoto,
+    deleteProgressLog,
+    type ProgressLog,
+    type BodyMeasurements,
+    type BioFeedback
+  } from "@/lib/client/progressService";
   import { uploadProgressPhotoToR2, validateImageFile } from "@/lib/storage/r2Service";
   import { showToast, showConfirm, escapeHtml } from "@/lib/shared/ui";
   import { t } from "@/i18n/client";
@@ -361,8 +741,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const loadingText = document.getElementById("loadingText")!;
   const progressContent = document.getElementById("progressContent")!;
   const tabWeight = document.getElementById("tabWeight")!;
+  const tabMeasurements = document.getElementById("tabMeasurements")!;
+  const tabBiofeedback = document.getElementById("tabBiofeedback")!;
   const tabPhotos = document.getElementById("tabPhotos")!;
+
   const weightTab = document.getElementById("weightTab")!;
+  const measurementsTab = document.getElementById("measurementsTab")!;
+  const biofeedbackTab = document.getElementById("biofeedbackTab")!;
   const photosTab = document.getElementById("photosTab")!;
 
   // Weight form & KPI elements
@@ -390,7 +775,107 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const editWeightNotes = document.getElementById("editWeightNotes") as HTMLInputElement | null;
   const submitEditWeightBtn = document.getElementById("submitEditWeightBtn") as HTMLButtonElement | null;
 
+  // Measurements form & KPI elements
+  const kpiChest = document.getElementById("kpiChest") as HTMLParagraphElement | null;
+  const kpiWaist = document.getElementById("kpiWaist") as HTMLParagraphElement | null;
+  const kpiHips = document.getElementById("kpiHips") as HTMLParagraphElement | null;
+  const kpiArms = document.getElementById("kpiArms") as HTMLParagraphElement | null;
+  const measCountBadge = document.getElementById("measCountBadge") as HTMLSpanElement | null;
+  const measurementsHistory = document.getElementById("measurementsHistory")!;
+  const measurementsForm = document.getElementById("measurementsForm") as HTMLFormElement | null;
+  const measDateInput = document.getElementById("measDateInput") as HTMLInputElement | null;
+  const measChestInput = document.getElementById("measChestInput") as HTMLInputElement | null;
+  const measWaistInput = document.getElementById("measWaistInput") as HTMLInputElement | null;
+  const measHipsInput = document.getElementById("measHipsInput") as HTMLInputElement | null;
+  const measArmLeftInput = document.getElementById("measArmLeftInput") as HTMLInputElement | null;
+  const measArmRightInput = document.getElementById("measArmRightInput") as HTMLInputElement | null;
+  const measThighLeftInput = document.getElementById("measThighLeftInput") as HTMLInputElement | null;
+  const measThighRightInput = document.getElementById("measThighRightInput") as HTMLInputElement | null;
+  const measCalvesInput = document.getElementById("measCalvesInput") as HTMLInputElement | null;
+  const measNotesInput = document.getElementById("measNotesInput") as HTMLInputElement | null;
+  const saveMeasBtn = document.getElementById("saveMeasBtn") as HTMLButtonElement | null;
+  const saveMeasBtnText = document.getElementById("saveMeasBtnText") as HTMLSpanElement | null;
+
+  // Edit Measurements Modal elements
+  const editMeasModal = document.getElementById("editMeasModal") as HTMLDivElement | null;
+  const closeEditMeasModal = document.getElementById("closeEditMeasModal") as HTMLButtonElement | null;
+  const cancelEditMeasBtn = document.getElementById("cancelEditMeasBtn") as HTMLButtonElement | null;
+  const editMeasForm = document.getElementById("editMeasForm") as HTMLFormElement | null;
+  const editMeasLogId = document.getElementById("editMeasLogId") as HTMLInputElement | null;
+  const editMeasDate = document.getElementById("editMeasDate") as HTMLInputElement | null;
+  const editMeasChest = document.getElementById("editMeasChest") as HTMLInputElement | null;
+  const editMeasWaist = document.getElementById("editMeasWaist") as HTMLInputElement | null;
+  const editMeasHips = document.getElementById("editMeasHips") as HTMLInputElement | null;
+  const editMeasArmLeft = document.getElementById("editMeasArmLeft") as HTMLInputElement | null;
+  const editMeasArmRight = document.getElementById("editMeasArmRight") as HTMLInputElement | null;
+  const editMeasThighLeft = document.getElementById("editMeasThighLeft") as HTMLInputElement | null;
+  const editMeasThighRight = document.getElementById("editMeasThighRight") as HTMLInputElement | null;
+  const editMeasCalves = document.getElementById("editMeasCalves") as HTMLInputElement | null;
+  const editMeasNotes = document.getElementById("editMeasNotes") as HTMLInputElement | null;
+
+  // Bio-Feedback form & KPI elements
+  const kpiSleep = document.getElementById("kpiSleep") as HTMLParagraphElement | null;
+  const kpiEnergy = document.getElementById("kpiEnergy") as HTMLParagraphElement | null;
+  const kpiStress = document.getElementById("kpiStress") as HTMLParagraphElement | null;
+  const kpiWater = document.getElementById("kpiWater") as HTMLParagraphElement | null;
+  const bioCountBadge = document.getElementById("bioCountBadge") as HTMLSpanElement | null;
+  const biofeedbackHistory = document.getElementById("biofeedbackHistory")!;
+  const biofeedbackForm = document.getElementById("biofeedbackForm") as HTMLFormElement | null;
+  const bioDateInput = document.getElementById("bioDateInput") as HTMLInputElement | null;
+  const bioSleepInput = document.getElementById("bioSleepInput") as HTMLInputElement | null;
+  const bioSleepQualInput = document.getElementById("bioSleepQualInput") as HTMLSelectElement | null;
+  const bioEnergyInput = document.getElementById("bioEnergyInput") as HTMLInputElement | null;
+  const bioStressInput = document.getElementById("bioStressInput") as HTMLInputElement | null;
+  const bioDomsInput = document.getElementById("bioDomsInput") as HTMLSelectElement | null;
+  const bioWaterInput = document.getElementById("bioWaterInput") as HTMLInputElement | null;
+  const bioNotesInput = document.getElementById("bioNotesInput") as HTMLInputElement | null;
+  const saveBioBtn = document.getElementById("saveBioBtn") as HTMLButtonElement | null;
+  const saveBioBtnText = document.getElementById("saveBioBtnText") as HTMLSpanElement | null;
+
+  // Edit Bio-Feedback Modal elements
+  const editBioModal = document.getElementById("editBioModal") as HTMLDivElement | null;
+  const closeEditBioModal = document.getElementById("closeEditBioModal") as HTMLButtonElement | null;
+  const cancelEditBioBtn = document.getElementById("cancelEditBioBtn") as HTMLButtonElement | null;
+  const editBioForm = document.getElementById("editBioForm") as HTMLFormElement | null;
+  const editBioLogId = document.getElementById("editBioLogId") as HTMLInputElement | null;
+  const editBioDate = document.getElementById("editBioDate") as HTMLInputElement | null;
+  const editBioSleep = document.getElementById("editBioSleep") as HTMLInputElement | null;
+  const editBioEnergy = document.getElementById("editBioEnergy") as HTMLInputElement | null;
+  const editBioStress = document.getElementById("editBioStress") as HTMLInputElement | null;
+  const editBioDoms = document.getElementById("editBioDoms") as HTMLSelectElement | null;
+  const editBioWater = document.getElementById("editBioWater") as HTMLInputElement | null;
+  const editBioNotes = document.getElementById("editBioNotes") as HTMLInputElement | null;
+
   let cachedWeightLogs: ProgressLog[] = [];
+  let cachedMeasLogs: ProgressLog[] = [];
+  let cachedBioLogs: ProgressLog[] = [];
+
+  // Tab switching
+  function switchTab(tab: "weight" | "measurements" | "biofeedback" | "photos") {
+    const tabs = [
+      { btn: tabWeight, panel: weightTab, id: 'weight' },
+      { btn: tabMeasurements, panel: measurementsTab, id: 'measurements' },
+      { btn: tabBiofeedback, panel: biofeedbackTab, id: 'biofeedback' },
+      { btn: tabPhotos, panel: photosTab, id: 'photos' }
+    ];
+
+    tabs.forEach(t => {
+      if (t.id === tab) {
+        t.btn?.classList.add("text-[var(--brand)]", "bg-[var(--brand-dim)]");
+        t.btn?.classList.remove("text-[var(--text-tertiary)]");
+        t.panel?.classList.remove("hidden");
+      } else {
+        t.btn?.classList.remove("text-[var(--brand)]", "bg-[var(--brand-dim)]");
+        t.btn?.classList.add("text-[var(--text-tertiary)]");
+        t.panel?.classList.add("hidden");
+      }
+    });
+  }
+
+  tabWeight?.addEventListener("click", () => switchTab("weight"));
+  tabMeasurements?.addEventListener("click", () => switchTab("measurements"));
+  tabBiofeedback?.addEventListener("click", () => switchTab("biofeedback"));
+  tabPhotos?.addEventListener("click", () => switchTab("photos"));
 
   // Photos elements
   const photoAngleBtns = document.querySelectorAll<HTMLButtonElement>('.photo-angle-btn');
@@ -411,34 +896,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const photoModalImg = document.getElementById('photoModalImg') as HTMLImageElement | null;
   const photoModalCaption = document.getElementById('photoModalCaption');
   const closePhotoModal = document.getElementById('closePhotoModal');
+  const btnDeletePhotoFromModal = document.getElementById('btnDeletePhotoFromModal');
 
   let selectedAngle: 'front' | 'side' | 'back' = 'front';
   let selectedPhotoFile: File | null = null;
   let currentUserId = '';
-
-  loadingText.textContent = t("dashboard.loading");
-
-  // Tab switching
-  function switchTab(tab: "weight" | "photos") {
-    [tabWeight, tabPhotos].forEach((btn) => {
-      btn.classList.remove("text-[var(--brand)]", "bg-[var(--brand-dim)]");
-      btn.classList.add("text-[var(--text-tertiary)]");
-    });
-    if (tab === "weight") {
-      tabWeight.classList.add("text-[var(--brand)]", "bg-[var(--brand-dim)]");
-      tabWeight.classList.remove("text-[var(--text-tertiary)]");
-      weightTab.classList.remove("hidden");
-      photosTab.classList.add("hidden");
-    } else {
-      tabPhotos.classList.add("text-[var(--brand)]", "bg-[var(--brand-dim)]");
-      tabPhotos.classList.remove("text-[var(--text-tertiary)]");
-      weightTab.classList.add("hidden");
-      photosTab.classList.remove("hidden");
-    }
-  }
-
-  tabWeight?.addEventListener("click", () => switchTab("weight"));
-  tabPhotos?.addEventListener("click", () => switchTab("photos"));
+  let currentModalPhotoId: string | null = null;
+  let cachedPhotoLogs: ProgressLog[] = [];
 
   // Angle selector details configuration
   const angleConfigs: Record<'front' | 'side' | 'back', {
@@ -494,7 +958,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const galleryFilterBtns = document.querySelectorAll<HTMLButtonElement>('.gallery-filter-btn');
 
   let activeFilterAngle: 'all' | 'front' | 'side' | 'back' = 'all';
-  let cachedPhotoLogs: ProgressLog[] = [];
 
   function updateAngleUI(angle: 'front' | 'side' | 'back') {
     selectedAngle = angle;
@@ -749,9 +1212,6 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     });
   }
 
-  let currentModalPhotoId: string | null = null;
-  const btnDeletePhotoFromModal = document.getElementById('btnDeletePhotoFromModal');
-
   btnDeletePhotoFromModal?.addEventListener('click', async () => {
     if (!currentModalPhotoId) return;
     const deleted = await confirmAndDeletePhoto(currentModalPhotoId);
@@ -982,30 +1442,329 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     }
   }
 
+  // --- MEASUREMENTS LOGIC ---
+  function renderMeasurementsLogs(logs: ProgressLog[]) {
+    cachedMeasLogs = logs;
+    if (measCountBadge) {
+      measCountBadge.textContent = `${logs.length} ${logs.length === 1 ? 'registro' : 'registros'}`;
+    }
+
+    if (!logs || logs.length === 0) {
+      measurementsHistory.innerHTML = '<p class="text-sm text-[var(--text-disabled)]">Sin registros de perímetros aún.</p>';
+      if (kpiChest) kpiChest.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>';
+      if (kpiWaist) kpiWaist.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>';
+      if (kpiHips) kpiHips.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>';
+      if (kpiArms) kpiArms.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>';
+      return;
+    }
+
+    const chronoLogs = [...logs].sort((a, b) => getLogDateObject(a.date).getTime() - getLogDateObject(b.date).getTime());
+    const newestLog = chronoLogs[chronoLogs.length - 1];
+    const val = (newestLog?.value || {}) as BodyMeasurements;
+
+    if (kpiChest) kpiChest.innerHTML = val.chest ? `${val.chest} <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>` : '--';
+    if (kpiWaist) kpiWaist.innerHTML = val.waist ? `${val.waist} <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>` : '--';
+    if (kpiHips) kpiHips.innerHTML = val.hips ? `${val.hips} <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>` : '--';
+    const armAvg = (val.leftArm || val.rightArm) ? (((val.leftArm || 0) + (val.rightArm || 0)) / (val.leftArm && val.rightArm ? 2 : 1)).toFixed(1) : null;
+    if (kpiArms) kpiArms.innerHTML = armAvg ? `${armAvg} <span class="text-xs font-normal text-[var(--text-tertiary)]">cm</span>` : '--';
+
+    measurementsHistory.innerHTML = "";
+    const descLogs = [...logs].sort((a, b) => getLogDateObject(b.date).getTime() - getLogDateObject(a.date).getTime());
+
+    descLogs.forEach((log) => {
+      const d = getLogDateObject(log.date);
+      const formattedDate = d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+      const m = (log.value || {}) as BodyMeasurements;
+
+      const pills: string[] = [];
+      if (m.chest) pills.push(`<span class="rounded bg-[var(--surface-3)] px-2 py-0.5 text-[11px] font-semibold text-[var(--text-primary)]">Pecho: <b>${m.chest}cm</b></span>`);
+      if (m.waist) pills.push(`<span class="rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 px-2 py-0.5 text-[11px] font-semibold">Cintura: <b>${m.waist}cm</b></span>`);
+      if (m.hips) pills.push(`<span class="rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 text-[11px] font-semibold">Cadera: <b>${m.hips}cm</b></span>`);
+      if (m.leftArm || m.rightArm) pills.push(`<span class="rounded bg-purple-500/10 text-purple-300 border border-purple-500/20 px-2 py-0.5 text-[11px] font-semibold">Bíceps: <b>${m.leftArm || '-'}/${m.rightArm || '-'}cm</b></span>`);
+      if (m.leftThigh || m.rightThigh) pills.push(`<span class="rounded bg-[var(--surface-3)] px-2 py-0.5 text-[11px] font-semibold text-[var(--text-secondary)]">Muslo: <b>${m.leftThigh || '-'}/${m.rightThigh || '-'}cm</b></span>`);
+      if (m.calves) pills.push(`<span class="rounded bg-[var(--surface-3)] px-2 py-0.5 text-[11px] font-semibold text-[var(--text-secondary)]">Gemelos: <b>${m.calves}cm</b></span>`);
+
+      const itemEl = document.createElement("div");
+      itemEl.className = "flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border-subtle)] p-4 hover:border-[var(--border-default)] transition-all";
+      itemEl.innerHTML = `
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="rounded-md bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-2 py-0.5 text-[10px] font-bold">📏 Medición</span>
+            <span class="text-xs font-bold text-[var(--text-primary)]">${formattedDate}</span>
+            ${m.notes ? `<span class="text-xs text-[var(--text-tertiary)] italic">• "${escapeHtml(m.notes)}"</span>` : ''}
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            ${pills.join('')}
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-1.5 shrink-0">
+          <button type="button" class="btn-edit-meas rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] hover:bg-[var(--surface-4)] p-1.5 text-xs text-[var(--text-secondary)] hover:text-white transition-all" title="Editar perímetros">✏️</button>
+          <button type="button" class="btn-delete-meas rounded-lg border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 p-1.5 text-xs text-rose-300 transition-all" title="Eliminar perímetros">🗑️</button>
+        </div>
+      `;
+
+      itemEl.querySelector('.btn-edit-meas')?.addEventListener('click', () => openEditMeasModal(log));
+      itemEl.querySelector('.btn-delete-meas')?.addEventListener('click', () => confirmAndDeleteMeasurements(log.id));
+
+      measurementsHistory.appendChild(itemEl);
+    });
+  }
+
+  function openEditMeasModal(log: ProgressLog) {
+    if (!editMeasModal || !editMeasLogId || !editMeasDate || !editMeasWaist) return;
+    editMeasLogId.value = log.id;
+    const d = getLogDateObject(log.date);
+    editMeasDate.value = d.toISOString().split('T')[0] || '';
+    const m = (log.value || {}) as BodyMeasurements;
+    if (editMeasChest) editMeasChest.value = m.chest ? String(m.chest) : '';
+    editMeasWaist.value = m.waist ? String(m.waist) : '';
+    if (editMeasHips) editMeasHips.value = m.hips ? String(m.hips) : '';
+    if (editMeasArmLeft) editMeasArmLeft.value = m.leftArm ? String(m.leftArm) : '';
+    if (editMeasArmRight) editMeasArmRight.value = m.rightArm ? String(m.rightArm) : '';
+    if (editMeasThighLeft) editMeasThighLeft.value = m.leftThigh ? String(m.leftThigh) : '';
+    if (editMeasThighRight) editMeasThighRight.value = m.rightThigh ? String(m.rightThigh) : '';
+    if (editMeasCalves) editMeasCalves.value = m.calves ? String(m.calves) : '';
+    if (editMeasNotes) editMeasNotes.value = m.notes || '';
+    editMeasModal.classList.remove('hidden');
+  }
+
+  function closeMeasModal() {
+    editMeasModal?.classList.add('hidden');
+    editMeasForm?.reset();
+  }
+
+  closeEditMeasModal?.addEventListener('click', closeMeasModal);
+  cancelEditMeasBtn?.addEventListener('click', closeMeasModal);
+
+  editMeasForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const logId = editMeasLogId?.value;
+    if (!logId) return;
+
+    const data: BodyMeasurements = {
+      chest: editMeasChest?.value ? parseFloat(editMeasChest.value) : undefined,
+      waist: editMeasWaist?.value ? parseFloat(editMeasWaist.value) : undefined,
+      hips: editMeasHips?.value ? parseFloat(editMeasHips.value) : undefined,
+      leftArm: editMeasArmLeft?.value ? parseFloat(editMeasArmLeft.value) : undefined,
+      rightArm: editMeasArmRight?.value ? parseFloat(editMeasArmRight.value) : undefined,
+      leftThigh: editMeasThighLeft?.value ? parseFloat(editMeasThighLeft.value) : undefined,
+      rightThigh: editMeasThighRight?.value ? parseFloat(editMeasThighRight.value) : undefined,
+      calves: editMeasCalves?.value ? parseFloat(editMeasCalves.value) : undefined,
+      notes: editMeasNotes?.value?.trim() || undefined,
+    };
+
+    const dateStr = editMeasDate?.value;
+    const newDate = dateStr ? new Date(dateStr + 'T12:00:00') : undefined;
+
+    try {
+      await updateMeasurementsLog(logId, data, newDate);
+      showToast({ message: 'Perímetros actualizados con éxito', type: 'success' });
+      closeMeasModal();
+    } catch (err) {
+      logger.error('Progress', 'Error al actualizar perímetros:', err);
+      showToast({ message: 'Error al actualizar perímetros', type: 'error' });
+    }
+  });
+
+  async function confirmAndDeleteMeasurements(logId: string): Promise<boolean> {
+    const confirmed = await showConfirm({
+      title: '¿Eliminar registro de perímetros?',
+      message: '¿Estás seguro de que deseas eliminar este registro antropométrico?',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      variant: 'danger',
+    });
+    if (!confirmed) return false;
+
+    try {
+      await deleteProgressLog(logId);
+      showToast({ message: 'Registro de perímetros eliminado', type: 'success' });
+      return true;
+    } catch (err) {
+      logger.error('Progress', 'Error al eliminar perímetros:', err);
+      showToast({ message: 'Error al eliminar el registro', type: 'error' });
+      return false;
+    }
+  }
+
+  // --- BIO-FEEDBACK LOGIC ---
+  function renderBiofeedbackLogs(logs: ProgressLog[]) {
+    cachedBioLogs = logs;
+    if (bioCountBadge) {
+      bioCountBadge.textContent = `${logs.length} ${logs.length === 1 ? 'registro' : 'registros'}`;
+    }
+
+    if (!logs || logs.length === 0) {
+      biofeedbackHistory.innerHTML = '<p class="text-sm text-[var(--text-disabled)]">Sin registros de bio-feedback aún.</p>';
+      if (kpiSleep) kpiSleep.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">h</span>';
+      if (kpiEnergy) kpiEnergy.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">/10</span>';
+      if (kpiStress) kpiStress.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">/10</span>';
+      if (kpiWater) kpiWater.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">L</span>';
+      return;
+    }
+
+    const chronoLogs = [...logs].sort((a, b) => getLogDateObject(a.date).getTime() - getLogDateObject(b.date).getTime());
+    const recentLogs = chronoLogs.slice(-7);
+
+    const avgSleep = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.sleepHours) || 0), 0) / recentLogs.length;
+    const avgEnergy = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.energyLevel) || 0), 0) / recentLogs.length;
+    const avgStress = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.stressLevel) || 0), 0) / recentLogs.length;
+    const avgWater = recentLogs.reduce((acc, l) => acc + (Number((l.value as any)?.waterLitres) || 0), 0) / recentLogs.length;
+
+    if (kpiSleep) kpiSleep.innerHTML = avgSleep > 0 ? `${avgSleep.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">h</span>` : '--';
+    if (kpiEnergy) kpiEnergy.innerHTML = avgEnergy > 0 ? `${avgEnergy.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">/10</span>` : '--';
+    if (kpiStress) kpiStress.innerHTML = avgStress > 0 ? `${avgStress.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">/10</span>` : '--';
+    if (kpiWater) kpiWater.innerHTML = avgWater > 0 ? `${avgWater.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">L</span>` : '--';
+
+    biofeedbackHistory.innerHTML = "";
+    const descLogs = [...logs].sort((a, b) => getLogDateObject(b.date).getTime() - getLogDateObject(a.date).getTime());
+
+    descLogs.forEach((log) => {
+      const d = getLogDateObject(log.date);
+      const formattedDate = d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+      const b = (log.value || {}) as BioFeedback;
+
+      const domsBadge = b.doms === 'none'
+        ? '<span class="rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-bold">🟢 Sin Agujetas</span>'
+        : b.doms === 'mild'
+        ? '<span class="rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 px-2 py-0.5 text-[10px] font-bold">🟡 Agujetas Leves</span>'
+        : b.doms === 'moderate'
+        ? '<span class="rounded bg-orange-500/10 text-orange-300 border border-orange-500/20 px-2 py-0.5 text-[10px] font-bold">🟠 Agujetas Medias</span>'
+        : '<span class="rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 px-2 py-0.5 text-[10px] font-bold">🔴 Sobrecarga</span>';
+
+      const itemEl = document.createElement("div");
+      itemEl.className = "flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border-subtle)] p-4 hover:border-[var(--border-default)] transition-all";
+      itemEl.innerHTML = `
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2 py-0.5 text-[10px] font-bold">⚡ Bio-Feedback</span>
+            <span class="text-xs font-bold text-[var(--text-primary)]">${formattedDate}</span>
+            ${domsBadge}
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs text-[var(--text-secondary)]">
+            ${b.sleepHours ? `<span>😴 Sueño: <b>${b.sleepHours}h</b></span>` : ''}
+            ${b.energyLevel ? `<span>⚡ Energía: <b>${b.energyLevel}/10</b></span>` : ''}
+            ${b.stressLevel ? `<span>🧘 Estrés: <b>${b.stressLevel}/10</b></span>` : ''}
+            ${b.waterLitres ? `<span>💧 Agua: <b>${b.waterLitres}L</b></span>` : ''}
+          </div>
+          ${b.notes ? `<p class="text-xs text-[var(--text-tertiary)] italic">"${escapeHtml(b.notes)}"</p>` : ''}
+        </div>
+        <div class="flex items-center justify-end gap-1.5 shrink-0">
+          <button type="button" class="btn-edit-bio rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] hover:bg-[var(--surface-4)] p-1.5 text-xs text-[var(--text-secondary)] hover:text-white transition-all" title="Editar check-in">✏️</button>
+          <button type="button" class="btn-delete-bio rounded-lg border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 p-1.5 text-xs text-rose-300 transition-all" title="Eliminar check-in">🗑️</button>
+        </div>
+      `;
+
+      itemEl.querySelector('.btn-edit-bio')?.addEventListener('click', () => openEditBioModal(log));
+      itemEl.querySelector('.btn-delete-bio')?.addEventListener('click', () => confirmAndDeleteBiofeedback(log.id));
+
+      biofeedbackHistory.appendChild(itemEl);
+    });
+  }
+
+  function openEditBioModal(log: ProgressLog) {
+    if (!editBioModal || !editBioLogId || !editBioDate) return;
+    editBioLogId.value = log.id;
+    const d = getLogDateObject(log.date);
+    editBioDate.value = d.toISOString().split('T')[0] || '';
+    const b = (log.value || {}) as BioFeedback;
+    if (editBioSleep) editBioSleep.value = b.sleepHours ? String(b.sleepHours) : '';
+    if (editBioEnergy) editBioEnergy.value = b.energyLevel ? String(b.energyLevel) : '8';
+    if (editBioStress) editBioStress.value = b.stressLevel ? String(b.stressLevel) : '3';
+    if (editBioDoms) editBioDoms.value = b.doms || 'mild';
+    if (editBioWater) editBioWater.value = b.waterLitres ? String(b.waterLitres) : '';
+    if (editBioNotes) editBioNotes.value = b.notes || '';
+    editBioModal.classList.remove('hidden');
+  }
+
+  function closeBioModal() {
+    editBioModal?.classList.add('hidden');
+    editBioForm?.reset();
+  }
+
+  closeEditBioModal?.addEventListener('click', closeBioModal);
+  cancelEditBioBtn?.addEventListener('click', closeBioModal);
+
+  editBioForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const logId = editBioLogId?.value;
+    if (!logId) return;
+
+    const data: BioFeedback = {
+      sleepHours: editBioSleep?.value ? parseFloat(editBioSleep.value) : undefined,
+      energyLevel: editBioEnergy?.value ? parseInt(editBioEnergy.value) : undefined,
+      stressLevel: editBioStress?.value ? parseInt(editBioStress.value) : undefined,
+      doms: (editBioDoms?.value as any) || 'mild',
+      waterLitres: editBioWater?.value ? parseFloat(editBioWater.value) : undefined,
+      notes: editBioNotes?.value?.trim() || undefined,
+    };
+
+    const dateStr = editBioDate?.value;
+    const newDate = dateStr ? new Date(dateStr + 'T12:00:00') : undefined;
+
+    try {
+      await updateBioFeedbackLog(logId, data, newDate);
+      showToast({ message: 'Bio-Feedback actualizado con éxito', type: 'success' });
+      closeBioModal();
+    } catch (err) {
+      logger.error('Progress', 'Error al actualizar bio-feedback:', err);
+      showToast({ message: 'Error al actualizar el registro', type: 'error' });
+    }
+  });
+
+  async function confirmAndDeleteBiofeedback(logId: string): Promise<boolean> {
+    const confirmed = await showConfirm({
+      title: '¿Eliminar registro de Bio-Feedback?',
+      message: '¿Estás seguro de que deseas eliminar este registro de recuperación diaria?',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      variant: 'danger',
+    });
+    if (!confirmed) return false;
+
+    try {
+      await deleteProgressLog(logId);
+      showToast({ message: 'Registro eliminado', type: 'success' });
+      return true;
+    } catch (err) {
+      logger.error('Progress', 'Error al eliminar bio-feedback:', err);
+      showToast({ message: 'Error al eliminar el registro', type: 'error' });
+      return false;
+    }
+  }
+
   const cleanup = initPage({
     allowedRoles: ["client", "admin", "trainer"],
     onReady: async (firebaseUser) => {
       currentUserId = firebaseUser.uid;
 
-      if (weightDateInput && !weightDateInput.value) {
-        weightDateInput.value = new Date().toISOString().split('T')[0] || '';
-      }
+      const todayStr = new Date().toISOString().split('T')[0] || '';
+      if (weightDateInput && !weightDateInput.value) weightDateInput.value = todayStr;
+      if (measDateInput && !measDateInput.value) measDateInput.value = todayStr;
+      if (bioDateInput && !bioDateInput.value) bioDateInput.value = todayStr;
 
-      // Subscribe to weight logs
+      // Subscriptions
       subscribeToProgress(firebaseUser.uid, "weight", (logs) => {
         renderWeightLogs(logs);
       });
 
-      // Subscribe to photo evolution logs
+      subscribeToProgress(firebaseUser.uid, "measurements", (logs) => {
+        renderMeasurementsLogs(logs);
+      });
+
+      subscribeToProgress(firebaseUser.uid, "biofeedback", (logs) => {
+        renderBiofeedbackLogs(logs);
+      });
+
       subscribeToProgress(firebaseUser.uid, "photo", (logs) => {
         renderPhotosGallery(logs);
       });
 
-      // Save weight with debounce and duplicate protection
-      saveWeightBtn.addEventListener("click", async () => {
+      // Save Weight
+      saveWeightBtn?.addEventListener("click", async () => {
         const val = parseFloat(weightInput.value);
         const notes = weightNotesInput?.value?.trim() || '';
-        const dateStr = weightDateInput?.value || new Date().toISOString().split('T')[0];
+        const dateStr = weightDateInput?.value || todayStr;
 
         if (!val || val <= 0) {
           showToast({ message: 'Por favor, introduce un peso válido.', type: 'error' });
@@ -1017,20 +1776,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         if (saveWeightBtnText) saveWeightBtnText.textContent = 'Guardando...';
 
         try {
-          // Anti-duplicados: Comprobar si ya existe un registro en la misma fecha
           const targetDateStr = dateStr;
           const existingSameDayLog = cachedWeightLogs.find(l => {
             const d = getLogDateObject(l.date);
-            return d.toISOString().split('T')[0] === targetDateStr;
+            return (d.toISOString().split('T')[0] || '') === targetDateStr;
           });
 
           if (existingSameDayLog) {
-            // Actualizar el registro existente de ese día
             const logDate = new Date(targetDateStr + 'T12:00:00');
             await updateWeightLog(existingSameDayLog.id, val, notes, logDate);
-            showToast({ message: 'Peso de hoy actualizado correctamente (sin duplicados)', type: 'success' });
+            showToast({ message: 'Peso actualizado correctamente (sin duplicados)', type: 'success' });
           } else {
-            // Crear nuevo registro
             await registerWeight(firebaseUser.uid, val, notes);
             showToast({ message: 'Peso registrado correctamente', type: 'success' });
           }
@@ -1043,6 +1799,110 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         } finally {
           saveWeightBtn.removeAttribute('disabled');
           if (saveWeightBtnText) saveWeightBtnText.textContent = 'Guardar';
+        }
+      });
+
+      // Save Measurements
+      measurementsForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const dateStr = measDateInput?.value || todayStr;
+        const waist = parseFloat(measWaistInput?.value || '0');
+
+        if (!waist || waist <= 0) {
+          showToast({ message: 'El perímetro de cintura es obligatorio', type: 'error' });
+          return;
+        }
+
+        if (saveMeasBtn) {
+          saveMeasBtn.disabled = true;
+          if (saveMeasBtnText) saveMeasBtnText.textContent = 'Guardando...';
+        }
+
+        const measData: BodyMeasurements = {
+          chest: measChestInput?.value ? parseFloat(measChestInput.value) : undefined,
+          waist,
+          hips: measHipsInput?.value ? parseFloat(measHipsInput.value) : undefined,
+          leftArm: measArmLeftInput?.value ? parseFloat(measArmLeftInput.value) : undefined,
+          rightArm: measArmRightInput?.value ? parseFloat(measArmRightInput.value) : undefined,
+          leftThigh: measThighLeftInput?.value ? parseFloat(measThighLeftInput.value) : undefined,
+          rightThigh: measThighRightInput?.value ? parseFloat(measThighRightInput.value) : undefined,
+          calves: measCalvesInput?.value ? parseFloat(measCalvesInput.value) : undefined,
+          notes: measNotesInput?.value?.trim() || undefined,
+        };
+
+        try {
+          const targetDate = new Date(dateStr + 'T12:00:00');
+          const existingSameDayLog = cachedMeasLogs.find(l => {
+            const d = getLogDateObject(l.date);
+            return (d.toISOString().split('T')[0] || '') === dateStr;
+          });
+
+          if (existingSameDayLog) {
+            await updateMeasurementsLog(existingSameDayLog.id, measData, targetDate);
+            showToast({ message: 'Medidas de hoy actualizadas (sin duplicados)', type: 'success' });
+          } else {
+            await registerMeasurements(firebaseUser.uid, measData, targetDate);
+            showToast({ message: 'Medidas guardadas con éxito', type: 'success' });
+          }
+
+          measurementsForm.reset();
+          if (measDateInput) measDateInput.value = todayStr;
+        } catch (err) {
+          logger.error('Progress', 'Error guardando medidas:', err);
+          showToast({ message: 'Error al guardar medidas', type: 'error' });
+        } finally {
+          if (saveMeasBtn) {
+            saveMeasBtn.disabled = false;
+            if (saveMeasBtnText) saveMeasBtnText.textContent = 'Guardar Medidas';
+          }
+        }
+      });
+
+      // Save Bio-Feedback
+      biofeedbackForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const dateStr = bioDateInput?.value || todayStr;
+
+        if (saveBioBtn) {
+          saveBioBtn.disabled = true;
+          if (saveBioBtnText) saveBioBtnText.textContent = 'Guardando...';
+        }
+
+        const bioData: BioFeedback = {
+          sleepHours: bioSleepInput?.value ? parseFloat(bioSleepInput.value) : undefined,
+          sleepQuality: bioSleepQualInput?.value ? parseInt(bioSleepQualInput.value) : undefined,
+          energyLevel: bioEnergyInput?.value ? parseInt(bioEnergyInput.value) : undefined,
+          stressLevel: bioStressInput?.value ? parseInt(bioStressInput.value) : undefined,
+          doms: (bioDomsInput?.value as any) || 'mild',
+          waterLitres: bioWaterInput?.value ? parseFloat(bioWaterInput.value) : undefined,
+          notes: bioNotesInput?.value?.trim() || undefined,
+        };
+
+        try {
+          const targetDate = new Date(dateStr + 'T12:00:00');
+          const existingSameDayLog = cachedBioLogs.find(l => {
+            const d = getLogDateObject(l.date);
+            return (d.toISOString().split('T')[0] || '') === dateStr;
+          });
+
+          if (existingSameDayLog) {
+            await updateBioFeedbackLog(existingSameDayLog.id, bioData, targetDate);
+            showToast({ message: 'Bio-Feedback de hoy actualizado (sin duplicados)', type: 'success' });
+          } else {
+            await registerBioFeedback(firebaseUser.uid, bioData, targetDate);
+            showToast({ message: 'Bio-Feedback registrado correctamente', type: 'success' });
+          }
+
+          biofeedbackForm.reset();
+          if (bioDateInput) bioDateInput.value = todayStr;
+        } catch (err) {
+          logger.error('Progress', 'Error guardando bio-feedback:', err);
+          showToast({ message: 'Error al guardar bio-feedback', type: 'error' });
+        } finally {
+          if (saveBioBtn) {
+            saveBioBtn.disabled = false;
+            if (saveBioBtnText) saveBioBtnText.textContent = 'Guardar Bio-Feedback';
+          }
         }
       });
     },
