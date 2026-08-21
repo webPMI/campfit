@@ -13,7 +13,8 @@
   - `npm run type-check`: 0 errores, 0 warnings.
   - `npx vitest run`: 76 suites pasadas, 799 tests completados (0 fallos).
   - `npm run build`: 43 páginas estáticas generadas en <1s.
-- **Git Commit:** Sincronizado a `origin/master` (Commit `106f873`).
+- **Versión:** Incrementada a `v0.004` en `src/components/VersionBadge.astro`.
+- **Git Commit:** Sincronizado a `origin/master`.
 
 ---
 
