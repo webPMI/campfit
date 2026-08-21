@@ -1,18 +1,20 @@
-### 🤖 Agente: Antigravity Agent [Gestión Integral de Soporte: Telemetría Automática & Copia para Agente AI]
-- **Fecha / Hora:** `2026-08-21 20:28:00 CEST`
-- **Objetivo / Problema:** Conexión completa del ciclo de incidencias y soporte en vivo:
-  1. **Navegación Admin Directa**: Enlace de `/admin/tickets` en barra superior y drawer móvil de `AdminLayout.astro`.
-  2. **Telemetría Automática de Contexto**: Captura en `createSupportTicket` de versión de app (`v0.011`), URL de origen, user-agent, SO, resolución de pantalla, tipo de conexión y rol.
-  3. **Botón de 1-Click "📋 Copiar para Agente AI"**: Exportación estructurada en Markdown del reporte para agilizar la resolución directa con agentes AI.
+### 🤖 Agente: Antigravity Agent [Onboarding Optimizado: Eliminación de Redundancias & Fricción]
+- **Fecha / Hora:** `2026-08-21 20:48:40 CEST`
+- **Objetivo / Problema:** Optimización integral del flujo de bienvenida en `/onboarding`:
+  1. **Vinculación Inteligente de Nombre**: Detección y precarga del nombre de registro con badge visual de verificación sin obligar al usuario a reescribirlo.
+  2. **Desacoplamiento Clínico de Alergias**: Separación nítida entre alergias farmacológicas/ambientales en el Paso 2 y nutricionales en el Paso 4.
+  3. **Buscador y Exclusión Unificada**: Coherencia total entre el catálogo de alimentos y las preferencias dietéticas adicionales.
 - **Estado:** `[COMPLETADO]`
 - **Validación:**
   - `npm run type-check`: 0 errores, 0 warnings.
   - `npx vitest run`: 77 suites pasadas, 810 tests completados (0 fallos).
   - `npm run build`: 43 páginas estáticas generadas en <1s.
-- **Versión:** `v0.011`
+- **Versión:** `v0.012`
 - **Git Commit:** Sincronizado a `origin/master`.
 
 ---
+
+
 
 
 

@@ -50,12 +50,14 @@ const currentPath = Astro.url.pathname;
 
           <div class="space-y-4">
             <div>
-              <label for="name" data-i18n="onboarding.name" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.name')}</label>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="name" data-i18n="onboarding.name" class="block text-sm font-medium text-[var(--text-secondary)]">{t('onboarding.name')}</label>
+                <span id="registeredNameBadge" class="hidden text-[11px] text-emerald-400 font-medium">✓ Vinculado a tu cuenta</span>
+              </div>
               <input
                 id="name"
                 type="text"
                 placeholder="Ej: Juan Pérez"
-                required
                 autocomplete="name"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
               />
@@ -167,12 +169,11 @@ const currentPath = Astro.url.pathname;
               ></textarea>
             </div>
             <div>
-              <label for="allergies" data-i18n="onboarding.allergies" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">{t('onboarding.allergies')}</label>
+              <label for="allergies" class="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Alergias Farmacológicas / Ambientales (No alimentarias)</label>
               <textarea
                 id="allergies"
                 rows="2"
-                placeholder="Ej: Polen, mariscos, penicilina"
-                data-i18n-placeholder="client.medical.allergies.placeholder"
+                placeholder="Ej: Penicilina, polen, ácaros, látex (las alergias a alimentos se seleccionan en el paso 4)"
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)] resize-none"
               ></textarea>
             </div>
@@ -406,8 +407,10 @@ const currentPath = Astro.url.pathname;
     }
     currentUser = firebaseUser;
     const nameInput = document.getElementById('name') as HTMLInputElement;
-    if (nameInput && !nameInput.value && firebaseUser.displayName) {
-      nameInput.value = firebaseUser.displayName;
+    const registeredNameBadge = document.getElementById('registeredNameBadge');
+    if (nameInput && firebaseUser.displayName) {
+      if (!nameInput.value) nameInput.value = firebaseUser.displayName;
+      registeredNameBadge?.classList.remove('hidden');
     }
   });
 
@@ -727,7 +730,12 @@ const currentPath = Astro.url.pathname;
 
   function validateCurrentStep(step: number): boolean {
     if (step === 1) {
-      const name = (document.getElementById('name') as HTMLInputElement).value.trim();
+      let name = (document.getElementById('name') as HTMLInputElement).value.trim();
+      if (!name && currentUser?.displayName) {
+        name = currentUser.displayName;
+        const nameInput = document.getElementById('name') as HTMLInputElement;
+        if (nameInput) nameInput.value = name;
+      }
       const birthdate = (document.getElementById('birthdate') as HTMLInputElement).value;
       const height = (document.getElementById('height') as HTMLInputElement).value;
       const weight = (document.getElementById('weight') as HTMLInputElement).value;
