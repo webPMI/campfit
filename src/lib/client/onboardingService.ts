@@ -81,6 +81,17 @@ export async function saveOnboardingProfile(
         createdAt: serverTimestamp(),
       });
       logger.info('OnboardingService', '✅ setDoc exitoso');
+
+      // 🔒 CRÍTICO: Registrar peso inicial como punto de partida en el historial de progreso
+      if (data.initialWeight && data.initialWeight > 0) {
+        try {
+          const { registerWeight } = await import('@/lib/client/progressService');
+          await registerWeight(uid, data.initialWeight, 'Registro inicial (Onboarding)');
+        } catch (wErr) {
+          logger.warn('OnboardingService', 'Error al registrar peso inicial en progress_logs:', wErr);
+        }
+      }
+
       await clearCache();
       return true;
     } catch (err1: unknown) {
@@ -92,6 +103,17 @@ export async function saveOnboardingProfile(
       try {
         await updateDoc(userRef, userData);
         logger.info('OnboardingService', '✅ updateDoc exitoso');
+
+        // 🔒 CRÍTICO: Registrar peso inicial en progress_logs si se actualizó
+        if (data.initialWeight && data.initialWeight > 0) {
+          try {
+            const { registerWeight } = await import('@/lib/client/progressService');
+            await registerWeight(uid, data.initialWeight, 'Registro inicial (Onboarding)');
+          } catch (wErr) {
+            logger.warn('OnboardingService', 'Error al registrar peso inicial en progress_logs:', wErr);
+          }
+        }
+
         await clearCache();
         return true;
       } catch (err2: unknown) {
