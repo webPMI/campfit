@@ -285,6 +285,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     import { subscribeToWorkouts } from "@/lib/client/workoutService";
     import { subscribeToDiets, subscribeToTodayMeals } from "@/lib/client/dietService";
     import { subscribeToProgress } from "@/lib/client/progressService";
+    import { STARTER_WORKOUT_PROGRAMS } from "@/lib/client/starterWorkouts";
     import { t } from "@/i18n/client";
 
     const loadingScreen = document.getElementById("loadingScreen")!;
@@ -331,12 +332,19 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       if (addMl > 0) {
         currentMl += addMl;
         localStorage.setItem(key, currentMl.toString());
+        window.dispatchEvent(new CustomEvent('water:updated', { detail: { currentMl } }));
       }
 
       dashWaterMl.textContent = `${currentMl} ml`;
       const pct = Math.min(100, Math.round((currentMl / 2500) * 100));
       dashWaterBar.style.width = `${pct}%`;
     }
+
+    dashWaterAddBtn?.addEventListener('click', () => {
+      if (currentUserId) {
+        updateDashWater(currentUserId, 250);
+      }
+    });
 
     const cleanup = initPage({
       allowedRoles: ["client", "admin", "trainer"],
@@ -391,10 +399,40 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               `).join('') + (exercisesCount > 3 ? `<p class="text-[10px] text-[var(--brand)] font-semibold pt-1">+${exercisesCount - 3} ejercicios más...</p>` : '');
             }
           } else {
-            if (todayWorkoutBox) todayWorkoutBox.classList.add("hidden");
-            if (workoutEmptyState) workoutEmptyState.classList.remove("hidden");
-            workoutProgress.textContent = "0%";
-            workoutBar.style.width = "0%";
+            // 🔒 CRÍTICO: Fallback a Starter Workout activo en Modo Autonomía
+            const savedProgramId = localStorage.getItem(`cf_starter_${targetUid}`);
+            const starterProgram = STARTER_WORKOUT_PROGRAMS.find((p) => p.id === savedProgramId) || STARTER_WORKOUT_PROGRAMS[0];
+            
+            if (starterProgram) {
+              if (todayWorkoutBox) todayWorkoutBox.classList.remove("hidden");
+              if (workoutEmptyState) workoutEmptyState.classList.add("hidden");
+
+              const currentDayOfWeek = new Date().getDay() || 7;
+              const todayDayConfig = starterProgram.days.find((d) => d.dayOfWeek === currentDayOfWeek) || starterProgram.days[0];
+              const todayExercises = todayDayConfig?.exercises || [];
+
+              todayWorkoutTitle.textContent = `${starterProgram.name} (${starterProgram.icon})`;
+              todayWorkoutDesc.textContent = `${todayDayConfig?.focus || starterProgram.targetGoal}`;
+              if (todayWorkoutCount) todayWorkoutCount.textContent = `${todayExercises.length} ejercicios`;
+
+              workoutProgress.textContent = "0%";
+              workoutBar.style.width = "0%";
+
+              if (workoutExercisesPreview && todayExercises.length > 0) {
+                workoutExercisesPreview.classList.remove("hidden");
+                workoutExercisesPreview.innerHTML = todayExercises.slice(0, 3).map((ex: any) => `
+                  <div class="flex items-center justify-between text-xs py-0.5">
+                    <span class="text-[var(--text-secondary)] font-medium truncate max-w-[200px]">${ex.name}</span>
+                    <span class="text-[var(--text-tertiary)] text-[11px]">${ex.sets || 3}x${ex.reps || 10}</span>
+                  </div>
+                `).join('') + (todayExercises.length > 3 ? `<p class="text-[10px] text-[var(--brand)] font-semibold pt-1">+${todayExercises.length - 3} ejercicios más...</p>` : '');
+              }
+            } else {
+              if (todayWorkoutBox) todayWorkoutBox.classList.add("hidden");
+              if (workoutEmptyState) workoutEmptyState.classList.remove("hidden");
+              workoutProgress.textContent = "0%";
+              workoutBar.style.width = "0%";
+            }
           }
         });
 
@@ -439,11 +477,42 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
               });
             }
           } else {
-            if (todayDietBox) todayDietBox.classList.add("hidden");
-            if (dietEmptyState) dietEmptyState.classList.remove("hidden");
+            // 🔒 CRÍTICO: Fallback a Nutrición Autónoma
+            if (todayDietBox) todayDietBox.classList.remove("hidden");
+            if (dietEmptyState) dietEmptyState.classList.add("hidden");
+
+            const savedMeta = localStorage.getItem(`cf_metabolic_${targetUid}`);
+            const metaCalories = savedMeta ? JSON.parse(savedMeta)?.calories || 2200 : 2200;
+
+            todayDietTitle.textContent = "Nutrición Saludable (Modo Autonomía)";
+            todayDietDesc.textContent = `${metaCalories} kcal · 4 comidas recomendadas`;
+            todayCalories.textContent = `${metaCalories} kcal`;
+            if (todayDietCount) todayDietCount.textContent = `4 comidas`;
+
             dietAdherence.textContent = "0%";
             dietBar.style.width = "0%";
-            todayCalories.textContent = `0 kcal`;
+
+            if (dietMealsPreview) {
+              dietMealsPreview.classList.remove("hidden");
+              dietMealsPreview.innerHTML = `
+                <div class="flex items-center justify-between text-xs py-0.5">
+                  <span class="text-[var(--text-secondary)] font-medium">Desayuno Energético</span>
+                  <span class="text-amber-400 font-semibold text-[11px]">08:30</span>
+                </div>
+                <div class="flex items-center justify-between text-xs py-0.5">
+                  <span class="text-[var(--text-secondary)] font-medium">Almuerzo Equilibrado</span>
+                  <span class="text-amber-400 font-semibold text-[11px]">13:30</span>
+                </div>
+                <div class="flex items-center justify-between text-xs py-0.5">
+                  <span class="text-[var(--text-secondary)] font-medium">Merienda Proteica</span>
+                  <span class="text-amber-400 font-semibold text-[11px]">17:30</span>
+                </div>
+                <div class="flex items-center justify-between text-xs py-0.5">
+                  <span class="text-[var(--text-secondary)] font-medium">Cena Ligera</span>
+                  <span class="text-amber-400 font-semibold text-[11px]">21:00</span>
+                </div>
+              `;
+            }
           }
         });
 
