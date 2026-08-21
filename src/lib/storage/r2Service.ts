@@ -286,21 +286,54 @@ export async function uploadChatMedia(
 }
 
 /**
- * Sube un avatar de usuario a Cloudflare R2.
+ * Valida un archivo de avatar de usuario (máximo 2MB, JPG/PNG/WebP).
  */
-export async function uploadAvatar(
+export function validateAvatarFile(
+  file: File,
+  maxSizeMb: number = 2
+): { valid: boolean; message?: string } {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  const maxSizeBytes = maxSizeMb * 1024 * 1024;
+
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      valid: false,
+      message: 'Formato no soportado. Por favor utiliza JPG, PNG o WebP.',
+    };
+  }
+
+  if (file.size > maxSizeBytes) {
+    return {
+      valid: false,
+      message: `El avatar no puede superar los ${maxSizeMb}MB.`,
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Sube un avatar de usuario a Cloudflare R2 con validación estricta de 2MB.
+ */
+export async function uploadAvatarToR2(
   file: File,
   userId: string,
   config: R2UploadConfig = defaultConfig
 ): Promise<{ url: string; provider?: 'cloudflare_r2' | 'local_preview' }> {
-  const validation = validateImageFile(file, 5);
+  const validation = validateAvatarFile(file, 2);
   if (!validation.valid) {
+    logger.error('R2Service', validation.message || 'Avatar no válido');
     throw new Error(validation.message);
   }
+
+  const timestamp = Date.now();
+  const fileExt = file.name.split('.').pop() || 'jpg';
+  const objectKey = `avatars/${userId}/avatar_${timestamp}.${fileExt}`;
 
   const result = await uploadFileToR2(file, {
     folder: 'avatars',
     entityId: userId,
+    key: objectKey,
     config,
   });
 
@@ -308,6 +341,17 @@ export async function uploadAvatar(
     url: result.url,
     provider: result.provider,
   };
+}
+
+/**
+ * Sube un avatar de usuario a Cloudflare R2 (alias retrocompatible).
+ */
+export async function uploadAvatar(
+  file: File,
+  userId: string,
+  config: R2UploadConfig = defaultConfig
+): Promise<{ url: string; provider?: 'cloudflare_r2' | 'local_preview' }> {
+  return uploadAvatarToR2(file, userId, config);
 }
 
 /**

@@ -106,6 +106,21 @@ describe('R2 Storage - Integración en Toda la Plataforma', () => {
       expect(res.url).toContain('avatars/user-42');
       expect(res.provider).toBe('cloudflare_r2');
     });
+
+    it('debería validar que el avatar no supere 2MB y sea formato compatible (JPG/PNG/WebP)', async () => {
+      const { validateAvatarFile } = await import('@/lib/storage/r2Service');
+      const validJpg = new File(['small'], 'pic.jpg', { type: 'image/jpeg' });
+      const validWebp = new File(['small'], 'pic.webp', { type: 'image/webp' });
+      const invalidGif = new File(['small'], 'pic.gif', { type: 'image/gif' });
+
+      const oversizedFile = new File([''], 'big.jpg', { type: 'image/jpeg' });
+      Object.defineProperty(oversizedFile, 'size', { value: 3 * 1024 * 1024 });
+
+      expect(validateAvatarFile(validJpg, 2).valid).toBe(true);
+      expect(validateAvatarFile(validWebp, 2).valid).toBe(true);
+      expect(validateAvatarFile(invalidGif, 2).valid).toBe(false);
+      expect(validateAvatarFile(oversizedFile, 2).valid).toBe(false);
+    });
   });
 
   describe('4. Biblioteca Nutricional y Catálogo de Ejercicios', () => {

@@ -1,0 +1,258 @@
+---
+import { getT } from '@/lib/shared/i18n';
+
+interface Props {
+  role?: 'client' | 'trainer' | 'admin';
+}
+
+const { role = 'client' } = Astro.props;
+const lang = Astro.url.searchParams.get('lang') || 'es';
+const t = getT(lang);
+---
+
+<div class="relative" id="user-avatar-dropdown-container">
+  <!-- Trigger Button -->
+  <button
+    id="btn-user-avatar-dropdown"
+    type="button"
+    aria-expanded="false"
+    aria-haspopup="true"
+    class="flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-2)] p-1 pr-2 transition-all hover:border-[var(--border-brand)] hover:bg-[var(--surface-3)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 focus:ring-offset-[var(--surface-1)] active:scale-95"
+  >
+    <!-- Avatar Image or Initial Fallback -->
+    <div id="nav-user-avatar-thumb" class="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-xs font-bold text-white shadow-sm ring-1 ring-[var(--border-subtle)]">
+      <span id="nav-user-avatar-initial">U</span>
+      <img id="nav-user-avatar-img" class="hidden h-full w-full object-cover" alt="Avatar" />
+    </div>
+
+    <!-- User First Name (Visible on sm+) -->
+    <span id="nav-user-name" class="hidden max-w-[100px] truncate text-xs font-medium text-[var(--text-primary)] sm:inline-block">
+      ...
+    </span>
+
+    <!-- Chevron Icon -->
+    <svg class="h-3.5 w-3.5 text-[var(--text-tertiary)] transition-transform duration-200" id="nav-avatar-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    </svg>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    id="user-avatar-menu"
+    class="hidden absolute right-0 mt-2 w-64 origin-top-right rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/95 p-2 shadow-2xl backdrop-blur-xl transition-all duration-200 z-50 animate-in fade-in zoom-in-95"
+    role="menu"
+    aria-orientation="vertical"
+    tabindex="-1"
+  >
+    <!-- User Info Header -->
+    <div class="border-b border-[var(--border-subtle)] px-3 py-2.5 mb-1">
+      <p id="menu-user-name" class="text-xs font-bold text-[var(--text-primary)] truncate">Cargando...</p>
+      <p id="menu-user-email" class="text-[11px] text-[var(--text-tertiary)] truncate">...</p>
+    </div>
+
+    <!-- Quick Navigation Links -->
+    <div class="space-y-0.5">
+      <a
+        href={role === 'admin' ? '/admin/settings' : role === 'trainer' ? '/trainer/settings' : '/client/settings'}
+        class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+        role="menuitem"
+      >
+        <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+        <span data-i18n="nav.dropdown.profile">{t('nav.dropdown.profile') || 'Mi Perfil y Ajustes'}</span>
+      </a>
+
+      {role === 'client' && (
+        <>
+          <a
+            href="/client/workouts"
+            class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            role="menuitem"
+          >
+            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+            </svg>
+            <span data-i18n="nav.dropdown.workouts">{t('nav.dropdown.workouts') || 'Mis Rutinas'}</span>
+          </a>
+
+          <a
+            href="/client/diets"
+            class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            role="menuitem"
+          >
+            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.38a48.474 48.474 0 0 0-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+            </svg>
+            <span data-i18n="nav.dropdown.diets">{t('nav.dropdown.diets') || 'Mis Dietas'}</span>
+          </a>
+
+          <a
+            href="/client/chat"
+            class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            role="menuitem"
+          >
+            <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+            </svg>
+            <span>Chat con Entrenador</span>
+          </a>
+        </>
+      )}
+    </div>
+
+    <!-- Logout Action -->
+    <div class="border-t border-[var(--border-subtle)] pt-1 mt-1">
+      <button
+        id="btn-dropdown-logout"
+        type="button"
+        class="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-[var(--danger)] transition-colors hover:bg-[var(--danger)]/10"
+        role="menuitem"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+        </svg>
+        <span data-i18n="nav.dropdown.logout">{t('nav.dropdown.logout') || 'Cerrar Sesión'}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { auth, db } from '@/lib/firebase';
+  import { onAuthStateChanged, signOut } from 'firebase/auth';
+  import { doc, getDoc } from 'firebase/firestore';
+  import { $user } from '@/stores/authStore';
+  import { showConfirm, showToast } from '@/lib/shared/ui';
+
+  const container = document.getElementById('user-avatar-dropdown-container');
+  const triggerBtn = document.getElementById('btn-user-avatar-dropdown');
+  const menu = document.getElementById('user-avatar-menu');
+  const chevron = document.getElementById('nav-avatar-chevron');
+  const initialEl = document.getElementById('nav-user-avatar-initial');
+  const imgEl = document.getElementById('nav-user-avatar-img') as HTMLImageElement;
+  const nameEl = document.getElementById('nav-user-name');
+  const menuNameEl = document.getElementById('menu-user-name');
+  const menuEmailEl = document.getElementById('menu-user-email');
+  const logoutBtn = document.getElementById('btn-dropdown-logout');
+
+  function updateAvatarUI(userData: { name?: string; email?: string; photoURL?: string; avatar_url?: string } | null) {
+    if (!userData) return;
+    const name = userData.name || 'Usuario';
+    const email = userData.email || '';
+    const photo = userData.avatar_url || userData.photoURL || '';
+
+    if (nameEl) nameEl.textContent = name.split(' ')[0] || name;
+    if (menuNameEl) menuNameEl.textContent = name;
+    if (menuEmailEl) menuEmailEl.textContent = email;
+
+    const initial = (name.charAt(0) || 'U').toUpperCase();
+    if (initialEl) initialEl.textContent = initial;
+
+    if (photo && imgEl) {
+      imgEl.src = photo;
+      imgEl.classList.remove('hidden');
+      if (initialEl) initialEl.classList.add('hidden');
+      imgEl.onerror = () => {
+        imgEl.classList.add('hidden');
+        if (initialEl) initialEl.classList.remove('hidden');
+      };
+    } else {
+      if (imgEl) imgEl.classList.add('hidden');
+      if (initialEl) initialEl.classList.remove('hidden');
+    }
+  }
+
+  // Sincronización reactiva con authStore
+  $user.subscribe((user) => {
+    if (user) {
+      updateAvatarUI(user);
+    }
+  });
+
+  // Listener de Firebase Auth para hidratación inicial
+  onAuthStateChanged(auth, async (firebaseUser) => {
+    if (firebaseUser) {
+      updateAvatarUI({
+        name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuario',
+        email: firebaseUser.email || '',
+        photoURL: firebaseUser.photoURL || undefined,
+      });
+
+      try {
+        const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          updateAvatarUI({
+            name: data.name || firebaseUser.displayName || 'Usuario',
+            email: data.email || firebaseUser.email || '',
+            photoURL: data.photoURL || data.avatar_url || firebaseUser.photoURL || undefined,
+            avatar_url: data.avatar_url || data.photoURL || undefined,
+          });
+        }
+      } catch {
+        // Fallback silencioso con datos básicos de auth
+      }
+    }
+  });
+
+  // Toggle dropdown
+  function toggleDropdown() {
+    if (!menu) return;
+    const isExpanded = menu.classList.contains('hidden');
+    if (isExpanded) {
+      menu.classList.remove('hidden');
+      triggerBtn?.setAttribute('aria-expanded', 'true');
+      chevron?.classList.add('rotate-180');
+    } else {
+      menu.classList.add('hidden');
+      triggerBtn?.setAttribute('aria-expanded', 'false');
+      chevron?.classList.remove('rotate-180');
+    }
+  }
+
+  function closeDropdown() {
+    if (!menu) return;
+    menu.classList.add('hidden');
+    triggerBtn?.setAttribute('aria-expanded', 'false');
+    chevron?.classList.remove('rotate-180');
+  }
+
+  triggerBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+
+  // Cerrar al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    if (container && !container.contains(e.target as Node)) {
+      closeDropdown();
+    }
+  });
+
+  // Cerrar con Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  // Logout Handler
+  logoutBtn?.addEventListener('click', async () => {
+    closeDropdown();
+    const confirmed = await showConfirm({
+      title: 'Cerrar Sesión',
+      message: '¿Estás seguro de que deseas cerrar tu sesión?',
+      confirmText: 'Cerrar Sesión',
+      variant: 'danger',
+    });
+    if (!confirmed) return;
+
+    try {
+      await signOut(auth);
+      window.location.href = '/login';
+    } catch (err) {
+      showToast({ message: 'Error al cerrar sesión', type: 'error' });
+    }
+  });
+</script>

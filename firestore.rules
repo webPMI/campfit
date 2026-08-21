@@ -84,46 +84,52 @@ service cloud.firestore {
 
     // ── Rutinas (/workouts/{workoutId}) ──────────────────────────────────────
     match /workouts/{workoutId} {
+      // 🔒 CRÍTICO: Permite lectura si es rutina pública, del cliente, o creada/asignada por el trainer/staff
       allow read: if isAuth() && (
         resource.data.clientId == '' ||
         resource.data.clientId == null ||
         resource.data.clientId == request.auth.uid ||
         resource.data.trainerId == request.auth.uid ||
+        resource.data.assignedBy == request.auth.uid ||
         isStaff()
       );
 
-      // Trainer o Admin pueden crear rutinas para sus clientes
+      // 🔒 CRÍTICO: Trainer o Admin pueden crear rutinas para sus clientes
       allow create: if isAuth() && isStaff() && (
         request.resource.data.trainerId == request.auth.uid ||
+        request.resource.data.assignedBy == request.auth.uid ||
         isAdmin()
       );
 
-      // Trainer propietario de la rutina o Admin pueden editar y eliminar
+      // 🔒 CRÍTICO: Trainer propietario o Admin pueden editar y eliminar
       allow update, delete: if isAuth() && (
-        (isTrainer() && resource.data.trainerId == request.auth.uid) ||
+        (isTrainer() && (resource.data.trainerId == request.auth.uid || resource.data.assignedBy == request.auth.uid)) ||
         isAdmin()
       );
     }
 
     // ── Dietas (/diets/{dietId}) ─────────────────────────────────────────────
     match /diets/{dietId} {
+      // 🔒 CRÍTICO: Permite lectura si es dieta pública, del cliente, o creada/asignada por el trainer/staff
       allow read: if isAuth() && (
         resource.data.clientId == '' ||
         resource.data.clientId == null ||
         resource.data.clientId == request.auth.uid ||
         resource.data.trainerId == request.auth.uid ||
+        resource.data.assignedBy == request.auth.uid ||
         isStaff()
       );
 
-      // Trainer o Admin pueden crear dietas para sus clientes
+      // 🔒 CRÍTICO: Trainer o Admin pueden crear dietas para sus clientes
       allow create: if isAuth() && isStaff() && (
         request.resource.data.trainerId == request.auth.uid ||
+        request.resource.data.assignedBy == request.auth.uid ||
         isAdmin()
       );
 
-      // Trainer propietario de la dieta o Admin pueden editar y eliminar
+      // 🔒 CRÍTICO: Trainer propietario o Admin pueden editar y eliminar
       allow update, delete: if isAuth() && (
-        (isTrainer() && resource.data.trainerId == request.auth.uid) ||
+        (isTrainer() && (resource.data.trainerId == request.auth.uid || resource.data.assignedBy == request.auth.uid)) ||
         isAdmin()
       );
     }

@@ -141,7 +141,7 @@ describe('exercisePreferencesService', () => {
         expect.objectContaining({
           userId: 'user-1',
           ratings: { 'ex-1': 4 },
-          favorites: ['ex-1'],
+          favorites: [],
         })
       );
     });
@@ -153,7 +153,6 @@ describe('exercisePreferencesService', () => {
         exists: () => true,
         data: () => ({ favorites: ['ex-1'] }),
       });
-      mockFns.getDoc.mockResolvedValueOnce({ exists: () => true });
       mockFns.updateDoc.mockResolvedValueOnce(undefined);
 
       const ok = await toggleFavorite('user-1', 'ex-2');
@@ -171,7 +170,6 @@ describe('exercisePreferencesService', () => {
         exists: () => true,
         data: () => ({ favorites: ['ex-1', 'ex-2'] }),
       });
-      mockFns.getDoc.mockResolvedValueOnce({ exists: () => true });
       mockFns.updateDoc.mockResolvedValueOnce(undefined);
 
       const ok = await toggleFavorite('user-1', 'ex-1');
@@ -209,7 +207,6 @@ describe('exercisePreferencesService', () => {
         exists: () => true,
         data: () => ({ favorites: ['ex-1'], excluded: [], pendingRequests: [] }),
       });
-      mockFns.getDoc.mockResolvedValueOnce({ exists: () => true });
       mockFns.updateDoc.mockResolvedValueOnce(undefined);
 
       const ok = await requestExerciseExclusion(

@@ -131,6 +131,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { initPage } from '@/lib/shared/initPage';
+  import {
+    subscribeToUserSupportTickets,
+    type SupportTicket,
+  } from '@/lib/support/supportTicketService';
 
   const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
@@ -141,42 +145,41 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const ticketsCount = document.getElementById('ticketsCount')!;
   const filterOpen = document.getElementById('filterOpen')!;
   const filterResolved = document.getElementById('filterResolved')!;
-  const successMessage = document.getElementById('successMessage')!;
-  const successTitle = document.getElementById('successTitle')!;
-  const successDesc = document.getElementById('successDesc')!;
   const errorMessage = document.getElementById('errorMessage')!;
   const errorTitle = document.getElementById('errorTitle')!;
   const errorDesc = document.getElementById('errorDesc')!;
   const errorDismiss = document.getElementById('errorDismiss')!;
 
-  loadingText.textContent = 'Cargando...';
-  let activeFilter: string = 'open';
-  let allTickets: Array<{ id: string; title: string; status: string; category: string; severity: string; createdAt: string; lastActivityAt: string; description: string }> = [];
+  loadingText.textContent = 'Cargando tus tickets...';
+  let activeFilter: 'open' | 'resolved' = 'open';
+  let allTickets: SupportTicket[] = [];
+  let unsubTickets: (() => void) | null = null;
 
   errorDismiss.addEventListener('click', () => {
     errorMessage.classList.add('hidden');
   });
 
-  function showSuccess(title: string, desc: string) {
-    successTitle.textContent = title;
-    successDesc.textContent = desc;
-    successMessage.classList.remove('hidden');
-    errorMessage.classList.add('hidden');
-  }
-
   function showError(title: string, desc: string) {
     errorTitle.textContent = title;
     errorDesc.textContent = desc;
     errorMessage.classList.remove('hidden');
-    successMessage.classList.add('hidden');
   }
 
-  function getLang(): string {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('lang') || 'es';
+  function formatDate(val: any): string {
+    if (!val) return 'Reciente';
+    if (typeof val.toDate === 'function') return val.toDate().toLocaleDateString();
+    if (typeof val === 'string' || typeof val === 'number') return new Date(val).toLocaleDateString();
+    return 'Reciente';
   }
 
-  function renderTicket(ticket: typeof allTickets[0]) {
+  function formatDateTime(val: any): string {
+    if (!val) return 'Reciente';
+    if (typeof val.toDate === 'function') return val.toDate().toLocaleString();
+    if (typeof val === 'string' || typeof val === 'number') return new Date(val).toLocaleString();
+    return 'Reciente';
+  }
+
+  function renderTicket(ticket: SupportTicket) {
     const statusColors: Record<string, string> = {
       open: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
       in_review: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -188,7 +191,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     const statusLabels: Record<string, string> = {
       open: 'Abierto',
       in_review: 'En revisión',
-      awaiting_response: 'Esperando respuesta',
+      awaiting_response: 'Esperando tu respuesta',
       resolved: 'Resuelto',
       closed: 'Cerrado',
     };
@@ -212,7 +215,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     card.innerHTML = `
       <div class="flex items-start justify-between gap-4">
         <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
             <span class="rounded-lg px-2 py-0.5 text-xs font-semibold border ${statusColors[ticket.status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}">
               ${statusLabels[ticket.status] || ticket.status}
             </span>
@@ -223,33 +226,45 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           <h3 class="text-base font-semibold text-[var(--text-primary)] truncate">${ticket.title}</h3>
           <p class="mt-1 text-sm text-[var(--text-tertiary)] line-clamp-2">${ticket.description}</p>
           <p class="mt-2 text-xs text-[var(--text-tertiary)]">
-            ${new Date(ticket.createdAt).toLocaleDateString()} · Actualizado ${new Date(ticket.lastActivityAt).toLocaleDateString()}
+            Creado: ${formatDate(ticket.createdAt)} · Actividad: ${formatDate(ticket.lastActivityAt || ticket.updatedAt)}
           </p>
         </div>
         <div class="shrink-0 flex gap-2">
           <button
-            data-id="${ticket.id}"
             class="ticket-detail-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-[var(--surface-3)] text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-4)] hover:text-[var(--text-primary)]"
           >
             Ver detalle
           </button>
         </div>
       </div>
-      <div class="ticket-detail hidden mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/50 p-4 backdrop-blur-sm">
-        <div class="space-y-3">
-          <div>
-            <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Descripción completa</p>
-            <p class="mt-1 text-sm text-[var(--text-secondary)] leading-relaxed">${ticket.description}</p>
+      <div class="ticket-detail hidden mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/50 p-4 backdrop-blur-sm space-y-3">
+        <div>
+          <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Descripción completa</p>
+          <p class="mt-1 text-sm text-[var(--text-secondary)] leading-relaxed">${ticket.description}</p>
+        </div>
+
+        ${ticket.adminContactMessages && ticket.adminContactMessages.length > 0 ? `
+          <div class="pt-2 border-t border-[var(--border-subtle)] space-y-2">
+            <p class="text-xs font-bold text-amber-300">💬 Mensajes del equipo de soporte:</p>
+            <div class="space-y-1.5">
+              ${ticket.adminContactMessages.map(m => `
+                <div class="rounded-lg bg-zinc-900/80 p-2.5 text-xs text-zinc-200 border border-zinc-700">
+                  <p>${m.message}</p>
+                  <span class="text-[10px] text-zinc-400 block mt-1">${formatDateTime(m.createdAt)}</span>
+                </div>
+              `).join('')}
+            </div>
           </div>
-          <div class="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Creado</p>
-              <p class="text-[var(--text-primary)]">${new Date(ticket.createdAt).toLocaleString()}</p>
-            </div>
-            <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Última actividad</p>
-              <p class="text-[var(--text-primary)]">${new Date(ticket.lastActivityAt).toLocaleString()}</p>
-            </div>
+        ` : ''}
+
+        <div class="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-[var(--border-subtle)]">
+          <div>
+            <p class="text-[10px] text-[var(--text-tertiary)]">Creado</p>
+            <p class="text-[var(--text-primary)]">${formatDateTime(ticket.createdAt)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-[var(--text-tertiary)]">Última actualización</p>
+            <p class="text-[var(--text-primary)]">${formatDateTime(ticket.lastActivityAt || ticket.updatedAt)}</p>
           </div>
         </div>
       </div>
@@ -266,72 +281,67 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     return card;
   }
 
-  async function loadTickets(statusFilter: string) {
-    try {
-      const lang = getLang();
-      const res = await fetch(`/api/support/create?lang=${lang}&status=${statusFilter}`, {
-        credentials: 'same-origin',
-      });
-
-      if (!res.ok) {
-        throw new Error('No se pudieron cargar los tickets');
+  function applyFilterAndRender() {
+    const filtered = allTickets.filter(t => {
+      if (activeFilter === 'open') {
+        return t.status === 'open' || t.status === 'in_review' || t.status === 'awaiting_response';
+      } else {
+        return t.status === 'resolved' || t.status === 'closed';
       }
+    });
 
-      const data = await res.json();
+    ticketsCount.textContent = `${filtered.length} ticket${filtered.length === 1 ? '' : 's'} (${activeFilter === 'open' ? 'abiertos / en proceso' : 'resueltos'})`;
 
-      if (!data.tickets || !Array.isArray(data.tickets)) {
-        allTickets = [];
-        ticketsContainer.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        ticketsList.classList.add('hidden');
-        return;
-      }
-
-      allTickets = data.tickets;
-      const filtered = allTickets;
-
-      if (filtered.length === 0) {
-        emptyState.classList.remove('hidden');
-        ticketsList.classList.add('hidden');
-        return;
-      }
-
-      emptyState.classList.add('hidden');
-      ticketsList.classList.remove('hidden');
-
-      ticketsCount.textContent = `${filtered.length} ticket${filtered.length > 1 ? 's' : ''} (${statusFilter === 'open' ? 'abiertos' : 'resueltos'})`;
-
+    if (filtered.length === 0) {
       ticketsContainer.innerHTML = '';
-      filtered.forEach((ticket) => {
-        ticketsContainer.appendChild(renderTicket(ticket));
-      });
-    } catch (err) {
-      showError('Error al cargar', 'No se pudieron cargar tus tickets. Revisa tu conexión e intenta nuevamente.');
+      emptyState.classList.remove('hidden');
+      ticketsList.classList.add('hidden');
+      return;
     }
+
+    emptyState.classList.add('hidden');
+    ticketsList.classList.remove('hidden');
+    ticketsContainer.innerHTML = '';
+    filtered.forEach((ticket) => {
+      ticketsContainer.appendChild(renderTicket(ticket));
+    });
   }
 
   filterOpen.addEventListener('click', () => {
     activeFilter = 'open';
-    filterOpen.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--accent)] text-white';
+    filterOpen.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--brand)] text-[var(--text-on-brand)]';
     filterResolved.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)]';
-    loadTickets('open');
+    applyFilterAndRender();
   });
 
   filterResolved.addEventListener('click', () => {
     activeFilter = 'resolved';
-    filterResolved.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--accent)] text-white';
+    filterResolved.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--brand)] text-[var(--text-on-brand)]';
     filterOpen.className = 'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--surface-4)]';
-    loadTickets('resolved');
+    applyFilterAndRender();
   });
 
   const cleanup = initPage({
     allowedRoles: ['client', 'admin', 'trainer'],
-    onReady: async () => {
+    onReady: async (firebaseUser) => {
       myTicketsContent.classList.remove('hidden');
       loadingScreen.classList.add('hidden');
-      loadTickets('open');
+
+      unsubTickets = subscribeToUserSupportTickets(
+        firebaseUser.uid,
+        (tickets) => {
+          allTickets = tickets;
+          applyFilterAndRender();
+        },
+        (err) => {
+          showError('Error al sincronizar', err.message || 'No se pudieron cargar tus tickets.');
+        }
+      );
     },
   });
 
-  document.addEventListener('astro:before-swap', cleanup);
+  document.addEventListener('astro:before-swap', () => {
+    cleanup();
+    unsubTickets?.();
+  });
 </script>

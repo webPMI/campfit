@@ -30,6 +30,12 @@ export interface User {
   phoneNumber?: string;
   preferredLanguage?: string;
   emailVerified?: boolean;
+  // 🔒 CRÍTICO: Identidad visual y personalización de perfil
+  avatar_url?: string;
+  user_bio?: string;
+  notesForTrainer?: string;
+  birthDate?: any;
+  goals?: string[];
 }
 
 export interface DietaryRestrictions {

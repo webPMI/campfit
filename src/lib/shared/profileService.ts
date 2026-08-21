@@ -27,6 +27,11 @@ export interface ProfileData {
   email: string;
   role: 'admin' | 'trainer' | 'client';
   photoURL?: string;
+  avatar_url?: string;
+  user_bio?: string;
+  notesForTrainer?: string;
+  birthDate?: unknown;
+  goals?: string[];
   hasActiveAlert?: boolean;
   assignedTrainerId?: string;
   assignedTrainerName?: string;
@@ -54,6 +59,11 @@ export interface UpdateProfilePayload {
   name?: string;
   email?: string;
   photoURL?: string;
+  avatar_url?: string;
+  user_bio?: string;
+  notesForTrainer?: string;
+  birthDate?: unknown;
+  goals?: string[];
   medicalProfile?: MedicalProfileData;
 }
 
@@ -82,7 +92,12 @@ export async function loadProfile(uid: string): Promise<ProfileData | null> {
       name: data.name || 'Sin nombre',
       email: data.email || '',
       role: data.role || 'client',
-      photoURL: data.photoURL || undefined,
+      photoURL: data.photoURL || data.avatar_url || undefined,
+      avatar_url: data.avatar_url || data.photoURL || undefined,
+      user_bio: data.user_bio || data.bio || undefined,
+      notesForTrainer: data.notesForTrainer || data.trainerNotes || undefined,
+      birthDate: data.birthDate || data.medicalProfile?.birthDate || undefined,
+      goals: Array.isArray(data.goals) ? data.goals : Array.isArray(data.medicalProfile?.goals) ? data.medicalProfile.goals : [],
       hasActiveAlert: data.hasActiveAlert ?? false,
       assignedTrainerId: data.assignedTrainerId,
       medicalProfile: data.medicalProfile,
@@ -110,7 +125,7 @@ export async function loadProfile(uid: string): Promise<ProfileData | null> {
 }
 
 /**
- * Actualiza los datos básicos del perfil (nombre, email).
+ * Actualiza los datos del perfil (nombre, bio, metas, notas, etc.).
  * @param uid - ID del usuario
  * @param data - Datos a actualizar
  * @returns Resultado de la operación
@@ -123,10 +138,42 @@ export async function updateProfile(uid: string, data: UpdateProfilePayload): Pr
 
     if (data.name !== undefined) updatePayload.name = data.name;
     if (data.email !== undefined) updatePayload.email = data.email;
-    if (data.photoURL !== undefined) updatePayload.photoURL = data.photoURL;
+    if (data.photoURL !== undefined) {
+      updatePayload.photoURL = data.photoURL;
+      updatePayload.avatar_url = data.photoURL;
+    }
+    if (data.avatar_url !== undefined) {
+      updatePayload.avatar_url = data.avatar_url;
+      if (!data.photoURL) updatePayload.photoURL = data.avatar_url;
+    }
+    if (data.user_bio !== undefined) updatePayload.user_bio = data.user_bio;
+    if (data.notesForTrainer !== undefined) updatePayload.notesForTrainer = data.notesForTrainer;
+    if (data.birthDate !== undefined) updatePayload.birthDate = data.birthDate;
+    if (data.goals !== undefined) updatePayload.goals = data.goals;
     if (data.medicalProfile !== undefined) updatePayload.medicalProfile = data.medicalProfile;
 
     await updateDoc(doc(db, 'users', uid), updatePayload);
+
+    // Sincronizar reactivamente con authStore si es el usuario actual
+    try {
+      const { $user, setUser } = await import('@/stores/authStore');
+      const currentUser = $user.get();
+      if (currentUser && currentUser.uid === uid) {
+        setUser({
+          ...currentUser,
+          ...(data.name !== undefined ? { name: data.name } : {}),
+          ...(data.photoURL !== undefined ? { photoURL: data.photoURL, avatar_url: data.photoURL } : {}),
+          ...(data.avatar_url !== undefined ? { avatar_url: data.avatar_url, photoURL: data.avatar_url } : {}),
+          ...(data.user_bio !== undefined ? { user_bio: data.user_bio } : {}),
+          ...(data.notesForTrainer !== undefined ? { notesForTrainer: data.notesForTrainer } : {}),
+          ...(data.birthDate !== undefined ? { birthDate: data.birthDate } : {}),
+          ...(data.goals !== undefined ? { goals: data.goals } : {}),
+        });
+      }
+    } catch {
+      // Ignore if in test or non-browser env
+    }
+
     logger.info('Profile', `Perfil actualizado para ${uid}`);
     return { success: true, message: 'Perfil actualizado correctamente' };
   } catch (error) {
@@ -147,21 +194,40 @@ export async function uploadProfileAvatar(
 ): Promise<{ success: boolean; photoUrl?: string; message: string }> {
   try {
     const uploadResult = await uploadAvatar(file, uid);
+    const photoUrl = uploadResult.url;
+
     await updateDoc(doc(db, 'users', uid), {
-      photoURL: uploadResult.url,
+      photoURL: photoUrl,
+      avatar_url: photoUrl,
       updatedAt: serverTimestamp(),
     });
-    logger.info('Profile', `Avatar actualizado en Cloudflare R2 para ${uid}: ${uploadResult.url}`);
+
+    // Sincronizar reactivamente con authStore si es el usuario actual
+    try {
+      const { $user, setUser } = await import('@/stores/authStore');
+      const currentUser = $user.get();
+      if (currentUser && currentUser.uid === uid) {
+        setUser({
+          ...currentUser,
+          photoURL: photoUrl,
+          avatar_url: photoUrl,
+        });
+      }
+    } catch {
+      // Ignore if in test or non-browser env
+    }
+
+    logger.info('Profile', `Avatar actualizado en Cloudflare R2 para ${uid}: ${photoUrl}`);
     return {
       success: true,
-      photoUrl: uploadResult.url,
+      photoUrl: photoUrl,
       message: 'Foto de perfil actualizada correctamente en Cloudflare R2',
     };
   } catch (error) {
     logger.error('Profile', 'Error al subir avatar a Cloudflare R2:', error);
     return {
       success: false,
-      message: 'Error al subir la imagen de perfil a Cloudflare R2',
+      message: error instanceof Error ? error.message : 'Error al subir la imagen de perfil a Cloudflare R2',
     };
   }
 }

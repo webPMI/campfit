@@ -43,8 +43,8 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
       </p>
 
       <div id="settingsContent" class="mt-8 space-y-6">
-        <!-- 1. Perfil Básico (Carga dinámica de datos de usuario) -->
-        <div id="profile-section" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
+        <!-- 1. Perfil & Identidad Visual (Avatar Cloudflare R2) -->
+        <div id="profile-section" class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm shadow-sm">
           <div id="profile-loading" class="flex items-center justify-center py-8">
             <div class="flex items-center gap-3">
               <svg class="h-5 w-5 animate-spin text-[var(--brand)]" fill="none" viewBox="0 0 24 24">
@@ -54,37 +54,154 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
               <p class="text-sm text-[var(--text-tertiary)]">{t('dashboard.loading') || 'Cargando...'}</p>
             </div>
           </div>
+
+          <div id="profile-display" class="hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+              <!-- Avatar Display / Preview -->
+              <div class="relative group shrink-0">
+                <div id="avatar-container" class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--brand-hover)] to-[var(--brand)] text-3xl font-bold text-white shadow-md ring-2 ring-[var(--border-subtle)]">
+                  <span id="profile-initial">U</span>
+                  <img id="profile-avatar-img" class="hidden h-full w-full object-cover" alt="Avatar" />
+                </div>
+                
+                <!-- Quick Change Overlay Button -->
+                <button
+                  id="btn-avatar-quick-upload"
+                  type="button"
+                  title={t('profile.avatar.change') || 'Cambiar foto'}
+                  class="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100 backdrop-blur-xs cursor-pointer"
+                >
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Name & Role Info -->
+              <div class="min-w-0">
+                <h2 id="profile-display-name" class="text-xl font-bold text-[var(--text-primary)] truncate">...</h2>
+                <p id="profile-display-email" class="text-sm text-[var(--text-tertiary)] truncate">...</p>
+                <div class="mt-2 flex flex-wrap items-center gap-2">
+                  <span id="profile-role-badge" class="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold bg-[var(--brand-dim)] text-[var(--brand)]">
+                    {role.toUpperCase()}
+                  </span>
+                  <span id="profile-badge-trainer" class="hidden text-xs text-[var(--text-tertiary)]"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Controls -->
+            <div class="flex flex-col items-start sm:items-end gap-2 w-full sm:w-auto">
+              <input
+                id="avatar-file-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                class="hidden"
+              />
+              <button
+                id="btn-upload-avatar"
+                type="button"
+                class="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-4 py-2 text-xs font-semibold text-[var(--text-primary)] transition-all hover:border-[var(--border-brand)] hover:bg-[var(--surface-4)] active:scale-95 cursor-pointer shadow-sm"
+              >
+                <svg class="h-4 w-4 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+                <span data-i18n="profile.avatar.change">{t('profile.avatar.change') || 'Subir nueva foto'}</span>
+              </button>
+              <p class="text-[11px] text-[var(--text-tertiary)]" data-i18n="profile.avatar.hint">{t('profile.avatar.hint') || 'JPG, PNG o WebP. Máximo 2MB.'}</p>
+              <div id="avatar-upload-status" class="hidden text-xs font-medium text-[var(--brand)] flex items-center gap-1.5">
+                <svg class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span data-i18n="profile.avatar.uploading">{t('profile.avatar.uploading') || 'Subiendo a Cloudflare R2...'}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- 2. Formulario de Edición de Perfil -->
-        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm">
-          <h2 class="text-lg font-semibold text-[var(--text-primary)]">{t('admin.settings.profile')}</h2>
-          <p class="mt-1 text-sm text-[var(--text-tertiary)]">{t('admin.settings.profile.desc')}</p>
+        <!-- 2. Formulario de Edición de Perfil y Metas -->
+        <div class="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-6 backdrop-blur-sm shadow-sm">
+          <h2 class="text-lg font-semibold text-[var(--text-primary)]" data-i18n="admin.settings.profile">{t('admin.settings.profile')}</h2>
+          <p class="mt-1 text-sm text-[var(--text-tertiary)]" data-i18n="admin.settings.profile.desc">{t('admin.settings.profile.desc')}</p>
 
-          <form id="profile-form" class="mt-4 space-y-4">
+          <form id="profile-form" class="mt-5 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="edit-name" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5" data-i18n="auth.name">{t('auth.name')}</label>
+                <input
+                  id="edit-name"
+                  type="text"
+                  required
+                  class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
+                />
+              </div>
+              <div>
+                <label for="edit-email" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5" data-i18n="auth.email">{t('auth.email')}</label>
+                <input
+                  id="edit-email"
+                  type="email"
+                  disabled
+                  class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-4)] px-3.5 py-2.5 text-sm text-[var(--text-tertiary)] cursor-not-allowed opacity-75"
+                />
+              </div>
+            </div>
+
+            <!-- Fecha de Nacimiento -->
             <div>
-              <label for="edit-name" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{t('auth.name')}</label>
+              <label for="edit-birthdate" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5" data-i18n="profile.birthdate.label">{t('profile.birthdate.label') || 'Fecha de Nacimiento'}</label>
               <input
-                id="edit-name"
-                type="text"
+                id="edit-birthdate"
+                type="date"
+                class="w-full sm:w-1/2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
+              />
+            </div>
+
+            <!-- Metas / Objetivos Principales (Tags interactivos) -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-medium text-[var(--text-secondary)]" data-i18n="profile.goals.label">{t('profile.goals.label') || 'Objetivos Principales'}</label>
+                <span class="text-[11px] text-[var(--text-tertiary)]" data-i18n="profile.goals.hint">{t('profile.goals.hint') || 'Toca para seleccionar tus metas'}</span>
+              </div>
+              <div id="goals-tags-container" class="flex flex-wrap gap-2 pt-1">
+                <button type="button" data-goal-key="fat_loss" class="goal-chip px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-brand)]">
+                  {t('profile.goals.fat_loss') || '🔥 Pérdida de Grasa'}
+                </button>
+                <button type="button" data-goal-key="hypertrophy" class="goal-chip px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-brand)]">
+                  {t('profile.goals.hypertrophy') || '💪 Ganancia Muscular'}
+                </button>
+                <button type="button" data-goal-key="strength" class="goal-chip px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-brand)]">
+                  {t('profile.goals.strength') || '⚡ Fuerza y Potencia'}
+                </button>
+                <button type="button" data-goal-key="endurance" class="goal-chip px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-brand)]">
+                  {t('profile.goals.endurance') || '🏃 Resistencia y Cardio'}
+                </button>
+                <button type="button" data-goal-key="health" class="goal-chip px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-brand)]">
+                  {t('profile.goals.health') || '🌿 Salud y Longevidad'}
+                </button>
+                <button type="button" data-goal-key="rehab" class="goal-chip px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--border-brand)]">
+                  {t('profile.goals.rehab') || '🛡️ Readaptación de Lesiones'}
+                </button>
+              </div>
+            </div>
+
+            <!-- Bio y Notas para el Entrenador -->
+            <div>
+              <label for="edit-bio" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5" data-i18n="profile.bio.label">{t('profile.bio.label') || 'Bio y Notas para mi Entrenador'}</label>
+              <textarea
+                id="edit-bio"
+                rows="3"
+                placeholder={t('profile.bio.placeholder') || 'Escribe información relevante sobre tu día a día, disponibilidad o notas para tu entrenador...'}
                 class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-3)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] backdrop-blur-sm transition-all focus:border-[var(--border-brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-dim)]"
-              />
+              ></textarea>
             </div>
-            <div>
-              <label for="edit-email" class="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{t('auth.email')}</label>
-              <input
-                id="edit-email"
-                type="email"
-                disabled
-                class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-4)] px-3.5 py-2.5 text-sm text-[var(--text-tertiary)] cursor-not-allowed opacity-75"
-              />
-              <p class="mt-1 text-[11px] text-[var(--text-tertiary)]">{t('admin.settings.email.notice')}</p>
-            </div>
-            <div class="flex justify-end">
+
+            <div class="flex justify-end pt-2">
               <button
                 id="save-profile-btn"
                 type="submit"
-                class="rounded-xl bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-[var(--brand-hover)] active:scale-[0.98]"
+                class="rounded-xl bg-[var(--brand)] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-[var(--brand-hover)] active:scale-[0.98] cursor-pointer"
               >
                 {t('client.medical.save') || 'Guardar Cambios'}
               </button>
@@ -312,7 +429,8 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
 
 <script>
   import { initPage } from '@/lib/shared/initPage';
-  import { loadProfile, updateProfile, changePassword } from '@/lib/shared/profileService';
+  import { loadProfile, updateProfile, uploadProfileAvatar, changePassword } from '@/lib/shared/profileService';
+  import { validateAvatarFile, generateLocalPreview } from '@/lib/storage/r2Service';
   import { showToast, showConfirm } from '@/lib/shared/ui';
   import { getStoredLanguage, setStoredLanguage } from '@/i18n/client';
   import { logger } from '@/lib/shared/logger';
@@ -332,22 +450,105 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
 
   async function initSettings(user: import('firebase/auth').User, userData: any): Promise<void> {
     const profileLoading = document.getElementById('profile-loading');
+    const profileDisplay = document.getElementById('profile-display');
     const nameInput = document.getElementById('edit-name') as HTMLInputElement;
     const emailInput = document.getElementById('edit-email') as HTMLInputElement;
+    const birthdateInput = document.getElementById('edit-birthdate') as HTMLInputElement;
+    const bioInput = document.getElementById('edit-bio') as HTMLTextAreaElement;
+    const initialEl = document.getElementById('profile-initial');
+    const avatarImgEl = document.getElementById('profile-avatar-img') as HTMLImageElement;
+    const displayNameEl = document.getElementById('profile-display-name');
+    const displayEmailEl = document.getElementById('profile-display-email');
+    const trainerBadgeEl = document.getElementById('profile-badge-trainer');
+    const avatarFileInput = document.getElementById('avatar-file-input') as HTMLInputElement;
+    const btnUploadAvatar = document.getElementById('btn-upload-avatar');
+    const btnAvatarQuick = document.getElementById('btn-avatar-quick-upload');
+    const uploadStatus = document.getElementById('avatar-upload-status');
+    const goalChips = document.querySelectorAll<HTMLButtonElement>('.goal-chip');
+
+    const selectedGoals = new Set<string>();
+
+    function updateProfileAvatarDisplay(url?: string, name?: string) {
+      const displayName = name || user.displayName || 'Usuario';
+      const initial = (displayName.charAt(0) || 'U').toUpperCase();
+      if (initialEl) initialEl.textContent = initial;
+
+      if (url && avatarImgEl) {
+        avatarImgEl.src = url;
+        avatarImgEl.classList.remove('hidden');
+        if (initialEl) initialEl.classList.add('hidden');
+        avatarImgEl.onerror = () => {
+          avatarImgEl.classList.add('hidden');
+          if (initialEl) initialEl.classList.remove('hidden');
+        };
+      } else {
+        if (avatarImgEl) avatarImgEl.classList.add('hidden');
+        if (initialEl) initialEl.classList.remove('hidden');
+      }
+    }
+
+    // Toggle Goal Chips
+    goalChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const key = chip.dataset.goalKey;
+        if (!key) return;
+        if (selectedGoals.has(key)) {
+          selectedGoals.delete(key);
+          chip.classList.remove('bg-[var(--brand)]', 'text-white', 'border-[var(--brand)]', 'shadow-sm');
+          chip.classList.add('bg-[var(--surface-3)]', 'text-[var(--text-secondary)]', 'border-[var(--border-subtle)]');
+        } else {
+          selectedGoals.add(key);
+          chip.classList.remove('bg-[var(--surface-3)]', 'text-[var(--text-secondary)]', 'border-[var(--border-subtle)]');
+          chip.classList.add('bg-[var(--brand)]', 'text-white', 'border-[var(--brand)]', 'shadow-sm');
+        }
+      });
+    });
 
     try {
       const profile = await loadProfile(user.uid);
 
-      if (profileLoading) {
-        profileLoading.classList.add('hidden');
-      }
+      if (profileLoading) profileLoading.classList.add('hidden');
+      if (profileDisplay) profileDisplay.classList.remove('hidden');
 
       if (profile) {
         if (nameInput) nameInput.value = profile.name;
         if (emailInput) emailInput.value = profile.email;
+        if (displayNameEl) displayNameEl.textContent = profile.name;
+        if (displayEmailEl) displayEmailEl.textContent = profile.email;
+
+        // Fecha de nacimiento
+        if (birthdateInput && profile.birthDate) {
+          const bVal = String(profile.birthDate);
+          const formattedDate = bVal.includes('T') ? bVal.split('T')[0] : bVal;
+          birthdateInput.value = formattedDate || '';
+        }
+
+        // Bio / Notas
+        if (bioInput) {
+          bioInput.value = profile.notesForTrainer || profile.user_bio || '';
+        }
+
+        // Metas seleccionadas
+        if (Array.isArray(profile.goals)) {
+          profile.goals.forEach((g) => {
+            selectedGoals.add(g);
+            const chip = document.querySelector<HTMLButtonElement>(`[data-goal-key="${g}"]`);
+            if (chip) {
+              chip.classList.remove('bg-[var(--surface-3)]', 'text-[var(--text-secondary)]', 'border-[var(--border-subtle)]');
+              chip.classList.add('bg-[var(--brand)]', 'text-white', 'border-[var(--brand)]', 'shadow-sm');
+            }
+          });
+        }
+
+        // Avatar
+        updateProfileAvatarDisplay(profile.avatar_url || profile.photoURL, profile.name);
 
         // Mostrar entrenador para clientes
         if (profile.assignedTrainerName) {
+          if (trainerBadgeEl) {
+            trainerBadgeEl.textContent = `Coach: ${profile.assignedTrainerName}`;
+            trainerBadgeEl.classList.remove('hidden');
+          }
           const trainerSection = document.getElementById('trainer-info-section');
           if (trainerSection) {
             trainerSection.classList.remove('hidden');
@@ -355,12 +556,12 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
             if (content) {
               content.innerHTML = `
                 <div class="flex items-center gap-3 p-3 rounded-xl bg-[var(--surface-4)] border border-[var(--border-strong)]/40">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--info-dim)] text-sm font-medium text-[var(--info)]">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--info-dim)] text-sm font-bold text-[var(--info)]">
                     ${profile.assignedTrainerName.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-[var(--text-primary)]">${profile.assignedTrainerName}</p>
-                    <p class="text-xs text-[var(--text-tertiary)]">${tr('client.settings.my.trainer.desc') || 'Entrenador asignado'}</p>
+                    <p class="text-sm font-semibold text-[var(--text-primary)]">${profile.assignedTrainerName}</p>
+                    <p class="text-xs text-[var(--text-tertiary)]">${tr('client.settings.my.trainer.desc') || 'Entrenador personal asignado'}</p>
                   </div>
                 </div>
               `;
@@ -372,31 +573,90 @@ const LayoutComponent = role === 'admin' ? AdminLayout : role === 'trainer' ? Tr
       logger.error('UnifiedSettings', 'Error cargando datos de usuario', err);
     }
 
-    // ─── Setup Form Handlers ─────────────────────────────────────────────
+    // ─── Avatar Upload Listeners ─────────────────────────────────────────
+    const triggerUpload = () => avatarFileInput?.click();
+    btnUploadAvatar?.addEventListener('click', triggerUpload);
+    btnAvatarQuick?.addEventListener('click', triggerUpload);
+
+    avatarFileInput?.addEventListener('change', async () => {
+      const file = avatarFileInput.files?.[0];
+      if (!file) return;
+
+      const validation = validateAvatarFile(file, 2);
+      if (!validation.valid) {
+        showToast({ message: validation.message || 'Avatar no válido', type: 'error' });
+        avatarFileInput.value = '';
+        return;
+      }
+
+      // Preview reactivo instantáneo
+      try {
+        const previewUrl = await generateLocalPreview(file);
+        updateProfileAvatarDisplay(previewUrl, nameInput?.value);
+      } catch {
+        // Continue to upload even if local preview fails
+      }
+
+      if (uploadStatus) uploadStatus.classList.remove('hidden');
+      if (btnUploadAvatar) (btnUploadAvatar as HTMLButtonElement).disabled = true;
+
+      try {
+        const result = await uploadProfileAvatar(user.uid, file);
+        if (result.success && result.photoUrl) {
+          updateProfileAvatarDisplay(result.photoUrl, nameInput?.value);
+          showToast({ message: tr('profile.avatar.success') || '¡Foto de perfil actualizada correctamente!', type: 'success' });
+        } else {
+          showToast({ message: result.message || 'Error al subir la imagen', type: 'error' });
+        }
+      } catch (err) {
+        logger.error('UnifiedSettings', 'Error subiendo avatar a Cloudflare R2', err);
+        showToast({ message: tr('profile.avatar.error') || 'Error al subir foto a Cloudflare R2', type: 'error' });
+      } finally {
+        if (uploadStatus) uploadStatus.classList.add('hidden');
+        if (btnUploadAvatar) (btnUploadAvatar as HTMLButtonElement).disabled = false;
+        avatarFileInput.value = '';
+      }
+    });
+
+    // ─── Setup Profile Form Submit ───────────────────────────────────────
     const profileForm = document.getElementById('profile-form') as HTMLFormElement;
     if (profileForm) {
       profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = nameInput.value.trim();
-        const email = emailInput.value.trim();
+        const birthDate = birthdateInput?.value || undefined;
+        const notesForTrainer = bioInput?.value.trim() || undefined;
+        const goals = Array.from(selectedGoals);
 
         if (!name) {
-          showToast({ message: tr('admin.settings.profile.name.required'), type: 'error' });
+          showToast({ message: tr('admin.settings.profile.name.required') || 'El nombre es obligatorio', type: 'error' });
           return;
         }
 
         const saveBtn = document.getElementById('save-profile-btn') as HTMLButtonElement;
         if (saveBtn) {
           saveBtn.disabled = true;
-          saveBtn.textContent = tr('admin.settings.profile.saving');
+          saveBtn.textContent = tr('admin.settings.profile.saving') || 'Guardando...';
         }
 
         try {
-          const res = await updateProfile(user.uid, { name, email });
-          showToast({ message: res.message, type: res.success ? 'success' : 'error' });
+          const res = await updateProfile(user.uid, {
+            name,
+            birthDate,
+            goals,
+            notesForTrainer,
+            user_bio: notesForTrainer,
+          });
+
+          if (res.success) {
+            if (displayNameEl) displayNameEl.textContent = name;
+            showToast({ message: tr('profile.save.success') || 'Perfil actualizado correctamente', type: 'success' });
+          } else {
+            showToast({ message: res.message, type: 'error' });
+          }
         } catch (err) {
           logger.error('UnifiedSettings', 'Error actualizando perfil', err);
-          showToast({ message: tr('admin.settings.profile.error'), type: 'error' });
+          showToast({ message: tr('admin.settings.profile.error') || 'Error al guardar perfil', type: 'error' });
         } finally {
           if (saveBtn) {
             saveBtn.disabled = false;

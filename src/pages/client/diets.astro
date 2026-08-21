@@ -259,10 +259,148 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           <div id="historyList" class="space-y-2"></div>
         </div>
 
+        <!-- Hub de Nutrición Autónoma & Calculadora Metabólica para Clientes Sin Dieta Asignada -->
+        <div id="autonomy-nutrition-hub" class="hidden space-y-6">
+          <!-- Tarjeta Calculadora Metabólica (BMR / TDEE / Macros) -->
+          <div class="card-glow rounded-2xl border border-[var(--border-brand)]/40 bg-gradient-to-br from-[var(--surface-1)] to-[var(--brand-dim)]/20 p-6 backdrop-blur-xl space-y-5">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">🥗</span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-base font-bold text-[var(--text-primary)]">Nutrición Autónoma & Calculadora Metabólica</h3>
+                    <span class="rounded-full bg-[var(--brand-dim)] text-[var(--brand)] border border-[var(--border-brand)] px-2 py-0.5 text-[10px] font-bold">Cálculo Científico</span>
+                  </div>
+                  <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                    Calcula tu gasto energético diario (TDEE) y la distribución óptima de macronutrientes adaptada a tu meta.
+                  </p>
+                </div>
+              </div>
+              <a
+                href="/client/support/report"
+                class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] hover:bg-[var(--surface-4)] px-3.5 py-2 text-xs font-bold text-[var(--text-primary)] transition-all flex items-center gap-1.5"
+              >
+                <span>👨‍⚕️ Solicitar Plan Nutricional</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <!-- Formulario de Parámetros Biológicos -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 pt-2">
+              <div>
+                <label class="block text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Peso (kg)</label>
+                <input id="calc-weight" type="number" step="0.5" value="75" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Altura (cm)</label>
+                <input id="calc-height" type="number" value="175" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Edad (años)</label>
+                <input id="calc-age" type="number" value="26" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Género</label>
+                <select id="calc-gender" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-2 text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]">
+                  <option value="male">Hombre</option>
+                  <option value="female">Mujer</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Actividad</label>
+                <select id="calc-activity" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-2 text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]">
+                  <option value="sedentary">Sedentario (Oficina)</option>
+                  <option value="light">Ligero (1-2 días)</option>
+                  <option value="moderate" selected>Moderado (3-5 días)</option>
+                  <option value="active">Activo (6-7 días)</option>
+                  <option value="very_active">Atleta Intenso</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Objetivo</label>
+                <select id="calc-goal" class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-2 py-2 text-xs font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)]">
+                  <option value="fat_loss">Pérdida / Definición</option>
+                  <option value="maintenance" selected>Mantenimiento</option>
+                  <option value="muscle_gain">Ganancia Muscular</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Resultados Calculados en Tiempo Real -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div class="rounded-xl border border-[var(--border-brand)]/40 bg-[var(--surface-2)] p-3 text-center space-y-1">
+                <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase">Calorías Diarias</span>
+                <p id="res-target-kcal" class="text-xl font-extrabold text-[var(--brand)]">2,350 kcal</p>
+                <p id="res-tdee-sub" class="text-[10px] text-[var(--text-tertiary)]">TDEE: 2,350 kcal</p>
+              </div>
+              <div class="rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-center space-y-1">
+                <span class="text-[10px] font-bold text-red-400 uppercase">🍗 Proteínas</span>
+                <p id="res-protein" class="text-xl font-extrabold text-red-300">150g</p>
+                <p id="res-protein-sub" class="text-[10px] text-red-400/70">600 kcal (26%)</p>
+              </div>
+              <div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-center space-y-1">
+                <span class="text-[10px] font-bold text-amber-400 uppercase">🍚 Carbohidratos</span>
+                <p id="res-carbs" class="text-xl font-extrabold text-amber-300">275g</p>
+                <p id="res-carbs-sub" class="text-[10px] text-amber-400/70">1,100 kcal (47%)</p>
+              </div>
+              <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3 text-center space-y-1">
+                <span class="text-[10px] font-bold text-emerald-400 uppercase">🥑 Grasas</span>
+                <p id="res-fat" class="text-xl font-extrabold text-emerald-300">68g</p>
+                <p id="res-fat-sub" class="text-[10px] text-emerald-400/70">612 kcal (27%)</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-2 border-t border-[var(--border-subtle)] flex-wrap">
+              <span id="res-water-advice" class="text-xs text-blue-400 font-semibold flex items-center gap-1">
+                💧 Hidratación recomendada: 2.6L diarios
+              </span>
+              <button
+                type="button"
+                id="btn-save-metabolic-goal"
+                class="rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] px-5 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+              >
+                <span>💾 Guardar Mi Objetivo Nutricional</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Explorador Interactivo de Alimentos & Alérgenos -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">🍎 Base de Datos de Alimentos & Alérgenos</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Consulta valores nutricionales por porción y filtros de intolerancias (gluten, lactosa, vegano).</p>
+              </div>
+              <div class="w-full sm:w-64">
+                <input
+                  id="foods-explorer-search"
+                  type="text"
+                  placeholder="Buscar alimento (ej: Pollo, Avena...)"
+                  class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--brand)]"
+                />
+              </div>
+            </div>
+
+            <!-- Filtros por Categoría de Alimentos -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="foods-category-filters">
+              <button type="button" data-category="all" class="food-filter-btn active rounded-lg px-2.5 py-1 text-xs font-bold bg-[var(--brand)] text-[var(--text-on-brand)]">Todos</button>
+              <button type="button" data-category="protein" class="food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white">Proteínas</button>
+              <button type="button" data-category="carbs" class="food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white">Carbohidratos</button>
+              <button type="button" data-category="fats" class="food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white">Grasas</button>
+              <button type="button" data-category="fruits" class="food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white">Frutas</button>
+              <button type="button" data-category="vegetables" class="food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white">Verduras</button>
+              <button type="button" data-category="dairy" class="food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white">Lácteos</button>
+            </div>
+
+            <!-- Grid de Alimentos -->
+            <div id="foods-explorer-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+
         <!-- Empty State -->
         <div
           id="emptyState"
-          class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center"
+          class="hidden flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-default)] bg-[var(--surface-2)] p-12 text-center"
         >
           <div
             class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--surface-4)] text-2xl"
@@ -391,6 +529,17 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     type FoodItem,
   } from "@/lib/shared/foodLibrary";
   import { suggestSubstitutes } from "@/lib/client/intoleranceChecker";
+  import {
+    calculateMetabolicProfile,
+    saveUserMetabolicGoal,
+    getCachedMetabolicProfile,
+    type UserMetabolicInput,
+    type MetabolicCalculationResult,
+    type ActivityLevel,
+    type NutritionalGoal,
+    type BiologicalGender,
+  } from "@/lib/client/metabolicCalculator";
+  import { FOODS_CATALOG } from "@/lib/data/foodsCatalog";
   import { t } from "@/i18n/client";
   import { escapeHtml } from "@/lib/shared/ui";
   import type { MedicalProfile } from "@/types";
@@ -418,6 +567,35 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const historyList = document.getElementById("historyList")!;
   const btnBackCurrent = document.getElementById("btn-back-current")!;
   const toast = document.getElementById("diet-toast")!;
+
+  // Autonomy Nutrition & Metabolic Hub refs
+  const autonomyNutritionHub = document.getElementById("autonomy-nutrition-hub");
+  const calcWeight = document.getElementById("calc-weight") as HTMLInputElement | null;
+  const calcHeight = document.getElementById("calc-height") as HTMLInputElement | null;
+  const calcAge = document.getElementById("calc-age") as HTMLInputElement | null;
+  const calcGender = document.getElementById("calc-gender") as HTMLSelectElement | null;
+  const calcActivity = document.getElementById("calc-activity") as HTMLSelectElement | null;
+  const calcGoal = document.getElementById("calc-goal") as HTMLSelectElement | null;
+
+  const resTargetKcal = document.getElementById("res-target-kcal");
+  const resTdeeSub = document.getElementById("res-tdee-sub");
+  const resProtein = document.getElementById("res-protein");
+  const resProteinSub = document.getElementById("res-protein-sub");
+  const resCarbs = document.getElementById("res-carbs");
+  const resCarbsSub = document.getElementById("res-carbs-sub");
+  const resFat = document.getElementById("res-fat");
+  const resFatSub = document.getElementById("res-fat-sub");
+  const resWaterAdvice = document.getElementById("res-water-advice");
+  const btnSaveMetabolicGoal = document.getElementById("btn-save-metabolic-goal");
+
+  // Foods Explorer refs
+  const foodsExplorerSearch = document.getElementById("foods-explorer-search") as HTMLInputElement | null;
+  const foodsCategoryFilterBtns = document.querySelectorAll(".food-filter-btn");
+  const foodsExplorerGrid = document.getElementById("foods-explorer-grid");
+
+  let activeFoodCategory = "all";
+  let activeFoodSearch = "";
+  let lastCalculatedProfile: MetabolicCalculationResult | null = null;
 
   // Sustitutos modal refs
   const substitutesModal = document.getElementById("substitutes-modal")!;
@@ -570,6 +748,130 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     substitutesModal.classList.remove("hidden");
   }
 
+  function updateMetabolicCalculations() {
+    if (!calcWeight || !calcHeight || !calcAge || !calcGender || !calcActivity || !calcGoal) return;
+
+    const input: UserMetabolicInput = {
+      weightKg: parseFloat(calcWeight.value) || 75,
+      heightCm: parseFloat(calcHeight.value) || 175,
+      ageYears: parseInt(calcAge.value, 10) || 26,
+      gender: (calcGender.value as BiologicalGender) || "male",
+      activityLevel: (calcActivity.value as ActivityLevel) || "moderate",
+      goal: (calcGoal.value as NutritionalGoal) || "maintenance",
+    };
+
+    const res = calculateMetabolicProfile(input);
+    lastCalculatedProfile = res;
+
+    if (resTargetKcal) resTargetKcal.textContent = `${res.targetCalories.toLocaleString()} kcal`;
+    if (resTdeeSub) resTdeeSub.textContent = `TDEE: ${res.tdee.toLocaleString()} kcal · BMR: ${res.bmr.toLocaleString()} kcal`;
+    if (resProtein) resProtein.textContent = `${res.macros.proteinGrams}g`;
+    if (resProteinSub) resProteinSub.textContent = `${res.macros.proteinKcal} kcal (${res.macros.percentages.protein}%)`;
+    if (resCarbs) resCarbs.textContent = `${res.macros.carbsGrams}g`;
+    if (resCarbsSub) resCarbsSub.textContent = `${res.macros.carbsKcal} kcal (${res.macros.percentages.carbs}%)`;
+    if (resFat) resFat.textContent = `${res.macros.fatGrams}g`;
+    if (resFatSub) resFatSub.textContent = `${res.macros.fatKcal} kcal (${res.macros.percentages.fat}%)`;
+    if (resWaterAdvice) resWaterAdvice.textContent = `💧 Hidratación recomendada: ${res.waterLitersRecommended}L diarios`;
+  }
+
+  function renderFoodsExplorer() {
+    if (!foodsExplorerGrid) return;
+
+    const sourceList = allCatalogFoods.length > 0 ? allCatalogFoods : FOODS_CATALOG;
+    const search = activeFoodSearch.toLowerCase().trim();
+
+    const filtered = sourceList.filter((f) => {
+      if (activeFoodCategory !== "all") {
+        if (f.category !== activeFoodCategory) return false;
+      }
+      if (search) {
+        const name = (f.translations?.es || f.id || "").toLowerCase();
+        if (!name.includes(search)) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      foodsExplorerGrid.innerHTML = `
+        <div class="col-span-full py-8 text-center text-xs text-[var(--text-tertiary)]">
+          No se encontraron alimentos en esta categoría.
+        </div>
+      `;
+      return;
+    }
+
+    foodsExplorerGrid.innerHTML = filtered.map((f) => {
+      const name = f.translations?.es || f.id;
+      const isVegan = f.isVegan;
+      const isGlutenFree = f.isGlutenFree;
+      const isLactoseFree = f.isLactoseFree;
+
+      return `
+        <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-3 space-y-1.5 hover:border-[var(--border-brand)]/50 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <span class="text-xs font-bold text-[var(--text-primary)] leading-snug">${escapeHtml(name)}</span>
+              <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">${f.defaultCalories} kcal</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-[10px] text-[var(--text-tertiary)] flex-wrap">
+              <span class="text-emerald-400 font-semibold">P: ${f.defaultProtein}g</span>
+              <span>•</span>
+              <span class="text-amber-400 font-semibold">C: ${f.defaultCarbs}g</span>
+              <span>•</span>
+              <span class="text-purple-400 font-semibold">G: ${f.defaultFat}g</span>
+              <span>•</span>
+              <span>(${f.defaultPortion}g)</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 pt-1.5 border-t border-[var(--border-subtle)] flex-wrap">
+            ${isVegan ? '<span class="rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 text-[9px] font-bold">🌱 Vegano</span>' : ''}
+            ${isGlutenFree ? '<span class="rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 text-[9px] font-bold">🌾 Sin Gluten</span>' : ''}
+            ${isLactoseFree ? '<span class="rounded bg-blue-500/15 text-blue-300 border border-blue-500/30 px-1.5 py-0.2 text-[9px] font-bold">🥛 Sin Lactosa</span>' : ''}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // Eventos de cálculo interactivo
+  [calcWeight, calcHeight, calcAge, calcGender, calcActivity, calcGoal].forEach((input) => {
+    input?.addEventListener("input", updateMetabolicCalculations);
+    input?.addEventListener("change", updateMetabolicCalculations);
+  });
+
+  // Guardar Objetivo Nutricional
+  btnSaveMetabolicGoal?.addEventListener("click", async () => {
+    if (!currentClientId || !lastCalculatedProfile) return;
+    const input: UserMetabolicInput = {
+      weightKg: parseFloat(calcWeight?.value || "75") || 75,
+      heightCm: parseFloat(calcHeight?.value || "175") || 175,
+      ageYears: parseInt(calcAge?.value || "26", 10) || 26,
+      gender: (calcGender?.value as BiologicalGender) || "male",
+      activityLevel: (calcActivity?.value as ActivityLevel) || "moderate",
+      goal: (calcGoal?.value as NutritionalGoal) || "maintenance",
+    };
+
+    await saveUserMetabolicGoal(currentClientId, input, lastCalculatedProfile);
+    showToast("¡Objetivo nutricional guardado en tu perfil!", "success");
+  });
+
+  // Eventos de búsqueda y filtros de alimentos
+  foodsExplorerSearch?.addEventListener("input", (e) => {
+    activeFoodSearch = (e.target as HTMLInputElement).value;
+    renderFoodsExplorer();
+  });
+
+  foodsCategoryFilterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      foodsCategoryFilterBtns.forEach((b) => {
+        b.className = "food-filter-btn rounded-lg px-2.5 py-1 text-xs font-semibold bg-[var(--surface-3)] text-[var(--text-secondary)] hover:text-white";
+      });
+      btn.className = "food-filter-btn active rounded-lg px-2.5 py-1 text-xs font-bold bg-[var(--brand)] text-[var(--text-on-brand)]";
+      activeFoodCategory = (btn as HTMLElement).dataset.category || "all";
+      renderFoodsExplorer();
+    });
+  });
+
   // ─── Init ────────────────────────────────────────────────────────────────────
   loadingText.textContent = t("dashboard.loading");
 
@@ -583,24 +885,37 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
 
       initWaterTracker();
 
+      // Cargar datos metabólicos previos si existen
+      if (userData?.weight && calcWeight) calcWeight.value = String(userData.weight);
+      if (userData?.height && calcHeight) calcHeight.value = String(userData.height);
+      if (userData?.gender && calcGender) calcGender.value = userData.gender;
+
+      updateMetabolicCalculations();
+
       // Suscribirse a los alimentos del catálogo
       unsubFoods = subscribeToFoods((foods) => {
         allCatalogFoods = foods;
         if (currentDietObj) {
           renderCurrentDiet(currentDietObj);
         }
+        renderFoodsExplorer();
       });
 
       // Suscribirse a la dieta actual
       unsubDiets = subscribeToDiets(clientId, (diets) => {
         allDiets = diets;
         if (diets.length > 0 && diets[0]) {
+          autonomyNutritionHub?.classList.add("hidden");
+          emptyState.classList.add("hidden");
           renderCurrentDiet(diets[0]);
           btnHistory.classList.remove("hidden");
         } else {
           dietCard.classList.add("hidden");
-          emptyState.classList.remove("hidden");
+          emptyState.classList.add("hidden");
+          autonomyNutritionHub?.classList.remove("hidden");
           btnHistory.classList.add("hidden");
+          updateMetabolicCalculations();
+          renderFoodsExplorer();
         }
       });
 

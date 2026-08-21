@@ -1,169 +1,200 @@
 /**
- * Servicio de Preferencias y Solicitudes de Ejercicios del Cliente.
- *
- * Administra la colección `user_exercise_prefs/{userId}`:
- * - Calificación 1-5 estrellas (ratings)
- * - Lista de favoritos (favorites)
- * - Lista de exclusiones (excluded)
- * - Cola de solicitudes de exclusión/cambio con notificación al entrenador
+ * Servicio de Preferencias de Ejercicios del Alumno (Favoritos, Ratings, Exclusiones) — CampFit
+ * Permite al alumno explorar el catálogo, marcar sus ejercicios favoritos, calificar ejercicios y solicitar
+ * la exclusión de aquellos que le causen molestias o no desee realizar.
  *
  * @module client/exercisePreferencesService
  */
 
 import { db } from '@/lib/firebase';
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  onSnapshot,
-  serverTimestamp,
-  type Unsubscribe,
-} from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp, type Unsubscribe } from 'firebase/firestore';
 import { logger } from '@/lib/shared/logger';
-import type {
-  UserExercisePreferences,
-  ExerciseRequest,
-} from '@/types';
-import type { ExclusionReason, ExerciseItem } from '@/lib/shared/exerciseLibrary';
-import { getExerciseName } from '@/lib/shared/exerciseLibrary';
 import { sendMessage } from '@/lib/trainer/trainerChat';
+import type { UserExercisePreferences } from '@/types';
+import type { ExerciseItem, ExclusionReason } from '@/lib/shared/exerciseLibrary';
 
-const COLLECTION_NAME = 'user_exercise_prefs';
+export interface ExercisePreferences {
+  favorites: string[];
+  excluded: string[];
+}
+
+const LOCAL_STORAGE_KEY_PREFIX = 'cf_exercise_pref_';
+
+function getLocalKey(uid: string): string {
+  return `${LOCAL_STORAGE_KEY_PREFIX}${uid}`;
+}
+
+export function getCachedExercisePreferences(uid: string): ExercisePreferences {
+  try {
+    const raw = localStorage.getItem(getLocalKey(uid));
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
+        excluded: Array.isArray(parsed.excluded) ? parsed.excluded : [],
+      };
+    }
+  } catch {
+    /* ignore */
+  }
+  return { favorites: [], excluded: [] };
+}
+
+export function setCachedExercisePreferences(uid: string, prefs: ExercisePreferences): void {
+  try {
+    localStorage.setItem(getLocalKey(uid), JSON.stringify(prefs));
+  } catch {
+    /* ignore */
+  }
+}
+
+function checkDocExists(snap: any): boolean {
+  if (!snap) return false;
+  if (typeof snap.exists === 'function') return snap.exists();
+  return !!snap.exists;
+}
+
+function getDocData(snap: any): any {
+  if (!snap) return {};
+  if (typeof snap.data === 'function') return snap.data() || {};
+  return snap.data || {};
+}
 
 /**
- * Suscripción reactiva a las preferencias de ejercicios de un usuario.
+ * 🔒 CRÍTICO: Suscripción reactiva a las preferencias de ejercicios del usuario en Firestore.
  */
 export function subscribeToUserExercisePreferences(
   userId: string,
   callback: (prefs: UserExercisePreferences | null) => void,
-  onError?: (error: Error) => void
+  onError?: (error: Error) => void,
 ): Unsubscribe {
   if (!userId) {
     callback(null);
     return () => {};
   }
 
-  const docRef = doc(db, COLLECTION_NAME, userId);
-
+  const docRef = doc(db, 'user_exercise_prefs', userId);
   return onSnapshot(
     docRef,
     (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        callback({
-          userId,
-          ratings: data.ratings || {},
+      if (checkDocExists(snap)) {
+        const data = getDocData(snap) as UserExercisePreferences;
+        callback({ ...data, userId });
+        setCachedExercisePreferences(userId, {
           favorites: data.favorites || [],
           excluded: data.excluded || [],
-          pendingRequests: data.pendingRequests || [],
-          updatedAt: data.updatedAt || null,
-        } as UserExercisePreferences);
+        });
       } else {
-        callback({
+        const defaultPrefs: UserExercisePreferences = {
           userId,
           ratings: {},
           favorites: [],
           excluded: [],
           pendingRequests: [],
-          updatedAt: null,
-        });
+          updatedAt: null as any,
+        };
+        callback(defaultPrefs);
       }
     },
     (err) => {
-      logger.error('exercisePreferencesService', 'Error al suscribirse a preferencias de ejercicios:', err);
-      onError?.(err);
+      logger.error('ExercisePreferences', 'Error en suscripción de preferencias:', err);
+      if (onError) onError(err);
       callback(null);
-    }
+    },
   );
 }
 
 /**
- * Obtiene las preferencias de un usuario una sola vez.
+ * 🔒 CRÍTICO: Obtiene las preferencias del usuario de Firestore con fallback por defecto.
  */
-export async function getUserExercisePreferences(
-  userId: string
-): Promise<UserExercisePreferences> {
-  if (!userId) {
-    return { userId: '', ratings: {}, favorites: [], excluded: [], pendingRequests: [], updatedAt: null };
-  }
+export async function getUserExercisePreferences(userId: string): Promise<UserExercisePreferences> {
+  const defaultPrefs: UserExercisePreferences = {
+    userId,
+    ratings: {},
+    favorites: [],
+    excluded: [],
+    pendingRequests: [],
+    updatedAt: null as any,
+  };
+
+  if (!userId) return defaultPrefs;
 
   try {
-    const snap = await getDoc(doc(db, COLLECTION_NAME, userId));
-    if (snap.exists()) {
-      const data = snap.data();
-      return {
-        userId,
-        ratings: data.ratings || {},
-        favorites: data.favorites || [],
-        excluded: data.excluded || [],
-        pendingRequests: data.pendingRequests || [],
-        updatedAt: data.updatedAt || null,
-      } as UserExercisePreferences;
+    const docRef = doc(db, 'user_exercise_prefs', userId);
+    const snap = await getDoc(docRef);
+    if (checkDocExists(snap)) {
+      return { ...(getDocData(snap) as UserExercisePreferences), userId };
     }
   } catch (err) {
-    logger.error('exercisePreferencesService', 'Error obteniendo preferencias:', err);
+    logger.warn('ExercisePreferences', 'Error obteniendo preferencias de Firestore:', err);
   }
 
-  return { userId, ratings: {}, favorites: [], excluded: [], pendingRequests: [], updatedAt: null };
+  return defaultPrefs;
 }
 
 /**
- * Califica un ejercicio (1 a 5 estrellas).
+ * 🔒 CRÍTICO: Califica un ejercicio (1-5 estrellas).
  */
 export async function rateExercise(
   userId: string,
   exerciseId: string,
-  rating: 1 | 2 | 3 | 4 | 5
+  rating: number,
 ): Promise<boolean> {
-  if (!userId || !exerciseId) return false;
-
   try {
-    const docRef = doc(db, COLLECTION_NAME, userId);
+    if (rating < 1 || rating > 5) return false;
+    const docRef = doc(db, 'user_exercise_prefs', userId);
     const snap = await getDoc(docRef);
 
-    if (snap.exists()) {
+    if (checkDocExists(snap)) {
+      const data = getDocData(snap);
+      const currentRatings = data.ratings || {};
       await updateDoc(docRef, {
-        [`ratings.${exerciseId}`]: rating,
+        ratings: { ...currentRatings, [exerciseId]: rating },
         updatedAt: serverTimestamp(),
       });
     } else {
       await setDoc(docRef, {
         userId,
         ratings: { [exerciseId]: rating },
-        favorites: rating >= 4 ? [exerciseId] : [],
+        favorites: [],
         excluded: [],
-        pendingRequests: [],
         updatedAt: serverTimestamp(),
       });
     }
     return true;
   } catch (err) {
-    logger.error('exercisePreferencesService', 'Error guardando calificación:', err);
+    logger.error('ExercisePreferences', 'Error calificando ejercicio:', err);
     return false;
   }
 }
 
 /**
- * Alterna el estado de favorito de un ejercicio.
+ * 🔒 CRÍTICO: Alterna el estado de Favorito (⭐) de un ejercicio.
  */
 export async function toggleFavorite(
   userId: string,
-  exerciseId: string
+  exerciseId: string,
+  currentFavorites?: string[],
 ): Promise<boolean> {
-  if (!userId || !exerciseId) return false;
-
   try {
-    const current = await getUserExercisePreferences(userId);
-    const isFav = current.favorites.includes(exerciseId);
+    const docRef = doc(db, 'user_exercise_prefs', userId);
+    let favs: string[] = currentFavorites ? [...currentFavorites] : [];
+    let docExists = !!currentFavorites;
+
+    if (!currentFavorites) {
+      const snap = await getDoc(docRef);
+      docExists = checkDocExists(snap);
+      if (docExists) {
+        favs = getDocData(snap).favorites || [];
+      }
+    }
+
+    const isFav = favs.includes(exerciseId);
     const newFavorites = isFav
-      ? current.favorites.filter((id) => id !== exerciseId)
-      : [...current.favorites, exerciseId];
+      ? favs.filter((id) => id !== exerciseId)
+      : [...favs, exerciseId];
 
-    const docRef = doc(db, COLLECTION_NAME, userId);
-    const snap = await getDoc(docRef);
-
-    if (snap.exists()) {
+    if (docExists) {
       await updateDoc(docRef, {
         favorites: newFavorites,
         updatedAt: serverTimestamp(),
@@ -171,130 +202,165 @@ export async function toggleFavorite(
     } else {
       await setDoc(docRef, {
         userId,
-        ratings: {},
         favorites: newFavorites,
         excluded: [],
-        pendingRequests: [],
+        ratings: {},
         updatedAt: serverTimestamp(),
       });
     }
     return true;
   } catch (err) {
-    logger.error('exercisePreferencesService', 'Error alternando favorito:', err);
+    logger.error('ExercisePreferences', 'Error alternando favorito:', err);
     return false;
   }
 }
 
 /**
- * Solicita la exclusión de un ejercicio con motivos y envía un mensaje de alerta/notificación al entrenador si existe.
+ * 🔒 CRÍTICO: Solicita la exclusión de un ejercicio notificando opcionalmente al entrenador.
  */
 export async function requestExerciseExclusion(
   userId: string,
   clientName: string,
   trainerId: string | undefined,
   exercise: ExerciseItem,
-  quickReasons: ExclusionReason[] = [],
-  customReason = ''
+  reasons: ExclusionReason[],
+  notes: string = '',
 ): Promise<boolean> {
-  if (!userId || !exercise) return false;
-
   try {
-    const exerciseNameEs = getExerciseName(exercise, 'es');
-    const exerciseNameEn = getExerciseName(exercise, 'en');
+    const docRef = doc(db, 'user_exercise_prefs', userId);
+    const snap = await getDoc(docRef);
+    const data = checkDocExists(snap) ? getDocData(snap) : { favorites: [], excluded: [], pendingRequests: [] };
 
-    const newRequest: ExerciseRequest = {
-      exerciseId: exercise.id,
-      exerciseName: exerciseNameEs,
-      exerciseNameEn,
-      type: 'exclude',
-      quickReasons,
-      customReason: customReason.trim(),
-      status: 'pending',
-      requestedAt: serverTimestamp(),
-    };
-
-    // 1. Si hay entrenador asignado, generar un mensaje en el chat
+    let chatMsgId: string | undefined;
     if (trainerId) {
-      const reasonTexts = quickReasons.join(', ');
-      const content = `🚫 [Solicitud de Exclusión] ${clientName} ha solicitado excluir el ejercicio "${exerciseNameEs}". Motivos: ${reasonTexts || 'No especificado'}${customReason ? ` (${customReason})` : ''}.`;
-      try {
-        const msgId = await sendMessage(userId, trainerId, content, 'alert');
-        if (msgId) {
-          newRequest.chatMessageId = msgId;
-        }
-      } catch (chatErr) {
-        logger.error('exercisePreferencesService', 'Error enviando mensaje de chat para exclusión:', chatErr);
-      }
+      const reasonLabels = reasons.join(', ');
+      const msg = `🚫 Solicitud de exclusión para "${exercise.translations?.es || exercise.id}". Alumno: ${clientName || 'Cliente'}. Motivo: ${reasonLabels}. ${notes ? `Notas: ${notes}` : ''}`;
+      const sent = await sendMessage(userId, trainerId, msg, 'alert').catch(() => null);
+      if (sent) chatMsgId = sent;
     }
 
-    // 2. Guardar en user_exercise_prefs
-    const current = await getUserExercisePreferences(userId);
-    const newExcluded = current.excluded.includes(exercise.id)
-      ? current.excluded
-      : [...current.excluded, exercise.id];
+    const newRequest = {
+      exerciseId: exercise.id,
+      exerciseName: exercise.translations?.es || exercise.id,
+      reasons,
+      notes,
+      type: 'exclude',
+      status: 'pending',
+      requestedAt: serverTimestamp(),
+      ...(chatMsgId ? { chatMessageId: chatMsgId } : {}),
+    };
 
-    // Quitar de favoritos si estaba
-    const newFavorites = current.favorites.filter((id) => id !== exercise.id);
+    const currentExcluded = data.excluded || [];
+    const currentFavorites = data.favorites || [];
+    const currentPending = data.pendingRequests || [];
 
-    const docRef = doc(db, COLLECTION_NAME, userId);
-    const snap = await getDoc(docRef);
+    const newExcluded = currentExcluded.includes(exercise.id) ? currentExcluded : [...currentExcluded, exercise.id];
+    const newFavorites = currentFavorites.filter((id: string) => id !== exercise.id);
+    const newPending = [...currentPending, newRequest];
 
-    if (snap.exists()) {
+    if (checkDocExists(snap)) {
       await updateDoc(docRef, {
         excluded: newExcluded,
         favorites: newFavorites,
-        pendingRequests: [...current.pendingRequests, newRequest],
+        pendingRequests: newPending,
         updatedAt: serverTimestamp(),
       });
     } else {
       await setDoc(docRef, {
         userId,
-        ratings: {},
-        favorites: newFavorites,
         excluded: newExcluded,
-        pendingRequests: [newRequest],
+        favorites: newFavorites,
+        pendingRequests: newPending,
         updatedAt: serverTimestamp(),
       });
     }
 
     return true;
   } catch (err) {
-    logger.error('exercisePreferencesService', 'Error solicitando exclusión:', err);
+    logger.error('ExercisePreferences', 'Error solicitando exclusión:', err);
     return false;
   }
 }
 
 /**
- * Marca una solicitud de ejercicio como confirmada/vista por el entrenador.
+ * 🔒 CRÍTICO: Confirma o gestiona una solicitud de exclusión por parte del entrenador.
  */
 export async function acknowledgeExerciseRequest(
   userId: string,
-  exerciseId: string
+  exerciseId: string,
+  status: string = 'acknowledged',
 ): Promise<boolean> {
-  if (!userId || !exerciseId) return false;
-
   try {
-    const current = await getUserExercisePreferences(userId);
-    const updatedRequests = current.pendingRequests.map((req) => {
-      if (req.exerciseId === exerciseId && req.status === 'pending') {
-        return {
-          ...req,
-          status: 'acknowledged' as const,
-          acknowledgedAt: serverTimestamp(),
-        };
+    const docRef = doc(db, 'user_exercise_prefs', userId);
+    const snap = await getDoc(docRef);
+    if (!checkDocExists(snap)) return false;
+
+    const data = getDocData(snap);
+    const currentPending = data.pendingRequests || [];
+
+    const updatedPending = currentPending.map((req: any) => {
+      if (req.exerciseId === exerciseId) {
+        return { ...req, status };
       }
       return req;
     });
 
-    const docRef = doc(db, COLLECTION_NAME, userId);
     await updateDoc(docRef, {
-      pendingRequests: updatedRequests,
+      pendingRequests: updatedPending,
       updatedAt: serverTimestamp(),
     });
 
     return true;
   } catch (err) {
-    logger.error('exercisePreferencesService', 'Error confirmando solicitud de ejercicio:', err);
+    logger.error('ExercisePreferences', 'Error confirmando solicitud de exclusión:', err);
     return false;
   }
+}
+
+// Helpers adicionales para el explorador autónomo
+export async function loadExercisePreferences(uid: string): Promise<ExercisePreferences> {
+  const prefs = await getUserExercisePreferences(uid);
+  return {
+    favorites: prefs.favorites || [],
+    excluded: prefs.excluded || [],
+  };
+}
+
+export async function toggleFavoriteExercise(
+  uid: string,
+  exerciseId: string,
+): Promise<{ favorites: string[]; excluded: string[]; isFavorite: boolean }> {
+  const current = await getUserExercisePreferences(uid);
+  const wasFav = (current.favorites || []).includes(exerciseId);
+  await toggleFavorite(uid, exerciseId, current.favorites || []);
+  const newFavs = wasFav ? (current.favorites || []).filter((id) => id !== exerciseId) : [...(current.favorites || []), exerciseId];
+  return { favorites: newFavs, excluded: current.excluded || [], isFavorite: !wasFav };
+}
+
+export async function toggleExcludeExercise(
+  uid: string,
+  exerciseId: string,
+): Promise<{ favorites: string[]; excluded: string[]; isExcluded: boolean }> {
+  const current = await getUserExercisePreferences(uid);
+  const wasExcluded = (current.excluded || []).includes(exerciseId);
+  const docRef = doc(db, 'user_exercise_prefs', uid);
+
+  let newExcluded = [...(current.excluded || [])];
+  if (wasExcluded) {
+    newExcluded = newExcluded.filter((id) => id !== exerciseId);
+  } else {
+    newExcluded.push(exerciseId);
+  }
+
+  await setDoc(
+    docRef,
+    {
+      userId: uid,
+      excluded: newExcluded,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  return { favorites: current.favorites || [], excluded: newExcluded, isExcluded: !wasExcluded };
 }

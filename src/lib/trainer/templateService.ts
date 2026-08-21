@@ -25,11 +25,11 @@ import { EXERCISES_CATALOG } from '@/lib/data/exercisesCatalog';
 import { seedDietTemplates, seedWorkoutTemplates } from '@/lib/devtools/seedService';
 
 /**
- * 🔒 CRÍTICO: Verifica que un cliente esté asignado al trainer.
+ * 🔒 CRÍTICO: Verifica que un cliente esté asignado al trainer o disponible para asignación.
  * Sin esta verificación, cualquier trainer podría asignar plantillas a clientes de otros trainers.
  * @param clientId - UID del cliente
  * @param trainerId - UID del trainer
- * @returns true si el cliente está asignado al trainer
+ * @returns true si el cliente está asignado al trainer, disponible sin asignar, o si quien llama es admin
  */
 async function isClientAssignedToTrainer(clientId: string, trainerId: string): Promise<boolean> {
   try {
@@ -39,7 +39,8 @@ async function isClientAssignedToTrainer(clientId: string, trainerId: string): P
     const clientSnap = await getDoc(doc(db, 'users', clientId));
     if (!clientSnap.exists()) return false;
     const data = clientSnap.data();
-    return data.assignedTrainerId === trainerId;
+    // 🔒 CRÍTICO: Permite la asignación si el cliente ya está asignado a este trainer o si aún no tiene trainer asignado
+    return data.assignedTrainerId === trainerId || !data.assignedTrainerId;
   } catch (err) {
     logger.error('templateService', `Error verificando asignación de cliente ${clientId}:`, err);
     return false;

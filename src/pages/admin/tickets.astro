@@ -107,10 +107,84 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
       <div id="tickets-list" class="hidden space-y-3"></div>
     </div>
   </div>
+
+  <!-- Modal Contactar Reporter -->
+  <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md hidden animate-fade-in">
+    <div class="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <h3 class="text-sm font-bold text-[var(--text-primary)]">💬 Enviar Mensaje al Reporter</h3>
+        <button id="btn-close-contact-modal" class="text-zinc-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+      <div class="space-y-3">
+        <p class="text-xs text-[var(--text-tertiary)]" id="contact-modal-subtitle">Escribe un mensaje de respuesta para el usuario.</p>
+        <textarea
+          id="contact-message-input"
+          rows="4"
+          placeholder="Escribe aquí tu mensaje de respuesta oficial..."
+          class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)] resize-none"
+        ></textarea>
+      </div>
+      <div class="flex items-center gap-2 pt-2 border-t border-[var(--border-subtle)]">
+        <button
+          id="btn-confirm-send-contact"
+          class="flex-1 rounded-xl bg-emerald-500 hover:bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
+        >
+          Enviar Mensaje
+        </button>
+        <button
+          id="btn-cancel-contact"
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-4)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-white"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Resolver Ticket -->
+  <div id="resolve-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md hidden animate-fade-in">
+    <div class="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-2)] p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <h3 class="text-sm font-bold text-[var(--text-primary)]">✅ Resolver Ticket</h3>
+        <button id="btn-close-resolve-modal" class="text-zinc-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+      <div class="space-y-3">
+        <p class="text-xs text-[var(--text-tertiary)]">Añade una nota interna de resolución (opcional).</p>
+        <textarea
+          id="resolve-note-input"
+          rows="3"
+          placeholder="Ej: Problema solucionado tras reiniciar el servicio..."
+          class="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--brand)] resize-none"
+        ></textarea>
+      </div>
+      <div class="flex items-center gap-2 pt-2 border-t border-[var(--border-subtle)]">
+        <button
+          id="btn-confirm-resolve"
+          class="flex-1 rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all active:scale-95"
+        >
+          Marcar como Resuelto
+        </button>
+        <button
+          id="btn-cancel-resolve"
+          class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-4)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-white"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
 </AdminLayout>
 
 <script>
   import { initPage } from '@/lib/shared/initPage';
+  import {
+    subscribeToAllSupportTickets,
+    updateSupportTicketStatus,
+    sendAdminContactMessage,
+    type SupportTicket,
+    type TicketStatus,
+  } from '@/lib/support/supportTicketService';
+  import { showToast } from '@/lib/shared/ui';
 
   const loadingSkeleton = document.getElementById('loading-skeleton')!;
   const emptyState = document.getElementById('empty-state')!;
@@ -125,22 +199,23 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
   const statResolved = document.getElementById('stat-resolved')!;
   const statTotal = document.getElementById('stat-total')!;
 
-  let allTickets: Array<{
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    severity: string;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    lastActivityAt: string;
-    reporterName: string;
-    reporterEmail: string;
-    isAnonymous: boolean;
-    adminNotes: Array<{ content: string; createdAt: string }>;
-    adminContactMessages: Array<{ message: string; createdAt: string }>;
-  }> = [];
+  // Modales
+  const contactModal = document.getElementById('contact-modal')!;
+  const contactMessageInput = document.getElementById('contact-message-input') as HTMLTextAreaElement;
+  const btnCloseContactModal = document.getElementById('btn-close-contact-modal')!;
+  const btnCancelContact = document.getElementById('btn-cancel-contact')!;
+  const btnConfirmSendContact = document.getElementById('btn-confirm-send-contact')!;
+
+  const resolveModal = document.getElementById('resolve-modal')!;
+  const resolveNoteInput = document.getElementById('resolve-note-input') as HTMLTextAreaElement;
+  const btnCloseResolveModal = document.getElementById('btn-close-resolve-modal')!;
+  const btnCancelResolve = document.getElementById('btn-cancel-resolve')!;
+  const btnConfirmResolve = document.getElementById('btn-confirm-resolve')!;
+
+  let selectedTicketId: string | null = null;
+  let allTickets: SupportTicket[] = [];
+  let currentAdminEmail = '';
+  let unsubTickets: (() => void) | null = null;
 
   function showEmpty() {
     loadingSkeleton.classList.add('hidden');
@@ -154,7 +229,21 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     emptyState.classList.add('hidden');
   }
 
-  function renderTicket(ticket: typeof allTickets[0]) {
+  function formatDate(val: any): string {
+    if (!val) return 'Reciente';
+    if (typeof val.toDate === 'function') return val.toDate().toLocaleDateString();
+    if (typeof val === 'string' || typeof val === 'number') return new Date(val).toLocaleDateString();
+    return 'Reciente';
+  }
+
+  function formatDateTime(val: any): string {
+    if (!val) return 'Reciente';
+    if (typeof val.toDate === 'function') return val.toDate().toLocaleString();
+    if (typeof val === 'string' || typeof val === 'number') return new Date(val).toLocaleString();
+    return 'Reciente';
+  }
+
+  function renderTicket(ticket: SupportTicket) {
     const statusColors: Record<string, string> = {
       open: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
       in_review: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -186,11 +275,11 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     card.className = 'rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-5 backdrop-blur-xl transition-all hover:border-[var(--border-brand)]/50';
     card.dataset.id = ticket.id;
     card.innerHTML = `
-      <div class="flex items-start justify-between gap-4">
+      <div class="flex items-start justify-between gap-4 flex-wrap sm:flex-nowrap">
         <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
             <select
-              class="ticket-status-select rounded-lg px-2 py-0.5 text-xs font-semibold border focus:border-[var(--accent)] focus:outline-none ${statusColors[ticket.status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}"
+              class="ticket-status-select rounded-lg px-2 py-0.5 text-xs font-semibold border focus:border-[var(--brand)] focus:outline-none ${statusColors[ticket.status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}"
               data-id="${ticket.id}"
             >
               <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Abierto</option>
@@ -206,10 +295,10 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
           </div>
           <h3 class="text-base font-semibold text-[var(--text-primary)] truncate">${ticket.title}</h3>
           <p class="mt-1 text-sm text-[var(--text-tertiary)] line-clamp-2">${ticket.description}</p>
-          <div class="mt-2 flex items-center gap-3 text-xs text-[var(--text-tertiary)]">
-            <span>${new Date(ticket.createdAt).toLocaleDateString()}</span>
+          <div class="mt-2 flex items-center gap-3 text-xs text-[var(--text-tertiary)] flex-wrap">
+            <span>Creado: ${formatDate(ticket.createdAt)}</span>
             <span>·</span>
-            <span>Actualizado ${new Date(ticket.updatedAt).toLocaleDateString()}</span>
+            <span>Actualizado: ${formatDate(ticket.lastActivityAt || ticket.updatedAt)}</span>
             ${ticket.reporterName ? `<span>·</span><span>De: ${ticket.reporterName}</span>` : ''}
           </div>
         </div>
@@ -223,80 +312,79 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         </div>
       </div>
       <!-- Panel detalle -->
-      <div class="ticket-detail hidden mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/50 p-4 backdrop-blur-sm" data-id="${ticket.id}">
+      <div class="ticket-detail hidden mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)]/50 p-4 backdrop-blur-sm space-y-3" data-id="${ticket.id}">
         <div class="space-y-3">
-          <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Estado</p>
+              <p class="text-[10px] text-[var(--text-tertiary)]">Estado</p>
               <p class="text-[var(--text-primary)] font-medium">${statusLabels[ticket.status] || ticket.status}</p>
             </div>
             <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Severidad</p>
+              <p class="text-[10px] text-[var(--text-tertiary)]">Severidad</p>
               <p class="text-[var(--text-primary)]">${severityLabels[ticket.severity] || ticket.severity}</p>
             </div>
             <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Creado</p>
-              <p class="text-[var(--text-primary)]">${new Date(ticket.createdAt).toLocaleString()}</p>
+              <p class="text-[10px] text-[var(--text-tertiary)]">Creado</p>
+              <p class="text-[var(--text-primary)]">${formatDateTime(ticket.createdAt)}</p>
             </div>
             <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Última actividad</p>
-              <p class="text-[var(--text-primary)]">${new Date(ticket.lastActivityAt).toLocaleString()}</p>
+              <p class="text-[10px] text-[var(--text-tertiary)]">Última actividad</p>
+              <p class="text-[var(--text-primary)]">${formatDateTime(ticket.lastActivityAt || ticket.updatedAt)}</p>
             </div>
           </div>
           ${ticket.reporterName ? `
             <div>
-              <p class="text-xs text-[var(--text-tertiary)]">Reportero</p>
-              <p class="text-[var(--text-primary)]">${ticket.reporterName}</p>
-              ${ticket.reporterEmail ? `<p class="text-xs text-[var(--text-tertiary)]">${ticket.reporterEmail}</p>` : ''}
+              <p class="text-[10px] text-[var(--text-tertiary)]">Reportero</p>
+              <p class="text-xs text-[var(--text-primary)]">${ticket.reporterName} ${ticket.reporterEmail ? `(${ticket.reporterEmail})` : ''}</p>
             </div>
           ` : `
-            <div class="rounded-lg bg-gray-500/10 border border-gray-500/20 p-3 text-xs text-gray-400">
+            <div class="rounded-lg bg-gray-500/10 border border-gray-500/20 p-2.5 text-xs text-gray-400">
               Este reporte fue enviado de forma anónima.
             </div>
           `}
           <div>
-            <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Descripción completa</p>
-            <p class="mt-1 text-sm text-[var(--text-secondary)] leading-relaxed">${ticket.description}</p>
+            <p class="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Descripción completa</p>
+            <p class="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">${ticket.description}</p>
           </div>
-          ${ticket.adminNotes.length > 0 ? `
+          ${ticket.adminNotes && ticket.adminNotes.length > 0 ? `
             <div>
-              <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Notas internas (${ticket.adminNotes.length})</p>
-              <div class="mt-1 space-y-2">
+              <p class="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Notas internas (${ticket.adminNotes.length})</p>
+              <div class="mt-1 space-y-1.5">
                 ${ticket.adminNotes.map(n => `
-                  <div class="rounded-lg bg-[var(--surface-3)] p-3 text-sm">
-                    <p class="text-[var(--text-secondary)]">${n.content}</p>
-                    <p class="mt-1 text-[10px] text-[var(--text-tertiary)]">${new Date(n.createdAt).toLocaleString()}</p>
+                  <div class="rounded-lg bg-[var(--surface-3)] p-2.5 text-xs text-zinc-300">
+                    <p>${n.content}</p>
+                    <p class="mt-1 text-[10px] text-zinc-500">${formatDateTime(n.createdAt)}</p>
                   </div>
                 `).join('')}
               </div>
             </div>
           ` : ''}
-          ${ticket.adminContactMessages.length > 0 ? `
+          ${ticket.adminContactMessages && ticket.adminContactMessages.length > 0 ? `
             <div>
-              <p class="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Mensajes al reporter (${ticket.adminContactMessages.length})</p>
-              <div class="mt-1 space-y-2">
+              <p class="text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">Mensajes de contacto (${ticket.adminContactMessages.length})</p>
+              <div class="mt-1 space-y-1.5">
                 ${ticket.adminContactMessages.map(m => `
-                  <div class="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3 text-sm">
-                    <p class="text-[var(--text-secondary)]">${m.message}</p>
-                    <p class="mt-1 text-[10px] text-[var(--text-tertiary)]">${new Date(m.createdAt).toLocaleString()}</p>
+                  <div class="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-2.5 text-xs text-emerald-200">
+                    <p>${m.message}</p>
+                    <p class="mt-1 text-[10px] text-emerald-400/70">${formatDateTime(m.createdAt)}</p>
                   </div>
                 `).join('')}
               </div>
             </div>
           ` : ''}
-          <div class="flex gap-2 pt-2 border-t border-[var(--border-subtle)]">
+          <div class="flex gap-2 pt-2 border-t border-[var(--border-subtle)] flex-wrap">
             <button
-              class="ticket-contact-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all hover:bg-emerald-500/30"
+              class="ticket-contact-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all hover:bg-emerald-500/30 disabled:opacity-40"
               data-id="${ticket.id}"
               ${ticket.isAnonymous ? 'disabled' : ''}
             >
-              ${ticket.isAnonymous ? 'No contactable (anónimo)' : 'Contactar reporter'}
+              ${ticket.isAnonymous ? 'No contactable (anónimo)' : '💬 Contactar reporter'}
             </button>
             <button
-              class="ticket-resolve-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-[var(--brand)]/20 text-[var(--brand)] border border-[var(--brand)]/30 transition-all hover:bg-[var(--brand)]/30"
+              class="ticket-resolve-btn rounded-lg px-3 py-1.5 text-xs font-medium bg-[var(--brand-dim)] text-[var(--brand)] border border-[var(--border-brand)] transition-all hover:bg-[var(--brand)] hover:text-white"
               data-id="${ticket.id}"
             >
-              Resolver ticket
+              ✅ Resolver ticket
             </button>
           </div>
         </div>
@@ -314,155 +402,140 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     // Cambio de estado
     const statusSelect = card.querySelector('.ticket-status-select') as HTMLSelectElement | null;
     statusSelect?.addEventListener('change', async (e) => {
-      const newStatus = (e.target as HTMLSelectElement).value;
+      const newStatus = (e.target as HTMLSelectElement).value as TicketStatus;
       const ticketId = statusSelect.dataset.id!;
-      try {
-        const res = await fetch(`/api/support/update`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'status_change', status: newStatus, ticketId }),
-        });
-        if (!res.ok) throw new Error('No se pudo actualizar');
-        const data = await res.json();
-        if (data.success) {
-          // Actualizar estado local
-          const ticket = allTickets.find(t => t.id === ticketId);
-          if (ticket) ticket.status = newStatus;
-          showToast(`Estado cambiado a: ${statusLabels[newStatus]}`, 'success');
-          // Recargar lista para reflejar cambios
-          loadTickets();
-        } else {
-          showToast('Error al actualizar el estado', 'error');
-        }
-      } catch (err) {
-        showToast('Error de conexión', 'error');
+      const success = await updateSupportTicketStatus(ticketId, newStatus, undefined, ticket.adminNotes);
+      if (success) {
+        showToast({ message: `Estado cambiado a: ${statusLabels[newStatus]}`, type: 'success' });
+      } else {
+        showToast({ message: 'Error al actualizar el estado', type: 'error' });
       }
     });
 
-    // Botón contactar
+    // Botón contactar (Abre modal custom)
     const contactBtn = card.querySelector('.ticket-contact-btn') as HTMLButtonElement | null;
     if (contactBtn && !ticket.isAnonymous) {
       contactBtn.addEventListener('click', () => {
-        const ticketId = contactBtn.dataset.id!;
-        const msg = prompt('Mensaje para el reporter:');
-        if (msg && msg.trim()) {
-          fetch('/api/support/update', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'contact', contactMessage: msg.trim(), ticketId }),
-          }).then(res => res.json()).then(data => {
-            if (data.success) {
-              showToast('Mensaje enviado al reporter', 'success');
-              loadTickets();
-            } else {
-              showToast(data.error || 'Error al enviar mensaje', 'error');
-            }
-          }).catch(() => showToast('Error de conexión', 'error'));
-        }
+        selectedTicketId = ticket.id;
+        contactMessageInput.value = '';
+        contactModal.classList.remove('hidden');
       });
     }
 
-    // Botón resolver
+    // Botón resolver (Abre modal custom)
     const resolveBtn = card.querySelector('.ticket-resolve-btn') as HTMLButtonElement | null;
     resolveBtn?.addEventListener('click', () => {
-      const ticketId = resolveBtn.dataset.id!;
-      const note = prompt('Nota de resolución (opcional):');
-      fetch('/api/support/update', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'resolve', adminNote: note || '', ticketId }),
-      }).then(res => res.json()).then(data => {
-        if (data.success) {
-          showToast('Ticket resuelto', 'success');
-          loadTickets();
-        } else {
-          showToast(data.error || 'Error al resolver', 'error');
-        }
-      }).catch(() => showToast('Error de conexión', 'error'));
+      selectedTicketId = ticket.id;
+      resolveNoteInput.value = '';
+      resolveModal.classList.remove('hidden');
     });
 
     return card;
   }
 
-  async function loadTickets() {
-    try {
-      const search = searchInput?.value || '';
-      const status = statusFilter?.value || 'all';
-      const category = categoryFilter?.value || 'all';
-      const severity = severityFilter?.value || 'all';
-
-      const params = new URLSearchParams();
-      if (status !== 'all') params.set('status', status);
-      if (category !== 'all') params.set('category', category);
-      if (severity !== 'all') params.set('severity', severity);
-      if (search) params.set('search', search);
-
-      const res = await fetch(`/api/support/create?${params.toString()}`, {
-        credentials: 'same-origin',
-      });
-
-      if (!res.ok) throw new Error('Error');
-
-      const data = await res.json();
-      allTickets = data.tickets || [];
-
-      // Actualizar contadores
-      const open = allTickets.filter(t => t.status === 'open').length;
-      const review = allTickets.filter(t => t.status === 'in_review').length;
-      const resolved = allTickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
-
-      statOpen.textContent = String(open);
-      statReview.textContent = String(review);
-      statResolved.textContent = String(resolved);
-      statTotal.textContent = String(allTickets.length);
-
-      if (allTickets.length === 0) {
-        showEmpty();
-        return;
-      }
-
-      ticketsList.innerHTML = '';
-      allTickets.forEach(ticket => {
-        ticketsList.appendChild(renderTicket(ticket));
-      });
-      showList();
-    } catch (err) {
-      showEmpty();
-      console.error('Error cargando tickets:', err);
+  // Modal contact listeners
+  btnCloseContactModal?.addEventListener('click', () => contactModal.classList.add('hidden'));
+  btnCancelContact?.addEventListener('click', () => contactModal.classList.add('hidden'));
+  btnConfirmSendContact?.addEventListener('click', async () => {
+    if (!selectedTicketId) return;
+    const msg = contactMessageInput.value.trim();
+    if (!msg) {
+      showToast({ message: 'Escribe un mensaje antes de enviar', type: 'info' });
+      return;
     }
-  }
+    const currentTicket = allTickets.find(t => t.id === selectedTicketId);
+    const success = await sendAdminContactMessage(selectedTicketId, msg, currentAdminEmail, currentTicket?.adminContactMessages);
+    if (success) {
+      showToast({ message: 'Mensaje enviado al reporter con éxito', type: 'success' });
+      contactModal.classList.add('hidden');
+    } else {
+      showToast({ message: 'Error al enviar mensaje', type: 'error' });
+    }
+  });
 
-  function showToast(message: string, type: 'success' | 'error') {
-    const toast = document.createElement('div');
-    toast.className = `fixed bottom-4 right-4 rounded-xl px-4 py-3 text-sm font-medium shadow-lg animate-fade-in ${type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => {
-      toast.classList.add('opacity-0', 'transition-opacity');
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
+  // Modal resolve listeners
+  btnCloseResolveModal?.addEventListener('click', () => resolveModal.classList.add('hidden'));
+  btnCancelResolve?.addEventListener('click', () => resolveModal.classList.add('hidden'));
+  btnConfirmResolve?.addEventListener('click', async () => {
+    if (!selectedTicketId) return;
+    const note = resolveNoteInput.value.trim();
+    const currentTicket = allTickets.find(t => t.id === selectedTicketId);
+    const success = await updateSupportTicketStatus(selectedTicketId, 'resolved', note, currentTicket?.adminNotes);
+    if (success) {
+      showToast({ message: 'Ticket marcado como resuelto', type: 'success' });
+      resolveModal.classList.add('hidden');
+    } else {
+      showToast({ message: 'Error al resolver ticket', type: 'error' });
+    }
+  });
+
+  function applyFiltersAndRender() {
+    const search = (searchInput?.value || '').toLowerCase().trim();
+    const status = statusFilter?.value || 'all';
+    const category = categoryFilter?.value || 'all';
+    const severity = severityFilter?.value || 'all';
+
+    const filtered = allTickets.filter((t) => {
+      if (status !== 'all' && t.status !== status) return false;
+      if (category !== 'all' && t.category !== category) return false;
+      if (severity !== 'all' && t.severity !== severity) return false;
+      if (search) {
+        const matchesTitle = (t.title || '').toLowerCase().includes(search);
+        const matchesDesc = (t.description || '').toLowerCase().includes(search);
+        const matchesName = (t.reporterName || '').toLowerCase().includes(search);
+        if (!matchesTitle && !matchesDesc && !matchesName) return false;
+      }
+      return true;
+    });
+
+    // Actualizar contadores
+    const open = allTickets.filter(t => t.status === 'open').length;
+    const review = allTickets.filter(t => t.status === 'in_review' || t.status === 'awaiting_response').length;
+    const resolved = allTickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
+
+    statOpen.textContent = String(open);
+    statReview.textContent = String(review);
+    statResolved.textContent = String(resolved);
+    statTotal.textContent = String(allTickets.length);
+
+    if (filtered.length === 0) {
+      showEmpty();
+      return;
+    }
+
+    ticketsList.innerHTML = '';
+    filtered.forEach(ticket => {
+      ticketsList.appendChild(renderTicket(ticket));
+    });
+    showList();
   }
 
   const cleanup = initPage({
     allowedRoles: ['admin'],
-    onReady: () => {
-      loadTickets();
+    onReady: async (firebaseUser, userData) => {
+      currentAdminEmail = userData?.email || firebaseUser?.email || '';
+
+      unsubTickets = subscribeToAllSupportTickets(
+        (tickets) => {
+          allTickets = tickets;
+          applyFiltersAndRender();
+        },
+        (err) => {
+          console.error('Error cargando tickets:', err);
+          showEmpty();
+        }
+      );
     },
   });
 
-  document.addEventListener('astro:before-swap', cleanup);
+  document.addEventListener('astro:before-swap', () => {
+    cleanup();
+    unsubTickets?.();
+  });
 
   // Filtros en tiempo real
-  searchInput?.addEventListener('input', debounce(loadTickets, 300));
-  statusFilter?.addEventListener('change', loadTickets);
-  categoryFilter?.addEventListener('change', loadTickets);
-  severityFilter?.addEventListener('change', loadTickets);
-
-  function debounce(fn: Function, delay: number) {
-    let timer: ReturnType<typeof setTimeout>;
-    return (...args: any[]) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn(...args), delay);
-    };
-  }
+  searchInput?.addEventListener('input', () => applyFiltersAndRender());
+  statusFilter?.addEventListener('change', () => applyFiltersAndRender());
+  categoryFilter?.addEventListener('change', () => applyFiltersAndRender());
+  severityFilter?.addEventListener('change', () => applyFiltersAndRender());
 </script>

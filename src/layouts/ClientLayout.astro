@@ -5,6 +5,7 @@ import LanguageSwitcherDropdown from '@/components/LanguageSwitcherDropdown.astr
 import AdminModeBanner from '@/components/AdminModeBanner.astro';
 import ChatNotificationListener from '@/components/ChatNotificationListener.astro';
 import VersionBadge from '@/components/VersionBadge.astro';
+import UserAvatarDropdown from '@/components/UserAvatarDropdown.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
@@ -30,6 +31,7 @@ const currentPath = Astro.url.pathname;
       <div class="flex items-center gap-2">
         <AdminModeBanner />
         <LanguageSwitcherDropdown currentPath={currentPath} lang={lang} />
+        <UserAvatarDropdown role="client" />
       </div>
     </header>
 

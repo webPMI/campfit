@@ -247,6 +247,7 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
 <script>
   import { initPage } from '@/lib/shared/initPage';
+  import { createSupportTicket, type TicketCategory, type TicketSeverity } from '@/lib/support/supportTicketService';
 
   const loadingScreen = document.getElementById('loadingScreen')!;
   const loadingText = document.getElementById('loadingText')!;
@@ -302,14 +303,9 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
     }
   }
 
-  function getLang(): string {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('lang') || 'es';
-  }
-
   const cleanup = initPage({
     allowedRoles: ['client', 'admin', 'trainer'],
-    onReady: async () => {
+    onReady: async (firebaseUser, userData) => {
       reportContent.classList.remove('hidden');
       loadingScreen.classList.add('hidden');
 
@@ -319,8 +315,8 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
 
         const title = titleInput.value.trim();
         const description = (document.getElementById('description') as HTMLTextAreaElement).value.trim();
-        const category = (document.getElementById('category') as HTMLSelectElement).value;
-        const severity = (document.getElementById('severity') as HTMLSelectElement).value;
+        const category = (document.getElementById('category') as HTMLSelectElement).value as TicketCategory;
+        const severity = (document.getElementById('severity') as HTMLSelectElement).value as TicketSeverity;
         const relatedEmail = (document.getElementById('relatedEmail') as HTMLInputElement).value.trim();
         const isAnonymous = (document.getElementById('isAnonymous') as HTMLInputElement).checked;
 
@@ -332,45 +328,42 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         setLoading(true);
 
         try {
-          const lang = getLang();
-          const response = await fetch(`/api/support/create?lang=${lang}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title,
-              description,
-              category,
-              severity,
-              relatedEmail: relatedEmail || null,
-              isAnonymous,
-            }),
+          // 🔒 CRÍTICO: Envío directo a Firestore autenticado mediante el SDK cliente
+          const result = await createSupportTicket({
+            reporterUid: firebaseUser.uid,
+            reporterEmail: userData?.email || firebaseUser.email || '',
+            reporterName: userData?.name || firebaseUser.displayName || 'Usuario',
+            title,
+            description,
+            category,
+            severity,
+            isAnonymous,
+            relatedUserId: relatedEmail || null,
           });
 
-          const data = await response.json();
-
-          if (!response.ok) {
+          if (!result.success) {
             showError(
-              data.error || 'Error al enviar',
-              data.errorDetail || 'No se pudo procesar tu reporte. Intenta nuevamente.'
+              'Error al registrar el ticket',
+              result.error || 'No se pudo procesar tu reporte. Intenta nuevamente.'
             );
             return;
           }
 
           // Mostrar éxito y redirigir a mis tickets
-          const ticketUrl = `/client/support/my-tickets?lang=${lang}`;
           showSuccess(
-            data.message || 'Tu reporte ha sido enviado',
-            data.ticket
-              ? `Ticket #${data.ticket.id} — Estado: ${data.ticket.status}`
-              : 'Recibirás una respuesta si no eres anónimo.'
+            '¡Ticket enviado exitosamente!',
+            result.ticketId
+              ? `Ticket #${result.ticketId} registrado. Tu consulta está en cola para el equipo de soporte.`
+              : 'Recibirás una respuesta pronto.'
           );
 
           setTimeout(() => {
-            window.location.href = ticketUrl;
-          }, 3000);
+            window.location.href = '/client/support/my-tickets';
+          }, 2500);
 
-        } catch (err) {
-          showError('Error de conexión', 'No se pudo conectar con el servidor. Revisa tu conexión e intenta nuevamente.');
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : 'Error inesperado al enviar.';
+          showError('Error de conexión', msg);
         } finally {
           setLoading(false);
         }

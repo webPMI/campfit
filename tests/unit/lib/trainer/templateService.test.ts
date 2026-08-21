@@ -199,6 +199,41 @@ describe('templateService', () => {
       );
     });
 
+    it('✅ debería clonar rutina para cliente no asignado previamente (auto-asignación inicial)', async () => {
+      // 1. Trainer
+      mockGetDoc.mockResolvedValueOnce({
+        exists: () => true,
+        data: () => ({ role: 'trainer' }),
+      });
+      // 2. Cliente sin entrenador asignado
+      mockGetDoc.mockResolvedValueOnce({
+        exists: () => true,
+        data: () => ({ name: 'Cliente Nuevo' }),
+      });
+      // 3. Plantilla existe
+      mockGetDoc.mockResolvedValueOnce({
+        exists: () => true,
+        data: () => ({
+          name: 'Rutina Inicial',
+          difficulty: 'beginner',
+          description: 'Rutina',
+          exercises: [],
+        }),
+      });
+      mockAddDoc.mockResolvedValue({ id: 'new-unassigned-workout-id' });
+
+      const newId = await applyWorkoutTemplateToClient('temp-3', 'client-nuevo', 'trainer-999');
+
+      expect(newId).toBe('new-unassigned-workout-id');
+      expect(addDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          clientId: 'client-nuevo',
+          trainerId: 'trainer-999',
+        }),
+      );
+    });
+
     it('❌ debería lanzar error si el cliente NO está asignado al trainer', async () => {
       // 1. Trainer
       mockGetDoc.mockResolvedValueOnce({

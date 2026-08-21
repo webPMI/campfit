@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["../src/*"],
+      "@components/*": ["../src/components/*"],
+      "@features/*": ["../src/features/*"],
+      "@core/*": ["../src/core/*"],
+      "@layouts/*": ["../src/layouts/*"],
+      "@mockData/*": ["../src/mockData/*"],
+      "@tests/*": ["./*"]
+    },
+    "types": ["vitest/globals", "node", "@testing-library/jest-dom"],
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false
+  },
+  "include": ["./**/*", "../src/**/*"]
+}

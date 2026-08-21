@@ -1,18 +1,32 @@
-### 🤖 Agente: Antigravity Agent [Implementación: Personalización de Dietas/Rutinas y Asesoramiento de Entrenador]
-- **Fecha / Hora:** `2026-08-19 21:58:00 CEST`
-- **Objetivo / Problema:** Implementar el sistema completo de personalización de dietas y rutinas por parte del cliente (días, horas, comidas y notas) con flujo de revisión, aprobación y asesoramiento por parte del entrenador.
+### 🤖 Agente: Antigravity Agent [Hub de Autonomía & Kickstart para Clientes Sin Entrenador]
+- **Fecha / Hora:** `2026-08-21 11:20:00 CEST`
+- **Objetivo / Problema:** Implementación completa del Hub de Autonomía y Kickstart para clientes sin entrenador asignado basado en los 5 pilares:
+  1. `src/lib/client/starterWorkouts.ts`: 3 programas predeterminados (Full Body 3D, Torso/Pierna 4D, Movilidad/Core 3D) con ejecución y registro en vivo en `/client/workouts`.
+  2. `src/lib/client/exercisePreferencesService.ts`: Explorador interactivo de técnica de ejercicios (`EXERCISES_CATALOG`) con marcado de favoritos (⭐) y exclusiones (🚫) sincronizado con Firestore y local.
+  3. `src/lib/client/metabolicCalculator.ts`: Calculadora metabólica interactiva de TDEE, BMR y macros recomendados en `/client/diets`, con explorador de alimentos de `FOODS_CATALOG` y Water Tracker activo.
+  4. Mantenimiento del registro de evolución de peso y fotos Cloudflare R2 en `/client/progress`.
+  5. Banner interactivo para solicitar entrenador personalizado o enviar propuesta de objetivos.
 - **Archivos Afectados:**
-  - `src/types/index.ts`
-  - `src/lib/shared/planProposalService.ts`
-  - `firestore.rules`
-  - `src/i18n/locales/es.ts`, `src/i18n/locales/en.ts`, `src/i18n/locales/ca.ts`
+  - `src/lib/client/starterWorkouts.ts` (nuevo)
+  - `src/lib/client/exercisePreferencesService.ts` (nuevo)
+  - `src/lib/client/metabolicCalculator.ts` (nuevo)
   - `src/pages/client/workouts.astro`
   - `src/pages/client/diets.astro`
-  - `src/pages/trainer/dashboard.astro`
-  - `src/pages/trainer/workouts.astro`
-  - `src/pages/trainer/diets.astro`
-  - `tests/unit/lib/shared/planProposalService.test.ts`
-  - `docs/features/AUTONOMIA_Y_ASESORAMIENTO_PLANES.md`
-  - `docs/DOCUMENTATION_MAP.md`
+  - `src/pages/client/progress.astro`
+  - `tests/unit/lib/client/starterWorkouts.test.ts` (nuevo)
+  - `tests/unit/lib/client/exercisePreferencesService.test.ts` (nuevo)
+  - `tests/unit/lib/client/metabolicCalculator.test.ts` (nuevo)
   - `TASK.md`
-- **Estado:** `[COMPLETADO]` (772/776 tests unitarios pasando, 0 errores en `npm run type-check`, 43 páginas compiladas con `npm run build`).
+- **Estado:** `[COMPLETADO]`
+- **Validación:** `npm run type-check` (0 errors), `npx vitest run` (75/75 files passed, 797 tests passed, 0 failures), `npm run build` (0 errors, 43 static pages generated).
+- **Versión:** Incrementada a `v0.003` en `src/components/VersionBadge.astro`.
+
+---
+
+### 🤖 Agente Previo: Antigravity Agent [Flujo de Soporte y Tickets: Cliente y Admin]
+- **Fecha / Hora:** `2026-08-21 11:19:15 CEST`
+- **Estado:** `[COMPLETADO]`
+
+### 🤖 Agente Previo: Antigravity Agent [Flujo de Asignación Entrenador ➔ Cliente: Rutinas y Dietas]
+- **Fecha / Hora:** `2026-08-21 11:13:30 CEST`
+- **Estado:** `[COMPLETADO]`
