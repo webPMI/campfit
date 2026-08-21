@@ -170,6 +170,13 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
           const tData = trainerDoc.data();
           trainerName.textContent = tData.name || "Entrenador Asignado";
           trainerStatus.textContent = tData.email || "Online";
+          if (trainerAvatar) {
+            if (tData.photoUrl) {
+              trainerAvatar.innerHTML = `<img src="${escapeHtml(tData.photoUrl)}" class="h-full w-full object-cover rounded-full shadow-sm" alt="${escapeHtml(tData.name || '')}" />`;
+            } else if (tData.name) {
+              trainerAvatar.textContent = tData.name.charAt(0).toUpperCase();
+            }
+          }
         } else {
           trainerName.textContent = "Entrenador Asignado";
           trainerStatus.textContent = "Online";
@@ -178,6 +185,7 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         activeTrainerId = "";
         trainerName.textContent = "Sin Entrenador Asignado";
         trainerStatus.textContent = "No tienes coach asignado";
+        if (trainerAvatar) trainerAvatar.textContent = "👨‍🏫";
         if (chatInput) {
           chatInput.disabled = true;
           chatInput.placeholder = "Para chatear necesitas tener un entrenador asignado...";

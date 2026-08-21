@@ -433,11 +433,15 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         other: otherArray,
       };
 
+      const parsedHeight = heightInput.value ? parseFloat(heightInput.value) : null;
+      const parsedWeight = weightInput.value ? parseFloat(weightInput.value) : null;
+      const parsedAge = ageInput.value ? parseInt(ageInput.value) : null;
+
       const medicalProfile = {
-        height: heightInput.value ? parseFloat(heightInput.value) : null,
-        initialWeight: weightInput.value ? parseFloat(weightInput.value) : null,
-        weight: weightInput.value ? parseFloat(weightInput.value) : null,
-        age: ageInput.value ? parseInt(ageInput.value) : null,
+        height: parsedHeight,
+        initialWeight: parsedWeight,
+        weight: parsedWeight,
+        age: parsedAge,
         gender: genderSelect.value || null,
         bloodType: bloodTypeSelect.value || null,
         dietaryRestrictions,
@@ -457,6 +461,16 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
         medicalProfile,
         updatedAt: serverTimestamp(),
       });
+
+      // 🔒 CRÍTICO: Sincronizar automáticamente el registro de peso en progress_logs
+      if (parsedWeight && parsedWeight > 0) {
+        try {
+          const { registerWeight } = await import('@/lib/client/progressService');
+          await registerWeight(currentUser.uid, parsedWeight, 'Actualización desde Ficha Médica');
+        } catch (wErr) {
+          logger.warn('Client/Medical', 'Error al sincronizar historial de peso:', wErr);
+        }
+      }
 
       const { clearUserCache } = await import('@/lib/shared/initPage');
       clearUserCache();
