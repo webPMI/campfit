@@ -219,6 +219,27 @@
     const reporterEmail = currentUser?.email || 'beta_feedback@campfit.com';
     const reporterName = currentUser?.displayName || 'Usuario Beta';
 
+    // Generar o recuperar ID de sesión para trazabilidad
+    let sessionId = sessionStorage.getItem('cf_session_id');
+    if (!sessionId) {
+      sessionId = 'sess_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+      sessionStorage.setItem('cf_session_id', sessionId);
+    }
+
+    const snapshotData = {
+      sessionId,
+      url: window.location.href,
+      pathname: window.location.pathname,
+      referrer: document.referrer || null,
+      screenResolution: `${window.innerWidth}x${window.innerHeight}`,
+      devicePixelRatio: window.devicePixelRatio || 1,
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      appVersion: '0.005',
+      timestamp: new Date().toISOString(),
+      localStorageKeys: Object.keys(localStorage).filter(k => k.startsWith('cf_')),
+    };
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando...';
 
@@ -228,9 +249,11 @@
         reporterEmail,
         reporterName,
         title,
-        description: `${description}\n\n--- Metadatos de Navegación ---\nURL: ${window.location.href}\nDispositivo: ${navigator.userAgent}`,
+        description: `${description}\n\n--- Trazabilidad Beta ---\nURL: ${window.location.href}\nSesión: ${sessionId}\nResolución: ${snapshotData.screenResolution}`,
         category,
         severity: category === 'bug' ? 'high' : 'medium',
+        sessionId,
+        snapshotData,
         relatedEntityType: 'page_url',
         relatedEntityName: window.location.pathname,
       });

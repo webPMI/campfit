@@ -49,6 +49,8 @@ export interface SupportTicket {
   severity: TicketSeverity;
   status: TicketStatus;
   isAnonymous: boolean;
+  sessionId?: string | null;
+  snapshotData?: Record<string, unknown> | null;
   relatedUserId?: string | null;
   relatedEntityType?: string | null;
   relatedEntityName?: string | null;
@@ -68,6 +70,8 @@ export interface CreateSupportTicketPayload {
   category: TicketCategory;
   severity?: TicketSeverity;
   isAnonymous?: boolean;
+  sessionId?: string | null;
+  snapshotData?: Record<string, unknown> | null;
   relatedUserId?: string | null;
   relatedEntityType?: string | null;
   relatedEntityName?: string | null;
@@ -97,7 +101,7 @@ export async function createSupportTicket(
 
     const isAnon = Boolean(payload.isAnonymous);
 
-    const ticketDocData = {
+    const ticketDocData: Record<string, unknown> = {
       reporterUid: payload.reporterUid,
       reporterEmail: isAnon ? '' : payload.reporterEmail || '',
       reporterName: isAnon ? 'Anónimo' : payload.reporterName || 'Usuario',
@@ -107,6 +111,8 @@ export async function createSupportTicket(
       severity: payload.severity || 'medium',
       status: 'open',
       isAnonymous: isAnon,
+      sessionId: payload.sessionId || null,
+      snapshotData: payload.snapshotData || null,
       relatedUserId: payload.relatedUserId || null,
       relatedEntityType: payload.relatedEntityType || null,
       relatedEntityName: payload.relatedEntityName || null,

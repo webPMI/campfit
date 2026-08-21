@@ -573,8 +573,88 @@ const currentPath = Astro.url.pathname;
   }
 
   // ============================================================
-  // Pre-rellenado inicial al cargar
+  // Persistencia de Borrador ("Nada se pierde al refrescar")
   // ============================================================
+  const DRAFT_KEY = 'cf_onboarding_draft';
+
+  function saveDraft(): void {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
+    try {
+      const data = collectData();
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        ...data,
+        savedStep: currentStep,
+        timestamp: Date.now()
+      }));
+    } catch {}
+  }
+
+  function restoreDraft(): void {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      if (!draft) return;
+
+      const nameInput = document.getElementById('name') as HTMLInputElement;
+      const birthInput = document.getElementById('birthdate') as HTMLInputElement;
+      const heightInput = document.getElementById('height') as HTMLInputElement;
+      const weightInput = document.getElementById('weight') as HTMLInputElement;
+      const expSelect = document.getElementById('experience') as HTMLSelectElement;
+
+      if (draft.name && nameInput && !nameInput.value) nameInput.value = draft.name;
+      if (draft.birthdate && birthInput) birthInput.value = draft.birthdate;
+      if (draft.height && heightInput) heightInput.value = String(draft.height);
+      if (draft.initialWeight && weightInput) weightInput.value = String(draft.initialWeight);
+      if (draft.experience && expSelect) expSelect.value = draft.experience;
+
+      if (Array.isArray(draft.goals)) {
+        document.querySelectorAll('#step1 input[type="checkbox"]').forEach((cb) => {
+          if (draft.goals.includes((cb as HTMLInputElement).value)) {
+            (cb as HTMLInputElement).checked = true;
+          }
+        });
+      }
+
+      const cond = document.getElementById('conditions') as HTMLTextAreaElement;
+      const med = document.getElementById('medications') as HTMLTextAreaElement;
+      const all = document.getElementById('allergies') as HTMLTextAreaElement;
+      const inj = document.getElementById('injuries') as HTMLTextAreaElement;
+      const surg = document.getElementById('surgery') as HTMLTextAreaElement;
+      const emName = document.getElementById('emergencyName') as HTMLInputElement;
+      const emPhone = document.getElementById('emergencyPhone') as HTMLInputElement;
+
+      if (draft.conditions && cond) cond.value = draft.conditions;
+      if (draft.medications && med) med.value = draft.medications;
+      if (draft.allergies && all) all.value = draft.allergies;
+      if (draft.injuries && inj) inj.value = draft.injuries;
+      if (draft.surgery && surg) surg.value = draft.surgery;
+      if (draft.emergencyName && emName) emName.value = draft.emergencyName;
+      if (draft.emergencyPhone && emPhone) emPhone.value = draft.emergencyPhone;
+
+      if (Array.isArray(draft.dietaryRestrictions)) {
+        if (glutenFreeCheck) glutenFreeCheck.checked = draft.dietaryRestrictions.includes('glutenFree');
+        if (lactoseFreeCheck) lactoseFreeCheck.checked = draft.dietaryRestrictions.includes('lactoseFree');
+        if (veganCheck) veganCheck.checked = draft.dietaryRestrictions.includes('vegan');
+        if (vegetarianCheck) vegetarianCheck.checked = draft.dietaryRestrictions.includes('vegetarian');
+        if (nutFreeCheck) nutFreeCheck.checked = draft.dietaryRestrictions.includes('nutFree');
+        if (shellfishFreeCheck) shellfishFreeCheck.checked = draft.dietaryRestrictions.includes('shellfishFree');
+      }
+
+      if (draft.otherDietary && otherDietaryInput) otherDietaryInput.value = draft.otherDietary;
+      if (Array.isArray(draft.excludedFoodIds)) {
+        excludedFoodIds = [...draft.excludedFoodIds];
+        renderExcludedFoods();
+      }
+
+      if (draft.savedStep && draft.savedStep > 1 && draft.savedStep <= TOTAL_STEPS) {
+        showStep(draft.savedStep);
+      }
+    } catch {}
+  }
+
+  // Pre-rellenado inicial al cargar
   const preFill = getPreFillData();
   if (preFill?.name) {
     const nameInput = document.getElementById('name') as HTMLInputElement;
@@ -583,21 +663,29 @@ const currentPath = Astro.url.pathname;
     }
   }
 
+  // Restaurar borrador previo si el usuario refrescó la página
+  restoreDraft();
+
+  // Escuchar cambios para persistir en tiempo real
+  const containerEl = document.getElementById('onboardingContainer');
+  containerEl?.addEventListener('input', saveDraft);
+  containerEl?.addEventListener('change', saveDraft);
+
   // ============================================================
   // Collect data from all steps
   // ============================================================
 
   function collectData(): OnboardingData {
-    const name = (document.getElementById('name') as HTMLInputElement).value;
-    const birthdate = (document.getElementById('birthdate') as HTMLInputElement).value;
-    const height = (document.getElementById('height') as HTMLInputElement).value;
-    const weight = (document.getElementById('weight') as HTMLInputElement).value;
-    const experience = (document.getElementById('experience') as HTMLSelectElement).value;
+    const name = (document.getElementById('name') as HTMLInputElement)?.value || '';
+    const birthdate = (document.getElementById('birthdate') as HTMLInputElement)?.value || '';
+    const height = (document.getElementById('height') as HTMLInputElement)?.value || '';
+    const weight = (document.getElementById('weight') as HTMLInputElement)?.value || '';
+    const experience = (document.getElementById('experience') as HTMLSelectElement)?.value || '';
     const goals = Array.from(
       document.querySelectorAll('#step1 input[type="checkbox"]:checked')
     ).map((cb) => (cb as HTMLInputElement).value);
 
-    const conditions = (document.getElementById('conditions') as HTMLTextAreaElement).value;
+    const conditions = (document.getElementById('conditions') as HTMLTextAreaElement)?.value || '';
     const medications = (document.getElementById('medications') as HTMLTextAreaElement).value;
     const allergies = (document.getElementById('allergies') as HTMLTextAreaElement).value;
     const injuries = (document.getElementById('injuries') as HTMLTextAreaElement).value;
@@ -724,6 +812,7 @@ const currentPath = Astro.url.pathname;
 
       const success = await handleSaveOnboarding();
       if (success) {
+        localStorage.removeItem(DRAFT_KEY);
         window.location.href = '/client/dashboard';
       } else {
         nextBtn.disabled = false;
@@ -735,6 +824,7 @@ const currentPath = Astro.url.pathname;
   backBtn.addEventListener('click', () => {
     if (currentStep > 1) {
       showStep(currentStep - 1);
+      saveDraft();
     }
   });
 
@@ -745,6 +835,7 @@ const currentPath = Astro.url.pathname;
     if (unsubFoods) {
       unsubFoods();
     }
+    localStorage.removeItem(DRAFT_KEY);
     window.location.href = '/client/dashboard';
   });
 </script>
