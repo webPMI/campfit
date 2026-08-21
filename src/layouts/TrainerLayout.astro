@@ -6,6 +6,7 @@ import AdminModeBanner from '@/components/AdminModeBanner.astro';
 import ChatNotificationListener from '@/components/ChatNotificationListener.astro';
 import VersionBadge from '@/components/VersionBadge.astro';
 import UserAvatarDropdown from '@/components/UserAvatarDropdown.astro';
+import SupportFloatingWidget from '@/components/SupportFloatingWidget.astro';
 import { translations, type Language } from '@/i18n/translations';
 
 const lang = (Astro.url.searchParams.get('lang') as Language) || 'es';
@@ -16,6 +17,7 @@ const currentPath = Astro.url.pathname;
   <BaseLayout>
     <DecorativeBackground />
     <ChatNotificationListener />
+    <SupportFloatingWidget />
     
     <!-- Top Header Bar -->
     <header class="fixed top-0 left-0 right-0 z-40 border-b border-[var(--border-subtle)] bg-[var(--surface-1)]/80 backdrop-blur-xl h-14 flex items-center justify-between px-4">

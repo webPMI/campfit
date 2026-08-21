@@ -1,0 +1,261 @@
+---
+// SupportFloatingWidget.astro - Botón y modal flotante de feedback y soporte rápido en producción
+---
+
+<div id="support-floating-container" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 select-none">
+  <!-- Trigger Button -->
+  <button
+    id="btn-open-quick-support"
+    type="button"
+    class="group flex items-center gap-2 rounded-full border border-[var(--border-brand)]/40 bg-[var(--surface-1)]/90 px-3.5 py-2 text-xs font-bold text-[var(--text-primary)] shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-[var(--brand)] hover:shadow-[var(--shadow-glow-sm)] active:scale-95"
+    title="Reportar error o enviar sugerencia"
+    aria-label="Reportar error o enviar sugerencia"
+  >
+    <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brand-dim)] text-[11px] text-[var(--brand)] group-hover:animate-pulse">
+      💡
+    </span>
+    <span class="hidden font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] sm:inline-block">
+      Feedback & Soporte
+    </span>
+    <span class="inline-flex h-2 w-2 rounded-full bg-[var(--brand)] animate-ping"></span>
+  </button>
+</div>
+
+<!-- Modal Flotante de Reporte Rápido -->
+<div
+  id="quick-support-modal-overlay"
+  class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fade-in"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="quick-support-title"
+>
+  <div class="relative w-full max-w-lg rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-2xl animate-scale-up">
+    <!-- Close Button -->
+    <button
+      id="btn-close-quick-support"
+      type="button"
+      class="absolute right-4 top-4 rounded-xl p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] transition-all"
+      aria-label="Cerrar modal"
+    >
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Modal Header -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-dim)] text-xl border border-[var(--border-brand)]/30">
+        🚀
+      </div>
+      <div>
+        <h3 id="quick-support-title" class="text-base font-bold text-[var(--text-primary)]">
+          Feedback & Soporte Beta
+        </h3>
+        <p class="text-xs text-[var(--text-tertiary)]">
+          Cuéntanos cualquier problema o idea para que podamos resolverlo de inmediato.
+        </p>
+      </div>
+    </div>
+
+    <!-- Formulario de Reporte -->
+    <form id="quick-support-form" class="space-y-4">
+      <!-- Selector de Tipo / Categoría -->
+      <div>
+        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+          ¿De qué se trata?
+        </label>
+        <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <label class="cursor-pointer">
+            <input type="radio" name="quick-category" value="bug" checked class="peer sr-only" />
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-2 text-center text-xs font-medium text-[var(--text-secondary)] transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-dim)] peer-checked:text-[var(--brand)]">
+              🐛 Error / Bug
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="quick-category" value="suggestion" class="peer sr-only" />
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-2 text-center text-xs font-medium text-[var(--text-secondary)] transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-dim)] peer-checked:text-[var(--brand)]">
+              💡 Sugerencia
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="quick-category" value="inquiry" class="peer sr-only" />
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-2 text-center text-xs font-medium text-[var(--text-secondary)] transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-dim)] peer-checked:text-[var(--brand)]">
+              ❓ Duda / Plan
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="quick-category" value="other" class="peer sr-only" />
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] p-2 text-center text-xs font-medium text-[var(--text-secondary)] transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-dim)] peer-checked:text-[var(--brand)]">
+              📦 Otro
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Título Breve -->
+      <div>
+        <label for="quick-title" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+          Título breve
+        </label>
+        <input
+          id="quick-title"
+          type="text"
+          required
+          maxlength="100"
+          placeholder="Ej: El botón de registrar peso no responde en móvil"
+          class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-1 focus:ring-[var(--brand)]"
+        />
+      </div>
+
+      <!-- Descripción Detallada -->
+      <div>
+        <label for="quick-desc" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+          Descripción o qué estabas haciendo
+        </label>
+        <textarea
+          id="quick-desc"
+          rows="3"
+          required
+          placeholder="Explica qué ha sucedido o tu propuesta para mejorar..."
+          class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-1 focus:ring-[var(--brand)] resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Context Info Badge -->
+      <div class="flex items-center gap-2 rounded-xl bg-[var(--surface-3)] px-3 py-2 text-[11px] text-[var(--text-tertiary)]">
+        <span class="text-xs">📍</span>
+        <span class="truncate">Página actual: <code id="quick-current-path" class="text-[var(--brand)] font-mono">/</code></span>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
+        <a
+          href="/client/support/my-tickets"
+          class="text-xs text-[var(--text-tertiary)] hover:text-[var(--brand)] hover:underline transition-colors"
+        >
+          📋 Ver mis tickets
+        </a>
+        <div class="flex items-center gap-2">
+          <button
+            id="btn-cancel-quick-support"
+            type="button"
+            class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3.5 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)] transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            id="btn-submit-quick-support"
+            type="submit"
+            class="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--brand)] to-emerald-400 px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+          >
+            <span>Enviar Reporte</span>
+            <span>✉️</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  import { auth } from '@/lib/firebase';
+  import { createSupportTicket, type TicketCategory } from '@/lib/support/supportTicketService';
+  import { showToast } from '@/lib/shared/ui';
+  import { logger } from '@/lib/shared/logger';
+
+  const btnOpen = document.getElementById('btn-open-quick-support');
+  const overlay = document.getElementById('quick-support-modal-overlay');
+  const btnClose = document.getElementById('btn-close-quick-support');
+  const btnCancel = document.getElementById('btn-cancel-quick-support');
+  const form = document.getElementById('quick-support-form') as HTMLFormElement;
+  const currentPathEl = document.getElementById('quick-current-path');
+  const titleInput = document.getElementById('quick-title') as HTMLInputElement;
+  const descInput = document.getElementById('quick-desc') as HTMLTextAreaElement;
+  const submitBtn = document.getElementById('btn-submit-quick-support') as HTMLButtonElement;
+
+  function openQuickModal() {
+    if (currentPathEl) {
+      currentPathEl.textContent = window.location.pathname;
+    }
+    overlay?.classList.remove('hidden');
+    titleInput?.focus();
+  }
+
+  function closeQuickModal() {
+    overlay?.classList.add('hidden');
+    form?.reset();
+  }
+
+  btnOpen?.addEventListener('click', openQuickModal);
+  btnClose?.addEventListener('click', closeQuickModal);
+  btnCancel?.addEventListener('click', closeQuickModal);
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeQuickModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) {
+      closeQuickModal();
+    }
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = titleInput.value.trim();
+    const description = descInput.value.trim();
+    const selectedCategoryEl = form.querySelector('input[name="quick-category"]:checked') as HTMLInputElement | null;
+    const category = (selectedCategoryEl?.value || 'bug') as TicketCategory;
+
+    if (!title || !description) {
+      showToast({ message: 'Por favor, completa el título y la descripción.', type: 'error' });
+      return;
+    }
+
+    const currentUser = auth.currentUser;
+    const reporterUid = currentUser?.uid || 'anonymous_beta_user';
+    const reporterEmail = currentUser?.email || 'beta_feedback@campfit.com';
+    const reporterName = currentUser?.displayName || 'Usuario Beta';
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    try {
+      const result = await createSupportTicket({
+        reporterUid,
+        reporterEmail,
+        reporterName,
+        title,
+        description: `${description}\n\n--- Metadatos de Navegación ---\nURL: ${window.location.href}\nDispositivo: ${navigator.userAgent}`,
+        category,
+        severity: category === 'bug' ? 'high' : 'medium',
+        relatedEntityType: 'page_url',
+        relatedEntityName: window.location.pathname,
+      });
+
+      if (result.success) {
+        showToast({
+          message: '🚀 ¡Reporte enviado con éxito! Nuestro equipo lo revisará de inmediato.',
+          type: 'success',
+        });
+        closeQuickModal();
+      } else {
+        showToast({
+          message: result.error || 'Error al enviar el reporte. Por favor, intenta de nuevo.',
+          type: 'error',
+        });
+      }
+    } catch (err) {
+      logger.error('QuickSupport', 'Error al enviar reporte:', err);
+      showToast({
+        message: 'No se pudo enviar el reporte. Revisa tu conexión a internet.',
+        type: 'error',
+      });
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>Enviar Reporte</span> <span>✉️</span>';
+    }
+  });
+</script>
