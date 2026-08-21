@@ -137,7 +137,7 @@ export async function createSupportTicket(
 
 /**
  * 🔒 CRÍTICO: Suscripción reactiva a los tickets creados por un usuario cliente.
- * where('reporterUid', '==', userId) + orderBy('createdAt', 'desc').
+ * Utiliza consulta por reporterUid y ordenación resiliente en memoria para evitar bloqueos por índices pendientes.
  */
 export function subscribeToUserSupportTickets(
   userId: string,
@@ -153,7 +153,6 @@ export function subscribeToUserSupportTickets(
   const q = query(
     collection(db, 'support_tickets'),
     where('reporterUid', '==', userId),
-    orderBy('createdAt', 'desc'),
   );
 
   return onSnapshot(
@@ -163,6 +162,14 @@ export function subscribeToUserSupportTickets(
         id: d.id,
         ...d.data(),
       })) as SupportTicket[];
+
+      // Ordenar por fecha descendente en cliente
+      tickets.sort((a, b) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0);
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0);
+        return timeB - timeA;
+      });
+
       callback(tickets);
     },
     (err) => {

@@ -117,19 +117,33 @@ const t = (key: string) => translations[lang]?.[key] || translations['es']?.[key
             </div>
             <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400 flex items-center gap-1.5">
               <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              En Vivo: v0.006 Beta
+              En Vivo: v0.007 Beta
             </span>
           </div>
 
           <div class="space-y-3 pt-2">
-            <!-- Version 0.006 -->
+            <!-- Version 0.007 -->
             <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.006</span>
-                  <span class="text-xs font-bold text-[var(--text-primary)]">Changelog Público & Control de Versiones Transparente</span>
+                  <span class="rounded-md bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-black uppercase">v0.007</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Corrección de Consulta Resiliente en Mis Tickets</span>
                 </div>
                 <span class="text-[11px] text-[var(--text-tertiary)]">Actual</span>
+              </div>
+              <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
+                <li>Eliminada la dependencia obligatoria de índices compuestos para la carga de tickets personales, permitiendo visualización inmediata sin errores.</li>
+                <li>Despliegue de índices optimizados en Firestore para consultas de alta velocidad.</li>
+              </ul>
+            </div>
+
+            <!-- Version 0.006 -->
+            <div class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="rounded-md bg-[var(--surface-4)] border border-[var(--border-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-secondary)] uppercase">v0.006</span>
+                  <span class="text-xs font-bold text-[var(--text-primary)]">Changelog Público & Control de Versiones Transparente</span>
+                </div>
               </div>
               <ul class="text-xs text-[var(--text-secondary)] space-y-1 list-disc list-inside">
                 <li>Visualización pública del historial de versiones y novedades en el Centro de Soporte.</li>

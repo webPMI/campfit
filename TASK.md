@@ -1,15 +1,17 @@
-### 🤖 Agente: Antigravity Agent [Changelog Público en Vivo & Control de Versiones Transparente]
-- **Fecha / Hora:** `2026-08-21 13:37:00 CEST`
-- **Objetivo / Problema:** Implementación del historial público de novedades y versiones en el Centro de Soporte (`src/pages/client/support.astro`) y enlace directo en el widget flotante (`src/components/SupportFloatingWidget.astro`), permitiendo a los usuarios beta conocer todas las mejoras aplicadas en tiempo real.
+### 🤖 Agente: Antigravity Agent [Corrección de Índice Firestore & Consulta Resiliente en Mis Tickets]
+- **Fecha / Hora:** `2026-08-21 13:38:30 CEST`
+- **Objetivo / Problema:** Corrección del error de índice faltante en Firestore al consultar `/client/support/my-tickets`. Se desacopló la dependencia obligatoria del índice compuesto en `subscribeToUserSupportTickets()` mediante ordenación resiliente en memoria y se agregaron los índices correspondientes a `firestore.indexes.json`.
 - **Estado:** `[COMPLETADO]`
 - **Validación:**
   - `npm run type-check`: 0 errores, 0 warnings.
   - `npx vitest run`: 76 suites pasadas, 799 tests completados (0 fallos).
   - `npm run build`: 43 páginas estáticas generadas en <1s.
-- **Versión:** `v0.006`
+- **Versión:** `v0.007`
 - **Git Commit:** Sincronizado a `origin/master`.
 
 ---
+
+
 
 
 
