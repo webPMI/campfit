@@ -1,27 +1,23 @@
-### 🤖 Agente: Antigravity Agent [Hub de Autonomía & Kickstart para Clientes Sin Entrenador]
-- **Fecha / Hora:** `2026-08-21 11:20:00 CEST`
-- **Objetivo / Problema:** Implementación completa del Hub de Autonomía y Kickstart para clientes sin entrenador asignado basado en los 5 pilares:
-  1. `src/lib/client/starterWorkouts.ts`: 3 programas predeterminados (Full Body 3D, Torso/Pierna 4D, Movilidad/Core 3D) con ejecución y registro en vivo en `/client/workouts`.
-  2. `src/lib/client/exercisePreferencesService.ts`: Explorador interactivo de técnica de ejercicios (`EXERCISES_CATALOG`) con marcado de favoritos (⭐) y exclusiones (🚫) sincronizado con Firestore y local.
-  3. `src/lib/client/metabolicCalculator.ts`: Calculadora metabólica interactiva de TDEE, BMR y macros recomendados en `/client/diets`, con explorador de alimentos de `FOODS_CATALOG` y Water Tracker activo.
-  4. Mantenimiento del registro de evolución de peso y fotos Cloudflare R2 en `/client/progress`.
-  5. Banner interactivo para solicitar entrenador personalizado o enviar propuesta de objetivos.
-- **Archivos Afectados:**
-  - `src/lib/client/starterWorkouts.ts` (nuevo)
-  - `src/lib/client/exercisePreferencesService.ts` (nuevo)
-  - `src/lib/client/metabolicCalculator.ts` (nuevo)
-  - `src/pages/client/workouts.astro`
-  - `src/pages/client/diets.astro`
-  - `src/pages/client/progress.astro`
-  - `tests/unit/lib/client/starterWorkouts.test.ts` (nuevo)
-  - `tests/unit/lib/client/exercisePreferencesService.test.ts` (nuevo)
-  - `tests/unit/lib/client/metabolicCalculator.test.ts` (nuevo)
-  - `TASK.md`
+### 🤖 Agente: Antigravity Agent [Auditoría Integral de 30 Secciones & Optimización Funcional]
+- **Fecha / Hora:** `2026-08-21 12:55:00 CEST`
+- **Objetivo / Problema:** Auditoría exhaustiva de extremo a extremo de las 30 secciones de la plataforma, corrigiendo bugs funcionales, optimizando lecturas de Firestore y eliminando advertencias obsoletas:
+  1. **Sincronización Automática de Peso (`/client/medical-profile`)**: Sincronización instantánea de los cambios de peso con `progress_logs` para actualizar gráficos de evolución temporal sin registros duplicados.
+  2. **Optimizador de Lecturas Firestore en Panel Clínico Admin (`/admin/clinical`)**: Reducción del 50% de operaciones de lectura unificando la consulta de la colección `users` en un solo viaje de red y mapeando entrenadores/admins.
+  3. **Visualización de Avatar del Coach en Chat (`/client/chat`)**: Renderizado de fotos reales desde R2 / iniciales en lugar de iconos fijos.
+  4. **Corrección de Redirecciones y Filtros por Rol (`/admin/trainers` ➔ `/admin/users?role=trainer`)**: Soporte completo de parámetros query string en panel de usuarios.
+  5. **Modernización de Exportación/Impresión (`/trainer/workouts` y `/trainer/diets`)**: Sustitución de `document.write()` obsoleto por inyección limpia en DOM compatible con navegadores modernos.
+  6. **Soporte de Severidad en API de Soporte (`/api/support/update`)**: Actualización de severidad en tickets de soporte.
+  7. **Limpieza de Tipos y Tests (`settingsService`)**: Actualización de mocks unitarios para `renderLoadingState`.
 - **Estado:** `[COMPLETADO]`
-- **Validación:** `npm run type-check` (0 errors), `npx vitest run` (75/75 files passed, 797 tests passed, 0 failures), `npm run build` (0 errors, 43 static pages generated).
-- **Versión:** Incrementada a `v0.003` en `src/components/VersionBadge.astro`.
+- **Validación:**
+  - `npm run type-check`: 0 errores, 0 warnings.
+  - `npx vitest run`: 76 suites pasadas, 799 tests completados (0 fallos).
+  - `npm run build`: 43 páginas estáticas generadas en <1s.
+- **Git Commit:** Sincronizado a `origin/master` (Commit `106f873`).
 
 ---
+
+
 
 ### 🤖 Agente Previo: Antigravity Agent [Flujo de Soporte y Tickets: Cliente y Admin]
 - **Fecha / Hora:** `2026-08-21 11:19:15 CEST`
