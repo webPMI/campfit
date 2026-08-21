@@ -51,40 +51,91 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         </div>
 
         <!-- Weight Tab -->
-        <div id="weightTab" class="space-y-4">
-          <!-- Register Weight -->
-          <div
-            class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl"
-          >
-            <h3 data-i18n="client.progress.logWeight" class="text-sm font-semibold text-[var(--text-secondary)] mb-4">{t('client.progress.logWeight') || "Registrar Peso"}</h3>
-            <div class="flex gap-3">
-              <input
-                id="weightInput"
-                type="number"
-                step="0.1"
-                placeholder="75.5"
-                class="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)] focus:ring-2 focus:ring-[var(--brand-dim)]"
-              />
-              <span class="flex items-center text-sm text-[var(--text-tertiary)]"
-                >{t("client.stats.kg")}</span
-              >
-              <button
-                id="saveWeightBtn"
-                data-i18n="common.save"
-                class="rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] px-6 py-3 text-sm font-semibold text-[var(--text-on-brand)] shadow-lg shadow-[var(--shadow-glow-sm)] transition-all active:scale-[0.98]"
-              >
-                {t('common.save') || "Guardar"}
-              </button>
+        <div id="weightTab" class="space-y-5">
+          <!-- Weight KPI Summary Cards -->
+          <div id="weightSummaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Peso Inicial</span>
+              <p id="kpiInitialWeight" class="mt-1 text-lg font-black text-[var(--text-primary)]">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Peso Actual</span>
+              <p id="kpiCurrentWeight" class="mt-1 text-lg font-black text-emerald-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span></p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Variación Total</span>
+              <p id="kpiWeightDiff" class="mt-1 text-lg font-black text-[var(--text-primary)]">--</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-4 backdrop-blur-xl shadow-sm">
+              <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Media Reciente</span>
+              <p id="kpiAvgWeight" class="mt-1 text-lg font-black text-cyan-400">-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span></p>
+            </div>
+          </div>
+
+          <!-- Register Weight Card -->
+          <div class="card-glow rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Registrar Peso Corporal</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Controla tu evolución diaria con notas de contexto y protección anti-duplicados</p>
+              </div>
+              <span class="rounded-full bg-[var(--brand-dim)] text-[var(--brand)] px-2.5 py-0.5 text-[10px] font-bold border border-[var(--border-brand)]/30">⚖️ Seguimiento</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+              <div class="sm:col-span-3">
+                <label for="weightDateInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Fecha</label>
+                <input
+                  id="weightDateInput"
+                  type="date"
+                  class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none transition-all focus:border-[var(--border-brand)]"
+                />
+              </div>
+              <div class="sm:col-span-3">
+                <label for="weightInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Peso (kg) *</label>
+                <input
+                  id="weightInput"
+                  type="number"
+                  step="0.1"
+                  min="20"
+                  max="350"
+                  placeholder="Ej: 75.5"
+                  class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)]"
+                />
+              </div>
+              <div class="sm:col-span-4">
+                <label for="weightNotesInput" class="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">Notas / Contexto (Opcional)</label>
+                <input
+                  id="weightNotesInput"
+                  type="text"
+                  placeholder="Ej: En ayunas tras cardio"
+                  class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] outline-none transition-all focus:border-[var(--border-brand)]"
+                />
+              </div>
+              <div class="sm:col-span-2 flex items-end">
+                <button
+                  id="saveWeightBtn"
+                  type="button"
+                  class="w-full flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--brand)] to-emerald-400 py-2.5 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+                >
+                  <span id="saveWeightBtnText">Guardar</span>
+                  <span>⚖️</span>
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- Weight History -->
-          <div
-            class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl"
-          >
-            <h3 data-i18n="client.progress.history" class="text-sm font-semibold text-[var(--text-secondary)] mb-4">{t('client.progress.history') || "Historial de Peso"}</h3>
-            <div id="weightHistory" class="space-y-2">
-              <p data-i18n="client.progress.noRecords" class="text-sm text-[var(--text-disabled)]">{t('client.progress.noRecords') || "Sin registros de peso aún."}</p>
+          <div class="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 backdrop-blur-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-[var(--text-primary)]">Historial de Registros</h3>
+                <p class="text-xs text-[var(--text-tertiary)] mt-0.5">Edita valores erróneos o elimina registros no deseados</p>
+              </div>
+              <span id="weightCountBadge" class="text-xs font-bold text-[var(--text-tertiary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-lg">0 registros</span>
+            </div>
+            <div id="weightHistory" class="space-y-2.5">
+              <p class="text-sm text-[var(--text-disabled)]">Sin registros de peso aún.</p>
             </div>
           </div>
         </div>
@@ -261,12 +312,47 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
       </div>
     </div>
   </div>
+
+  <!-- Edit Weight Modal -->
+  <div id="editWeightModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-1)] p-6 shadow-2xl backdrop-blur-2xl animate-scale-up">
+      <button id="closeEditWeightModal" type="button" class="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-white text-sm font-bold p-1">✕</button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 text-xl border border-emerald-500/20">
+          ✏️
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-primary)]">Editar Registro de Peso</h3>
+          <p class="text-xs text-[var(--text-tertiary)]">Corrige la fecha, el valor o añade notas</p>
+        </div>
+      </div>
+      <form id="editWeightForm" class="space-y-4">
+        <input type="hidden" id="editWeightLogId" />
+        <div>
+          <label for="editWeightDate" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Fecha del registro</label>
+          <input id="editWeightDate" type="date" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+        </div>
+        <div>
+          <label for="editWeightValue" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Peso (kg) *</label>
+          <input id="editWeightValue" type="number" step="0.1" min="20" max="350" required class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+        </div>
+        <div>
+          <label for="editWeightNotes" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Notas / Contexto (Opcional)</label>
+          <input id="editWeightNotes" type="text" placeholder="Ej: Tras cardio en ayunas" class="w-full rounded-xl border border-[var(--border-default)] bg-[var(--surface-4)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--border-brand)]" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--border-subtle)]">
+          <button id="cancelEditWeightBtn" type="button" class="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-3)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-4)] transition-all">Cancelar</button>
+          <button id="submitEditWeightBtn" type="submit" class="rounded-xl bg-gradient-to-r from-[var(--brand)] to-emerald-400 px-4 py-2 text-xs font-bold text-[var(--text-on-brand)] shadow-md transition-all hover:opacity-90 active:scale-95">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </ClientLayout>
 
 <script>
   import { logger } from "@/lib/shared/logger";
   import { initPage } from "@/lib/shared/initPage";
-  import { subscribeToProgress, registerWeight, registerProgressPhoto, deleteProgressLog, type ProgressLog } from "@/lib/client/progressService";
+  import { subscribeToProgress, registerWeight, updateWeightLog, registerProgressPhoto, deleteProgressLog, type ProgressLog } from "@/lib/client/progressService";
   import { uploadProgressPhotoToR2, validateImageFile } from "@/lib/storage/r2Service";
   import { showToast, showConfirm, escapeHtml } from "@/lib/shared/ui";
   import { t } from "@/i18n/client";
@@ -278,9 +364,33 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
   const tabPhotos = document.getElementById("tabPhotos")!;
   const weightTab = document.getElementById("weightTab")!;
   const photosTab = document.getElementById("photosTab")!;
+
+  // Weight form & KPI elements
   const weightInput = document.getElementById("weightInput") as HTMLInputElement;
+  const weightDateInput = document.getElementById("weightDateInput") as HTMLInputElement | null;
+  const weightNotesInput = document.getElementById("weightNotesInput") as HTMLInputElement | null;
   const saveWeightBtn = document.getElementById("saveWeightBtn")!;
+  const saveWeightBtnText = document.getElementById("saveWeightBtnText") as HTMLSpanElement | null;
   const weightHistory = document.getElementById("weightHistory")!;
+  const weightCountBadge = document.getElementById("weightCountBadge") as HTMLSpanElement | null;
+
+  const kpiInitialWeight = document.getElementById("kpiInitialWeight") as HTMLParagraphElement | null;
+  const kpiCurrentWeight = document.getElementById("kpiCurrentWeight") as HTMLParagraphElement | null;
+  const kpiWeightDiff = document.getElementById("kpiWeightDiff") as HTMLParagraphElement | null;
+  const kpiAvgWeight = document.getElementById("kpiAvgWeight") as HTMLParagraphElement | null;
+
+  // Edit Weight Modal elements
+  const editWeightModal = document.getElementById("editWeightModal") as HTMLDivElement | null;
+  const closeEditWeightModal = document.getElementById("closeEditWeightModal") as HTMLButtonElement | null;
+  const cancelEditWeightBtn = document.getElementById("cancelEditWeightBtn") as HTMLButtonElement | null;
+  const editWeightForm = document.getElementById("editWeightForm") as HTMLFormElement | null;
+  const editWeightLogId = document.getElementById("editWeightLogId") as HTMLInputElement | null;
+  const editWeightDate = document.getElementById("editWeightDate") as HTMLInputElement | null;
+  const editWeightValue = document.getElementById("editWeightValue") as HTMLInputElement | null;
+  const editWeightNotes = document.getElementById("editWeightNotes") as HTMLInputElement | null;
+  const submitEditWeightBtn = document.getElementById("submitEditWeightBtn") as HTMLButtonElement | null;
+
+  let cachedWeightLogs: ProgressLog[] = [];
 
   // Photos elements
   const photoAngleBtns = document.querySelectorAll<HTMLButtonElement>('.photo-angle-btn');
@@ -677,38 +787,213 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
     renderFilteredGallery();
   }
 
+  function getLogDateObject(logDate: any): Date {
+    if (logDate && typeof logDate.toDate === "function") return logDate.toDate();
+    if (logDate instanceof Date) return logDate;
+    if (typeof logDate === "string" || typeof logDate === "number") return new Date(logDate);
+    return new Date();
+  }
+
+  function renderWeightLogs(logs: ProgressLog[]) {
+    cachedWeightLogs = logs;
+
+    if (weightCountBadge) {
+      weightCountBadge.textContent = `${logs.length} ${logs.length === 1 ? 'registro' : 'registros'}`;
+    }
+
+    if (!logs || logs.length === 0) {
+      weightHistory.innerHTML = '<p class="text-sm text-[var(--text-disabled)]">Sin registros de peso aún.</p>';
+      if (kpiInitialWeight) kpiInitialWeight.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>';
+      if (kpiCurrentWeight) kpiCurrentWeight.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>';
+      if (kpiWeightDiff) kpiWeightDiff.textContent = '--';
+      if (kpiAvgWeight) kpiAvgWeight.innerHTML = '-- <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>';
+      return;
+    }
+
+    // Sort chronologically ascending for stats
+    const chronoLogs = [...logs].sort((a, b) => getLogDateObject(a.date).getTime() - getLogDateObject(b.date).getTime());
+    const oldestLog = chronoLogs[0];
+    const newestLog = chronoLogs[chronoLogs.length - 1];
+
+    const initialW = Number(oldestLog?.value?.weight) || 0;
+    const currentW = Number(newestLog?.value?.weight) || 0;
+    const diff = currentW - initialW;
+
+    // Recent 7 entries average
+    const recentLogs = chronoLogs.slice(-7);
+    const avgW = recentLogs.reduce((acc, l) => acc + (Number(l.value?.weight) || 0), 0) / recentLogs.length;
+
+    if (kpiInitialWeight) kpiInitialWeight.innerHTML = `${initialW.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
+    if (kpiCurrentWeight) kpiCurrentWeight.innerHTML = `${currentW.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
+    
+    if (kpiWeightDiff) {
+      if (diff > 0) {
+        kpiWeightDiff.className = "mt-1 text-lg font-black text-amber-400";
+        kpiWeightDiff.textContent = `+${diff.toFixed(1)} kg`;
+      } else if (diff < 0) {
+        kpiWeightDiff.className = "mt-1 text-lg font-black text-emerald-400";
+        kpiWeightDiff.textContent = `${diff.toFixed(1)} kg`;
+      } else {
+        kpiWeightDiff.className = "mt-1 text-lg font-black text-[var(--text-primary)]";
+        kpiWeightDiff.textContent = `0.0 kg`;
+      }
+    }
+
+    if (kpiAvgWeight) kpiAvgWeight.innerHTML = `${avgW.toFixed(1)} <span class="text-xs font-normal text-[var(--text-tertiary)]">kg</span>`;
+
+    // Render list (descending)
+    weightHistory.innerHTML = "";
+    const descLogs = [...logs].sort((a, b) => getLogDateObject(b.date).getTime() - getLogDateObject(a.date).getTime());
+
+    descLogs.forEach((log, idx) => {
+      const w = Number(log.value?.weight);
+      if (!w) return;
+      const d = getLogDateObject(log.date);
+      const formattedDate = d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+      const notes = (log.value?.notes as string) || '';
+
+      // Delta compared to previous in chronological order
+      const nextOlderLog = descLogs[idx + 1];
+      let deltaBadge = '';
+      if (nextOlderLog && nextOlderLog.value?.weight) {
+        const prevW = Number(nextOlderLog.value.weight);
+        const dW = w - prevW;
+        if (dW > 0) {
+          deltaBadge = `<span class="rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-bold text-amber-400 border border-amber-500/20">+${dW.toFixed(1)} kg</span>`;
+        } else if (dW < 0) {
+          deltaBadge = `<span class="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/20">${dW.toFixed(1)} kg</span>`;
+        } else {
+          deltaBadge = `<span class="rounded bg-[var(--surface-3)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text-tertiary)]">= 0.0</span>`;
+        }
+      }
+
+      const itemEl = document.createElement("div");
+      itemEl.className = "flex items-center justify-between rounded-xl bg-[var(--surface-2)] border border-[var(--border-subtle)] px-4 py-3 hover:border-[var(--border-default)] transition-all";
+      itemEl.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-dim)] text-xs font-bold text-[var(--brand)] border border-[var(--border-brand)]/20">
+            ⚖️
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-[var(--text-primary)]">${w.toFixed(1)} kg</span>
+              ${deltaBadge}
+            </div>
+            <p class="text-xs text-[var(--text-tertiary)]">${formattedDate}${notes ? ` • <span class="italic text-[var(--text-secondary)]">"${escapeHtml(notes)}"</span>` : ''}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button
+            type="button"
+            class="btn-edit-weight rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-3)] hover:bg-[var(--surface-4)] p-1.5 text-xs text-[var(--text-secondary)] hover:text-white transition-all"
+            data-id="${log.id}"
+            title="Editar registro"
+          >
+            ✏️
+          </button>
+          <button
+            type="button"
+            class="btn-delete-weight rounded-lg border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 p-1.5 text-xs text-rose-300 transition-all"
+            data-id="${log.id}"
+            title="Eliminar registro"
+          >
+            🗑️
+          </button>
+        </div>
+      `;
+
+      itemEl.querySelector('.btn-edit-weight')?.addEventListener('click', () => openEditWeightModal(log));
+      itemEl.querySelector('.btn-delete-weight')?.addEventListener('click', () => confirmAndDeleteWeight(log.id));
+
+      weightHistory.appendChild(itemEl);
+    });
+  }
+
+  function openEditWeightModal(log: ProgressLog) {
+    if (!editWeightModal || !editWeightLogId || !editWeightValue || !editWeightDate) return;
+    editWeightLogId.value = log.id;
+    editWeightValue.value = String(log.value?.weight || '');
+    if (editWeightNotes) editWeightNotes.value = (log.value?.notes as string) || '';
+    const d = getLogDateObject(log.date);
+    editWeightDate.value = d.toISOString().split('T')[0] || '';
+    editWeightModal.classList.remove('hidden');
+  }
+
+  function closeEditModal() {
+    editWeightModal?.classList.add('hidden');
+    editWeightForm?.reset();
+  }
+
+  closeEditWeightModal?.addEventListener('click', closeEditModal);
+  cancelEditWeightBtn?.addEventListener('click', closeEditModal);
+
+  editWeightForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const logId = editWeightLogId?.value;
+    const newWeight = parseFloat(editWeightValue?.value || '0');
+    const newNotes = editWeightNotes?.value || '';
+    const dateStr = editWeightDate?.value;
+
+    if (!logId || !newWeight || newWeight <= 0) {
+      showToast({ message: 'Introduce un peso válido', type: 'error' });
+      return;
+    }
+
+    if (submitEditWeightBtn) {
+      submitEditWeightBtn.disabled = true;
+      submitEditWeightBtn.textContent = 'Guardando...';
+    }
+
+    try {
+      const newDate = dateStr ? new Date(dateStr + 'T12:00:00') : undefined;
+      await updateWeightLog(logId, newWeight, newNotes, newDate);
+      showToast({ message: 'Registro de peso actualizado con éxito', type: 'success' });
+      closeEditModal();
+    } catch (err) {
+      logger.error('Progress', 'Error al actualizar peso:', err);
+      showToast({ message: 'Error al actualizar el registro', type: 'error' });
+    } finally {
+      if (submitEditWeightBtn) {
+        submitEditWeightBtn.disabled = false;
+        submitEditWeightBtn.textContent = 'Guardar Cambios';
+      }
+    }
+  });
+
+  async function confirmAndDeleteWeight(logId: string): Promise<boolean> {
+    const confirmed = await showConfirm({
+      title: '¿Eliminar registro de peso?',
+      message: '¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      variant: 'danger',
+    });
+
+    if (!confirmed) return false;
+
+    try {
+      await deleteProgressLog(logId);
+      showToast({ message: 'Registro de peso eliminado', type: 'success' });
+      return true;
+    } catch (err) {
+      logger.error('Progress', 'Error al eliminar peso:', err);
+      showToast({ message: 'Error al eliminar el registro', type: 'error' });
+      return false;
+    }
+  }
+
   const cleanup = initPage({
     allowedRoles: ["client", "admin", "trainer"],
     onReady: async (firebaseUser) => {
       currentUserId = firebaseUser.uid;
 
+      if (weightDateInput && !weightDateInput.value) {
+        weightDateInput.value = new Date().toISOString().split('T')[0] || '';
+      }
+
       // Subscribe to weight logs
       subscribeToProgress(firebaseUser.uid, "weight", (logs) => {
-        if (logs.length > 0) {
-          weightHistory.innerHTML = "";
-          logs.forEach((log) => {
-            const w = log.value?.weight;
-            if (w) {
-              const div = document.createElement("div");
-              div.className =
-                "flex items-center justify-between rounded-lg bg-[var(--surface-4)] px-4 py-3";
-              const date =
-                log.date && typeof (log.date as { toDate?: () => Date }).toDate === "function"
-                  ? (log.date as { toDate: () => Date }).toDate().toLocaleDateString()
-                  : log.date instanceof Date
-                    ? log.date.toLocaleDateString()
-                    : "Fecha";
-              div.innerHTML = `
-                <span class="text-sm text-[var(--text-secondary)]">${date}</span>
-                <span class="text-sm font-semibold text-[var(--text-primary)]">${w} ${t("client.stats.kg")}</span>
-              `;
-              weightHistory.appendChild(div);
-            }
-          });
-        } else {
-          weightHistory.innerHTML =
-            '<p class="text-sm text-[var(--text-disabled)]">Sin registros de peso aún.</p>';
-        }
+        renderWeightLogs(logs);
       });
 
       // Subscribe to photo evolution logs
@@ -716,17 +1001,48 @@ const t = (key: string) => translations[lang]?.[key] || translations["es"]?.[key
         renderPhotosGallery(logs);
       });
 
-      // Save weight
+      // Save weight with debounce and duplicate protection
       saveWeightBtn.addEventListener("click", async () => {
         const val = parseFloat(weightInput.value);
-        if (!val || val <= 0) return;
+        const notes = weightNotesInput?.value?.trim() || '';
+        const dateStr = weightDateInput?.value || new Date().toISOString().split('T')[0];
+
+        if (!val || val <= 0) {
+          showToast({ message: 'Por favor, introduce un peso válido.', type: 'error' });
+          weightInput.focus();
+          return;
+        }
+
+        saveWeightBtn.setAttribute('disabled', 'true');
+        if (saveWeightBtnText) saveWeightBtnText.textContent = 'Guardando...';
+
         try {
-          await registerWeight(firebaseUser.uid, val);
+          // Anti-duplicados: Comprobar si ya existe un registro en la misma fecha
+          const targetDateStr = dateStr;
+          const existingSameDayLog = cachedWeightLogs.find(l => {
+            const d = getLogDateObject(l.date);
+            return d.toISOString().split('T')[0] === targetDateStr;
+          });
+
+          if (existingSameDayLog) {
+            // Actualizar el registro existente de ese día
+            const logDate = new Date(targetDateStr + 'T12:00:00');
+            await updateWeightLog(existingSameDayLog.id, val, notes, logDate);
+            showToast({ message: 'Peso de hoy actualizado correctamente (sin duplicados)', type: 'success' });
+          } else {
+            // Crear nuevo registro
+            await registerWeight(firebaseUser.uid, val, notes);
+            showToast({ message: 'Peso registrado correctamente', type: 'success' });
+          }
+
           weightInput.value = "";
-          showToast({ message: 'Peso registrado correctamente', type: 'success' });
+          if (weightNotesInput) weightNotesInput.value = "";
         } catch (err) {
           logger.error("Progress", "Error saving weight:", err);
           showToast({ message: 'Error al registrar peso', type: 'error' });
+        } finally {
+          saveWeightBtn.removeAttribute('disabled');
+          if (saveWeightBtnText) saveWeightBtnText.textContent = 'Guardar';
         }
       });
     },

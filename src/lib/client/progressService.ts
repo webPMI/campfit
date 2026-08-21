@@ -129,3 +129,34 @@ export async function deleteProgressLog(logId: string): Promise<boolean> {
     throw error;
   }
 }
+
+/**
+ * 🔒 CRÍTICO: Actualiza un registro de peso existente en Firestore.
+ */
+export async function updateWeightLog(
+  logId: string,
+  newWeight: number,
+  newNotes?: string,
+  newDate?: Date
+): Promise<boolean> {
+  if (!logId || newWeight == null || newWeight <= 0) {
+    throw new Error('logId y newWeight válido son requeridos');
+  }
+  try {
+    const { doc, updateDoc } = await import('firebase/firestore');
+    const updateData: Record<string, unknown> = {
+      'value.weight': newWeight,
+      'value.notes': newNotes?.trim() || '',
+      updatedAt: serverTimestamp(),
+    };
+    if (newDate) {
+      updateData.date = newDate;
+    }
+    await updateDoc(doc(db, 'progress_logs', logId), updateData);
+    logger.info('Progress', `Log de peso actualizado: ${logId}`);
+    return true;
+  } catch (error) {
+    logger.error('Progress', `Error al actualizar log ${logId}:`, error);
+    throw error;
+  }
+}
